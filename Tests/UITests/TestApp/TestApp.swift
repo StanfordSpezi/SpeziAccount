@@ -7,14 +7,21 @@
 //
 
 import SwiftUI
-import TemplatePackage
+import CardinalKitAccount
 
 
 @main
 struct UITestsApp: App {
+    @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
+    
+    
     var body: some Scene {
         WindowGroup {
-            Text(TemplatePackage().stanford)
+            NavigationStack {
+                AccountTestsView()
+                    .navigationTitle("CardinalKit Account")
+                    .cardinalKit(appDelegate)
+            }
         }
     }
 }

@@ -7,9 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F68C3C8292EA52000B3E12C /* TemplatePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 2F68C3C7292EA52000B3E12C /* TemplatePackage */; };
+		2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7B29D6C29B00234098 /* AccountTestsView.swift */; };
+		2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */; };
+		2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */; };
+		2F027C8929D6C2AD00234098 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* User.swift */; };
+		2F027C8A29D6C2AD00234098 /* MockEmailPasswordAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */; };
+		2F027C8B29D6C2AD00234098 /* MockUsernamePasswordAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7D29D6C29B00234098 /* MockUsernamePasswordAccountService.swift */; };
+		2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */; };
+		2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */; };
+		2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */; };
+		2F027C9329D6C43500234098 /* CardinalKitAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9229D6C43500234098 /* CardinalKitAccount */; };
+		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
+		2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9729D6C6DB00234098 /* TestAppStandard.swift */; };
+		2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9A29D6C91E00234098 /* XCTestExtensions */; };
+		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
-		2F8A431329130A8C005D2B8F /* TestAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F8A431229130A8C005D2B8F /* TestAppUITests.swift */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -24,11 +36,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F68C3C6292E9F8F00B3E12C /* TemplatePackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TemplatePackage; path = ../..; sourceTree = "<group>"; };
+		2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAccountServiceError.swift; sourceTree = "<group>"; };
+		2F027C7B29D6C29B00234098 /* AccountTestsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTestsView.swift; sourceTree = "<group>"; };
+		2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockEmailPasswordAccountService.swift; sourceTree = "<group>"; };
+		2F027C7D29D6C29B00234098 /* MockUsernamePasswordAccountService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockUsernamePasswordAccountService.swift; sourceTree = "<group>"; };
+		2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAccountConfiguration.swift; sourceTree = "<group>"; };
+		2F027C7F29D6C29B00234098 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountLoginTests.swift; sourceTree = "<group>"; };
+		2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountResetPasswordTests.swift; sourceTree = "<group>"; };
+		2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSignUpTests.swift; sourceTree = "<group>"; };
+		2F027C9429D6C63100234098 /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
+		2F027C9729D6C6DB00234098 /* TestAppStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppStandard.swift; sourceTree = "<group>"; };
+		2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestPrimaryButton.swift"; sourceTree = "<group>"; };
+		2F68C3C6292E9F8F00B3E12C /* CardinalKitAccount */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CardinalKitAccount; path = ../..; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F8A431229130A8C005D2B8F /* TestAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppUITests.swift; sourceTree = "<group>"; };
 		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -38,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F68C3C8292EA52000B3E12C /* TemplatePackage in Frameworks */,
+				2F027C9329D6C43500234098 /* CardinalKitAccount in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,17 +69,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F027C9629D6C63300234098 /* AccountTests */ = {
+			isa = PBXGroup;
+			children = (
+				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
+				2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */,
+				2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */,
+				2F027C7D29D6C29B00234098 /* MockUsernamePasswordAccountService.swift */,
+				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
+				2F027C7F29D6C29B00234098 /* User.swift */,
+			);
+			path = AccountTests;
+			sourceTree = "<group>";
+		};
 		2F6D138928F5F384007C25D6 = {
 			isa = PBXGroup;
 			children = (
 				2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */,
-				2F68C3C6292E9F8F00B3E12C /* TemplatePackage */,
+				2F68C3C6292E9F8F00B3E12C /* CardinalKitAccount */,
 				2F6D139428F5F384007C25D6 /* TestApp */,
 				2F6D13AF28F5F386007C25D6 /* TestAppUITests */,
 				2F6D139328F5F384007C25D6 /* Products */,
@@ -76,7 +113,10 @@
 		2F6D139428F5F384007C25D6 /* TestApp */ = {
 			isa = PBXGroup;
 			children = (
+				2F027C9629D6C63300234098 /* AccountTests */,
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
+				2F027C9429D6C63100234098 /* TestAppDelegate.swift */,
+				2F027C9729D6C6DB00234098 /* TestAppStandard.swift */,
 				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
 			);
 			path = TestApp;
@@ -85,7 +125,10 @@
 		2F6D13AF28F5F386007C25D6 /* TestAppUITests */ = {
 			isa = PBXGroup;
 			children = (
-				2F8A431229130A8C005D2B8F /* TestAppUITests.swift */,
+				2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */,
+				2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */,
+				2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */,
+				2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */,
 			);
 			path = TestAppUITests;
 			sourceTree = "<group>";
@@ -114,7 +157,7 @@
 			);
 			name = TestApp;
 			packageProductDependencies = (
-				2F68C3C7292EA52000B3E12C /* TemplatePackage */,
+				2F027C9229D6C43500234098 /* CardinalKitAccount */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -134,6 +177,9 @@
 				2F6D13AE28F5F386007C25D6 /* PBXTargetDependency */,
 			);
 			name = TestAppUITests;
+			packageProductDependencies = (
+				2F027C9A29D6C91E00234098 /* XCTestExtensions */,
+			);
 			productName = ExampleUITests;
 			productReference = 2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -153,6 +199,7 @@
 					};
 					2F6D13AB28F5F386007C25D6 = {
 						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1430;
 						TestTargetID = 2F6D139128F5F384007C25D6;
 					};
 				};
@@ -166,6 +213,9 @@
 				Base,
 			);
 			mainGroup = 2F6D138928F5F384007C25D6;
+			packageReferences = (
+				2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */,
+			);
 			productRefGroup = 2F6D139328F5F384007C25D6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -199,7 +249,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */,
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
+				2F027C8B29D6C2AD00234098 /* MockUsernamePasswordAccountService.swift in Sources */,
+				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
+				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
+				2F027C8929D6C2AD00234098 /* User.swift in Sources */,
+				2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */,
+				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
+				2F027C8A29D6C2AD00234098 /* MockEmailPasswordAccountService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +265,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F8A431329130A8C005D2B8F /* TestAppUITests.swift in Sources */,
+				2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */,
+				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
+				2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */,
+				2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,15 +463,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 637867499T;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.TemplatePackage.testappuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.cardinalkit.account.testappuitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = TestApp;
@@ -421,12 +484,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 637867499T;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.TemplatePackage.testappuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.cardinalkit.account.testappuitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -531,15 +595,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 637867499T;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.TemplatePackage.testappuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.cardinalkit.account.testappuitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = TestApp;
@@ -581,10 +647,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/StanfordBDHG/XCTestExtensions";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
-		2F68C3C7292EA52000B3E12C /* TemplatePackage */ = {
+		2F027C9229D6C43500234098 /* CardinalKitAccount */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = TemplatePackage;
+			productName = CardinalKitAccount;
+		};
+		2F027C9A29D6C91E00234098 /* XCTestExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */;
+			productName = XCTestExtensions;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

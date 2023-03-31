@@ -12,21 +12,29 @@ import PackageDescription
 
 
 let package = Package(
-    name: "TemplatePackage",
+    name: "CardinalKitAccount",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v16)
     ],
     products: [
-        .library(name: "TemplatePackage", targets: ["TemplatePackage"])
+        .library(name: "CardinalKitAccount", targets: ["CardinalKitAccount"])
+    ],
+    dependencies: [
+        .package(url: "https://github.com/StanfordBDHG/CardinalKit", .upToNextMinor(from: "0.3.3"))
     ],
     targets: [
         .target(
-            name: "TemplatePackage"
+            name: "CardinalKitAccount",
+            dependencies: [
+                .product(name: "CardinalKit", package: "CardinalKit"),
+                .product(name: "Views", package: "CardinalKit")
+            ]
         ),
         .testTarget(
-            name: "TemplatePackageTests",
+            name: "CardinalKitAccountTests",
             dependencies: [
-                .target(name: "TemplatePackage")
+                .target(name: "CardinalKitAccount")
             ]
         )
     ]
