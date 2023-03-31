@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import CardinalKitAccount
 import CardinalKit
+import CardinalKitAccount
 import SwiftUI
 import Views
 

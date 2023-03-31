@@ -7,8 +7,8 @@
 //
 
 
-import CardinalKitAccount
 import CardinalKit
+import CardinalKitAccount
 import Foundation
 
 
