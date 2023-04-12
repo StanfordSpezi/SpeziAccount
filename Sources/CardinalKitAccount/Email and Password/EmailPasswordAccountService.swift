@@ -9,7 +9,7 @@
 import CardinalKit
 import RegexBuilder
 import SwiftUI
-import Views
+import CardinalKitViews
 
 
 /// Account service that enables a email and password based account management.

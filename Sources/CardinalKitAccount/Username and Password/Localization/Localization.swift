@@ -7,7 +7,7 @@
 //
 
 
-import Views
+import CardinalKitViews
 
 
 /// Defines the localization for the ``Account/Account`` module that can be used to customize the ``Account/Account`` module-related views.

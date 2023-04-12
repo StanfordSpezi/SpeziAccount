@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Views
+import CardinalKitViews
 
 /// Displays a reset password view allowing a user to enter a username.
 ///

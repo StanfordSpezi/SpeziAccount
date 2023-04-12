@@ -9,7 +9,7 @@
 import CardinalKit
 import CardinalKitAccount
 import SwiftUI
-import Views
+import CardinalKitViews
 
 
 struct AccountTestsView: View {

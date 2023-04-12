@@ -21,14 +21,15 @@ let package = Package(
         .library(name: "CardinalKitAccount", targets: ["CardinalKitAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordBDHG/CardinalKit", .upToNextMinor(from: "0.3.3"))
+        .package(url: "https://github.com/StanfordBDHG/CardinalKit", .upToNextMinor(from: "0.4.1")),
+        .package(url: "https://github.com/StanfordBDHG/CardinalKitViews", .upToNextMinor(from: "0.2.1"))
     ],
     targets: [
         .target(
             name: "CardinalKitAccount",
             dependencies: [
                 .product(name: "CardinalKit", package: "CardinalKit"),
-                .product(name: "Views", package: "CardinalKit")
+                .product(name: "CardinalKitViews", package: "CardinalKitViews")
             ]
         ),
         .testTarget(

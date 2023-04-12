@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Views
+import CardinalKitViews
 
 
 struct NameTextFields: View {
@@ -40,7 +40,7 @@ struct NameTextFields: View {
     
     
     var body: some View {
-        Views.NameFields(
+        CardinalKitViews.NameFields(
             name: $name,
             givenNameField: givenName,
             givenNameFieldIdentifier: AccountInputFields.givenName,
