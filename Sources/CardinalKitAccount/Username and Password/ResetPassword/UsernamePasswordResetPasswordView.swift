@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import CardinalKitViews
 import SwiftUI
-import Views
 
 /// Displays a reset password view allowing a user to enter a username.
 ///

@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import CardinalKitViews
 import SwiftUI
-import Views
 
 
 /// Displays a sign up view allowing a user to sign up using a username, password, and additional context.

@@ -8,8 +8,8 @@
 
 import CardinalKit
 import CardinalKitAccount
+import CardinalKitViews
 import SwiftUI
-import Views
 
 
 struct AccountTestsView: View {
