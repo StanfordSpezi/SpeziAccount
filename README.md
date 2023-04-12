@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
 [![codecov](https://codecov.io/gh/StanfordBDHG/CardinalKitAccount/branch/main/graph/badge.svg?token=IAfXOmGenQ)](https://codecov.io/gh/StanfordBDHG/CardinalKitAccount)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7796499.svg)](https://doi.org/10.5281/zenodo.7796499)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordBDHG%2FCardinalKitAccount%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordBDHG/CardinalKitAccount)
-[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordBDHG%2FCardinalKitAccount%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordBDHG/CardinalKitAccount)d
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordBDHG%2FCardinalKitAccount%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordBDHG/CardinalKitAccount)
 
 The Account module allows users to incorporate account-related functionality for CardinalKit-based applications.
 
