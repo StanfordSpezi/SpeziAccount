@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Views
+import CardinalKitViews
 
 
 extension Localization {
