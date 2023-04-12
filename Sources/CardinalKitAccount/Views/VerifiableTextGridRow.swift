@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import CardinalKitViews
+import SwiftUI
 
 
 struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
