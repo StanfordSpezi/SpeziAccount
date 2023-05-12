@@ -1,12 +1,12 @@
 //
-// This source file is part of the CardinalKit open-source project
+// This source file is part of the Spezi open-source project
 //
 // SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
 
-import CardinalKitAccount
+import SpeziAccount
 import SwiftUI
 
 
@@ -19,8 +19,8 @@ struct UITestsApp: App {
         WindowGroup {
             NavigationStack {
                 AccountTestsView()
-                    .navigationTitle("CardinalKit Account")
-                    .cardinalKit(appDelegate)
+                    .navigationTitle("Spezi Account")
+                    .spezi(appDelegate)
             }
         }
     }

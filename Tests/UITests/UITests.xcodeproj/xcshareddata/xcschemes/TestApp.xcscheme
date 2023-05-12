@@ -31,9 +31,9 @@
       <CodeCoverageTargets>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "CardinalKitAccount"
-            BuildableName = "CardinalKitAccount"
-            BlueprintName = "CardinalKitAccount"
+            BlueprintIdentifier = "SpeziAccount"
+            BuildableName = "SpeziAccount"
+            BlueprintName = "SpeziAccount"
             ReferencedContainer = "container:../..">
          </BuildableReference>
       </CodeCoverageTargets>
