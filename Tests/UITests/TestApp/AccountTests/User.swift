@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziAccount
 import Foundation
+import SpeziAccount
 
 
 actor User: ObservableObject {

@@ -7,9 +7,9 @@
 //
 
 
+import Foundation
 import Spezi
 import SpeziAccount
-import Foundation
 
 
 final class TestAccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {

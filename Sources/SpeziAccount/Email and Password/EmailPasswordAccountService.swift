@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import RegexBuilder
 import Spezi
 import SpeziViews
-import RegexBuilder
 import SwiftUI
 
 
