@@ -9,7 +9,6 @@
 import Spezi
 import SwiftUI
 
-
 struct AccountServicesView<Header: View>: View {
     @EnvironmentObject var account: Account
     
@@ -24,8 +23,15 @@ struct AccountServicesView<Header: View>: View {
                     header
                     Spacer(minLength: 0)
                     VStack(spacing: 16) {
-                        ForEach(account.accountServices, id: \.id) { loginService in
-                            button(loginService)
+                        if account.accountServices.isEmpty {
+                            Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 16)
+                        } else {
+                            ForEach(account.accountServices, id: \.id) { loginService in
+                                button(loginService)
+                            }
                         }
                     }
                         .padding(16)
@@ -58,10 +64,13 @@ struct AccountServicesView_Previews: PreviewProvider {
         ]
         return Account(accountServices: accountServices)
     }()
-    
+
     static var previews: some View {
         NavigationStack {
-            Login()
+            AccountServicesView(header: EmptyView()) { accountService in
+                accountService.loginButton
+            }
+            .navigationTitle(String(localized: "LOGIN", bundle: .module))
         }
             .environmentObject(account)
     }

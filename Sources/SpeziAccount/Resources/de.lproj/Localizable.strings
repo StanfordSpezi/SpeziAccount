@@ -6,6 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
+// MARK: - General Views
+"LOGIN" = "Anmelden";
+"SIGN_UP" = "Benutzerkonto Erstellen";
+
 // MARK: - Username Password
 
 // Login

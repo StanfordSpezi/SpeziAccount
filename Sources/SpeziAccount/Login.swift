@@ -30,7 +30,7 @@ public struct Login<Header: View>: View {
     }
     
     /// - Parameter header: A SwiftUI `View` displayed as a header above all login buttons.
-    public init(@ViewBuilder header: () -> (Header)) {
+    public init(@ViewBuilder header: () -> Header) {
         self.header = header()
     }
 }
@@ -45,13 +45,21 @@ struct Login_Previews: PreviewProvider {
         ]
         return Account(accountServices: accountServices)
     }()
-    
+
+    @StateObject private static var emptyAccount: Account = {
+        return Account(accountServices: [])
+    }()
     
     static var previews: some View {
         NavigationStack {
             Login()
         }
             .environmentObject(account)
+
+        NavigationStack {
+            Login()
+        }
+            .environmentObject(emptyAccount)
     }
 }
 #endif
