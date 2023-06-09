@@ -10,7 +10,6 @@ import XCTest
 import XCTestExtensions
 
 final class EmptyAccountServicesTests: XCTestCase {
-
     func testDocumentationHint(forButton: String) throws {
         let app = XCUIApplication()
         app.launchArguments = ["--emptyAccountServices"]
@@ -19,11 +18,9 @@ final class EmptyAccountServicesTests: XCTestCase {
         app.buttons[forButton].tap()
 
         XCTAssertTrue(app.buttons["Open Documentation"].waitForExistence(timeout: 6))
-        XCTAssertTrue(
-            app
-                .staticTexts["No Account Services set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!"]
-                .waitForExistence(timeout: 6.0)
-        )
+
+        let text = "No Account Services set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
+        XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 6.0))
     }
 
     func testDocumentationHintLogin() throws {

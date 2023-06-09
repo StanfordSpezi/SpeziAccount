@@ -47,7 +47,7 @@ struct Login_Previews: PreviewProvider {
     }()
 
     @StateObject private static var emptyAccount: Account = {
-        return Account(accountServices: [])
+        Account(accountServices: [])
     }()
     
     static var previews: some View {
