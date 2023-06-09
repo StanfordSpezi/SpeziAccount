@@ -25,12 +25,14 @@ final class TestAccountConfiguration<ComponentStandard: Standard>: Component, Ob
     }
     
     
-    init() {
+    init(emptyAccountServices: Bool = false) {
         self.user = User()
-        let accountServices: [any AccountService] = [
-            MockUsernamePasswordAccountService(user: user),
-            MockEmailPasswordAccountService(user: user)
-        ]
+        let accountServices: [any AccountService] = emptyAccountServices
+            ? []
+            : [
+                MockUsernamePasswordAccountService(user: user),
+                MockEmailPasswordAccountService(user: user)
+            ]
         self.account = Account(accountServices: accountServices)
     }
 }

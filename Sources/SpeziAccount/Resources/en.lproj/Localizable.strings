@@ -9,7 +9,8 @@
 // MARK: - General Views
 "LOGIN" = "Login";
 "SIGN_UP" = "Sign Up";
-"MISSING_ACCOUNT_SERVICES" = "No Account Services where set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!";
+"MISSING_ACCOUNT_SERVICES" = "No Account Services set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!";
+"OPEN_DOCUMENTATION" = "Open Documentation";
 
 // MARK: - Username Password
 

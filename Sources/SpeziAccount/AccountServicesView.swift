@@ -11,7 +11,8 @@ import SwiftUI
 
 struct AccountServicesView<Header: View>: View {
     @EnvironmentObject var account: Account
-    
+    @Environment(\.openURL) private var openURL
+
     private var header: Header
     private var button: (any AccountService) -> AnyView
     
@@ -27,7 +28,15 @@ struct AccountServicesView<Header: View>: View {
                             Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)
-                                .padding(.vertical, 16)
+
+                            let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice")!
+                            Button {
+                                openURL(docsUrl)
+                            } label: {
+                                Text("OPEN_DOCUMENTATION", bundle: .module)
+                            }
+
+
                         } else {
                             ForEach(account.accountServices, id: \.id) { loginService in
                                 button(loginService)

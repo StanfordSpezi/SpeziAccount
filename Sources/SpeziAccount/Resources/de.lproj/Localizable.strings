@@ -9,6 +9,8 @@
 // MARK: - General Views
 "LOGIN" = "Anmelden";
 "SIGN_UP" = "Benutzerkonto Erstellen";
+"MISSING_ACCOUNT_SERVICES" = "Es wurden keine AccountServices konfiguriert.\n Bitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!";
+"OPEN_DOCUMENTATION" = "Dokumentation öffnen";
 
 // MARK: - Username Password
 

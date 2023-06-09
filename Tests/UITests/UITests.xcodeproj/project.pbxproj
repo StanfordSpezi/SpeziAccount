@@ -23,6 +23,8 @@
 		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
+		A9EE7D282A3357D900C2B9A9 /* EmptyAccountServicesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */; };
+		A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,8 @@
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
+		A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyAccountServicesTests.swift; sourceTree = "<group>"; };
+		A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				2F027C9629D6C63300234098 /* AccountTests */,
+				A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */,
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				2F027C9429D6C63100234098 /* TestAppDelegate.swift */,
 				2F027C9729D6C6DB00234098 /* TestAppStandard.swift */,
@@ -128,6 +133,7 @@
 				2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */,
 				2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */,
 				2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */,
+				A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */,
 				2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */,
 			);
 			path = TestAppUITests;
@@ -253,6 +259,7 @@
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				2F027C8B29D6C2AD00234098 /* MockUsernamePasswordAccountService.swift in Sources */,
 				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
+				A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
 				2F027C8929D6C2AD00234098 /* User.swift in Sources */,
 				2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */,
@@ -265,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9EE7D282A3357D900C2B9A9 /* EmptyAccountServicesTests.swift in Sources */,
 				2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
 				2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */,
