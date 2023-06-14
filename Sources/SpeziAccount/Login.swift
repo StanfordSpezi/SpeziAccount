@@ -36,7 +36,7 @@ public struct Login<Header: View>: View {
 }
 
 
-#if DEBUG
+#if !TEST
 struct Login_Previews: PreviewProvider {
     @StateObject private static var account: Account = {
         let accountServices: [any AccountService] = [
