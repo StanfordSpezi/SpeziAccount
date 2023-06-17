@@ -16,6 +16,7 @@ struct AccountServicesView<Header: View>: View {
     private var button: (any AccountService) -> AnyView
 
     private var documentationUrl: URL {
+        // we may move to a #URL macro once Swift 5.9 is shipping
         guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
             fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
         }

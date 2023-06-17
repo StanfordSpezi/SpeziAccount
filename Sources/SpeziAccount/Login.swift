@@ -38,17 +38,8 @@ public struct Login<Header: View>: View {
 
 #if DEBUG
 struct Login_Previews: PreviewProvider {
-    @StateObject private static var account: Account = {
-        let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
-        ]
-        return Account(accountServices: accountServices)
-    }()
-
-    @StateObject private static var emptyAccount: Account = {
-        Account(accountServices: [])
-    }()
+    @StateObject private static var account: Account = Account(accountServices: [UsernamePasswordAccountService(), EmailPasswordAccountService()])
+    @StateObject private static var emptyAccount: Account = Account(accountServices: [])
     
     static var previews: some View {
         NavigationStack {
