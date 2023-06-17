@@ -14,6 +14,14 @@ struct AccountServicesView<Header: View>: View {
 
     private var header: Header
     private var button: (any AccountService) -> AnyView
+
+    private var documentationUrl: URL {
+        guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
+            fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
+        }
+
+        return docsUrl
+    }
     
     
     var body: some View {
@@ -28,10 +36,8 @@ struct AccountServicesView<Header: View>: View {
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)
 
-                            // swiftlint:disable:next force_unwrapping
-                            let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice")!
                             Button {
-                                UIApplication.shared.open(docsUrl)
+                                UIApplication.shared.open(documentationUrl)
                             } label: {
                                 Text("OPEN_DOCUMENTATION", bundle: .module)
                             }
@@ -77,7 +83,7 @@ struct AccountServicesView_Previews: PreviewProvider {
             AccountServicesView(header: EmptyView()) { accountService in
                 accountService.loginButton
             }
-            .navigationTitle(String(localized: "LOGIN", bundle: .module))
+                .navigationTitle(String(localized: "LOGIN", bundle: .module))
         }
             .environmentObject(account)
     }
