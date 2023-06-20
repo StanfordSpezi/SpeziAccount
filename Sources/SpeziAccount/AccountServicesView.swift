@@ -14,6 +14,7 @@ struct AccountServicesView<Header: View>: View {
 
     private var header: Header
     private var button: (any AccountService) -> AnyView
+    // TODO Account service may provide different login/signup or a single button (e.g., identity providers)
 
     private var documentationUrl: URL {
         // we may move to a #URL macro once Swift 5.9 is shipping
@@ -43,8 +44,8 @@ struct AccountServicesView<Header: View>: View {
                                 Text("OPEN_DOCUMENTATION", bundle: .module)
                             }
                         } else {
-                            ForEach(account.accountServices, id: \.id) { loginService in
-                                button(loginService)
+                            ForEach(account.accountServices.indices, id: \.self) { index in
+                                button(account.accountServices[index])
                             }
                         }
                     }

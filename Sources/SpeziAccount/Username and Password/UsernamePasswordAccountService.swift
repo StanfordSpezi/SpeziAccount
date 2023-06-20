@@ -107,7 +107,7 @@ open class UsernamePasswordAccountService: @unchecked Sendable, AccountService, 
     open func resetPassword(username: String) async throws { }
     
     
-    /// Creates a resuable button styled in accordance to the ``UsernamePasswordAccountService`` or its subclasses.
+    /// Creates a reusable button styled in accordance to the ``UsernamePasswordAccountService`` or its subclasses.
     /// - Parameters:
     ///   - title: The title of the button.
     ///   - destination: The destination of the button.

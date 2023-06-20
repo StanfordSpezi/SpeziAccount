@@ -13,9 +13,9 @@ import SwiftUI
 ///
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
 public protocol AccountService: Sendable, AnyObject, Identifiable {
-    /// A `View` erased as an `AnyView` that will be displayd in login-related user interfaces.
+    /// A `View` erased as an `AnyView` that will be displayed in login-related user interfaces.
     var loginButton: AnyView { get }
-    /// A `View` erased as an `AnyView` that will be displayd in sign up-related user interfaces.
+    /// A `View` erased as an `AnyView` that will be displayed in sign up-related user interfaces.
     var signUpButton: AnyView { get }
     
     
@@ -26,13 +26,13 @@ public protocol AccountService: Sendable, AnyObject, Identifiable {
 
 
 extension AccountService {
-    // A documentation for this methodd exists in the `AccountService` type which SwiftLint doesn't recognize.
+    // A documentation for this method exists in the `AccountService` type which SwiftLint doesn't recognize.
     // swiftlint:disable:next missing_docs
     public var signUpButton: AnyView {
-        loginButton
+        loginButton // TODO by default its the same thing?
     }
     
-    // A documentation for this methodd exists in the `Identifiable` type which SwiftLint doesn't recognize.
+    // A documentation for this method exists in the `Identifiable` type which SwiftLint doesn't recognize.
     // swiftlint:disable:next missing_docs
     public var id: String {
         String(describing: type(of: self))

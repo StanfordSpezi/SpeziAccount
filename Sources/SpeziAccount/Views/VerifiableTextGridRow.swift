@@ -151,7 +151,7 @@ struct VerifiableTextFieldGridRow_Previews: PreviewProvider {
                 text: $text,
                 valid: $valid,
                 description: {
-                    Text("Text")
+                    EmptyView()
                 },
                 textField: { binding in
                     TextField(text: binding) {
@@ -165,7 +165,7 @@ struct VerifiableTextFieldGridRow_Previews: PreviewProvider {
                 text: $text,
                 valid: $valid,
                 description: {
-                    Text("Text")
+                    EmptyView()
                 },
                 textField: { binding in
                     SecureField(text: binding) {
