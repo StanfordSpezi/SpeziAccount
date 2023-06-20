@@ -17,10 +17,16 @@ final class EmptyAccountServicesTests: XCTestCase {
 
         app.buttons[forButton].tap()
 
-        XCTAssertTrue(app.buttons["Open Documentation"].waitForExistence(timeout: 6))
-
         let text = "No Account Services set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
         XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 6.0))
+
+        XCTAssertTrue(app.buttons["Open Documentation"].waitForExistence(timeout: 6))
+        app.buttons["Open Documentation"].tap()
+
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        XCTAssert(safari.wait(for: .runningForeground, timeout: 10))
+
+        app.activate()
     }
 
     func testDocumentationHintLogin() throws {
