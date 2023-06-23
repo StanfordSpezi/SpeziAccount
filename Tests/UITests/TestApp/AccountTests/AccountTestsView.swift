@@ -71,6 +71,11 @@ struct AccountTestsView_Previews: PreviewProvider {
             AccountTestsView()
         }
             .environmentObject(account)
+
+        NavigationStack {
+            AccountTestsView()
+        }
+        .environmentObject(Account(accountServices: []))
     }
 }
 #endif

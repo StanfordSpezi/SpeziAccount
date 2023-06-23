@@ -12,7 +12,7 @@ import SwiftUI
 
 /// Display login buttons for all configured ``AccountService``s using the ``Account/Account`` module.
 ///
-/// The view displaydefaultLocalization: "en",s a list of login buttons as well as a cusomizable header view that can be defined using the ``Login/init(header:)`` initializer.
+/// The view display default Localization: "en",s a list of login buttons as well as a customizable header view that can be defined using the ``Login/init(header:)`` initializer.
 public struct Login<Header: View>: View {
     private var header: Header
     
@@ -30,7 +30,7 @@ public struct Login<Header: View>: View {
     }
     
     /// - Parameter header: A SwiftUI `View` displayed as a header above all login buttons.
-    public init(@ViewBuilder header: () -> (Header)) {
+    public init(@ViewBuilder header: () -> Header) {
         self.header = header()
     }
 }
@@ -38,20 +38,19 @@ public struct Login<Header: View>: View {
 
 #if DEBUG
 struct Login_Previews: PreviewProvider {
-    @StateObject private static var account: Account = {
-        let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
-        ]
-        return Account(accountServices: accountServices)
-    }()
-    
+    @StateObject private static var account = Account(accountServices: [UsernamePasswordAccountService(), EmailPasswordAccountService()])
+    @StateObject private static var emptyAccount = Account(accountServices: [])
     
     static var previews: some View {
         NavigationStack {
             Login()
         }
             .environmentObject(account)
+
+        NavigationStack {
+            Login()
+        }
+            .environmentObject(emptyAccount)
     }
 }
 #endif

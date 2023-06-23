@@ -41,7 +41,7 @@ struct UsernamePasswordLoginServiceButton_Previews: PreviewProvider {
         AccountServiceButton {
             Image(systemName: "ellipsis.rectangle")
                 .font(.title2)
-            Text("LOGIN_UAP_BUTTON_TITLE", bundle: .module)
+            Text("UAP_LOGIN_BUTTON_TITLE", bundle: .module)
         }
     }
 }

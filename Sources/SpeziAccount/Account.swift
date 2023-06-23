@@ -15,7 +15,8 @@ import SwiftUI
 /// The ``Account/Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierachy.
 public actor Account: ObservableObject {
     /// The ``Account/Account/signedIn`` determines if the the current Account context is signed in or not yet signed in.
-    @MainActor @Published
+    @MainActor
+    @Published
     public var signedIn = false
     
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
