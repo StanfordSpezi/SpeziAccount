@@ -25,48 +25,50 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
     @MainActor
     var body: some View {
         VStack {
-            // TODO UsernamePasswordFields(username: $username, password: $password, valid: $valid)
+            VStack {
+                // TODO UsernamePasswordFields(username: $username, password: $password, valid: $valid)
 
-            // TODO localization (which is implementation dependent!)
-            TextField("E-Mail Address or Username", text: $key)
-                .textFieldStyle(.roundedBorder)
-            SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
+                // TODO localization (which is implementation dependent!)
+                TextField("E-Mail Address or Username", text: $key)
+                    .textFieldStyle(.roundedBorder)
+                SecureField("Password", text: $password)
+                    .textFieldStyle(.roundedBorder)
 
-            HStack {
-                Spacer()
-                NavigationLink {
-                    accountService.viewStyle.makePasswordForgotView()
-                } label: {
-                    Text("Forgot Password?") // TODO localize
-                        .font(.caption)
-                        .bold()
-                        .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
+                HStack {
+                    Spacer()
+                    NavigationLink {
+                        accountService.viewStyle.makePasswordForgotView()
+                    } label: {
+                        Text("Forgot Password?") // TODO localize
+                            .font(.caption)
+                            .bold()
+                            .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
+                    }
                 }
             }
-        }
-            .padding(.horizontal, 32)
             .padding(.vertical, 0)
 
-        VStack {
             Button(action: {
                 print("login") // TODO remove!
-                Task {
-                    // TODO catch stuff!
-                    // TODO loading indicator
+                Task { // TODO handle task cancellation when view disappears!
+                       // TODO catch stuff!
+                       // TODO loading indicator (top right or login button, disable back button?)
                     try! await accountService.login(key: key, password: password)
+
+                    // TODO diagnostic
                 }
             }) {
                 Text("Login") // TODO localize
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .buttonStyle(.borderedProminent)
-                .padding(.bottom, 12)
+            .buttonStyle(.borderedProminent)
+            .padding(.bottom, 12)
+            .padding(.top)
 
 
             HStack {
                 Text("Dont' have an Account yet?") // TODO localize!
-                // TODO navigation link
+                                                   // TODO navigation link
                 NavigationLink {
                     accountService.viewStyle.makeSignupView()
                 } label: {
@@ -74,9 +76,17 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
                 }
                 // TODO .padding(.horizontal, 0)
             }
-                .font(.footnote)
+            .font(.footnote)
         }
-            .padding(.horizontal, 32)
-            .padding(.top)
     }
 }
+
+#if DEBUG
+struct DefaultKeyPasswordBasedEmbeddedView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack {
+            DefaultKeyPasswordBasedEmbeddedView(using: DefaultUsernamePasswordAccountService())
+        }
+    }
+}
+#endif

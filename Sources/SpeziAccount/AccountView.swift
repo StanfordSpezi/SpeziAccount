@@ -26,6 +26,11 @@ struct AccountView: View {
         return nil
     }
 
+    var nonEmbeddableAccountServices: [any AccountServiceNew] {
+        services
+            .filter { !($0 is any EmbeddableAccountService) }
+    }
+
     @Environment(\.colorScheme)
     var colorScheme
 
@@ -33,20 +38,26 @@ struct AccountView: View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
+                    // TODO draw account summary if we are already signed in!
                     header
 
                     Spacer()
 
-                    primaryAccountServicesReplacement
+                    VStack {
+                        primaryAccountServicesReplacement
 
-                    // TODO show divider only if there is a least one account service AND identity provider!
-                    servicesDivider
+                        // TODO show divider only if there is a least one account service AND identity provider!
+                        servicesDivider
 
-                    identityProviderButtons
+                        identityProviderButtons
+                    }
+                        .padding(.horizontal, 16)
 
+                    Spacer()
                     Spacer()
                     Spacer()
                 }
+                    .padding(.horizontal, 16) // TODO may use 48?
                     .frame(minHeight: proxy.size.height)
                     .frame(maxWidth: .infinity)
             }
@@ -64,19 +75,38 @@ struct AccountView: View {
             .padding(.bottom)
             .padding(.top, 30)
 
-        Text("Please create an account to do whatever.") // TODO localize!
+        Text("Please create an account to do whatever. You may create an account if you don't have one already!") // TODO localize!
             .multilineTextAlignment(.center)
     }
 
     @ViewBuilder
     var primaryAccountServicesReplacement: some View {
         if services.isEmpty {
-            Text("Empty!! :(((")
+            Text("Empty!! :(((") // TODO only place hint if there are not even identity providers!
         } else if let embeddableService = embeddableAccountService {
             let embeddableViewStyle = embeddableService.viewStyle
             // TODO i can get back type erasure right?
             AnyView(embeddableViewStyle.makeEmbeddedAccountView())
             // TODO inject account service!! lol, nothing is typed!
+
+
+            if !nonEmbeddableAccountServices.isEmpty {
+                servicesDivider
+
+                // TODO optimize code reuse below!
+                ForEach(nonEmbeddableAccountServices.indices, id: \.self) { index in
+                    let service = nonEmbeddableAccountServices[index]
+                    let style = service.viewStyle
+
+                    NavigationLink {
+                        AnyView(style.makePrimaryView())
+                    } label: {
+                        AnyView(style.makeAccountServiceButtonLabel())
+                    }
+                }
+            } else {
+                EmptyView()
+            }
         } else {
             ForEach(services.indices, id: \.self) { index in
                 let service = services[index]
@@ -131,8 +161,8 @@ struct AccountView: View {
                 Divider()
             }
         }
-            .padding(.horizontal, 64)
-            .padding(.vertical, 32)
+            .padding(.horizontal, 36) // TODO depends on the global padding?
+            .padding(.vertical, 16) // TODO use 16 if we expect to place two dividers!
     }
 
     /// VStack of buttons provided by the identity providers
@@ -145,7 +175,6 @@ struct AccountView: View {
                 print("sing in completed")
             }
                 .frame(height: 55)
-                .padding(.horizontal, 32)
 
                 .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
         }
@@ -161,12 +190,29 @@ struct AccountView: View {
 #if DEBUG
 struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            AccountView(services: [])
-        }
         // TODO .environmentObject(UsernamePasswordAccountService())
         NavigationStack {
             AccountView(services: [DefaultUsernamePasswordAccountService()])
+        }
+
+        NavigationStack {
+            AccountView(services: [RandomAccountService()])
+        }
+
+        NavigationStack {
+            AccountView(services: [DefaultUsernamePasswordAccountService(), RandomAccountService()])
+        }
+
+        NavigationStack {
+            AccountView(services: [
+                DefaultUsernamePasswordAccountService(),
+                RandomAccountService(),
+                DefaultUsernamePasswordAccountService()
+            ])
+        }
+
+        NavigationStack {
+            AccountView(services: [])
         }
         // TODO .environmentObject(UsernamePasswordAccountService())
     }

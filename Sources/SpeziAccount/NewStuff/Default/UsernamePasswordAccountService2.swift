@@ -64,6 +64,8 @@ struct DefaultUsernamePasswordAccountService: KeyPasswordBasedAccountService {
     }
 }
 
+// TODO too long name
+// TODO rename to Mock... (PR desc: Current impl provided as is, and are more like Mock implementations, => replace with protocols and Mock implementations!
 struct DefaultUsernamePasswordAccountServiceViewStyle: KeyPasswordBasedAccountServiceViewStyle {
     var accountService: DefaultUsernamePasswordAccountService
 
