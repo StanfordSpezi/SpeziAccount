@@ -44,6 +44,7 @@ struct AccountView: View {
 
                     primaryAccountServicesReplacement
 
+                    // TODO show divider only if there is a least one account service AND identity provider!
                     servicesDivider
 
                     identityProviderButtons
@@ -76,17 +77,35 @@ struct AccountView: View {
         if services.isEmpty {
             Text("Empty!! :(((")
         } else if let embeddableService = embeddableAccountService {
+            let embeddableViewStyle = embeddableService.viewStyle
             // TODO i can get back type erasure right?
-            AnyView(embeddableService.makeEmbeddedView())
+            AnyView(embeddableViewStyle.makeEmbeddedAccountView())
         } else {
             ForEach(services.indices, id: \.self) { index in
                 let service = services[index]
+                let style = service.viewStyle
+
+                NavigationLink {
+                    AnyView(style.makePrimaryView())
+                } label: {
+                    AnyView(style.makeAccountServiceButtonLabel())
+                    /*
+                     // TODO may we provide a default implementation, or work with a optional serviceButton style?
+                    AccountServiceButton {
+                        Image(systemName: "ellipsis.rectangle") // TODO grab image!
+                            .font(.title2)
+                        Text("Account Service \(index)") // TODO grab the name!!
+                    }
+                    */
+                }
+                /*
                 Button(action: {
                     print("Navigation?")
                 }) {
                     Text("Account service \(index)") // TODO we need a name?
                 }
                     // TODO we can't access the associated type button style!
+                 */
             }
         }
     }

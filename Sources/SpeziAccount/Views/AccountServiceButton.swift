@@ -11,7 +11,8 @@ import SwiftUI
 
 struct AccountServiceButton<Content: View>: View {
     private let content: Content
-    
+
+    // TODO would be nice to introduce a custom account service Button style!
     
     var body: some View {
         HStack {
