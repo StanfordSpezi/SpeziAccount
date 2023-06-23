@@ -23,6 +23,12 @@ jobs:
       artifactname: SpeziAccount.xcresult
       runsonlabels: '["macOS", "self-hosted"]'
       scheme: SpeziAccount
+  build:
+    name: Build Swift Package on Xcode 14
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macos-13"]'
+      scheme: SpeziAccount
   buildandtestuitests:
     name: Build and Test UI Tests
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
@@ -31,12 +37,6 @@ jobs:
       runsonlabels: '["macOS", "self-hosted"]'
       path: 'Tests/UITests'
       scheme: TestApp
-  build:
-    name: Build Swift Package on Xcode 14
-    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
-    with:
-      runsonlabels: '["macos-13"]'
-      scheme: SpeziAccount
   uploadcoveragereport:
     name: Upload Coverage Report
     needs: [buildandtest, buildandtestuitests]
