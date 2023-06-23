@@ -17,7 +17,10 @@ final class AccountSignUpTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
+        XCTAssert(app.buttons["SignUp"].waitForExistence(timeout: 2))
         app.buttons["SignUp"].tap()
+        
+        XCTAssert(app.buttons["Username and Password"].waitForExistence(timeout: 2))
         app.buttons["Username and Password"].tap()
         
         let usernameField = "Enter your username ..."
