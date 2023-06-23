@@ -1,23 +1,18 @@
 //
-//  SwiftUIView.swift
-//  
+// This source file is part of the Spezi open-source project
 //
-//  Created by Andreas Bauer on 17.06.23.
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import AuthenticationServices
 import SwiftUI
 
 struct AccountView: View {
-    @State private var username: String = ""
-    @State private var password: String = ""
-    @State private var valid = false
-
     @EnvironmentObject var account: Account
 
-    var services: [any AccountServiceNew] {
-        [] // TODO make some mockups
-    }
+    var services: [any AccountServiceNew]
 
     var embeddableAccountService: (any EmbeddableAccountService)? {
         let embeddableServices = services
@@ -61,14 +56,15 @@ struct AccountView: View {
     /// The Views Title and subtitle text.
     @ViewBuilder
     var header: some View {
-        Text("Welcome back!")
+        // TODO provide customizability with AccountViewStyle!
+        Text("Welcome back!") // TODO localize
             .font(.largeTitle)
             .bold()
             .multilineTextAlignment(.center)
             .padding(.bottom)
             .padding(.top, 30)
 
-        Text("Please create an account to do whatever.")
+        Text("Please create an account to do whatever.") // TODO localize!
             .multilineTextAlignment(.center)
     }
 
@@ -80,6 +76,7 @@ struct AccountView: View {
             let embeddableViewStyle = embeddableService.viewStyle
             // TODO i can get back type erasure right?
             AnyView(embeddableViewStyle.makeEmbeddedAccountView())
+            // TODO inject account service!! lol, nothing is typed!
         } else {
             ForEach(services.indices, id: \.self) { index in
                 let service = services[index]
@@ -87,8 +84,10 @@ struct AccountView: View {
 
                 NavigationLink {
                     AnyView(style.makePrimaryView())
+                    // TODO inject account service!! lol, nothing is typed!
                 } label: {
                     AnyView(style.makeAccountServiceButtonLabel())
+                    // TODO inject account service!! lol, nothing is typed!
                     /*
                      // TODO may we provide a default implementation, or work with a optional serviceButton style?
                     AccountServiceButton {
@@ -113,52 +112,8 @@ struct AccountView: View {
     /// The primary account services view.
     @ViewBuilder
     var primaryAccountServices: some View {
-        VStack {
-            // TODO UsernamePasswordFields(username: $username, password: $password, valid: $valid)
-            TextField("E-Mail Address or Username", text: $username)
-                .textFieldStyle(.roundedBorder)
-            SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
-
-            HStack {
-                Spacer()
-                Button(action: {
-                    print("Forgot Password?")
-                }) {
-                    Text("Forgot Password?")
-                        .font(.caption)
-                        .bold()
-                        .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
-                }
-            }
-        }
-            .padding(.horizontal, 32)
-            .padding(.vertical, 0)
-
-        VStack {
-            Button(action: {
-                print("login")
-            }) {
-                Text("Login")
-                    .frame(maxWidth: .infinity, minHeight: 38)
-            }
-                .buttonStyle(.borderedProminent)
-                .padding(.bottom, 12)
-
-
-            HStack {
-                Text("Dont' have an Account yet?")
-                Button(action: {
-                    print("signup")
-                }) {
-                    Text("Signup")
-                }
-                    // TODO .padding(.horizontal, 0)
-            }
-                .font(.footnote)
-        }
-            .padding(.horizontal, 32)
-            .padding(.top)
+        // TODO mofed to default embeddded view!
+        EmptyView()
     }
 
     // The "or" divier between primiary account services and the third-party identity providers
@@ -203,21 +158,17 @@ struct AccountView: View {
     }
 }
 
+#if DEBUG
 struct AccountView_Previews: PreviewProvider {
-    @StateObject private static var account = Account(accountServices: [UsernamePasswordAccountService(), EmailPasswordAccountService()])
-    @StateObject private static var emptyAccount = Account(accountServices: [])
-
-
     static var previews: some View {
         NavigationStack {
-            AccountView()
+            AccountView(services: [])
         }
         // TODO .environmentObject(UsernamePasswordAccountService())
-        .environmentObject(account)
         NavigationStack {
-            AccountView()
+            AccountView(services: [DefaultUsernamePasswordAccountService()])
         }
         // TODO .environmentObject(UsernamePasswordAccountService())
-        .environmentObject(emptyAccount)
     }
 }
+#endif
