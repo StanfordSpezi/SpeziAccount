@@ -45,6 +45,7 @@ struct AccountServicesView<Header: View>: View {
                             }
                         } else {
                             ForEach(account.accountServices.indices, id: \.self) { index in
+                                // TODO iterating over protocols foreach crashes xcode preview!
                                 button(account.accountServices[index])
                             }
                         }
