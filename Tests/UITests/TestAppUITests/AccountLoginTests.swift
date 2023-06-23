@@ -53,9 +53,13 @@ final class AccountLoginTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
+        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
         app.buttons["Login"].tap()
+        
+        XCTAssert(app.buttons["Email and Password"].waitForExistence(timeout: 2))
         app.buttons["Email and Password"].tap()
-        XCTAssertTrue(app.navigationBars.buttons["Login"].exists)
+        
+        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
         
         let usernameField = "Enter your email ..."
         let passwordField = "Enter your password ..."

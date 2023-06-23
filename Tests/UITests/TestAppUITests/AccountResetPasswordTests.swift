@@ -44,10 +44,16 @@ final class AccountResetPasswordTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         
+        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
         app.buttons["Login"].tap()
+        
+        XCTAssert(app.buttons["Email and Password"].waitForExistence(timeout: 2))
         app.buttons["Email and Password"].tap()
+        
+        XCTAssert(app.buttons["Forgot Password?"].waitForExistence(timeout: 2))
         app.buttons["Forgot Password?"].tap()
-        XCTAssertTrue(app.navigationBars.buttons["Login"].exists)
+        
+        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
         
         let usernameField = "Enter your email ..."
         let username = "lelandstanford@stanford.edu"
