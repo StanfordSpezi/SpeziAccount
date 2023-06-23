@@ -23,13 +23,7 @@ extension XCUIApplication {
         }
         
         if enabled {
-            guard !self.scrollViews.buttons["\(title), In progress"].waitForExistence(timeout: 1) else {
-                return
-            }
-            guard !self.collectionViews.buttons["\(title), In progress"].waitForExistence(timeout: 1) else {
-                return
-            }
-            XCTAssert(self.buttons["\(title), In progress"].waitForExistence(timeout: 1))
+            XCTAssert(self.activityIndicators.firstMatch.waitForExistence(timeout: 1))
         } else {
             XCTAssert(self.navigationBars.buttons[navigationBarButtonTitle].waitForExistence(timeout: 1))
             

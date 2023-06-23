@@ -10,7 +10,7 @@ import SpeziViews
 
 
 extension Localization {
-    /// Provides localization information for the login-related views in the Accont module.
+    /// Provides localization information for the login-related views in the Account module.
     ///
     /// The values passed into the ``Localization`` substructs are automatically interpreted according to the localization key mechanisms defined in the Spezi Views module.
     ///
