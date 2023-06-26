@@ -7,3 +7,5 @@
 //
 
 import Foundation
+
+protocol EmbeddableAccountService: AccountServiceNew where ViewStyle: EmbeddableAccountSetupViewStyle {}

@@ -6,31 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SwiftUI
 
-// TODO make everything public!
-
-// TODO app needs access to the "primary?"/signed in (we don't support multi account sign ins!) account service!
-//  -> logout functionality
-//  -> AccountSummary
-//  -> allows for non-account-service-specific app implementations (e.g., easily switch for testing) => otherwise cast!
-
-protocol AccountServiceNew {
-    associatedtype ViewStyle: AccountServiceViewStyle
-
-    // TODO provide access to `Account` to communicate changes back to the App
-
-    var viewStyle: ViewStyle { get }
-    var configuration: AccountServiceViewConfiguration<Self> { get }
-
-    func logout() async throws
-}
-
-extension AccountServiceNew {
-    var configuration: AccountServiceViewConfiguration<Self> {
-        AccountServiceViewConfiguration(accountService: self)
-    }
-}
 
 struct AccountServiceEnvironmentKey: EnvironmentKey {
     static var defaultValue: (any AccountServiceNew)?
@@ -107,39 +85,3 @@ extension AccountServiceNew {
     }
 }
 */
-
-struct AccountServiceViewConfiguration<Service: AccountServiceNew> {
-    let accountService: Service
-}
-
-protocol AccountServiceViewStyle { // TODO is naming accurate?
-    associatedtype Service: AccountServiceNew
-
-    associatedtype ButtonLabel: View
-    associatedtype PrimaryView: View
-    associatedtype AccountSummaryView: View
-
-    // TODO that's not really a great way to deal with that?
-    var accountService: Service { get set }
-
-    // TODO configuration input
-    @ViewBuilder
-    func makeAccountServiceButtonLabel() -> ButtonLabel
-
-    // TODO configuration input
-    @ViewBuilder
-    func makePrimaryView() -> PrimaryView
-
-    @ViewBuilder
-    func makeAccountSummary() -> AccountSummaryView
-}
-
-protocol EmbeddableAccountService: AccountServiceNew where ViewStyle: EmbeddableAccountServiceViewStyle {
-}
-
-protocol EmbeddableAccountServiceViewStyle: AccountServiceViewStyle where Service: EmbeddableAccountService {
-    associatedtype EmbeddedView: View
-
-    @ViewBuilder
-    func makeEmbeddedAccountView() -> EmbeddedView
-}

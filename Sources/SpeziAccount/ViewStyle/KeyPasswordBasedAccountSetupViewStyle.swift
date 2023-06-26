@@ -9,15 +9,8 @@
 import Foundation
 import SwiftUI
 
-protocol KeyPasswordBasedAccountService: AccountServiceNew, EmbeddableAccountService where ViewStyle: KeyPasswordBasedAccountServiceViewStyle {
-    func login(key: String, password: String) async throws
 
-    func signUp(signUpValues: SignUpValues) async throws // TODO refactor SignUpValues property names!
-
-    func resetPassword(key: String) async throws
-}
-
-protocol KeyPasswordBasedAccountServiceViewStyle: EmbeddableAccountServiceViewStyle where Service: KeyPasswordBasedAccountService {
+protocol KeyPasswordBasedAccountSetupViewStyle: EmbeddableAccountSetupViewStyle where Service: KeyPasswordBasedAccountService {
     associatedtype SignupView: View
     associatedtype PasswordResetView: View
     associatedtype PasswordForgotView: View
@@ -37,13 +30,14 @@ protocol KeyPasswordBasedAccountServiceViewStyle: EmbeddableAccountServiceViewSt
     func makePasswordForgotView() -> PasswordForgotView
 }
 
-extension KeyPasswordBasedAccountServiceViewStyle {
+// TODO move to Default folder as extension file
+extension KeyPasswordBasedAccountSetupViewStyle {
     func makePrimaryView() -> some View {
         EmptyView() // TODO implement
     }
 
     func makeEmbeddedAccountView() -> some View {
-        DefaultKeyPasswordBasedEmbeddedView(using: accountService)
+        DefaultKeyPasswordBasedEmbeddedView(using: service)
     }
 
     func makeSignupView() -> some View {

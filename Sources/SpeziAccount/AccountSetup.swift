@@ -9,7 +9,7 @@
 import AuthenticationServices
 import SwiftUI
 
-struct AccountView: View {
+struct AccountSetup: View {
     @EnvironmentObject var account: Account
 
     var services: [any AccountServiceNew]
@@ -98,6 +98,7 @@ struct AccountView: View {
                     let service = nonEmbeddableAccountServices[index]
                     let style = service.viewStyle
 
+                    // TODO embed into style?
                     NavigationLink {
                         AnyView(style.makePrimaryView())
                     } label: {
@@ -112,20 +113,15 @@ struct AccountView: View {
                 let service = services[index]
                 let style = service.viewStyle
 
+                // TODO embed into style!
                 NavigationLink {
                     AnyView(style.makePrimaryView())
                     // TODO inject account service!! lol, nothing is typed!
                 } label: {
                     AnyView(style.makeAccountServiceButtonLabel())
                     // TODO inject account service!! lol, nothing is typed!
-                    /*
+
                      // TODO may we provide a default implementation, or work with a optional serviceButton style?
-                    AccountServiceButton {
-                        Image(systemName: "ellipsis.rectangle") // TODO grab image!
-                            .font(.title2)
-                        Text("Account Service \(index)") // TODO grab the name!!
-                    }
-                    */
                 }
                 /*
                 Button(action: {
@@ -133,7 +129,6 @@ struct AccountView: View {
                 }) {
                     Text("Account service \(index)") // TODO we need a name?
                 }
-                    // TODO we can't access the associated type button style!
                  */
             }
         }
@@ -192,19 +187,19 @@ struct AccountView_Previews: PreviewProvider {
     static var previews: some View {
         // TODO .environmentObject(UsernamePasswordAccountService())
         NavigationStack {
-            AccountView(services: [DefaultUsernamePasswordAccountService()])
+            AccountSetup(services: [DefaultUsernamePasswordAccountService()])
         }
 
         NavigationStack {
-            AccountView(services: [RandomAccountService()])
+            AccountSetup(services: [RandomAccountService()])
         }
 
         NavigationStack {
-            AccountView(services: [DefaultUsernamePasswordAccountService(), RandomAccountService()])
+            AccountSetup(services: [DefaultUsernamePasswordAccountService(), RandomAccountService()])
         }
 
         NavigationStack {
-            AccountView(services: [
+            AccountSetup(services: [
                 DefaultUsernamePasswordAccountService(),
                 RandomAccountService(),
                 DefaultUsernamePasswordAccountService()
@@ -212,7 +207,7 @@ struct AccountView_Previews: PreviewProvider {
         }
 
         NavigationStack {
-            AccountView(services: [])
+            AccountSetup(services: [])
         }
         // TODO .environmentObject(UsernamePasswordAccountService())
     }

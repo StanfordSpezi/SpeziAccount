@@ -16,10 +16,10 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
     private var password: String = ""
     // TODO @State private var valid = false
 
-    var accountService: Service
+    var service: Service
 
     init(using service: Service) {
-        self.accountService = service
+        self.service = service
     }
 
     @MainActor
@@ -37,7 +37,7 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
                 HStack {
                     Spacer()
                     NavigationLink {
-                        accountService.viewStyle.makePasswordForgotView()
+                        service.viewStyle.makePasswordForgotView()
                     } label: {
                         Text("Forgot Password?") // TODO localize
                             .font(.caption)
@@ -53,7 +53,7 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
                 Task { // TODO handle task cancellation when view disappears!
                        // TODO catch stuff!
                        // TODO loading indicator (top right or login button, disable back button?)
-                    try! await accountService.login(key: key, password: password)
+                    try! await service.login(key: key, password: password)
 
                     // TODO diagnostic
                 }
@@ -70,7 +70,7 @@ struct DefaultKeyPasswordBasedEmbeddedView<Service: KeyPasswordBasedAccountServi
                 Text("Dont' have an Account yet?") // TODO localize!
                                                    // TODO navigation link
                 NavigationLink {
-                    accountService.viewStyle.makeSignupView()
+                    service.viewStyle.makeSignupView()
                 } label: {
                     Text("Signup") // TODO primary accent color!
                 }
