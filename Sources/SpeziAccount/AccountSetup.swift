@@ -10,9 +10,17 @@ import AuthenticationServices
 import SwiftUI
 
 struct AccountSetup: View {
-    @EnvironmentObject var account: Account
+    public enum Constants {
+        static let outerHorizontalPadding: CGFloat = 16 // TODO use 32?
+        static let innerHorizontalPadding: CGFloat = 16 // TODO use 32?
+    }
 
-    var services: [any AccountServiceNew]
+    @EnvironmentObject
+    var account: Account
+
+    var services: [any AccountService] {
+        account.accountServices
+    }
 
     var embeddableAccountService: (any EmbeddableAccountService)? {
         let embeddableServices = services
@@ -26,7 +34,7 @@ struct AccountSetup: View {
         return nil
     }
 
-    var nonEmbeddableAccountServices: [any AccountServiceNew] {
+    var nonEmbeddableAccountServices: [any AccountService] {
         services
             .filter { !($0 is any EmbeddableAccountService) }
     }
@@ -51,13 +59,13 @@ struct AccountSetup: View {
 
                         identityProviderButtons
                     }
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, Constants.innerHorizontalPadding)
 
                     Spacer()
                     Spacer()
                     Spacer()
                 }
-                    .padding(.horizontal, 16) // TODO may use 48?
+                    .padding(.horizontal, Constants.outerHorizontalPadding)
                     .frame(minHeight: proxy.size.height)
                     .frame(maxWidth: .infinity)
             }
@@ -67,7 +75,7 @@ struct AccountSetup: View {
     /// The Views Title and subtitle text.
     @ViewBuilder
     var header: some View {
-        // TODO provide customizability with AccountViewStyle!
+        // TODO provide customizable with AccountViewStyle!
         Text("Welcome back!") // TODO localize
             .font(.largeTitle)
             .bold()
@@ -94,6 +102,7 @@ struct AccountSetup: View {
                 servicesDivider
 
                 // TODO optimize code reuse below!
+                // TODO relying on the index is not ideal!!
                 ForEach(nonEmbeddableAccountServices.indices, id: \.self) { index in
                     let service = nonEmbeddableAccountServices[index]
                     let style = service.viewStyle
@@ -109,7 +118,7 @@ struct AccountSetup: View {
                 EmptyView()
             }
         } else {
-            ForEach(services.indices, id: \.self) { index in
+            ForEach(services.indices, id: \.self) { index in // TODO relying on the index is not ideal!!
                 let service = services[index]
                 let style = service.viewStyle
 
@@ -134,14 +143,7 @@ struct AccountSetup: View {
         }
     }
 
-    /// The primary account services view.
-    @ViewBuilder
-    var primaryAccountServices: some View {
-        // TODO mofed to default embeddded view!
-        EmptyView()
-    }
-
-    // The "or" divier between primiary account services and the third-party identity providers
+    // The "or" divider between primary account services and the third-party identity providers
     @ViewBuilder
     var servicesDivider: some View {
         HStack {
@@ -184,32 +186,27 @@ struct AccountSetup: View {
 
 #if DEBUG
 struct AccountView_Previews: PreviewProvider {
+    static var accountServicePermutations: [[any AccountService]] = {
+       [
+           [DefaultUsernamePasswordAccountService()],
+           [RandomAccountService()],
+           [DefaultUsernamePasswordAccountService(), RandomAccountService()],
+           [
+               DefaultUsernamePasswordAccountService(),
+               RandomAccountService(),
+               DefaultUsernamePasswordAccountService()
+           ],
+           []
+       ]
+    }()
+
     static var previews: some View {
-        // TODO .environmentObject(UsernamePasswordAccountService())
-        NavigationStack {
-            AccountSetup(services: [DefaultUsernamePasswordAccountService()])
+        ForEach(accountServicePermutations.indices, id: \.self) { index in
+            NavigationStack {
+                AccountSetup()
+            }
+                .environmentObject(Account(accountServices: accountServicePermutations[index]))
         }
-
-        NavigationStack {
-            AccountSetup(services: [RandomAccountService()])
-        }
-
-        NavigationStack {
-            AccountSetup(services: [DefaultUsernamePasswordAccountService(), RandomAccountService()])
-        }
-
-        NavigationStack {
-            AccountSetup(services: [
-                DefaultUsernamePasswordAccountService(),
-                RandomAccountService(),
-                DefaultUsernamePasswordAccountService()
-            ])
-        }
-
-        NavigationStack {
-            AccountSetup(services: [])
-        }
-        // TODO .environmentObject(UsernamePasswordAccountService())
     }
 }
 #endif

@@ -8,22 +8,20 @@
 
 import SwiftUI
 
+extension LocalizedStringResource.BundleDescription {
+    static var module: LocalizedStringResource.BundleDescription = {
+        // TODO our assumption is this works?
+        .atURL(Bundle.module.bundleURL)
+    }()
+}
+
 
 struct DateOfBirthPicker: View {
-    @Binding private var date: Date
-    @EnvironmentObject private var localizationEnvironmentObject: UsernamePasswordAccountService
-    private let localization: ConfigurableLocalization<String>
-    
-    
-    private var dateOfBirthTitle: String {
-        switch localization {
-        case .environment:
-            return localizationEnvironmentObject.localization.signUp.dateOfBirthTitle
-        case let .value(dateOfBirthTitle):
-            return dateOfBirthTitle
-        }
-    }
-    
+    private var dateOfBirthTitle: LocalizedStringResource
+
+    @Binding
+    private var date: Date
+
     private var dateRange: ClosedRange<Date> {
         let calendar = Calendar.current
         let startDateComponents = DateComponents(year: 1900, month: 1, day: 1)
@@ -40,25 +38,24 @@ struct DateOfBirthPicker: View {
         DatePicker(
             selection: $date,
             in: dateRange,
-            displayedComponents: [
-                .date
-            ]
+            displayedComponents: [.date]
         ) {
             Text(dateOfBirthTitle)
                 .fontWeight(.semibold)
         }
     }
-    
-    
-    init(date: Binding<Date>, title: String) {
+
+    init(
+        date: Binding<Date>,
+        title: LocalizedStringResource = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .module)
+    ) {
         self._date = date
-        self.localization = .value(title)
+        self.dateOfBirthTitle = title
     }
     
     
-    init(date: Binding<Date>) {
-        self._date = date
-        self.localization = .environment
+    init(date: Binding<Date>, title: String) {
+        self.init(date: date, title: LocalizedStringResource(stringLiteral: title))
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // TODO too long name
 struct DefaultKeyPasswordBasedAccountSetupViewStyle<Service: KeyPasswordBasedAccountService>: KeyPasswordBasedAccountSetupViewStyle {

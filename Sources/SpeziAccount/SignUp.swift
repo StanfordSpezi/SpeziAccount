@@ -12,14 +12,15 @@ import SwiftUI
 
 /// Display sign up buttons for all configured ``AccountService``s using the ``Account/Account`` module.
 ///
-/// The view displays a list of sign up buttons as well as a cusomizable header view that can be defined using the ``Login/init(header:)`` initializer.
+/// The view displays a list of sign up buttons as well as a customizable header view that can be defined using the ``Login/init(header:)`` initializer.
 public struct SignUp<Header: View>: View {
     private var header: Header
     
     
     public var body: some View {
         AccountServicesView(header: header) { accountService in
-            accountService.signUpButton
+            AnyView(Text("<SignUp Button>"))
+            // TODO accountService.signUpButton
         }
             .navigationTitle(String(localized: "SIGN_UP", bundle: .module))
     }
@@ -40,8 +41,8 @@ public struct SignUp<Header: View>: View {
 struct SignUp_Previews: PreviewProvider {
     @StateObject private static var account: Account = {
         let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
+            // UsernamePasswordAccountService(),
+            // EmailPasswordAccountService()
         ]
         return Account(accountServices: accountServices)
     }()

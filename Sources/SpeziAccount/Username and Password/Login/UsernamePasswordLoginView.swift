@@ -141,11 +141,11 @@ public struct UsernamePasswordLoginView: View {
     
     
     /// - Parameters:
-    ///   - usernameValidationRules: An collection of ``ValidationRule``s to validate to the entered username.
-    ///   - passwordValidationRules: An collection of ``ValidationRule``s to validate to the entered password.
+    ///   - usernameValidationRules: A collection of ``ValidationRule``s to validate to the entered username.
+    ///   - passwordValidationRules: A collection of ``ValidationRule``s to validate to the entered password.
     ///   - header: A SwiftUI `View` to display as a header.
     ///   - footer: A SwiftUI `View` to display as a footer.
-    ///   - localization: A  ``ConfigurableLocalization`` to define the localization of the ``UsernamePasswordLoginView``. The default value uses the localization provided by the ``UsernamePasswordAccountService`` provided in the SwiftUI environment.
+    ///   - localization: A ``ConfigurableLocalization`` to define the localization of the ``UsernamePasswordLoginView``. The default value uses the localization provided by the ``UsernamePasswordAccountService`` provided in the SwiftUI environment.
     public init<Header: View, Footer: View>(
         usernameValidationRules: [ValidationRule] = [],
         passwordValidationRules: [ValidationRule] = [],

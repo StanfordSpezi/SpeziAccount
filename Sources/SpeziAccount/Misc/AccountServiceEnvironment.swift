@@ -11,11 +11,11 @@ import SwiftUI
 
 
 struct AccountServiceEnvironmentKey: EnvironmentKey {
-    static var defaultValue: (any AccountServiceNew)?
+    static var defaultValue: (any AccountService)?
 }
 
 extension EnvironmentValues {
-    var anyAccountService: (any AccountServiceNew)? {
+    var anyAccountService: (any AccountService)? {
         get {
             self[AccountServiceEnvironmentKey.self]
         }
@@ -26,7 +26,7 @@ extension EnvironmentValues {
 }
 
 @propertyWrapper
-struct AccountServiceProperty<Service: AccountServiceNew>: DynamicProperty { // TODO name clash!
+struct AccountServiceProperty<Service: AccountService>: DynamicProperty { // TODO name clash!
     @Environment(\.anyAccountService)
     private var anyAccountService
 
@@ -51,7 +51,7 @@ struct AccountServiceProperty<Service: AccountServiceNew>: DynamicProperty { // 
 }
 
 
-extension AccountServiceNew {
+extension AccountService {
     func injectAccountService<V: View>(into view: V) -> some View {
         /*
          // TODO how to handle observable objects?
@@ -67,7 +67,7 @@ extension AccountServiceNew {
     }
 }
 
-extension AccountServiceNew where Self: ObservableObject {
+extension AccountService where Self: ObservableObject {
     func injectAccountServiceAsEnvironmentObject<V: View>(into view: V) -> some View {
         print("Injecting \(Self.self)") // TODO remove debug!
         return view

@@ -19,7 +19,8 @@ public struct Login<Header: View>: View {
     
     public var body: some View {
         AccountServicesView(header: header) { accountService in
-            accountService.loginButton
+            AnyView(Text("<Login Button>"))
+            // TODO accountService.loginButton
         }
             .navigationTitle(String(localized: "LOGIN", bundle: .module))
     }
@@ -38,14 +39,16 @@ public struct Login<Header: View>: View {
 
 #if DEBUG
 struct Login_Previews: PreviewProvider {
-    @StateObject private static var account = Account(accountServices: [UsernamePasswordAccountService(), EmailPasswordAccountService()])
+    // @StateObject private static var account = Account(accountServices: [UsernamePasswordAccountService(), EmailPasswordAccountService()])
     @StateObject private static var emptyAccount = Account(accountServices: [])
     
     static var previews: some View {
+        /*
         NavigationStack {
             Login()
         }
             .environmentObject(account)
+        */
 
         NavigationStack {
             Login()

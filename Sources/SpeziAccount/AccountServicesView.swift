@@ -75,8 +75,8 @@ struct AccountServicesView<Header: View>: View {
 struct AccountServicesView_Previews: PreviewProvider {
     @StateObject private static var account: Account = {
         let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
+            //UsernamePasswordAccountService(),
+            // EmailPasswordAccountService()
         ]
         return Account(accountServices: accountServices)
     }()
@@ -84,7 +84,8 @@ struct AccountServicesView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountServicesView(header: EmptyView()) { accountService in
-                accountService.loginButton
+                AnyView(Text("<Login Button>"))
+                // TODO accountService.loginButton
             }
                 .navigationTitle(String(localized: "LOGIN", bundle: .module))
         }

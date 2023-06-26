@@ -8,7 +8,7 @@
 
 
 enum AccountInputFields: Hashable {
-    case username
+    case username // TODO rename to key?
     case password
     case passwordRepeat
     case givenName

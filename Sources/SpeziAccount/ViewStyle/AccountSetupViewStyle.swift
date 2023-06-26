@@ -10,8 +10,8 @@ import Foundation
 import SwiftUI
 
 
-protocol AccountSetupViewStyle {
-    associatedtype Service: AccountServiceNew
+public protocol AccountSetupViewStyle {
+    associatedtype Service: AccountService
 
     associatedtype ButtonLabel: View
     associatedtype PrimaryView: View

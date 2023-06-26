@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-protocol KeyPasswordBasedAccountService: AccountServiceNew, EmbeddableAccountService where ViewStyle: KeyPasswordBasedAccountSetupViewStyle {
+protocol KeyPasswordBasedAccountService: AccountService, EmbeddableAccountService where ViewStyle: KeyPasswordBasedAccountSetupViewStyle {
     func login(key: String, password: String) async throws
 
     func signUp(signUpValues: SignUpValues) async throws // TODO refactor SignUpValues property names!

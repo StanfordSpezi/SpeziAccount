@@ -8,33 +8,37 @@
 
 import SwiftUI
 
+// TODO make everything public!
 
-/// Describe the mechanism for account management components to display login, signUp, and account-related UI elements.
+// TODO app needs access to the "primary?"/signed in (we don't support multi account sign ins!) account service!
+//  -> logout functionality
+//  -> AccountSummary
+//  -> allows for non-account-service-specific app implementations (e.g., easily switch for testing) => otherwise cast!
+
+/// An Account Service is a set of components that is capable setting up and managing an ``Account`` context.
+///
+/// This base protocol imposes the minimal requirements for an AccountService where setup procedures are entirely
+/// application defined only requiring logout functionality.
+/// You may improve the user experience or rely on user interface defaults if you adopt protocols like
+/// ``EmbeddableAccountService`` or ``KeyPasswordBasedAccountService``. TODO docs?
 ///
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: Sendable, AnyObject, Identifiable {
-    /// A `View` erased as an `AnyView` that will be displayed in login-related user interfaces.
-    var loginButton: AnyView { get }
-    /// A `View` erased as an `AnyView` that will be displayed in sign up-related user interfaces.
-    var signUpButton: AnyView { get }
-    
-    
-    /// Injects an ``Account`` instance in a ``AccountService`` instance.
-    /// - Parameter account: The ``Account`` instance used to store information retrieved in the `AccountService`.
-    func inject(account: Account)
-}
+public protocol AccountService { // TODO reevaluate DocC link!
+    /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
+    associatedtype ViewStyle: AccountSetupViewStyle
 
+    // TODO provide access to `Account` to communicate changes back to the App
 
-extension AccountService {
-    // A documentation for this method exists in the `AccountService` type which SwiftLint doesn't recognize.
-    // swiftlint:disable:next missing_docs
-    public var signUpButton: AnyView {
-        loginButton // TODO by default its the same thing?
-    }
-    
-    // A documentation for this method exists in the `Identifiable` type which SwiftLint doesn't recognize.
-    // swiftlint:disable:next missing_docs
-    public var id: String {
-        String(describing: type(of: self))
-    }
+    var viewStyle: ViewStyle { get }
+
+    /// This method implements ``Account`` logout functionality.
+    ///
+    /// TODO comments on logging out an not logged in user!
+    ///
+    /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the logout was unsuccessful
+    ///   to present a localized description to the user on a failed logout.
+    ///   Make sure to remain in a state where the user is capable of retrying the logout process.
+    func logout() async throws
+
+    // TODO we will/should enforce a Account removal functionality
 }

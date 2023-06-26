@@ -9,7 +9,7 @@
 import Foundation
 import SwiftUI
 
-struct RandomAccountService: AccountServiceNew {
+struct RandomAccountService: AccountService {
     var viewStyle: DefaultAccountSetupViewStyle<Self> {
         DefaultAccountSetupViewStyle(using: self)
     }

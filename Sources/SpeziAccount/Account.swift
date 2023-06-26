@@ -30,8 +30,8 @@ public actor Account: ObservableObject {
     /// - Parameter accountServices: An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     public init(accountServices: [any AccountService]) {
         self.accountServices = accountServices
-        for accountService in accountServices {
-            accountService.inject(account: self)
-        }
+        // TODO for accountService in accountServices {
+        //    accountService.inject(account: self)
+        // }
     }
 }

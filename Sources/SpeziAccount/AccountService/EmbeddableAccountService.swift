@@ -8,4 +8,4 @@
 
 import Foundation
 
-protocol EmbeddableAccountService: AccountServiceNew where ViewStyle: EmbeddableAccountSetupViewStyle {}
+protocol EmbeddableAccountService: AccountService where ViewStyle: EmbeddableAccountSetupViewStyle {}
