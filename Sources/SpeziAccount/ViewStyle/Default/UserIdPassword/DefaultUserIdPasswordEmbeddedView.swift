@@ -45,31 +45,32 @@ enum TextFieldConfiguration {
     }
 }
 
-struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: View {
+struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     var service: Service
 
     // TODO this is client side stuff!! this limitations must be on the server side, don't encourage it!
     // TODO this is all configuration!
-    private let keyValidationRules: [ValidationRule]
+    private let idValidationRules: [ValidationRule]
     private let passwordValidationRules: [ValidationRule]
     private let localization: ConfigurableLocalization<Localization.Login>
 
-    private let keyFieldConfiguration: TextFieldConfiguration
+    private let idFieldConfiguration: TextFieldConfiguration
     private let passwordFieldConfiguration: TextFieldConfiguration
 
     // TODO we want a view model!
     @State
-    private var key: String = ""
+    private var userId: String = ""
     @State
     private var password: String = ""
     // @State private var valid = false  TODO we don't to validation for the
+
     @State
     private var state: ViewState = .idle
     @FocusState
     private var focusedField: AccountInputFields?
 
     @State
-    private var keyEmpty = false
+    private var idEmpty = false
     @State
     private var passwordEmpty = false
 
@@ -86,13 +87,13 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
             VStack {
                 // TODO localization (which is implementation dependent!)
                 Group {
-                    TextField(text: $key) {
+                    TextField(text: $userId) {
                         Text("E-Mail Address or Username")
                     }
-                        .keyboardType(keyFieldConfiguration.keyboardType)
-                        .textContentType(keyFieldConfiguration.textContentType)
+                        .keyboardType(idFieldConfiguration.keyboardType)
+                        .textContentType(idFieldConfiguration.textContentType)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
-                    if keyEmpty {
+                    if idEmpty {
                         HStack {
                             Text("E-Mail Address cannot be empty!")
                                 .font(.footnote)
@@ -110,9 +111,9 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
                     .textInputAutocapitalization(.never)
                     .textFieldStyle(.roundedBorder)
                     .font(.title3)
-                    .onChange(of: key) { newKey in
-                        if !newKey.isEmpty {
-                            keyEmpty = false
+                    .onChange(of: userId) { newId in
+                        if !newId.isEmpty {
+                            idEmpty = false
                         }
                     }
                     .onChange(of: password) { newPassword in
@@ -131,7 +132,7 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
                     }
                     Spacer()
                     NavigationLink {
-                        service.viewStyle.makePasswordForgotView()
+                        service.viewStyle.makePasswordResetView()
                     } label: {
                         Text("Forgot Password?") // TODO localize
                             .font(.caption)
@@ -168,39 +169,41 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
             // TODO a "keep user" modifier?
             .navigationBarBackButtonHidden(state == .processing)
             .interactiveDismissDisabled(state == .processing)
+            .viewStateAlert(state: $state)
             .onTapGesture {
                 focusedField = nil // TODO what does this do?
             }
-            .viewStateAlert(state: $state)
             .onDisappear {
                 // TODO reset stuff
-                keyEmpty = false
+                idEmpty = false
                 passwordEmpty = false
                 // TODO loginTask?.cancel()
                 //  => app exit?
             }
     }
 
-    /// Instantiate a new `DefaultKeyPasswordBasedEmbeddedView` TODO docs
+    /// Instantiate a new `DefaultIdPasswordBasedEmbeddedView` TODO docs
     ///
     /// - Parameters:
     ///   - service: TODO document account service!
-    ///   - keyValidationRules: A collection of ``ValidationRule``s to validate to the entered user key.
+    ///   - idValidationRules: A collection of ``ValidationRule``s to validate to the entered user key.
     ///   - passwordValidationRules: A collection of ``ValidationRule``s to validate to the entered password.
+    ///   - idFieldConfiguration: TODO docs
+    ///   - passwordFieldConfiguration: TODO docs
     ///   - localization: A ``ConfigurableLocalization`` to define the localization of this view.
     ///      The default value uses the localization provided by the ``UsernamePasswordAccountService`` provided in the SwiftUI environment. TODO docs!
     public init(
         using service: Service,
-        validatingKeyWith keyValidationRules: [ValidationRule] = [],
+        validatingIdWith idValidationRules: [ValidationRule] = [],
         validatingPasswordWith passwordValidationRules: [ValidationRule] = [],
-        keyFieldConfiguration: TextFieldConfiguration = .emailAddress,
+        idFieldConfiguration: TextFieldConfiguration = .emailAddress,
         passwordFieldConfiguration: TextFieldConfiguration = .password,
         localization: ConfigurableLocalization<Localization.Login> = .environment
     ) {
         self.service = service
-        self.keyValidationRules = keyValidationRules
+        self.idValidationRules = idValidationRules
         self.passwordValidationRules = passwordValidationRules
-        self.keyFieldConfiguration = keyFieldConfiguration
+        self.idFieldConfiguration = idFieldConfiguration
         self.passwordFieldConfiguration = passwordFieldConfiguration
         self.localization = localization
     }
@@ -211,10 +214,10 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
         }
 
         // TODO abstract those checks over the validation rules!
-        keyEmpty = key.isEmpty
+        idEmpty = userId.isEmpty
         passwordEmpty = password.isEmpty
 
-        if keyEmpty || passwordEmpty {
+        if idEmpty || passwordEmpty {
             return
         }
 
@@ -225,7 +228,7 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
 
         loginTask = Task {
             do {
-                try await service.login(key: key, password: password)
+                try await service.login(key: userId, password: password)
                 withAnimation(.easeIn(duration: 0.2)) {
                     state = .idle
                 }
@@ -240,10 +243,10 @@ struct DefaultKeyPasswordEmbeddedView<Service: KeyPasswordBasedAccountService>: 
 }
 
 #if DEBUG
-struct DefaultKeyPasswordBasedEmbeddedView_Previews: PreviewProvider {
+struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            DefaultKeyPasswordEmbeddedView(using: DefaultUsernamePasswordAccountService())
+            DefaultUserIdPasswordEmbeddedView(using: DefaultUsernamePasswordAccountService())
         }
     }
 }

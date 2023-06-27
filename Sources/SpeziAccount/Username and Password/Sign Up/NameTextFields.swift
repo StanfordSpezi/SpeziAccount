@@ -11,40 +11,30 @@ import SwiftUI
 
 
 struct NameTextFields: View {
-    @Binding private var name: PersonNameComponents
-    @FocusState private var focusedField: AccountInputFields?
-    @EnvironmentObject var localizationEnvironmentObject: UsernamePasswordAccountService
-    private let localization: ConfigurableLocalization<(
-        givenName: FieldLocalization,
-        familyName: FieldLocalization
-    )>
-    
-    
-    private var givenName: FieldLocalization {
-        switch localization {
-        case .environment:
-            return localizationEnvironmentObject.localization.signUp.givenName
-        case let .value((givenName, _)):
-            return givenName
-        }
-    }
-    
-    private var familyName: FieldLocalization {
-        switch localization {
-        case .environment:
-            return localizationEnvironmentObject.localization.signUp.familyName
-        case let .value((_, familyName)):
-            return familyName
-        }
-    }
+    private static let defaultGivenNameLocalization = FieldLocalizationResource(
+        title: .init("UAP_SIGNUP_GIVEN_NAME_TITLE", bundle: .module),
+        placeholder: .init("UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER", bundle: .module)
+    )
+    private static let defaultFamilyNameLocalization = FieldLocalizationResource(
+        title: .init("UAP_SIGNUP_FAMILY_NAME_TITLE", bundle: .module),
+        placeholder: .init("UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER", bundle: .module)
+    )
+
+    private let givenNameLocalization: FieldLocalizationResource
+    private let familyNameLocalization: FieldLocalizationResource
+
+    @Binding
+    private var name: PersonNameComponents
+    @FocusState
+    private var focusedField: AccountInputFields?
     
     
     var body: some View {
         SpeziViews.NameFields(
             name: $name,
-            givenNameField: givenName,
+            givenNameField: .init(from: givenNameLocalization),
             givenNameFieldIdentifier: AccountInputFields.givenName,
-            familyNameField: familyName,
+            familyNameField: .init(from: familyNameLocalization),
             familyNameFieldIdentifier: AccountInputFields.familyName,
             focusedState: _focusedField
         )
@@ -53,23 +43,14 @@ struct NameTextFields: View {
     
     init(
         name: Binding<PersonNameComponents>,
-        givenName: FieldLocalization,
-        familyName: FieldLocalization,
+        givenName: FieldLocalizationResource = defaultGivenNameLocalization,
+        familyName: FieldLocalizationResource = defaultFamilyNameLocalization,
         focusState: FocusState<AccountInputFields?> = FocusState<AccountInputFields?>()
     ) {
         self._name = name
-        self.localization = .value((givenName, familyName))
+        self.givenNameLocalization = givenName
+        self.familyNameLocalization = familyName
         self._focusedField = focusState
-    }
-    
-    
-    init(
-        name: Binding<PersonNameComponents>,
-        focusState: FocusState<AccountInputFields?> = FocusState<AccountInputFields?>()
-    ) {
-        self._name = name
-        self._focusedField = focusState
-        self.localization = .environment
     }
 }
 

@@ -9,8 +9,9 @@
 import Foundation
 import SwiftUI
 
-// TODO too long name
-struct DefaultKeyPasswordBasedAccountSetupViewStyle<Service: KeyPasswordBasedAccountService>: KeyPasswordBasedAccountSetupViewStyle {
+struct DefaultUserIdPasswordAccountSetupViewStyle<Service: UserIdPasswordAccountService>: UserIdPasswordAccountSetupViewStyle {
+    // swiftlint:disable:previous type_name
+
     var service: Service
 
     init(using service: Service) {

@@ -10,10 +10,9 @@ import Foundation
 import SwiftUI
 
 
-protocol KeyPasswordBasedAccountSetupViewStyle: EmbeddableAccountSetupViewStyle where Service: KeyPasswordBasedAccountService {
+public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewStyle where Service: UserIdPasswordAccountService {
     associatedtype SignupView: View
     associatedtype PasswordResetView: View
-    associatedtype PasswordForgotView: View
     // TODO provide embedded primary view (simplified?) ! if its the single element
     // TODO provide a button!
     //  -> Primary View (navigate to sing up if it doesn't exists)
@@ -25,32 +24,24 @@ protocol KeyPasswordBasedAccountSetupViewStyle: EmbeddableAccountSetupViewStyle 
 
     @ViewBuilder
     func makePasswordResetView() -> PasswordResetView
-
-    @ViewBuilder
-    func makePasswordForgotView() -> PasswordForgotView
 }
 
 // TODO move to Default folder as extension file
-extension KeyPasswordBasedAccountSetupViewStyle {
+extension UserIdPasswordAccountSetupViewStyle {
     func makePrimaryView() -> some View {
-        DefaultKeyPasswordPrimaryView(service: service) // TODO pass all the other things!
+        DefaultUserIdPasswordPrimaryView(service: service) // TODO pass all the other things!
     }
 
     func makeEmbeddedAccountView() -> some View {
-        DefaultKeyPasswordEmbeddedView(using: service) // TODO pass all the other things!
+        DefaultUserIdPasswordEmbeddedView(using: service) // TODO pass all the other things!
     }
 
     func makeSignupView() -> some View {
-        DefaultKeyPasswordSignUpView(service: service, signUpOptions: .default) // TODO pass all the other things!
+        DefaultUserIdPasswordSignUpView(using: service, signUpOptions: .default) // TODO pass all the other things!
     }
 
-    // TODO same thing twice?
     func makePasswordResetView() -> some View {
-        EmptyView() // TODO implement
-    }
-
-    func makePasswordForgotView() -> some View {
-        EmptyView() // TODO implement
+        DefaultUserIdPasswordResetView(service: service)
     }
 
     func makeAccountServiceButtonLabel() -> some View {

@@ -28,7 +28,7 @@ extension Localization {
     public struct SignUp: Codable {
         /// A default configuration for providing localized text to sign up views.
         public static let `default` = SignUp(
-            buttonTitle: String(moduleLocalized: "UAP_SIGNUP_BUTTION_TITLE"),
+            buttonTitle: String(moduleLocalized: "UAP_SIGNUP_BUTTON_TITLE"),
             navigationTitle: String(moduleLocalized: "UAP_SIGNUP_NAVIGATION_TITLE"),
             username: FieldLocalization(
                 title: String(moduleLocalized: "UAP_SIGNUP_USERNAME_TITLE"),

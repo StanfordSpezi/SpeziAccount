@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct DefaultKeyPasswordPrimaryView<Service: KeyPasswordBasedAccountService>: View {
+struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
     var service: Service
 
     var body: some View {
@@ -20,7 +20,7 @@ struct DefaultKeyPasswordPrimaryView<Service: KeyPasswordBasedAccountService>: V
                     Spacer()
 
                     VStack {
-                        DefaultKeyPasswordEmbeddedView(using: service) // TODO pass all the other things
+                        DefaultUserIdPasswordEmbeddedView(using: service) // TODO pass all the other things
                     }
                         .padding(.horizontal, AccountSetup.Constants.innerHorizontalPadding)
 
@@ -51,8 +51,8 @@ struct DefaultKeyPasswordPrimaryView<Service: KeyPasswordBasedAccountService>: V
     }
 }
 
-struct DefaultKeyPasswordPrimaryView_Previews: PreviewProvider {
+struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static var previews: some View {
-        DefaultKeyPasswordPrimaryView(service: DefaultUsernamePasswordAccountService())
+        DefaultUserIdPasswordPrimaryView(service: DefaultUsernamePasswordAccountService())
     }
 }

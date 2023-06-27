@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 
-protocol EmbeddableAccountSetupViewStyle: AccountSetupViewStyle where Service: EmbeddableAccountService {
+public protocol EmbeddableAccountSetupViewStyle: AccountSetupViewStyle where Service: EmbeddableAccountService {
     associatedtype EmbeddedView: View
 
     @ViewBuilder

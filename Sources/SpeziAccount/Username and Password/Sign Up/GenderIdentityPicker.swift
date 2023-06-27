@@ -10,19 +10,10 @@ import SwiftUI
 
 
 struct GenderIdentityPicker: View {
-    @Binding private var genderIdentity: GenderIdentity
-    @EnvironmentObject private var localizationEnvironmentObject: UsernamePasswordAccountService
-    private let localization: ConfigurableLocalization<String>
-    
-    
-    private var genderIdentityTitle: String {
-        switch localization {
-        case .environment:
-            return localizationEnvironmentObject.localization.signUp.genderIdentityTitle
-        case let .value(genderIdentityTitle):
-            return genderIdentityTitle
-        }
-    }
+    private let titleLocalization: LocalizedStringResource
+
+    @Binding
+    private var genderIdentity: GenderIdentity
     
     var body: some View {
         Picker(
@@ -33,22 +24,22 @@ struct GenderIdentityPicker: View {
                         .tag(genderIdentity)
                 }
             }, label: {
-                Text(genderIdentityTitle)
+                Text(titleLocalization)
                     .fontWeight(.semibold)
             }
         )
     }
-    
-    
-    init(genderIdentity: Binding<GenderIdentity>, title: String) {
+
+    init(
+        genderIdentity: Binding<GenderIdentity>,
+        title: LocalizedStringResource = LocalizedStringResource("UAP_SIGNUP_GENDER_IDENTITY_TITLE", bundle: .module)
+    ) {
         self._genderIdentity = genderIdentity
-        self.localization = .value(title)
+        self.titleLocalization = title
     }
     
-    
-    init(genderIdentity: Binding<GenderIdentity>) {
-        self._genderIdentity = genderIdentity
-        self.localization = .environment
+    init(genderIdentity: Binding<GenderIdentity>, title: String.LocalizationValue) {
+        self.init(genderIdentity: genderIdentity, title: LocalizedStringResource(title))
     }
 }
 

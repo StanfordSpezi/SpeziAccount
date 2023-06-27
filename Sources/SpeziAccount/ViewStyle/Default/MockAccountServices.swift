@@ -18,8 +18,8 @@ struct RandomAccountService: AccountService {
 }
 
 // TODO rename to Mock... (PR desc: Current impl provided as is, and are more like Mock implementations, => replace with protocols and Mock implementations!
-struct DefaultUsernamePasswordAccountService: KeyPasswordBasedAccountService {
-    typealias ViewStyle = DefaultKeyPasswordBasedAccountSetupViewStyle
+struct DefaultUsernamePasswordAccountService: UserIdPasswordAccountService {
+    typealias ViewStyle = DefaultUserIdPasswordAccountSetupViewStyle
 
     func login(key: String, password: String) async throws {
         print("login \(key) \(password)")
@@ -34,8 +34,8 @@ struct DefaultUsernamePasswordAccountService: KeyPasswordBasedAccountService {
     }
 
     // TODO this has to be a computed property!
-    var viewStyle: DefaultKeyPasswordBasedAccountSetupViewStyle<Self> {
-        DefaultKeyPasswordBasedAccountSetupViewStyle(using: self)
+    var viewStyle: DefaultUserIdPasswordAccountSetupViewStyle<Self> {
+        DefaultUserIdPasswordAccountSetupViewStyle(using: self)
     }
 
     func logout() async throws {

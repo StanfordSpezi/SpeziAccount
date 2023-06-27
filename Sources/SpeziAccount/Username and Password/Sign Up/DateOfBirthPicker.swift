@@ -8,16 +8,9 @@
 
 import SwiftUI
 
-extension LocalizedStringResource.BundleDescription {
-    static var module: LocalizedStringResource.BundleDescription = {
-        // TODO our assumption is this works?
-        .atURL(Bundle.module.bundleURL)
-    }()
-}
-
 
 struct DateOfBirthPicker: View {
-    private var dateOfBirthTitle: LocalizedStringResource
+    private let titleLocalization: LocalizedStringResource
 
     @Binding
     private var date: Date
@@ -26,21 +19,21 @@ struct DateOfBirthPicker: View {
         let calendar = Calendar.current
         let startDateComponents = DateComponents(year: 1900, month: 1, day: 1)
         let endDate = Date.now
-        
+
         guard let startDate = calendar.date(from: startDateComponents) else {
             fatalError("Could not translate \(startDateComponents) to a valid date.")
         }
-        
+
         return startDate...endDate
     }
-    
+
     var body: some View {
         DatePicker(
             selection: $date,
             in: dateRange,
             displayedComponents: [.date]
         ) {
-            Text(dateOfBirthTitle)
+            Text(titleLocalization)
                 .fontWeight(.semibold)
         }
     }
@@ -50,12 +43,11 @@ struct DateOfBirthPicker: View {
         title: LocalizedStringResource = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .module)
     ) {
         self._date = date
-        self.dateOfBirthTitle = title
+        self.titleLocalization = title
     }
-    
-    
-    init(date: Binding<Date>, title: String) {
-        self.init(date: date, title: LocalizedStringResource(stringLiteral: title))
+
+    init(date: Binding<Date>, title: String.LocalizationValue) {
+        self.init(date: date, title: LocalizedStringResource(title))
     }
 }
 
@@ -63,8 +55,8 @@ struct DateOfBirthPicker: View {
 #if DEBUG
 struct DateOfBirthPicker_Previews: PreviewProvider {
     @State private static var date = Date.now
-    
-    
+
+
     static var previews: some View {
         VStack {
             Form {

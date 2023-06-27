@@ -11,6 +11,23 @@ import Spezi
 import SpeziViews
 import SwiftUI
 
+public struct RegexDefaults {
+    static var nonEmptyOrWhitespaceOnlyString: Regex = {
+        guard let regex = try? Regex("(.|\\s)*\\S(.|\\s)*") else {
+            fatalError("Failed to create Regex to match non-empty and whitespace-only strings")
+        }
+
+        return regex
+    }()
+
+    static var nonEmptyString: Regex = {
+        guard let regex = try? Regex("(.)+") else {
+            fatalError("Failed to create Regex to match non-empty strings")
+        }
+
+        return regex
+    }()
+}
 
 /// Account service that enables a email and password based account management.
 ///

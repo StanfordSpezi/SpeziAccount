@@ -26,7 +26,7 @@
 
 
 // SignUp
-"UAP_SIGNUP_BUTTION_TITLE" = "Benutzername und Passwort";
+"UAP_SIGNUP_BUTTON_TITLE" = "Benutzername und Passwort";
 "UAP_SIGNUP_NAVIGATION_TITLE" = "Benutzerkonto Erstellen";
 "UAP_SIGNUP_USERNAME_TITLE" = "Benutzername";
 "UAP_SIGNUP_USERNAME_PLACEHOLDER" = "Benutzername eingeben ...";

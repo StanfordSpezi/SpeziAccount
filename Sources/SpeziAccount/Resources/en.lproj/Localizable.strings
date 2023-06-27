@@ -25,7 +25,7 @@
 "UAP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login";
 
 // SignUp
-"UAP_SIGNUP_BUTTION_TITLE" = "Username and Password";
+"UAP_SIGNUP_BUTTON_TITLE" = "Username and Password";
 "UAP_SIGNUP_NAVIGATION_TITLE" = "Sign Up";
 "UAP_SIGNUP_USERNAME_TITLE" = "Username";
 "UAP_SIGNUP_USERNAME_PLACEHOLDER" = "Enter your username ...";
