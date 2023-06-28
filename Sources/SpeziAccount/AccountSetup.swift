@@ -76,7 +76,7 @@ struct AccountSetup: View {
     @ViewBuilder
     var header: some View {
         // TODO provide customizable with AccountViewStyle!
-        Text("Welcome back!") // TODO localize
+        Text("Welcome! 👋") // TODO localize
             .font(.largeTitle)
             .bold()
             .multilineTextAlignment(.center)

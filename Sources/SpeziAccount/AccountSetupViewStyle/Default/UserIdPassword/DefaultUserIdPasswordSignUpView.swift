@@ -29,21 +29,6 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             .viewStateAlert(state: $state)
     }
 
-    /// The Views Title and subtitle text.
-    @ViewBuilder
-    var header: some View {
-        // TODO provide customizable with AccountViewStyle!
-        Text("Welcome back!") // TODO localize
-            .font(.largeTitle)
-            .bold()
-            .multilineTextAlignment(.center)
-            .padding(.bottom)
-            .padding(.top, 30)
-
-        Text("Please create an account to do whatever. You may create an account if you don't have one already!") // TODO localize!
-            .multilineTextAlignment(.center)
-    }
-
     @ViewBuilder
     var form: some View {
         Form {
@@ -59,6 +44,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
 
             if signUpOptions.contains(.name) {
                 Section("Name") {
+                    // TODO validity?
                     NameTextFields(name: $name, focusState: _focusedField)
                 }
             }
@@ -66,6 +52,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             if !signUpOptions.isDisjoint(with: [.dateOfBirth, .genderIdentity]) {
                 Section("Personal Details") {
                     if signUpOptions.contains(.dateOfBirth) {
+                        // TODO validity?
                         DateOfBirthPicker(date: $dateOfBirth)
                     }
 
@@ -75,17 +62,15 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
                 }
             }
 
-            Button(action: signupButtonAction) {
+            AsyncDataEntrySubmitButton(state: $state, action: signupButtonAction) {
                 Text("Signup")
                     .padding(16)
                     .frame(maxWidth: .infinity)
-                    .replaceWithProcessingIndicator(ifProcessing: state)
             }
-                .buttonStyle(.borderedProminent)
-                .disabled(state == .processing)
                 .padding()
-                .padding(-34)
+                .padding(-36)
                 .listRowBackground(Color.clear)
+                // TODO default error localization!
         }
     }
 
@@ -94,39 +79,16 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
         self.signUpOptions = signUpOptions
     }
 
-    private func signupButtonAction() {
-        guard state != .processing else {
-            return
-        }
+    private func signupButtonAction() async throws {
+        // TODO verify content!
 
-        withAnimation(.easeOut(duration: 0.2)) {
-            focusedField = .none
-            state = .processing
-        }
-
-        // TODO save task handle?
-        Task {
-            do {
-                try await service.signUp(signUpValues: SignUpValues(
-                    username: userId, // TODO rename signupValues name!
-                    password: password,
-                    name: name,
-                    genderIdentity: genderIdentity,
-                    dateOfBirth: dateOfBirth
-                ))
-
-                withAnimation(.easeIn(duration: 0.2)) {
-                    state = .idle
-                }
-            } catch {
-                state = .error(
-                    AnyLocalizedError(
-                        error: error,
-                        defaultErrorDescription: "ERROR" // TODO localization!
-                    )
-                )
-            }
-        }
+        try await service.signUp(signUpValues: SignUpValues(
+            username: userId, // TODO rename signupValues name!
+            password: password,
+            name: name,
+            genderIdentity: genderIdentity,
+            dateOfBirth: dateOfBirth
+        ))
     }
 }
 

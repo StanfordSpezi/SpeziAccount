@@ -7,8 +7,8 @@ import SpeziViews
 import SwiftUI
 
 // TODO move that to SpeziViews?
-public struct AsyncDataEntrySubmitButton: View {
-    private var title: LocalizedStringResource
+public struct AsyncDataEntrySubmitButton<ButtonLabel: View>: View {
+    private var buttonLabel: ButtonLabel
     private var action: () async throws -> Void
 
     @Environment(\.defaultErrorDescription) var defaultErrorDescription
@@ -16,22 +16,32 @@ public struct AsyncDataEntrySubmitButton: View {
 
     public var body: some View {
         Button(action: submitAction) {
-            Text(title)
-                .padding(6)
-                .frame(maxWidth: .infinity)
+            buttonLabel
+                // TODO .padding(6)
+                // .frame(maxWidth: .infinity)
                 .replaceWithProcessingIndicator(ifProcessing: state)
         }
         .buttonStyle(.borderedProminent)
         .disabled(state == .processing)
-        .padding()
+        // TODO .padding()
     }
 
     public init(
         _ title: LocalizedStringResource,
         state: Binding<ViewState>,
         action: @escaping () async throws -> Void
+    ) where ButtonLabel == Text {
+        self.init(state: state, action: action) {
+            Text(title)
+        }
+    }
+
+    public init(
+        state: Binding<ViewState>,
+        action: @escaping () async throws -> Void,
+        @ViewBuilder _ label: () -> ButtonLabel
     ) {
-        self.title = title
+        self.buttonLabel = label()
         self._state = state
         self.action = action
     }
@@ -50,8 +60,12 @@ public struct AsyncDataEntrySubmitButton: View {
         Task {
             do {
                 try await action()
-                withAnimation(.easeIn(duration: 0.2)) {
-                    state = .idle
+
+                // the button action might set the state back to idle to prevent this animation
+                if state != .idle {
+                    withAnimation(.easeIn(duration: 0.2)) {
+                        state = .idle
+                    }
                 }
             } catch {
                 state = .error(AnyLocalizedError(
@@ -88,11 +102,17 @@ struct AsyncDataEntrySubmitButton_Previews: PreviewProvider {
         }
     }
 
+    @State static var state: ViewState = .idle // won't update the preview
+
     static var previews: some View {
         PreviewView()
         PreviewView(state: .processing)
         PreviewView("Test Button with Error") {
             throw CancellationError()
+        }
+
+        AsyncDataEntrySubmitButton(state: $state, action: { print("button pressed") }) {
+            Text("Test Button!")
         }
     }
 }

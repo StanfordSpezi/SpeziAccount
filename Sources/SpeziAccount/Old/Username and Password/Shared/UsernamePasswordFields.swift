@@ -284,47 +284,37 @@ struct UsernamePasswordFields: View {
 
 #if DEBUG
 struct UsernamePasswordFields_Previews: PreviewProvider {
-    @State private static var username: String = ""
-    @State private static var password: String = ""
-    @State private static var valid = false
-    
-    
-    private static var validationRules: [ValidationRule] {
-        guard let regex = try? Regex("[a-zA-Z]") else {
-            return []
-        }
-        
-        return [
-            ValidationRule(
-                regex: regex,
-                message: "Validation failed: Required only letters."
+    private static var validationRules: [ValidationRule] = [.lettersOnly]
+
+    private struct PreviewView: View {
+        @State private var username: String = ""
+        @State private var password: String = ""
+        @State private var valid = false
+
+        var signUp = false
+
+        var body: some View {
+            UsernamePasswordFields(
+                username: $username,
+                password: $password,
+                valid: $valid,
+                usernameValidationRules: validationRules,
+                passwordValidationRules: validationRules,
+                presentationType: signUp ? .signUp(.environment) : .login(.environment)
             )
-        ]
+        }
     }
     
     static var previews: some View {
         Form {
             Section {
                 Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                    UsernamePasswordFields(
-                        username: $username,
-                        password: $password,
-                        valid: $valid,
-                        usernameValidationRules: validationRules,
-                        passwordValidationRules: validationRules
-                    )
+                    PreviewView()
                 }
             }
             Section {
                 Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                    UsernamePasswordFields(
-                        username: $username,
-                        password: $password,
-                        valid: $valid,
-                        usernameValidationRules: validationRules,
-                        passwordValidationRules: validationRules,
-                        presentationType: .signUp(.environment)
-                    )
+                    PreviewView(signUp: true)
                 }
             }
         }

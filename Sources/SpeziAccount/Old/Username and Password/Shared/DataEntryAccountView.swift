@@ -40,9 +40,14 @@ struct DataEntryAccountView: View {
         // TODO move to title!
         let localized = LocalizedStringResource(stringLiteral: buttonTitle)
 
-        return AsyncDataEntrySubmitButton(localized, state: $state, action: buttonPressed)
+        return AsyncDataEntrySubmitButton(state: $state, action: buttonPressed) {
+            Text(localized)
+                .padding(6)
+                .frame(maxWidth: .infinity)
+        }
             .disabled(!valid)
             .environment(\.defaultErrorDescription, LocalizedStringResource(stringLiteral: defaultError))
+            .padding()
     }
     
     

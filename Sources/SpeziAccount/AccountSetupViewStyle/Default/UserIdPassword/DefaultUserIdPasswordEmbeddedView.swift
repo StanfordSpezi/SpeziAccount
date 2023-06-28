@@ -10,41 +10,6 @@ import Foundation
 import SpeziViews
 import SwiftUI
 
-// TODO place it somewhere else! (Model?)
-enum TextFieldConfiguration {
-    case username
-    case emailAddress
-    case password
-    case newPassword
-    case custom(textContent: UITextContentType?, keyboard: UIKeyboardType = .default)
-
-    var textContentType: UITextContentType? {
-        switch self {
-        case .username:
-            return .username
-        case .emailAddress:
-            return .emailAddress
-        case .password:
-            return .password
-        case .newPassword:
-            return .newPassword
-        case let .custom(textContent, _):
-            return textContent
-        }
-    }
-
-    var keyboardType: UIKeyboardType {
-        switch self {
-        case .emailAddress:
-            return .emailAddress
-        case let .custom(_, keyboard):
-            return keyboard
-        case .username, .password, .newPassword:
-            return .default
-        }
-    }
-}
-
 struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
@@ -54,8 +19,8 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     private let passwordValidationRules: [ValidationRule]
     private let localization: ConfigurableLocalization<Localization.Login> // TODO remove!
 
-    private let idFieldConfiguration: TextFieldConfiguration
-    private let passwordFieldConfiguration: TextFieldConfiguration
+    private let idFieldConfiguration: FieldConfiguration
+    private let passwordFieldConfiguration: FieldConfiguration
 
     // TODO we want a view model!
     @State
@@ -70,9 +35,9 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     private var focusedField: AccountInputFields?
 
     @State
-    private var idEmpty = false
+    private var userIdValid = false
     @State
-    private var passwordEmpty = false
+    private var passwordValid = false
 
     @State
     private var loginTask: Task<Void, Error>? {
@@ -87,30 +52,33 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             VStack {
                 // TODO localization (which is implementation dependent!)
                 Group {
-                    TextField(text: $userId) {
-                        Text("E-Mail Address or Username")
+                    VerifiableTextField(text: $userId, valid: $userIdValid) {
+                        Text("E-Mail Address or Username") // TODO localization!
                     }
-                        .keyboardType(idFieldConfiguration.keyboardType)
-                        .textContentType(idFieldConfiguration.textContentType)
+                        .fieldConfiguration(idFieldConfiguration)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
-                    if idEmpty {
-                        HStack {
-                            Text("E-Mail Address cannot be empty!")
-                                .font(.footnote)
-                                .foregroundColor(.red)
-                                .padding([.leading, .bottom], 8)
-                            Spacer()
+                        .padding(.bottom, 0.5)
+
+                        // TODO .padding([.leading, .bottom], 8) for the red texts?
+
+                    VerifiableTextField(type: .secure, text: $password, valid: $passwordValid) {
+                        Text("Password") // TODO supply LocalizedStringResource before text!
+                    } footer: {
+                        NavigationLink {
+                            service.viewStyle.makePasswordResetView()
+                        } label: {
+                            Text("Forgot Password?") // TODO localize
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
                         }
                     }
-                    SecureField("Password", text: $password)
-                        .keyboardType(passwordFieldConfiguration.keyboardType)
-                        .textContentType(passwordFieldConfiguration.textContentType)
+                        .fieldConfiguration(passwordFieldConfiguration)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
                 }
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
+                    .disableFieldAssistants()
                     .textFieldStyle(.roundedBorder)
-                    .font(.title3)
+                    .font(.title3)/*
                     .onChange(of: userId) { newId in
                         if !newId.isEmpty {
                             idEmpty = false
@@ -121,37 +89,18 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                             passwordEmpty = false
                         }
                     }
-
-
-                HStack {
-                    if passwordEmpty {
-                        Text("Password cannot be empty!")
-                            .font(.footnote)
-                            .foregroundColor(.red)
-                            .padding([.leading, .bottom], 8)
-                    }
-                    Spacer()
-                    NavigationLink {
-                        service.viewStyle.makePasswordResetView()
-                    } label: {
-                        Text("Forgot Password?") // TODO localize
-                            .font(.caption)
-                            .bold()
-                            .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
-                    }
-                }
+                */
             }
                 .padding(.vertical, 0)
 
-            Button(action: loginButtonAction) {
-                Text("Login") // TODO localize
-                    .frame(maxWidth: .infinity, minHeight: 38) // TODO minHeight? vs padding(6)?
-                    .replaceWithProcessingIndicator(ifProcessing: state)
+            AsyncDataEntrySubmitButton(state: $state, action: loginButtonAction) {
+                Text("Login")
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
-                .disabled(state == .processing)
                 .padding(.bottom, 12)
                 .padding(.top)
+                // TODO supply default error description!
 
 
             HStack {
@@ -175,8 +124,8 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             }
             .onDisappear {
                 // TODO reset stuff
-                idEmpty = false
-                passwordEmpty = false
+                // TODO idEmpty = false
+                // TODO passwordEmpty = false
                 // TODO loginTask?.cancel()
                 //  => app exit?
             }
@@ -196,8 +145,8 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         using service: Service,
         validatingIdWith idValidationRules: [ValidationRule] = [],
         validatingPasswordWith passwordValidationRules: [ValidationRule] = [],
-        idFieldConfiguration: TextFieldConfiguration = .emailAddress,
-        passwordFieldConfiguration: TextFieldConfiguration = .password,
+        idFieldConfiguration: FieldConfiguration = .emailAddress,
+        passwordFieldConfiguration: FieldConfiguration = .password,
         localization: ConfigurableLocalization<Localization.Login> = .environment
     ) {
         self.service = service
@@ -208,37 +157,15 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         self.localization = localization
     }
 
-    private func loginButtonAction() {
-        guard state != .processing else {
+    private func loginButtonAction() async throws {
+        // TODO verifications are now called after the animation!
+
+        // TODO ensure those are called!
+        guard userIdValid && passwordValid else {
             return
         }
 
-        // TODO abstract those checks over the validation rules!
-        idEmpty = userId.isEmpty
-        passwordEmpty = password.isEmpty
-
-        if idEmpty || passwordEmpty {
-            return
-        }
-
-        withAnimation(.easeOut(duration: 0.2)) {
-            focusedField = .none
-            state = .processing
-        }
-
-        loginTask = Task {
-            do {
-                try await service.login(userId: userId, password: password)
-                withAnimation(.easeIn(duration: 0.2)) {
-                    state = .idle
-                }
-            } catch {
-                state = .error(AnyLocalizedError(
-                    error: error,
-                    defaultErrorDescription: "DEFAULT ERROR!" // TODO localize!
-                ))
-            }
-        }
+        try await service.login(userId: userId, password: password)
     }
 }
 

@@ -27,13 +27,10 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
             } else {
                 // TODO generalized DataEntryAccountView!
 
-                Button(action: submitRequestAction) {
-                    Text("Reset Password")
+                AsyncDataEntrySubmitButton(state: $state, action: submitRequestAction) {
+                    Text("Rest Password")
                         .frame(maxWidth: .infinity, minHeight: 38) // TODO miNiehg tvs padding(6)
-                        .replaceWithProcessingIndicator(ifProcessing: state)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(state == .processing)
                 .padding(.bottom, 12)
                 .padding(.top)
             }
@@ -50,34 +47,15 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
         self.successViewBuilder = successViewBuilder
     }
 
-    private func submitRequestAction() {
-        guard state != .processing else {
-            return
+    private func submitRequestAction() async throws {
+        try await service.resetPassword(userId: userId)
+
+        withAnimation(.easeOut(duration: 0.5)) {
+            requestSubmitted = true
         }
 
-        withAnimation(.easeOut(duration: 0.2)) {
-            focusedField = .none
-            state = .processing
-        }
-
-        Task {
-            do {
-                try await service.resetPassword(userId: userId)
-
-                withAnimation(.easeOut(duration: 0.5)) {
-                    requestSubmitted = true
-                }
-                try await Task.sleep(for: .milliseconds(600))
-                state = .idle
-            } catch {
-                state = .error(
-                    AnyLocalizedError(
-                        error: error,
-                        defaultErrorDescription: "DEFAULT ERROR" // TODO localized!
-                    )
-                )
-            }
-        }
+        try await Task.sleep(for: .milliseconds(515))
+        state = .idle
     }
 }
 
