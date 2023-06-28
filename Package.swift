@@ -3,7 +3,7 @@
 //
 // This source file is part of the Spezi open source project
 // 
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 // 
 // SPDX-License-Identifier: MIT
 //
@@ -22,7 +22,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.3.0"))
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "feature/structure-spelling-features")
     ],
     targets: [
         .target(
