@@ -16,18 +16,23 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 
     private let label: FieldLabel
     private let textFieldFooter: FieldFooter
-
     private let fieldType: TextFieldType
-    private let validationRules: [ValidationRule]
 
     @Binding private var text: String
-    @Binding private var inputValid: Bool
 
-    @State private var validationResults: [String] = []
+    @EnvironmentObject var validationEngine: ValidationEngine
     @State private var debounceTask: Task<Void, Never>? {
         willSet {
             debounceTask?.cancel()
         }
+    }
+
+    private var displayedValidationResults: [LocalizedStringResource] {
+        // we want the behavior that we won't display any validation results if the user
+        // erases the whole field. We do this by just calling `runValidationOnSubmit` on commit.
+        // However, if ,e.g., a button triggers a `runValidation` we still want to show the message
+        // even on an empty field.
+        validationEngine.inputValid ? [] : validationEngine.validationResults
     }
 
     public var body: some View {
@@ -44,13 +49,13 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 
             HStack {
                 VStack(alignment: .leading) {
-                    ForEach(validationResults, id: \.self) { message in
+                    ForEach(displayedValidationResults, id: \.key) { message in
                         Text(message)
-                            .fixedSize(horizontal: false, vertical: true) // TODO required?
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
-                    .font(.footnote)
-                    .foregroundColor(.red)
+                .font(.footnote)
+                .foregroundColor(.red)
                 Spacer()
 
                 textFieldFooter
@@ -59,31 +64,26 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
             .onChange(of: text) { _ in
                 runValidation()
             }
-            .onTapFocus() // TODO what does this do?
+            .onTapFocus()
     }
 
     public init(
-        type: TextFieldType = .text,
+        _ label: LocalizedStringResource,
         text: Binding<String>,
-        valid: Binding<Bool>,
-        validationRules: [ValidationRule] = [], // TODO pass default empty rule!
-        @ViewBuilder label: () -> FieldLabel
-    ) where FieldFooter == EmptyView {
-        self.init(type: type, text: text, valid: valid, label: label, footer: { EmptyView() })
+        type: TextFieldType = .text,
+        @ViewBuilder footer: () -> FieldFooter = { EmptyView() }
+    ) where FieldLabel == Text {
+        self.init(text: text, type: type, label: { Text(label) }, footer: footer)
     }
 
     public init(
-        type: TextFieldType = .text,
         text: Binding<String>,
-        valid: Binding<Bool>,
-        validationRules: [ValidationRule] = [], // TODO pass default empty rule!
+        type: TextFieldType = .text,
         @ViewBuilder label: () -> FieldLabel,
-        @ViewBuilder footer: () -> FieldFooter
+        @ViewBuilder footer: () -> FieldFooter = { EmptyView() }
     ) {
         self._text = text
         self.fieldType = type
-        self._inputValid = valid
-        self.validationRules = validationRules
         self.label = label()
         self.textFieldFooter = footer()
     }
@@ -98,13 +98,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
             }
 
             withAnimation(.easeInOut(duration: 0.2)) {
-                validationResults = validationRules.compactMap {
-                    $0.validate(text)
-                }
-
-                print("validation is run: \(validationResults)")
-
-                inputValid = validationResults.isEmpty // TODO isEmpty check is also a validationResult
+                validationEngine.runValidationOnSubmit(input: text)
             }
 
             self.debounceTask = nil
@@ -116,15 +110,16 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 struct VerifiableTextField_Previews: PreviewProvider {
     private struct PreviewView: View {
         @State var text = ""
-        @State var valid = false
+        @StateObject var engine = ValidationEngine(rules: .lettersOnly)
 
         var body: some View {
-            VerifiableTextField(text: $text, valid: $valid, validationRules: [.lettersOnly]) {
+            VerifiableTextField(text: $text) {
                 Text("Text")
             } footer: {
                 Text("Some Hint")
                     .font(.footnote)
             }
+                .environmentObject(engine)
         }
     }
     static var previews: some View {

@@ -23,7 +23,7 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
             self.debounceTask?.cancel()
         }
     }
-    @State private var validationResults: [String] = []
+    @State private var validationResults: [LocalizedStringResource] = []
     
     
     var body: some View {
@@ -37,7 +37,7 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
                     }
                 HStack {
                     VStack(alignment: .leading) {
-                        ForEach(validationResults, id: \.self) { message in
+                        ForEach(validationResults, id: \.key) { message in
                             Text(message)
                                 .fixedSize(horizontal: false, vertical: true)
                         }

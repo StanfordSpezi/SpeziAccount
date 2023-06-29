@@ -9,23 +9,11 @@
 import Foundation
 import SwiftUI
 
-struct DefaultUserIdPasswordAccountSetupViewStyle<Service: UserIdPasswordAccountService>: UserIdPasswordAccountSetupViewStyle {
+public struct DefaultUserIdPasswordAccountSetupViewStyle<Service: UserIdPasswordAccountService>: UserIdPasswordAccountSetupViewStyle {
     // swiftlint:disable:previous type_name
+    public let service: Service
 
-    var service: Service
-
-    init(using service: Service) {
+    public init(using service: Service) {
         self.service = service
-    }
-
-    func makeAccountServiceButtonLabel() -> some View {
-        // TODO how to generate a sensible default!
-        Text("Default button!")
-            .accountServiceButtonBackground()
-    }
-
-    func makeAccountSummary() -> some View {
-        // TODO default implementation!
-        Text("Placeholder account summary!")
     }
 }

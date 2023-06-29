@@ -18,7 +18,7 @@ public protocol AccountSetupViewStyle {
     associatedtype AccountSummaryView: View
 
     // TODO that's not really a great way to deal with that?
-    var service: Service { get set }
+    var service: Service { get }
 
     @ViewBuilder
     func makeAccountServiceButtonLabel() -> ButtonLabel

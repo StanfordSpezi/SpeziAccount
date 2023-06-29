@@ -13,6 +13,7 @@ struct AccountSetup: View {
     public enum Constants {
         static let outerHorizontalPadding: CGFloat = 16 // TODO use 32?
         static let innerHorizontalPadding: CGFloat = 16 // TODO use 32?
+        static let maxFrameWidth: CGFloat = 450
     }
 
     @EnvironmentObject
@@ -60,6 +61,8 @@ struct AccountSetup: View {
                         identityProviderButtons
                     }
                         .padding(.horizontal, Constants.innerHorizontalPadding)
+                        .frame(maxWidth: Constants.maxFrameWidth) // landscape optimizations
+                        // TODO for large dynamic size it would make sense to scale it though?
 
                     Spacer()
                     Spacer()

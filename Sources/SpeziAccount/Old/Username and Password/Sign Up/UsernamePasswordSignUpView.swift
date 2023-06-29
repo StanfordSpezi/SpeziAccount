@@ -234,7 +234,7 @@ public struct UsernamePasswordSignUpView: View {
             do {
                 try await usernamePasswordAccountService.signUp(
                     signUpValues: SignUpValues(
-                        username: username,
+                        userId: username,
                         password: password,
                         name: name,
                         genderIdentity: genderIdentity,

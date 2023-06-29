@@ -1,5 +1,9 @@
 //
-// Created by Andreas Bauer on 26.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
@@ -26,5 +30,13 @@ extension View {
                     view()
                 }
             }
+    }
+}
+
+extension View {
+    public func disableAnyDismissiveActions(ifProcessing state: ViewState) -> some View {
+        self
+            .navigationBarBackButtonHidden(state == .processing)
+            .interactiveDismissDisabled(state == .processing)
     }
 }

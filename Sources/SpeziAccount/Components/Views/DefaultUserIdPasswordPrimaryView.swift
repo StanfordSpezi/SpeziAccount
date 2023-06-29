@@ -23,6 +23,7 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                         DefaultUserIdPasswordEmbeddedView(using: service) // TODO pass all the other things
                     }
                         .padding(.horizontal, AccountSetup.Constants.innerHorizontalPadding)
+                        .frame(maxWidth: AccountSetup.Constants.maxFrameWidth)
 
                     Spacer()
                     Spacer()

@@ -36,17 +36,6 @@ public struct RegexDefaults {
 /// Other ``AccountService``s can be created by subclassing the ``EmailPasswordAccountService`` and overriding the ``EmailPasswordAccountService/localization``,
 /// buttons like the ``EmailPasswordAccountService/loginButton``, or overriding  the ``EmailPasswordAccountService/button(_:destination:)`` function.
 open class EmailPasswordAccountService: UsernamePasswordAccountService {
-    public var emailValidationRule: ValidationRule {
-        guard let regex = try? Regex("[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}") else {
-            fatalError("Invalid E-Mail Regex in the EmailPasswordAccountService")
-        }
-        
-        return ValidationRule(
-            regex: regex,
-            message: String(localized: "EAP_EMAIL_VERIFICATION_ERROR", bundle: .module)
-        )
-    }
-    
     override open var localization: Localization {
         let usernameField = FieldLocalizationResource(
             title: "EAP_LOGIN_USERNAME_TITLE",
@@ -64,7 +53,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.login.buttonTitle,
             destination: UsernamePasswordLoginView(
-                usernameValidationRules: [emailValidationRule]
+                usernameValidationRules: [.emailValidationRule]
             )
         )
     }
@@ -73,7 +62,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.signUp.buttonTitle,
             destination: UsernamePasswordSignUpView(
-                usernameValidationRules: [emailValidationRule]
+                usernameValidationRules: [.emailValidationRule]
             )
         )
     }
@@ -82,7 +71,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         AnyView(
             NavigationLink {
                 UsernamePasswordResetPasswordView(
-                    usernameValidationRules: [emailValidationRule]
+                    usernameValidationRules: [.emailValidationRule]
                 ) {
                     processSuccessfulResetPasswordView
                 }

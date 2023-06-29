@@ -1,8 +1,25 @@
 //
-// Created by Andreas Bauer on 27.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
-import Foundation
+import SwiftUI
+
+extension View {
+    public func embedIntoScrollViewScaledToFit() -> some View {
+        GeometryReader { proxy in
+            ScrollView {
+                VStack {
+                    self
+                }
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+        }
+    }
+}
 
 /*
         GeometryReader { proxy in

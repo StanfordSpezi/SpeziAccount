@@ -28,32 +28,36 @@ public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewS
 
 // TODO move to Default folder as extension file
 extension UserIdPasswordAccountSetupViewStyle {
-    func makePrimaryView() -> some View {
-        DefaultUserIdPasswordPrimaryView(using: service) // TODO pass all the other things!
+    // TODO review if we missed to pass any options to the default constructors
+    public func makePrimaryView() -> some View {
+        DefaultUserIdPasswordPrimaryView(using: service)
     }
 
-    func makeEmbeddedAccountView() -> some View {
-        DefaultUserIdPasswordEmbeddedView(using: service) // TODO pass all the other things!
+    public func makeEmbeddedAccountView() -> some View {
+        DefaultUserIdPasswordEmbeddedView(using: service)
     }
 
-    func makeSignupView() -> some View {
-        DefaultUserIdPasswordSignUpView(using: service, signUpOptions: .default) // TODO pass all the other things!
+    public func makeSignupView() -> some View {
+        DefaultUserIdPasswordSignUpView(using: service)
     }
 
-    func makePasswordResetView() -> some View {
-        DefaultUserIdPasswordResetView(using: service, onSuccess: {
+    public func makePasswordResetView() -> some View {
+        DefaultUserIdPasswordResetView(using: service) {
             DefaultSuccessfulPasswordResetView()
-        })
+        }
     }
 
-    func makeAccountServiceButtonLabel() -> some View {
+    public func makeAccountSummary() -> some View {
+        DefaultUserIdPasswordAccountSummaryView(using: service)
+    }
+
+    public func makeAccountServiceButtonLabel() -> some View {
         // TODO how to generate a sensible default!
-        Text("Default button!")
-            .accountServiceButtonBackground()
-    }
-
-    func makeAccountSummary() -> some View {
-        // TODO default implementation!
-        Text("Placeholder account summary!")
+        Group {
+            service.configuration.image
+                .font(.title2)
+            Text(service.configuration.name)
+        }
+        .accountServiceButtonBackground()
     }
 }

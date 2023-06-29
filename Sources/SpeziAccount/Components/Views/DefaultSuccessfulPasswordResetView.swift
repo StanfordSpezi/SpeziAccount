@@ -8,6 +8,8 @@ import SwiftUI
 public struct DefaultSuccessfulPasswordResetView: View {
     private let successfulLabelLocalization: LocalizedStringResource
 
+    // TODO remove @Environment(\.dismiss) var dismiss
+
     public var body: some View {
         Spacer()
 
@@ -23,6 +25,13 @@ public struct DefaultSuccessfulPasswordResetView: View {
         }
             .padding(32)
 
+        /*
+        Button(action: {
+            dismiss()
+        }) {
+            Text("Continue") // TODO whatever!
+        }
+        */
         // TODO how to dismiss?
 
         Spacer()

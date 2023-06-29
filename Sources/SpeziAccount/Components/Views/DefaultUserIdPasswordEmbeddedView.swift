@@ -13,31 +13,19 @@ import SwiftUI
 struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
-    // TODO this is client side stuff!! this limitations must be on the server side, don't encourage it!
-    // TODO this is all configuration!
-    private let idValidationRules: [ValidationRule]
-    private let passwordValidationRules: [ValidationRule]
     private let localization: ConfigurableLocalization<Localization.Login> // TODO remove!
 
-    private let idFieldConfiguration: FieldConfiguration
-    private let passwordFieldConfiguration: FieldConfiguration
-
     // TODO we want a view model!
-    @State
-    private var userId: String = ""
-    @State
-    private var password: String = ""
-    // @State private var valid = false  TODO we don't to validation for the
+    @State private var userId: String = ""
+    @State private var password: String = ""
 
     @State
     private var state: ViewState = .idle
     @FocusState
     private var focusedField: AccountInputFields?
 
-    @State
-    private var userIdValid = false
-    @State
-    private var passwordValid = false
+    @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty]) // TODO no more rules right?
+    @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty]) // TODO pass rules
 
     @State
     private var loginTask: Task<Void, Error>? {
@@ -52,18 +40,17 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             VStack {
                 // TODO localization (which is implementation dependent!)
                 Group {
-                    VerifiableTextField(text: $userId, valid: $userIdValid) {
-                        Text("E-Mail Address or Username") // TODO localization!
-                    }
-                        .fieldConfiguration(idFieldConfiguration)
+                    // TODO localization!
+                    VerifiableTextField("E-Mail Address or Username", text: $userId)
+                        .environmentObject(userIdValidation)
+                        .fieldConfiguration(service.configuration.userIdField)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
                         .padding(.bottom, 0.5)
 
-                        // TODO .padding([.leading, .bottom], 8) for the red texts?
+                    // TODO .padding([.leading, .bottom], 8) for the red texts?
 
-                    VerifiableTextField(type: .secure, text: $password, valid: $passwordValid) {
-                        Text("Password") // TODO supply LocalizedStringResource before text!
-                    } footer: {
+                    // TODO supply LocalizedStringResource before text!
+                    VerifiableTextField("Password", text: $password, type: .secure) {
                         NavigationLink {
                             service.viewStyle.makePasswordResetView()
                         } label: {
@@ -73,7 +60,8 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                                 .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
                         }
                     }
-                        .fieldConfiguration(passwordFieldConfiguration)
+                        .environmentObject(passwordValidation)
+                        .fieldConfiguration(.password)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
                 }
                     .disableFieldAssistants()
@@ -100,7 +88,7 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             }
                 .padding(.bottom, 12)
                 .padding(.top)
-                // TODO supply default error description!
+            // TODO supply default error description!
 
 
             HStack {
@@ -116,8 +104,7 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                 .font(.footnote)
         }
             // TODO a "keep user" modifier?
-            .navigationBarBackButtonHidden(state == .processing)
-            .interactiveDismissDisabled(state == .processing)
+            .disableAnyDismissiveActions(ifProcessing: state)
             .viewStateAlert(state: $state)
             .onTapGesture {
                 focusedField = nil // TODO what does this do?
@@ -143,25 +130,24 @@ struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     ///      The default value uses the localization provided by the ``UsernamePasswordAccountService`` provided in the SwiftUI environment. TODO docs!
     public init(
         using service: Service,
-        validatingIdWith idValidationRules: [ValidationRule] = [],
-        validatingPasswordWith passwordValidationRules: [ValidationRule] = [],
-        idFieldConfiguration: FieldConfiguration = .emailAddress,
-        passwordFieldConfiguration: FieldConfiguration = .password,
         localization: ConfigurableLocalization<Localization.Login> = .environment
     ) {
         self.service = service
-        self.idValidationRules = idValidationRules
-        self.passwordValidationRules = passwordValidationRules
-        self.idFieldConfiguration = idFieldConfiguration
-        self.passwordFieldConfiguration = passwordFieldConfiguration
         self.localization = localization
     }
 
     private func loginButtonAction() async throws {
         // TODO verifications are now called after the animation!
+        userIdValidation.runValidation(input: userId)
+        passwordValidation.runValidation(input: password)
 
-        // TODO ensure those are called!
-        guard userIdValid && passwordValid else {
+        guard userIdValidation.inputValid else {
+            focusedField = .username
+            return
+        }
+
+        guard passwordValidation.inputValid else {
+            focusedField = .password
             return
         }
 

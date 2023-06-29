@@ -29,7 +29,7 @@ public protocol AccountService { // TODO reevaluate DocC link!
 
     // TODO provide access to `Account` to communicate changes back to the App
 
-    var viewStyle: ViewStyle { get }
+    var viewStyle: ViewStyle { get } // TODO this has to be a computed property as of right now!
 
     /// This method implements ``Account`` logout functionality.
     ///
