@@ -22,7 +22,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "feature/structure-spelling-features")
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "main")
     ],
     targets: [
         .target(
