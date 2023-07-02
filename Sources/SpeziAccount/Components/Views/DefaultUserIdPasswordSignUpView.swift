@@ -8,8 +8,8 @@ import SwiftUI
 
 struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
-    private var signUpOptions: SignUpOptions {
-        service.configuration.signUpOptions
+    private var signupRequirements: AccountValueRequirements {
+        service.configuration.signUpRequirements
     }
 
     @State private var userId = ""
@@ -31,20 +31,21 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             .viewStateAlert(state: $state)
     }
 
-    @ViewBuilder
-    var form: some View {
+    @ViewBuilder var form: some View {
         Form {
-            Text("Thanks for creating a new account and stuff!") // TODO localize!
+            // TODO form instructions should be customizable!
+            Text("UP_SIGNUP_INSTRUCTIONS".localized(.module))
 
-            if signUpOptions.contains(.usernameAndPassword) { // TODO isn't that required?
-                Section("Credentials") {
-                    VerifiableTextField("E-Mail or Username", text: $userId)
+            // TODO both are required?
+            if signupRequirements.configured(UserIdAccountValueKey.self) && signupRequirements.configured(PasswordAccountValueKey.self) {
+                Section("UP_CREDENTIALS".localized(.module).localizedString()) {
+                    VerifiableTextField(service.configuration.userIdType.localizedStringResource, text: $userId)
                         .environmentObject(userIdValidation)
                         .fieldConfiguration(service.configuration.userIdField)
-                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
+                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
 
                     // TODO single password, but with visibility toggle: https://stackoverflow.com/questions/63095851/show-hide-password-how-can-i-add-this-feature
-                    VerifiableTextField("Password", text: $password, type: .secure)
+                    VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure)
                         .environmentObject(passwordValidation)
                         .fieldConfiguration(.newPassword)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
@@ -52,36 +53,41 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
                     .disableFieldAssistants()
             }
 
-            if signUpOptions.contains(.name) {
-                Section("Name") {
+            // TODO we could also think about a solution where the SignupValue places the
+            //  UI element => makes the whole thing more reuseable!
+            if signupRequirements.configured(NameAccountValueKey.self) {
+                Section("UP_NAME".localized(.module).localizedString()) {
                     // TODO Name Text Fields with empty validation!
                     NameTextFields(name: $name, focusState: _focusedField)
                 }
             }
 
-            if !signUpOptions.isDisjoint(with: [.dateOfBirth, .genderIdentity]) {
-                Section("Personal Details") {
-                    if signUpOptions.contains(.dateOfBirth) {
+            // TODO this not nice?
+            if signupRequirements.configured(DateOfBirthAccountValueKey.self)
+                || signupRequirements.configured(GenderIdentityAccountValueKey.self) {
+                Section("UP_PERSONAL_DETAILS".localized(.module).localizedString()) {
+                    if signupRequirements.configured(DateOfBirthAccountValueKey.self) {
                         // TODO validate that user inputted data
                         DateOfBirthPicker(date: $dateOfBirth)
                     }
 
-                    if signUpOptions.contains(.genderIdentity) {
+                    if signupRequirements.configured(GenderIdentityAccountValueKey.self) {
                         GenderIdentityPicker(genderIdentity: $genderIdentity)
                     }
                 }
             }
 
             AsyncDataEntrySubmitButton(state: $state, action: signupButtonAction) {
-                Text("Signup")
+                Text("UP_SIGNUP".localized(.module))
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
+                .buttonStyle(.borderedProminent)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
-                // TODO default error localization!
         }
+            .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
     init(using service: Service) {
@@ -95,22 +101,27 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
         passwordValidation.runValidation(input: password)
 
         guard userIdValidation.inputValid else {
-            focusedField = .username
+            focusedField = .userId
             return
         }
 
         guard passwordValidation.inputValid else {
-            focusedField = .password // TODO does this erase the password?
+            focusedField = .password
             return
         }
 
-        try await service.signUp(signUpValues: SignUpValues(
-            userId: userId,
-            password: password,
-            name: name,
-            genderIdentity: genderIdentity,
-            dateOfBirth: dateOfBirth
-        ))
+        let requestBuilder = AccountValueStorageBuilder()
+            .add(UserIdAccountValueKey.self, value: userId)
+            .add(PasswordAccountValueKey.self, value: password)
+            .add(NameAccountValueKey.self, value: name)
+            .add(GenderIdentityAccountValueKey.self, value: genderIdentity, ifConfigured: signupRequirements)
+            .add(DateOfBirthAccountValueKey.self, value: dateOfBirth, ifConfigured: signupRequirements)
+
+        let request: SignupRequest = requestBuilder.build(checking: signupRequirements)
+
+        // TODO we might want to have keys that have optional value but are still displayed!
+        try await service.signUp(signupRequest: request)
+        // TODO do we impose any requirements, that there should a logged in used after this?
     }
 }
 

@@ -111,7 +111,7 @@ public struct UsernamePasswordResetPasswordView: View {
                         .textContentType(.username)
                 }
             )
-                .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
+                .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
         }
             .padding(.leading, 16)
             .padding(.vertical, 12)

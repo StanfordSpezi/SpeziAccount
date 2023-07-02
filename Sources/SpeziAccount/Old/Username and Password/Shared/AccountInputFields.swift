@@ -7,10 +7,10 @@
 //
 
 
-enum AccountInputFields: Hashable {
-    case username // TODO rename to key?
+enum AccountInputFields: Hashable { // TODO find a extendable alternative!
+    case userId
     case password
-    case passwordRepeat
+    case passwordRepeat // TODO remove!
     case givenName
     case familyName
     case genderIdentity

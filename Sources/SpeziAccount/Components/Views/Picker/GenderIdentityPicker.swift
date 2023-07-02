@@ -31,7 +31,7 @@ struct GenderIdentityPicker: View {
 
     init(
         genderIdentity: Binding<GenderIdentity>,
-        title: LocalizedStringResource = LocalizedStringResource("UAP_SIGNUP_GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
+        title: LocalizedStringResource = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
     ) {
         self._genderIdentity = genderIdentity
         self.titleLocalization = title

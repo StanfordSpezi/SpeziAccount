@@ -7,9 +7,6 @@
 //
 
 
-import SpeziViews
-
-
 /// Defines the localization for the ``Account/Account`` module that can be used to customize the ``Account/Account`` module-related views.
 ///
 /// The values passed into the ``Localization`` substructs are automatically interpreted according to the localization key mechanisms defined in the Spezi Views module.

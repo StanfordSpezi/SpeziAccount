@@ -27,5 +27,5 @@ public protocol AccountSetupViewStyle {
     func makePrimaryView() -> PrimaryView
 
     @ViewBuilder
-    func makeAccountSummary() -> AccountSummaryView
+    func makeAccountSummary(account: AccountValuesWhat) -> AccountSummaryView
 }

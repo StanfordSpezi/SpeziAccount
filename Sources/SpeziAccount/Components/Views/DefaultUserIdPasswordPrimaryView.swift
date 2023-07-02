@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
@@ -15,39 +16,38 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    header
+                    welcomeHeader
 
                     Spacer()
 
                     VStack {
-                        DefaultUserIdPasswordEmbeddedView(using: service) // TODO pass all the other things
+                        DefaultUserIdPasswordEmbeddedView(using: service)
                     }
-                        .padding(.horizontal, AccountSetup.Constants.innerHorizontalPadding)
-                        .frame(maxWidth: AccountSetup.Constants.maxFrameWidth)
+                        .padding(.horizontal, Constants.innerHorizontalPadding)
+                        .frame(maxWidth: Constants.maxFrameWidth)
 
                     Spacer()
                     Spacer()
                     Spacer()
                 }
-                    .padding(.horizontal, AccountSetup.Constants.outerHorizontalPadding)
-                    .frame(minHeight: proxy.size.height)
-                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, Constants.outerHorizontalPadding)
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
         }
     }
 
     /// The Views Title and subtitle text.
     @ViewBuilder
-    var header: some View {
+    var welcomeHeader: some View {
         // TODO provide customizable with AccountViewStyle!
-        Text("Welcome! 👋") // TODO localize
+        Text("ACCOUNT_WELCOME".localized(.module))
             .font(.largeTitle)
             .bold()
             .multilineTextAlignment(.center)
             .padding(.bottom)
             .padding(.top, 30)
 
-        Text("Please create an account to do whatever. You may create an account if you don't have one already!") // TODO localize!
+        Text("ACCOUNT_WELCOME_SUBTITLE".localized(.module))
             .multilineTextAlignment(.center)
     }
 
@@ -58,6 +58,8 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
 
 struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static var previews: some View {
-        DefaultUserIdPasswordPrimaryView(using: DefaultUsernamePasswordAccountService())
+        NavigationStack {
+            DefaultUserIdPasswordPrimaryView(using: DefaultUsernamePasswordAccountService())
+        }
     }
 }

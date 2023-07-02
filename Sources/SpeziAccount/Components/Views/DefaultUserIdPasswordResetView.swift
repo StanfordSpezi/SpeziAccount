@@ -32,7 +32,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
                         .textFieldStyle(.roundedBorder)
                         .disableFieldAssistants()
                         .fieldConfiguration(service.configuration.userIdField)
-                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
+                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .font(.title3)
 
                     // TODO padding?
@@ -43,10 +43,12 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
                             .padding(8)
                             .frame(maxWidth: .infinity) // TODO minHeight tvs padding(6)
                     }
+                        .buttonStyle(.borderedProminent)
                         .padding(.top, 20)
                         .padding()
                 }
                     .padding()
+                    .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
 
                 Spacer()
             }
@@ -69,7 +71,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
         // TODO great would be a way to conditionally access the environment object for the button?
         validationEngine.runValidation(input: userId)
         guard validationEngine.inputValid else {
-            focusedField = .username
+            focusedField = .userId
             return
         }
 

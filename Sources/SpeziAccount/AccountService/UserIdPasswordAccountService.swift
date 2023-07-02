@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 
+// TODO this configuration should be user accessible (userIdType, userIdField config)!
 public struct UserIdPasswordServiceConfiguration {
     public static var defaultAccountImage: Image {
         Image(systemName: "person.crop.circle.fill")
@@ -19,9 +20,11 @@ public struct UserIdPasswordServiceConfiguration {
     public let name: LocalizedStringResource
     public let image: Image
 
-    public let signUpOptions: SignUpOptions
+    // TODO they are not the requirements? you might enter optional values, those are displayed but not required!
+    public let signUpRequirements: AccountValueRequirements // TODO replace this with a type that is queryable!
 
     // TODO localization
+    public let userIdType: UserIdType
     public let userIdField: FieldConfiguration
 
     // TODO login and reset just validates non-empty!
@@ -32,14 +35,16 @@ public struct UserIdPasswordServiceConfiguration {
     public init(
         name: LocalizedStringResource,
         image: Image = defaultAccountImage,
-        signUpOptions: SignUpOptions = .default,
+        signUpRequirements: AccountValueRequirements = AccountValueRequirements(), // TODO provide default!
+        userIdType: UserIdType = .emailAddress,
         userIdField: FieldConfiguration = .username,
         userIdSignupValidations: [ValidationRule] = [.nonEmpty],
         passwordSignupValidations: [ValidationRule] = [.nonEmpty]
     ) {
         self.name = name
         self.image = image
-        self.signUpOptions = signUpOptions
+        self.signUpRequirements = signUpRequirements
+        self.userIdType = userIdType
         self.userIdField = userIdField
         self.userIdSignupValidations = userIdSignupValidations
         self.passwordSignupValidations = passwordSignupValidations
@@ -51,8 +56,7 @@ public protocol UserIdPasswordAccountService: AccountService, EmbeddableAccountS
 
     func login(userId: String, password: String) async throws
 
-    // TODO ability to abstract SignUpValues
-    func signUp(signUpValues: SignUpValues) async throws // TODO refactor SignUpValues property names!
+    func signUp(signupRequest: SignupRequest) async throws
 
     func resetPassword(userId: String) async throws
 }

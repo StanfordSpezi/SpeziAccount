@@ -157,7 +157,7 @@ struct UsernamePasswordFields: View {
                     .textContentType(.username)
             }
         )
-            .onTapFocus(focusedField: _focusedField, fieldIdentifier: .username)
+            .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
     }
     
     private var passwordSecureField: some View {

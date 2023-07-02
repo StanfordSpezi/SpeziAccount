@@ -24,8 +24,8 @@ struct DefaultUsernamePasswordAccountService: UserIdPasswordAccountService {
         try? await Task.sleep(nanoseconds: 1000_000_000)
     }
 
-    func signUp(signUpValues: SignUpValues) async throws {
-        print("signup \(signUpValues)")
+    func signUp(signupRequest: SignupRequest) async throws {
+        print("signup \(signupRequest)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
     }
 
@@ -36,5 +36,6 @@ struct DefaultUsernamePasswordAccountService: UserIdPasswordAccountService {
 
     func logout() async throws {
         print("logout")
+        try? await Task.sleep(nanoseconds: 1000_000_000)
     }
 }

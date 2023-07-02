@@ -30,6 +30,7 @@ struct NameTextFields: View {
     
     
     var body: some View {
+        // TODO are there name fields without a grid?
         SpeziViews.NameFields(
             name: $name,
             givenNameField: givenNameLocalization,

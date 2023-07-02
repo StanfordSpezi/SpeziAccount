@@ -29,18 +29,22 @@ public enum GenderIdentity: Int, Sendable, CaseIterable, Identifiable, Hashable 
 }
 
 extension GenderIdentity: CustomLocalizedStringResourceConvertible {
-    public var localizedStringResource: LocalizedStringResource {
+    private var localizationValue: String.LocalizationValue {
         switch self {
         case .female:
-            return LocalizedStringResource("GENDER_IDENTITY_FEMALE", bundle: .atURL(Bundle.module.bundleURL))
+            return "GENDER_IDENTITY_FEMALE"
         case .male:
-            return LocalizedStringResource("GENDER_IDENTITY_MALE", bundle: .atURL(Bundle.module.bundleURL))
+            return "GENDER_IDENTITY_MALE"
         case .transgender:
-            return LocalizedStringResource("GENDER_IDENTITY_TRANSGENDER", bundle: .atURL(Bundle.module.bundleURL))
+            return "GENDER_IDENTITY_TRANSGENDER"
         case .nonBinary:
-            return LocalizedStringResource("GENDER_IDENTITY_NON_BINARY", bundle: .atURL(Bundle.module.bundleURL))
+            return "GENDER_IDENTITY_NON_BINARY"
         case .preferNotToState:
-            return LocalizedStringResource("GENDER_IDENTITY_PREFER_NOT_TO_STATE", bundle: .atURL(Bundle.module.bundleURL))
+            return "GENDER_IDENTITY_PREFER_NOT_TO_STATE"
         }
+    }
+
+    public var localizedStringResource: LocalizedStringResource {
+        LocalizedStringResource(localizationValue, bundle: .atURL(from: .module))
     }
 }

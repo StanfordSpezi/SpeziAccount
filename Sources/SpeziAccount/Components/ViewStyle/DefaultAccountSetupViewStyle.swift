@@ -31,7 +31,7 @@ struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetupViewSt
         Text("Hello World")
     }
 
-    func makeAccountSummary() -> some View {
-        Text("Conditionally show Account summary, or login stuff!")
+    func makeAccountSummary(account: AccountValuesWhat) -> some View {
+        Text("Account for \(account.userId)")
     }
 }

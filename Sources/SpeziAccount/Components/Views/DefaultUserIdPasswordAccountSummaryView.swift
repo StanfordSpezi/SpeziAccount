@@ -1,8 +1,9 @@
 //
-//  SwiftUIView.swift
-//  
+// This source file is part of the Spezi open-source project
 //
-//  Created by Andreas Bauer on 29.06.23.
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import SpeziViews
@@ -10,39 +11,36 @@ import SwiftUI
 
 public struct DefaultUserIdPasswordAccountSummaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
+    private let account: AccountValuesWhat
+
+    @State private var viewState: ViewState = .idle
 
     public var body: some View {
-        // TODO move this to a UserInformationView!
-        HStack(spacing: 16) {
-            let name = try! PersonNameComponents("Andreas Bauer")
-            UserProfileView(name: name)
-                .frame(height: 40)
+        VStack {
+            UserInformation(name: account.name, caption: account.userId)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(name.formatted(.name(style: .medium)))
-                if let email = .some("andi.bauer@tum.de") {
-                    Text(email)
-                }
+
+            AsyncDataEntrySubmitButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
+                try await service.logout()
             }
-            Spacer()
+            .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+            .padding()
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.background)
-                .shadow(color: .gray, radius: 2)
-        )
-        .frame(maxWidth: AccountSetup.Constants.maxFrameWidth)
     }
 
-    public init(using service: Service) {
+    public init(using service: Service, account: AccountValuesWhat) {
         self.service = service
+        self.account = account
     }
 }
 
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
+    static let account1: AccountValuesWhat = AccountValueStorageBuilder()
+        .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
+        .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .build()
+
     static var previews: some View {
-        DefaultUserIdPasswordAccountSummaryView(using: DefaultUsernamePasswordAccountService())
-            .padding()
+        DefaultUserIdPasswordAccountSummaryView(using: DefaultUsernamePasswordAccountService(), account: account1)
     }
 }

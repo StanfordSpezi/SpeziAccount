@@ -22,7 +22,7 @@
 "UAP_LOGIN_PASSWORD_TITLE" = "Password";
 "UAP_LOGIN_PASSWORD_PLACEHOLDER" = "Enter your password ...";
 "UAP_LOGIN_ACTION_BUTTON_TITLE" = "Login";
-"UAP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login";
+"UAP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login!";
 
 // SignUp
 "UAP_SIGNUP_BUTTON_TITLE" = "Username and Password";
@@ -31,18 +31,16 @@
 "UAP_SIGNUP_USERNAME_PLACEHOLDER" = "Enter your username ...";
 "UAP_SIGNUP_PASSWORD_TITLE" = "Password";
 "UAP_SIGNUP_PASSWORD_PLACEHOLDER" = "Enter your password ...";
-"UAP_SIGNUP_PASSWORD_REPEAT_TITLE" = "Repeat
-Password";
+"UAP_SIGNUP_PASSWORD_REPEAT_TITLE" = "Repeat Password";
 "UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER" = "Repeat your password ...";
 "UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR" = "The entered passwords are not equal.";
 "UAP_SIGNUP_GIVEN_NAME_TITLE" = "First Name";
 "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "Enter your first name ...";
 "UAP_SIGNUP_FAMILY_NAME_TITLE" = "Last Name";
 "UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "Enter your last name ...";
-"UAP_SIGNUP_GENDER_IDENTITY_TITLE" = "Gender Identity";
 "UAP_SIGNUP_DATE_OF_BIRTH_TITLE" = "Date of Birth";
 "UAP_SIGNUP_ACTION_BUTTON_TITLE" = "Sign Up";
-"UAP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up";
+"UAP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
 
 
 // Reset
@@ -52,7 +50,7 @@ Password";
 "UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER" = "Enter your username ...";
 "UAP_RESET_PASSWORD_ACTION_BUTTON_TITLE" = "Reset Password";
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Sent out a link to reset the password.";
-"UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Could not reset the password";
+"UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Could not reset the password!";
 
 
 // MARK: - Email and Password
@@ -62,8 +60,42 @@ Password";
 "EAP_LOGIN_USERNAME_PLACEHOLDER" = "Enter your email ...";
 "EAP_EMAIL_VERIFICATION_ERROR" = "The entered email is not correct.";
 
+// MARK: - Account
+"ACCOUNT_WELCOME" = "Your Account";
+"ACCOUNT_WELCOME_SUBTITLE" = "Please login to your account. Or create a new one if you don't have one already.";
+"ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "You are already logged in with the account shown below. Continue or change your account by logging out.";
+
+// MARK: - UserId and Password
+"UP_PASSWORD" = "Password";
+"UP_FORGOT_PASSWORD" = "Forgot Password?";
+"UP_LOGIN" = "Login";
+"UP_SIGNUP" = "Signup";
+"UP_LOGOUT" = "Logout";
+"UP_NO_ACCOUNT_YET" = "Don't have an Account yet?";
+
+// MARK: - UserId and Password (Login)
+"UP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login!";
+
+// MARK: - UserId and Password (Signup)
+"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_CREDENTIALS" = "Credentials";
+"UP_NAME" = "Name";
+"UP_PERSONAL_DETAILS" = "Personal Details";
+"UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
+
+// MARK: - UserId and Password (Password Reset)
+
+// MARK: - UserId and Password (Account Summary)
+"UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Could not logout!";
+
+// MARK: - Validation Rules
+
+// MARK: - UserIdType
+"USER_ID_EMAIL" = "E-Mail Address";
+"USER_ID_USERNAME" = "Username";
 
 // MARK: - Gender Identity
+"GENDER_IDENTITY_TITLE" = "Gender Identity";
 "GENDER_IDENTITY_FEMALE" = "Female";
 "GENDER_IDENTITY_MALE" = "Male";
 "GENDER_IDENTITY_TRANSGENDER" = "Transgender";

@@ -1,14 +1,15 @@
 //
-// Created by Andreas Bauer on 27.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
-import Foundation
 import SwiftUI
 
 public struct DefaultSuccessfulPasswordResetView: View {
     private let successfulLabelLocalization: LocalizedStringResource
-
-    // TODO remove @Environment(\.dismiss) var dismiss
 
     public var body: some View {
         Spacer()
@@ -24,15 +25,6 @@ public struct DefaultSuccessfulPasswordResetView: View {
                 .lineLimit(nil)
         }
             .padding(32)
-
-        /*
-        Button(action: {
-            dismiss()
-        }) {
-            Text("Continue") // TODO whatever!
-        }
-        */
-        // TODO how to dismiss?
 
         Spacer()
         Spacer()
