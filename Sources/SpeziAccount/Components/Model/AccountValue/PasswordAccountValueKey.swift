@@ -6,23 +6,13 @@
 // SPDX-License-Identifier: MIT
 //
 
+// TODO this is probably optional? It won't be present
 public struct PasswordAccountValueKey: AccountValueKey {
     public typealias Value = String
 }
 
-extension AccountValueStorageContainer {
+extension SignupRequest {
     public var password: PasswordAccountValueKey.Value {
         storage[PasswordAccountValueKey.self]
-    }
-}
-
-extension ModifiableAccountValueStorageContainer {
-    public var password: PasswordAccountValueKey.Value {
-        get {
-            storage[PasswordAccountValueKey.self]
-        }
-        set {
-            storage[PasswordAccountValueKey.self] = newValue
-        }
     }
 }

@@ -37,7 +37,6 @@ struct DataEntryAccountView: View {
     
     
     private var resetPasswordButton: some View {
-        // TODO move to title!
         let localized = LocalizedStringResource(stringLiteral: buttonTitle)
 
         return AsyncDataEntrySubmitButton(state: $state, action: buttonPressed) {

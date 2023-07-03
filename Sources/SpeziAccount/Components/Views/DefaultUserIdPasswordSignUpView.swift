@@ -1,5 +1,9 @@
 //
-// Created by Andreas Bauer on 26.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
@@ -26,7 +30,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
 
     var body: some View {
         form
-            .navigationTitle("Sign Up")
+            .navigationTitle("Sign Up") // TODO localize!
             .disableAnyDismissiveActions(ifProcessing: state)
             .viewStateAlert(state: $state)
     }
@@ -36,7 +40,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             // TODO form instructions should be customizable!
             Text("UP_SIGNUP_INSTRUCTIONS".localized(.module))
 
-            // TODO both are required?
+            // TODO both are required!
             if signupRequirements.configured(UserIdAccountValueKey.self) && signupRequirements.configured(PasswordAccountValueKey.self) {
                 Section("UP_CREDENTIALS".localized(.module).localizedString()) {
                     VerifiableTextField(service.configuration.userIdType.localizedStringResource, text: $userId)
@@ -110,6 +114,8 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             return
         }
 
+        focusedField = nil
+
         let requestBuilder = AccountValueStorageBuilder()
             .add(UserIdAccountValueKey.self, value: userId)
             .add(PasswordAccountValueKey.self, value: password)
@@ -122,6 +128,8 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
         // TODO we might want to have keys that have optional value but are still displayed!
         try await service.signUp(signupRequest: request)
         // TODO do we impose any requirements, that there should a logged in used after this?
+
+        // TODO navigate back if the encapsulating view doesn't do anything!
     }
 }
 

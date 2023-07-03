@@ -12,27 +12,11 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {
-    private let account: Account
-    private let user: User
-    
-    
-    var observableObjects: [any ObservableObject] {
-        [
-            account,
-            user
-        ]
-    }
-    
-    
-    init(emptyAccountServices: Bool = false) {
-        self.user = User()
-        let accountServices: [any AccountService] = emptyAccountServices
-            ? []
-            : [
-                MockUsernamePasswordAccountService(user: user),
-                MockEmailPasswordAccountService(user: user)
-            ]
-        self.account = Account(accountServices: accountServices)
+final class TestAccountConfiguration<ComponentStandard: Standard>: AccountServiceProvider {
+    var accountService: TestUsernamePasswordAccountService
+
+    init() {
+        self.accountService = TestUsernamePasswordAccountService()
+        // TODO how to supply the email account service!
     }
 }

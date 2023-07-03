@@ -13,13 +13,16 @@ import SwiftUI
 
 
 struct AccountTestsView: View {
-    @EnvironmentObject var account: Account
-    @EnvironmentObject var user: User
-    @State var showLogin = false
-    @State var showSignUp = false
-    
+    // @EnvironmentObject var account: Account
+    // @EnvironmentObject var userNo: User // TODO removed
+    // @State var showLogin = false
+    // @State var showSignUp = false
+    // TODO show different configurations (e.g. multiple account services vs ??)
     
     var body: some View {
+        AccountSetup()
+            // TODO .navigationTitle("Spezi Account")
+        /*
         List {
             if account.signedIn {
                 HStack {
@@ -51,31 +54,23 @@ struct AccountTestsView: View {
                     showSignUp = false
                 }
             }
+         */
     }
 }
 
 
 #if DEBUG
 struct AccountTestsView_Previews: PreviewProvider {
-    @StateObject private static var account: Account = {
-        let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
-        ]
-        return Account(accountServices: accountServices)
-    }()
-    
-    
     static var previews: some View {
         NavigationStack {
             AccountTestsView()
         }
-            .environmentObject(account)
+            .environmentObject(Account(services: [TestUsernamePasswordAccountService()]))
 
         NavigationStack {
             AccountTestsView()
         }
-        .environmentObject(Account(accountServices: []))
+            .environmentObject(Account())
     }
 }
 #endif

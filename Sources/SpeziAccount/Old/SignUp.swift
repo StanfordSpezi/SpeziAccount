@@ -44,7 +44,7 @@ struct SignUp_Previews: PreviewProvider {
             // UsernamePasswordAccountService(),
             // EmailPasswordAccountService()
         ]
-        return Account(accountServices: accountServices)
+        return Account(services: accountServices)
     }()
     
     static var previews: some View {

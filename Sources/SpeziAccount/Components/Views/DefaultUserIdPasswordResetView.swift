@@ -1,5 +1,9 @@
 //
-// Created by Andreas Bauer on 27.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
@@ -10,7 +14,6 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
     private let service: Service
     private let successViewBuilder: () -> SuccessView
 
-    // TODO success view!
     @State private var userId = ""
     @State private var requestSubmitted = false
 
@@ -26,22 +29,19 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
                 VStack {
                     // TODO maybe center this thing in the scroll view (e.g. iPad view?)
 
-                    // TODO generalized DataEntryAccountView!
-                    VerifiableTextField("UserId", text: $userId)  // TODO localize!
-                        .environmentObject(validationEngine) // TODO access to the button?
+                    VerifiableTextField(service.configuration.userIdType.localizedStringResource, text: $userId)
+                        .environmentObject(validationEngine)
                         .textFieldStyle(.roundedBorder)
                         .disableFieldAssistants()
                         .fieldConfiguration(service.configuration.userIdField)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .font(.title3)
 
-                    // TODO padding?
-
 
                     AsyncDataEntrySubmitButton(state: $state, action: submitRequestAction) {
                         Text("Reset Password")
                             .padding(8)
-                            .frame(maxWidth: .infinity) // TODO minHeight tvs padding(6)
+                            .frame(maxWidth: .infinity)
                     }
                         .buttonStyle(.borderedProminent)
                         .padding(.top, 20)
@@ -53,7 +53,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
                 Spacer()
             }
         }
-            .navigationTitle("Password Rest") // TODO localize!
+            .navigationTitle("UP_RESET_PASSWORD".localized(.module).localizedString())
             .disableAnyDismissiveActions(ifProcessing: state)
             .viewStateAlert(state: $state)
             .onTapGesture {
@@ -68,12 +68,13 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
     }
 
     private func submitRequestAction() async throws {
-        // TODO great would be a way to conditionally access the environment object for the button?
         validationEngine.runValidation(input: userId)
         guard validationEngine.inputValid else {
             focusedField = .userId
             return
         }
+
+        focusedField = nil
 
         try await service.resetPassword(userId: userId)
 

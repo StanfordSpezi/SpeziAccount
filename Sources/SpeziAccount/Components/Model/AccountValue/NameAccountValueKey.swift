@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO those are all called AccountValues now!
 public struct NameAccountValueKey: AccountValueKey {
     public typealias Value = PersonNameComponents
 }

@@ -8,14 +8,14 @@
 
 public protocol AnyEntry: Sendable {}
 
-struct Entry<Key: AccountValueKey>: AnyEntry {
-    let value: Key.Value
-}
-
 public struct AccountValueStorage: Sendable {
+    struct Value<Key: AccountValueKey>: AnyEntry {
+        let value: Key.Value
+    }
+
     typealias StorageType = [ObjectIdentifier: AnyEntry]
 
-    private var contents: StorageType
+    var contents: StorageType
 
     init(contents: StorageType = [:]) {
         self.contents = contents
@@ -49,16 +49,20 @@ public struct AccountValueStorage: Sendable {
 
     private func get<Key: AccountValueKey>(_ key: Key.Type) -> Key.Value? {
         // TODO check for Computed AccountValue?
-        guard let value = contents[ObjectIdentifier(key)] as? Key.Value else {
+        guard let anyEntry = contents[ObjectIdentifier(key)] else {
             return nil
         }
 
-        return value
+        guard let value = anyEntry as? Value<Key> else {
+            return nil
+        }
+
+        return value.value
     }
 
     private mutating func set<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) {
         if let value {
-            contents[ObjectIdentifier(key)] = Entry<Key>(value: value)
+            contents[ObjectIdentifier(key)] = Value<Key>(value: value)
         } else {
             contents[ObjectIdentifier(key)] = nil
         }

@@ -21,23 +21,21 @@ public struct UserIdPasswordServiceConfiguration {
     public let image: Image
 
     // TODO they are not the requirements? you might enter optional values, those are displayed but not required!
-    public let signUpRequirements: AccountValueRequirements // TODO replace this with a type that is queryable!
+    public let signUpRequirements: AccountValueRequirements
 
-    // TODO localization
     public let userIdType: UserIdType
     public let userIdField: FieldConfiguration
 
-    // TODO login and reset just validates non-empty!
-    // TODO a note on client side validation!
+    // TODO document:  login and reset just validates non-empty! (=> a note on client side validation!)
     public let userIdSignupValidations: [ValidationRule]
     public let passwordSignupValidations: [ValidationRule]
 
     public init(
         name: LocalizedStringResource,
         image: Image = defaultAccountImage,
-        signUpRequirements: AccountValueRequirements = AccountValueRequirements(), // TODO provide default!
+        signUpRequirements: AccountValueRequirements = .default,
         userIdType: UserIdType = .emailAddress,
-        userIdField: FieldConfiguration = .username,
+        userIdField: FieldConfiguration = .emailAddress,
         userIdSignupValidations: [ValidationRule] = [.nonEmpty],
         passwordSignupValidations: [ValidationRule] = [.nonEmpty]
     ) {
@@ -63,7 +61,7 @@ public protocol UserIdPasswordAccountService: AccountService, EmbeddableAccountS
 
 extension UserIdPasswordAccountService {
     public var configuration: UserIdPasswordServiceConfiguration {
-        UserIdPasswordServiceConfiguration(name: "Default Account Service") // TODO how to pass this option?
+        UserIdPasswordServiceConfiguration(name: "Default Account Service") // TODO some sane defaults?
     }
 }
 

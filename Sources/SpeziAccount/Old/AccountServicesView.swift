@@ -14,7 +14,6 @@ struct AccountServicesView<Header: View>: View {
 
     private var header: Header
     private var button: (any AccountService) -> AnyView
-    // TODO Account service may provide different login/signup or a single button (e.g., identity providers)
 
     private var documentationUrl: URL {
         // we may move to a #URL macro once Swift 5.9 is shipping
@@ -78,7 +77,7 @@ struct AccountServicesView_Previews: PreviewProvider {
             //UsernamePasswordAccountService(),
             // EmailPasswordAccountService()
         ]
-        return Account(accountServices: accountServices)
+        return Account(services: accountServices)
     }()
 
     static var previews: some View {

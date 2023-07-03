@@ -11,8 +11,6 @@ import Foundation
 
 /// The collected date instantiated by the sign up views.
 public struct SignUpValues: Sendable {
-// TODO typed collection?
-
     /// The username as inputted in the sign up user interface.
     public let userId: String
     /// The password as inputted in the sign up user interface.

@@ -16,7 +16,8 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    welcomeHeader
+                    // TODO this header shouldn't require an injected Account object!
+                    AccountSetupDefaultHeader() // TODO provide ability to replace it!
 
                     Spacer()
 
@@ -34,21 +35,7 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
         }
-    }
-
-    /// The Views Title and subtitle text.
-    @ViewBuilder
-    var welcomeHeader: some View {
-        // TODO provide customizable with AccountViewStyle!
-        Text("ACCOUNT_WELCOME".localized(.module))
-            .font(.largeTitle)
-            .bold()
-            .multilineTextAlignment(.center)
-            .padding(.bottom)
-            .padding(.top, 30)
-
-        Text("ACCOUNT_WELCOME_SUBTITLE".localized(.module))
-            .multilineTextAlignment(.center)
+        // TODO navigation title?
     }
 
     init(using service: Service) {
@@ -60,6 +47,7 @@ struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             DefaultUserIdPasswordPrimaryView(using: DefaultUsernamePasswordAccountService())
+                .environmentObject(Account())
         }
     }
 }

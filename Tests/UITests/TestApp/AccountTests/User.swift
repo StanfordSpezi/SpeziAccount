@@ -10,24 +10,22 @@ import Foundation
 import SpeziAccount
 
 
-actor User: ObservableObject {
-    @MainActor @Published var username: String?
-    @MainActor @Published var name = PersonNameComponents()
-    @MainActor @Published var gender: GenderIdentity?
-    @MainActor @Published var dateOfBirth: Date?
+class User {
+    var userId: String
+    var name = PersonNameComponents()
+    var gender: GenderIdentity?
+    var dateOfBirth: Date?
     
     
     init(
-        username: String? = nil,
-        name: PersonNameComponents = PersonNameComponents(),
-        gender: GenderIdentity? = nil,
-        dateOfBirth: Date? = nil
+        userId: String = "lelandstanford",
+        name: PersonNameComponents = PersonNameComponents(givenName: "Leland", familyName: "Stanford"),
+        gender: GenderIdentity? = .male,
+        dateOfBirth: Date? = Date() // TODO 9. März 1824
     ) {
-        Task { @MainActor in
-            self.username = username
-            self.name = name
-            self.gender = gender
-            self.dateOfBirth = dateOfBirth
-        }
+        self.userId = userId
+        self.name = name
+        self.gender = gender
+        self.dateOfBirth = dateOfBirth
     }
 }

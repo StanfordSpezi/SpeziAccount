@@ -9,33 +9,57 @@
 import Foundation
 import SwiftUI
 
-struct RandomAccountService: AccountService {
-    var viewStyle: DefaultAccountSetupViewStyle<Self> {
+public class MockSimpleAccountService: AccountService {
+    private weak var account: Account?
+
+    public var viewStyle: some AccountSetupViewStyle { // TODO one needs to
         DefaultAccountSetupViewStyle(using: self)
     }
 
-    func logout() async throws {}
+    public func logout() async throws {}
+
+    public func inject(account: Account) {
+        self.account = account
+    }
 }
 
 // TODO rename to Mock... (PR desc: Current impl provided as is, and are more like Mock implementations, => replace with protocols and Mock implementations!
-struct DefaultUsernamePasswordAccountService: UserIdPasswordAccountService {
-    func login(userId: String, password: String) async throws {
+public class DefaultUsernamePasswordAccountService: UserIdPasswordAccountService {
+    private weak var account: Account! // swiftlint:disable:this implicitly_unwrapped_optional
+
+    public func login(userId: String, password: String) async throws {
         print("login \(userId) \(password)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
+
+        let user: UserInfo = AccountValueStorageBuilder()
+            .add(UserIdAccountValueKey.self, value: userId)
+            .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+            .build()
+        await account.supplyUserInfo(user, by: self)
     }
 
-    func signUp(signupRequest: SignupRequest) async throws {
+    public func signUp(signupRequest: SignupRequest) async throws {
         print("signup \(signupRequest)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
+
+        let user: UserInfo = AccountValueStorageBuilder(from: signupRequest)
+            .remove(PasswordAccountValueKey.self)
+            .build()
+        await account.supplyUserInfo(user, by: self)
     }
 
-    func resetPassword(userId: String) async throws {
+    public func resetPassword(userId: String) async throws {
         print("resetPassword \(userId)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
     }
 
-    func logout() async throws {
+    public func logout() async throws {
         print("logout")
         try? await Task.sleep(nanoseconds: 1000_000_000)
+        await account.removeUserInfo(by: self)
+    }
+
+    public func inject(account: Account) {
+        self.account = account
     }
 }

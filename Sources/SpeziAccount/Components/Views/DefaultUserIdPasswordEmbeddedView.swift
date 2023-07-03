@@ -13,7 +13,6 @@ import SwiftUI
 public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
-    // TODO we want a view model?
     @State private var userId: String = ""
     @State private var password: String = ""
 
@@ -49,7 +48,7 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
                             Text("UP_FORGOT_PASSWORD".localized(.module))
                                 .font(.caption)
                                 .bold()
-                                .foregroundColor(Color(uiColor: .systemGray)) // TODO color primary? secondary?
+                                .foregroundColor(Color(uiColor: .systemGray))
                         }
                     }
                         .environmentObject(passwordValidation)
@@ -88,14 +87,7 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
             .onTapGesture {
                 focusedField = nil // TODO what does this do?
             }
-            .onDisappear {
-                // TODO reset stuff
-                // TODO idEmpty = false
-                // TODO passwordEmpty = false
-                // TODO loginTask?.cancel()
-                //  => app exit?
-            }
-            // TODO inject somwhere else
+            // TODO inject somwhere else?
             .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
@@ -104,7 +96,6 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
     }
 
     private func loginButtonAction() async throws {
-        // TODO verifications are now called after the animation!
         userIdValidation.runValidation(input: userId)
         passwordValidation.runValidation(input: password)
 
@@ -117,6 +108,8 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
             focusedField = .password
             return
         }
+
+        focusedField = nil
 
         try await service.login(userId: userId, password: password)
 

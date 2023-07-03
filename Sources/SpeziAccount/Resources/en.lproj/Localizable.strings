@@ -84,6 +84,7 @@
 "UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
 
 // MARK: - UserId and Password (Password Reset)
+"UP_RESET_PASSWORD" = "Reset Password";
 
 // MARK: - UserId and Password (Account Summary)
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Could not logout!";

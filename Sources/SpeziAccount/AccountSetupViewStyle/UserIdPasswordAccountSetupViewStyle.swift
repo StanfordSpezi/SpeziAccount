@@ -13,11 +13,6 @@ import SwiftUI
 public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewStyle where Service: UserIdPasswordAccountService {
     associatedtype SignupView: View
     associatedtype PasswordResetView: View
-    // TODO provide embedded primary view (simplified?) ! if its the single element
-    // TODO provide a button!
-    //  -> Primary View (navigate to sing up if it doesn't exists)
-    //  -> Signup View
-    //  -> Password Reset view!
 
     @ViewBuilder
     func makeSignupView() -> SignupView
@@ -28,7 +23,6 @@ public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewS
 
 // TODO move to Default folder as extension file
 extension UserIdPasswordAccountSetupViewStyle {
-    // TODO review if we missed to pass any options to the default constructors
     public func makePrimaryView() -> some View {
         DefaultUserIdPasswordPrimaryView(using: service)
     }
@@ -47,17 +41,16 @@ extension UserIdPasswordAccountSetupViewStyle {
         }
     }
 
-    public func makeAccountSummary(account: AccountValuesWhat) -> some View {
+    public func makeAccountSummary(account: UserInfo) -> some View {
         DefaultUserIdPasswordAccountSummaryView(using: service, account: account)
     }
 
     public func makeAccountServiceButtonLabel() -> some View {
-        // TODO how to generate a sensible default!
         Group {
             service.configuration.image
                 .font(.title2)
             Text(service.configuration.name)
         }
-        .accountServiceButtonBackground()
+            .accountServiceButtonBackground()
     }
 }

@@ -17,7 +17,6 @@ public protocol AccountSetupViewStyle {
     associatedtype PrimaryView: View
     associatedtype AccountSummaryView: View
 
-    // TODO that's not really a great way to deal with that?
     var service: Service { get }
 
     @ViewBuilder
@@ -27,5 +26,5 @@ public protocol AccountSetupViewStyle {
     func makePrimaryView() -> PrimaryView
 
     @ViewBuilder
-    func makeAccountSummary(account: AccountValuesWhat) -> AccountSummaryView
+    func makeAccountSummary(account: UserInfo) -> AccountSummaryView // TODO provide a default here!
 }

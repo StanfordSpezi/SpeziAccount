@@ -19,7 +19,6 @@ struct UITestsApp: App {
         WindowGroup {
             NavigationStack {
                 AccountTestsView()
-                    .navigationTitle("Spezi Account")
                     .spezi(appDelegate)
             }
         }

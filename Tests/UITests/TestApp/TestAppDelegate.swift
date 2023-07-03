@@ -7,12 +7,16 @@
 //
 
 import Spezi
-
+import SpeziAccount
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: TestAppStandard()) {
-            TestAccountConfiguration(emptyAccountServices: FeatureFlags.emptyAccountServices)
+            AccountConfiguration {
+                // TODO just put in the account services?
+
+                TestAccountConfiguration() // TODO FeatureFlags.emptyAccountServices
+            }
         }
     }
 }

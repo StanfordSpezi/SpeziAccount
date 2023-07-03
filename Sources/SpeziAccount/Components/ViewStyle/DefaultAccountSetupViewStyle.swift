@@ -9,16 +9,14 @@
 import Foundation
 import SwiftUI
 
-struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetupViewStyle {
-    var service: Service
+public struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetupViewStyle {
+    public var service: Service
 
     init(using service: Service) {
         self.service = service
     }
 
-    func makeAccountServiceButtonLabel() -> some View {
-        // TODO this method is currently called label, but the AccountServiceButton is called button => confusing!
-        //  => make it a modifier!
+    public func makeAccountServiceButtonLabel() -> some View {
         Group {
             Image(systemName: "ellipsis.rectangle")
                 .font(.title2)
@@ -27,11 +25,11 @@ struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetupViewSt
             .accountServiceButtonBackground()
     }
 
-    func makePrimaryView() -> some View {
+    public func makePrimaryView() -> some View {
         Text("Hello World")
     }
 
-    func makeAccountSummary(account: AccountValuesWhat) -> some View {
+    public func makeAccountSummary(account: UserInfo) -> some View {
         Text("Account for \(account.userId)")
     }
 }

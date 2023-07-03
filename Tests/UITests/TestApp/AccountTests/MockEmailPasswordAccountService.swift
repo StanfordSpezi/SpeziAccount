@@ -11,11 +11,10 @@ import SpeziAccount
 
 class MockEmailPasswordAccountService: EmailPasswordAccountService {
     let user: User
-    
+    // TODO transform!
     
     init(user: User) {
         self.user = user
-        super.init()
     }
     
     
@@ -28,20 +27,20 @@ class MockEmailPasswordAccountService: EmailPasswordAccountService {
         
         await MainActor.run {
             account?.signedIn = true
-            user.username = username
+            user.userId = username
         }
     }
     
     override func signUp(signUpValues: SignUpValues) async throws {
         try await Task.sleep(for: .seconds(5))
         
-        guard signUpValues.username != "lelandstanford@stanford.edu" else {
+        guard signUpValues.userId != "lelandstanford@stanford.edu" else {
             throw MockAccountServiceError.usernameTaken
         }
         
         await MainActor.run {
             account?.signedIn = true
-            user.username = signUpValues.username
+            user.userId = signUpValues.userId
             user.name = signUpValues.name
             user.dateOfBirth = signUpValues.dateOfBirth
             user.gender = signUpValues.genderIdentity

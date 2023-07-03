@@ -10,14 +10,14 @@ import AuthenticationServices
 import SpeziViews
 import SwiftUI
 
-public enum Constants {
+public enum Constants { // TODO rename!
     static let outerHorizontalPadding: CGFloat = 16 // TODO use 32?
     static let innerHorizontalPadding: CGFloat = 16 // TODO use 32?
     static let maxFrameWidth: CGFloat = 450
 }
 
-/// A view which provides the default titlte and subtitlte text.
-public struct DefaultHeader: View { // TODO rename!
+/// A view which provides the default title and subtitle text.
+public struct AccountSetupDefaultHeader: View { // TODO move
     @EnvironmentObject
     private var account: Account
 
@@ -63,7 +63,6 @@ public struct AccountSetup<Header: View>: View {
             .filter { $0 is any EmbeddableAccountService }
 
         if embeddableServices.count == 1 {
-            // TODO unwrap first first and then cast?
             return embeddableServices.first as? any EmbeddableAccountService
         }
 
@@ -92,13 +91,12 @@ public struct AccountSetup<Header: View>: View {
 
                     Spacer()
 
-                    if let account = account.account {
+                    if let account = account.user {
                         displayAccount(account: account)
                     } else {
                         noAccountState
                     }
 
-                    // TODO provide ability to inject footer (e.g., terms and conditions?)
                     Spacer()
                     Spacer()
                     Spacer()
@@ -145,7 +143,6 @@ public struct AccountSetup<Header: View>: View {
     @ViewBuilder var accountServicesSection: some View {
         if let embeddableService = embeddableAccountService {
             let embeddableViewStyle = embeddableService.viewStyle
-            // TODO i can get back type erasure right?
             AnyView(embeddableViewStyle.makeEmbeddedAccountView())
 
 
@@ -158,7 +155,6 @@ public struct AccountSetup<Header: View>: View {
                     let service = nonEmbeddableAccountServices[index]
                     let style = service.viewStyle
 
-                    // TODO embed into style?
                     NavigationLink {
                         AnyView(style.makePrimaryView())
                     } label: {
@@ -173,15 +169,10 @@ public struct AccountSetup<Header: View>: View {
                 let service = services[index]
                 let style = service.viewStyle
 
-                // TODO embed into style!
                 NavigationLink {
                     AnyView(style.makePrimaryView())
-                    // TODO inject account service!! lol, nothing is typed!
                 } label: {
                     AnyView(style.makeAccountServiceButtonLabel())
-                    // TODO inject account service!! lol, nothing is typed!
-
-                     // TODO may we provide a default implementation, or work with a optional serviceButton style?
                 }
             }
         }
@@ -218,21 +209,16 @@ public struct AccountSetup<Header: View>: View {
                 .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
             }
         }
-
-        // TODO we want to check if there is a single username/password provider and the rest are identity providers!
-        //  the one need input fields! (and a secondary action!)
-        //  the other need a single button
-        //  => KeyPasswordBasedAuthentication[Service]
-        //  => IdentityProvideBasedAuthentication[Service]
     }
 
     // TODO docs
-    public init(@ViewBuilder _ header: () -> Header = { DefaultHeader() }) {
+    public init(@ViewBuilder _ header: () -> Header = { AccountSetupDefaultHeader() }) {
         self.header = header()
     }
 
-    func displayAccount(account: AccountValuesWhat) -> some View {
-        let service = self.account.accountServices.first! // TODO how to get the primary account service!
+    func displayAccount(account: UserInfo) -> some View {
+        // TODO how to get the currently active account service!
+        let service = self.account.accountServices.first!
 
         // TODO someone needs to place the Continue button?
 
@@ -245,18 +231,18 @@ struct AccountView_Previews: PreviewProvider {
     static var accountServicePermutations: [[any AccountService]] = {
        [
            [DefaultUsernamePasswordAccountService()],
-           [RandomAccountService()],
-           [DefaultUsernamePasswordAccountService(), RandomAccountService()],
+           [MockSimpleAccountService()],
+           [DefaultUsernamePasswordAccountService(), MockSimpleAccountService()],
            [
                DefaultUsernamePasswordAccountService(),
-               RandomAccountService(),
+               MockSimpleAccountService(),
                DefaultUsernamePasswordAccountService()
            ],
            []
        ]
     }()
 
-    static let account1: AccountValuesWhat = AccountValueStorageBuilder()
+    static let account1: UserInfo = AccountValueStorageBuilder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build()
@@ -266,15 +252,15 @@ struct AccountView_Previews: PreviewProvider {
             NavigationStack {
                 AccountSetup()
             }
-                .environmentObject(Account(accountServices: accountServicePermutations[index]))
+                .environmentObject(Account(services: accountServicePermutations[index]))
         }
 
         NavigationStack {
             AccountSetup()
         }
         .environmentObject(Account(
-            accountServices: [DefaultUsernamePasswordAccountService()],
-            account: account1
+            account: account1,
+            active: DefaultUsernamePasswordAccountService()
         ))
     }
 }

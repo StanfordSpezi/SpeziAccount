@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO these are keys!!!
 public struct DateOfBirthAccountValueKey: OptionalAccountValueKey {
     public typealias Value = Date
 }

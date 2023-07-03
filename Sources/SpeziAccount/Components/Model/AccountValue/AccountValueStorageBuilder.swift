@@ -13,9 +13,25 @@ public class AccountValueStorageBuilder {
         self.contents = [:]
     }
 
+    public init<Container: AccountValueStorageContainer>(from container: Container) {
+        self.contents = container.storage.contents
+    }
+
     @discardableResult
     public func add<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
-        contents[ObjectIdentifier(key)] = Entry<Key>(value: value)
+        contents[ObjectIdentifier(key)] = AccountValueStorage.Value<Key>(value: value)
+        return self
+    }
+
+    @discardableResult
+    public func add<Key: OptionalAccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
+        contents[ObjectIdentifier(key)] = value.map { AccountValueStorage.Value<Key>(value: $0) }
+        return self
+    }
+
+    @discardableResult
+    public func remove<Key: AccountValueKey>(_ key: Key.Type) -> Self {
+        contents[ObjectIdentifier(key)] = nil
         return self
     }
 
@@ -35,17 +51,17 @@ public class AccountValueStorageBuilder {
         Container(storage: AccountValueStorage(contents: contents))
     }
 
-    public func build<Container: AccountValueStorageContainer>(
-        _ type: Container.Type = Container.self,
+    public func build(
         checking requirements: AccountValueRequirements? = nil
-    ) -> Container {
+    ) -> SignupRequest {
         let storage = AccountValueStorage(contents: contents)
+        let request = SignupRequest(storage: storage)
 
         if let requirements {
             // TODO sanity checks that all required properties are set!
-            requirements.validateRequirements(in: storage)
+            requirements.validateRequirements(in: request)
         }
 
-        return Container(storage: storage)
+        return request
     }
 }

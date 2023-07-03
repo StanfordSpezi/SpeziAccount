@@ -1,5 +1,9 @@
 //
-// Created by Andreas Bauer on 27.06.23.
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
 //
 
 import Foundation
@@ -12,7 +16,9 @@ public struct AsyncDataEntrySubmitButton<ButtonLabel: View>: View {
     private var role: ButtonRole?
     private var action: () async throws -> Void
 
-    @Environment(\.defaultErrorDescription) var defaultErrorDescription
+    @Environment(\.defaultErrorDescription)
+    var defaultErrorDescription
+
     @Binding private var state: ViewState
 
     public var body: some View {
@@ -52,7 +58,6 @@ public struct AsyncDataEntrySubmitButton<ButtonLabel: View>: View {
         }
 
         withAnimation(.easeOut(duration: 0.2)) {
-            // TODO focusField = none?
             state = .processing
         }
 
@@ -94,7 +99,12 @@ struct AsyncDataEntrySubmitButton_Previews: PreviewProvider {
             .viewStateAlert(state: $state)
         }
 
-        init(_ title: LocalizedStringResource = "Test Button", role: ButtonRole? = nil, state: ViewState = .idle, action: @escaping () async throws -> Void = {}) {
+        init(
+            _ title: LocalizedStringResource = "Test Button",
+            role: ButtonRole? = nil,
+            state: ViewState = .idle,
+            action: @escaping () async throws -> Void = {}
+        ) {
             self.title = title
             self.role = role
             self.action = action
