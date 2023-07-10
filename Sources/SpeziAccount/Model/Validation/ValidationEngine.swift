@@ -8,11 +8,14 @@
 
 import Foundation
 
+// TODO document
+
+/// A model that is responsible to verify a list of ``ValidationRule``s.
 public class ValidationEngine: ObservableObject {
     public let validationRules: [ValidationRule]
 
-    @Published var inputValid = false
-    @Published var validationResults: [LocalizedStringResource] = []
+    @Published public var inputValid = false
+    @Published public var validationResults: [LocalizedStringResource] = []
 
     public init(rules validationRules: [ValidationRule]) {
         self.validationRules = validationRules

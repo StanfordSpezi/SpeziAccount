@@ -11,24 +11,6 @@ import Spezi
 import SpeziViews
 import SwiftUI
 
-public struct RegexDefaults {
-    static var nonEmptyOrWhitespaceOnlyString: Regex = {
-        guard let regex = try? Regex("(.|\\s)*\\S(.|\\s)*") else {
-            fatalError("Failed to create Regex to match non-empty and whitespace-only strings")
-        }
-
-        return regex
-    }()
-
-    static var nonEmptyString: Regex = {
-        guard let regex = try? Regex("(.)+") else {
-            fatalError("Failed to create Regex to match non-empty strings")
-        }
-
-        return regex
-    }()
-}
-
 /// Account service that enables a email and password based account management.
 ///
 /// The ``EmailPasswordAccountService`` enables a email and password based account management based on the ``UsernamePasswordAccountService``.
@@ -53,7 +35,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.login.buttonTitle,
             destination: UsernamePasswordLoginView(
-                usernameValidationRules: [.emailValidationRule]
+                usernameValidationRules: [.minimalEmailValidationRule]
             )
         )
     }
@@ -62,7 +44,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.signUp.buttonTitle,
             destination: UsernamePasswordSignUpView(
-                usernameValidationRules: [.emailValidationRule]
+                usernameValidationRules: [.minimalEmailValidationRule]
             )
         )
     }
@@ -71,7 +53,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         AnyView(
             NavigationLink {
                 UsernamePasswordResetPasswordView(
-                    usernameValidationRules: [.emailValidationRule]
+                    usernameValidationRules: [.minimalEmailValidationRule]
                 ) {
                     processSuccessfulResetPasswordView
                 }

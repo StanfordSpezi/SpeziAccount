@@ -172,7 +172,7 @@ struct UsernamePasswordResetPasswordView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             UsernamePasswordResetPasswordView {
-                Text("Sucessfully sent a link to reset the password ...")
+                Text("Successfully sent a link to reset the password ...")
             }
                 .environmentObject(UsernamePasswordAccountService())
         }

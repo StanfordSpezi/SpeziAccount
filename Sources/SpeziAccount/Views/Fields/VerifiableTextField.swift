@@ -110,7 +110,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 struct VerifiableTextField_Previews: PreviewProvider {
     private struct PreviewView: View {
         @State var text = ""
-        @StateObject var engine = ValidationEngine(rules: .lettersOnly)
+        @StateObject var engine = ValidationEngine(rules: .asciiLettersOnly)
 
         var body: some View {
             VerifiableTextField(text: $text) {

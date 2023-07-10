@@ -58,12 +58,18 @@
 "EAP_SIGNUP_BUTTON_TITLE" = "Email and Password";
 "EAP_LOGIN_USERNAME_TITLE" = "Email";
 "EAP_LOGIN_USERNAME_PLACEHOLDER" = "Enter your email ...";
-"EAP_EMAIL_VERIFICATION_ERROR" = "The entered email is not correct.";
+
+// TODO here begins the reworked localizable
 
 // MARK: - Account
 "ACCOUNT_WELCOME" = "Your Account";
 "ACCOUNT_WELCOME_SUBTITLE" = "Please login to your account. Or create a new one if you don't have one already.";
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "You are already logged in with the account shown below. Continue or change your account by logging out.";
+
+// MARK: - AccountValues
+"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Value";
+"ACCOUNT_VALUES_MISSING_VALUE_REASON" = "A required Account Value was not supplied.";
+"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Raise an issue with the developer of the Account Service.";
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Password";
@@ -90,6 +96,10 @@
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Could not logout!";
 
 // MARK: - Validation Rules
+"VALIDATION_RULE_NON_EMPTY" = "This field cannot be empty.";
+"VALIDATION_RULE_UNICODE_LETTERS" = "You must only use letters.";
+"VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
+"VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is not correct.";
 
 // MARK: - UserIdType
 "USER_ID_EMAIL" = "E-Mail Address";

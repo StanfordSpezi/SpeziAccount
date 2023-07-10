@@ -17,13 +17,7 @@ import Foundation
 ///     message: "The entered email is not correct."
 /// )
 /// ```
-public struct ValidationRule: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case rule
-        case message
-    }
-    
-    
+public struct ValidationRule {
     private let rule: (String) -> Bool
     private let message: LocalizedStringResource
     
@@ -36,6 +30,16 @@ public struct ValidationRule: Decodable {
     public init(rule: @escaping (String) -> Bool, message: LocalizedStringResource) {
         self.rule = rule
         self.message = message
+    }
+
+    /// Creates a validation rule from an escaping closure
+    ///
+    /// - Parameters:
+    ///   - rule: An escaping closure that validates a `String` and returns a boolean result
+    ///   - message: A `String` message to display if validation fails
+    ///   - bundle: The Bundle to localize for.
+    public init(rule: @escaping (String) -> Bool, message: String, bundle: Bundle) {
+        self.init(rule: rule, message: message.localized(bundle))
     }
     
     /// Creates a validation rule from a regular expression
@@ -60,22 +64,6 @@ public struct ValidationRule: Decodable {
         self.init(regex: regex, message: message.localized(bundle))
     }
     
-    public init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        
-        let regexString = try values.decode(String.self, forKey: .rule)
-        let regex = try Regex<AnyRegexOutput>(regexString)
-
-        let message: LocalizedStringResource
-        do {
-            message = LocalizedStringResource(stringLiteral: try values.decode(String.self, forKey: .message))
-        } catch {
-            message = try values.decode(LocalizedStringResource.self, forKey: .message)
-        }
-
-        self.init(regex: regex, message: message)
-    }
-    
     /// Validates the contents of a `String` and returns a `String` error message if validation fails
     func validate(_ input: String) -> LocalizedStringResource? {
         guard !rule(input) else {
@@ -83,5 +71,29 @@ public struct ValidationRule: Decodable {
         }
         
         return message
+    }
+}
+
+extension ValidationRule: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case rule
+        case message
+    }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+
+        let regexString = try values.decode(String.self, forKey: .rule)
+        let regex = try Regex<AnyRegexOutput>(regexString)
+
+        let message: LocalizedStringResource
+        do {
+            // backwards compatibility. An earlier version of `ValidationRule` used a non-localized string field.
+            message = LocalizedStringResource(stringLiteral: try values.decode(String.self, forKey: .message))
+        } catch {
+            message = try values.decode(LocalizedStringResource.self, forKey: .message)
+        }
+
+        self.init(regex: regex, message: message)
     }
 }

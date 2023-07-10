@@ -284,7 +284,7 @@ struct UsernamePasswordFields: View {
 
 #if DEBUG
 struct UsernamePasswordFields_Previews: PreviewProvider {
-    private static var validationRules: [ValidationRule] = [.lettersOnly]
+    private static var validationRules: [ValidationRule] = [.asciiLettersOnly]
 
     private struct PreviewView: View {
         @State private var username: String = ""

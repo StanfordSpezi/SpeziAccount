@@ -16,6 +16,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
         service.configuration.signUpRequirements
     }
 
+    // TODO viewmodel?
     @State private var userId = ""
     @State private var password = ""
     @State private var name = PersonNameComponents()
