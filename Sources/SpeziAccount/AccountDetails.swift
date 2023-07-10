@@ -24,6 +24,10 @@ public struct AccountDetails: Sendable, ModifiableAccountValueStorageContainer {
     internal let accountServiceId: ObjectIdentifier
 
     public var accountService: any AccountService {
+        guard _account.isInjected else {
+            fatalError("You can only access the `accountService` property of the `AccountDetails` if was supplied to the `Account` instance.")
+        }
+
         guard let service = account.mappedAccountServices[accountServiceId] else {
             fatalError("AccountDetails stored an AccountService Id that wasn't present in the Account instance!")
         }

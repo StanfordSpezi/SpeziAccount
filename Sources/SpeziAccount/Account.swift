@@ -9,29 +9,9 @@
 import Spezi
 import SwiftUI
 
-// TODO naming?
+/// A property wrapper that can be used within ``AccountService`` instances to gain
+/// access to the ``Account`` instance.
 typealias AccountReference = WeakInjectable<Account>
-
-@propertyWrapper
-public final class WeakInjectable<Type: AnyObject> { // TODO where to move?
-    private weak var weakReference: Type?
-
-    public var wrappedValue: Type {
-        guard let weakReference else {
-            fatalError("Failed to retrieve `\(Type.self)` object from weak reference is not yet present or not present anymore.")
-        }
-
-        return weakReference
-    }
-
-    public init() {}
-
-    func inject(_ type: Type) {
-        self.weakReference = type
-    }
-}
-
-extension WeakInjectable: Sendable where Type: Sendable {}
 
 /// Account-related Spezi module managing a collection of ``AccountService``s.
 /// TODO update docs!
