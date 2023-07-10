@@ -26,7 +26,7 @@ class MockEmailPasswordAccountService: EmailPasswordAccountService {
         }
         
         await MainActor.run {
-            account?.signedIn = true
+            // TODO account?.signedIn = true
             user.userId = username
         }
     }
@@ -39,7 +39,7 @@ class MockEmailPasswordAccountService: EmailPasswordAccountService {
         }
         
         await MainActor.run {
-            account?.signedIn = true
+            // TODO account?.signedIn = true
             user.userId = signUpValues.userId
             user.name = signUpValues.name
             user.dateOfBirth = signUpValues.dateOfBirth

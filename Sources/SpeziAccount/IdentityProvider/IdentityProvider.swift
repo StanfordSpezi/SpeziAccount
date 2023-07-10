@@ -8,5 +8,6 @@
 
 import Foundation
 
-protocol IdentityProvider {
+public protocol IdentityProvider {
+    // TODO do anything here?
 }

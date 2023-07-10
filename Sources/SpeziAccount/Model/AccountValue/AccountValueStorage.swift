@@ -75,8 +75,6 @@ public struct AccountValueStorage: Sendable {
 }
 
 public protocol AccountValueStorageContainer {
-    init(storage: AccountValueStorage)
-
     var storage: AccountValueStorage { get }
 }
 

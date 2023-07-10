@@ -46,9 +46,14 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         }
         return self
     }
+}
 
-    public func build() -> Container {
-        Container(storage: AccountValueStorage(contents: contents))
+// TODO move them?
+
+extension AccountValueStorageBuilder where Container == AccountDetails {
+    public func build<Service: AccountService>(owner accountService: Service) -> Container {
+        let storage = AccountValueStorage(contents: contents)
+        return Container(storage: storage, owner: accountService)
     }
 }
 
@@ -60,7 +65,6 @@ extension AccountValueStorageBuilder where Container == SignupRequest {
         let request = Container(storage: storage)
 
         if let requirements {
-            // TODO sanity checks that all required properties are set!
             try requirements.validateRequirements(in: request)
         }
 

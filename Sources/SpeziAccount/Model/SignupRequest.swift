@@ -11,7 +11,7 @@ public struct SignupRequest: Sendable, AccountValueStorageContainer {
 
     public let storage: AccountValueStorage
 
-    public init(storage: AccountValueStorage) {
+    init(storage: AccountValueStorage) {
         self.storage = storage
     }
 }

@@ -9,9 +9,8 @@
 import SpeziViews
 import SwiftUI
 
-public struct DefaultUserIdPasswordAccountSummaryView<Service: UserIdPasswordAccountService>: View {
-    private let service: Service
-    private let account: AccountInformation
+public struct DefaultUserIdPasswordAccountSummaryView: View {
+    private let account: AccountDetails
 
     @State private var viewState: ViewState = .idle
 
@@ -21,26 +20,25 @@ public struct DefaultUserIdPasswordAccountSummaryView<Service: UserIdPasswordAcc
 
 
             AsyncDataEntrySubmitButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
-                try await service.logout()
+                try await account.accountService.logout()
             }
             .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             .padding()
         }
     }
 
-    public init(using service: Service, account: AccountInformation) {
-        self.service = service
+    public init(account: AccountDetails) {
         self.account = account
     }
 }
 
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
-    static let account = AccountInformation.Builder()
+    static let account = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build()
+        .build(owner: DefaultUsernamePasswordAccountService())
 
     static var previews: some View {
-        DefaultUserIdPasswordAccountSummaryView(using: DefaultUsernamePasswordAccountService(), account: account)
+        DefaultUserIdPasswordAccountSummaryView(account: account)
     }
 }

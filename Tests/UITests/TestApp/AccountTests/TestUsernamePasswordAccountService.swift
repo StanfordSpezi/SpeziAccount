@@ -49,14 +49,14 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     }
 
     func updateUser() async {
-        let userInfo = AccountInformation.Builder()
+        let details = AccountDetails.Builder()
             .add(UserIdAccountValueKey.self, value: registeredUser.userId)
             .add(NameAccountValueKey.self, value: registeredUser.name)
             .add(GenderIdentityAccountValueKey.self, value: registeredUser.gender)
             .add(DateOfBirthAccountValueKey.self, value: registeredUser.dateOfBirth)
-            .build()
+            .build(owner: self)
 
-        await account.supplyUserInfo(userInfo, by: self) // TODO sendable self?
+        await account.supplyUserInfo(details)
     }
 
     func resetPassword(userId: String) async throws {
@@ -64,7 +64,7 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     }
 
     func logout() async throws {
-        await account.removeUserInfo(by: self)
+        await account.removeUserInfo()
     }
 
     func inject(account: Account) {

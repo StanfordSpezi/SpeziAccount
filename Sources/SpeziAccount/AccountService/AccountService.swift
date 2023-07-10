@@ -16,9 +16,13 @@ import SwiftUI
 /// ``EmbeddableAccountService`` or ``KeyPasswordBasedAccountService``. TODO docs?
 ///
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject { // TODO identifiable? do we wanna mandate Actor?
+public protocol AccountService: AnyObject, Hashable, CustomStringConvertible { // TODO identifiable? do we wanna mandate Actor?
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
+    typealias ID = ObjectIdentifier
+
+    /// An identifier to uniquely identify an `AccountService`.
+    var id: ID { get }
 
     // TODO provide access to `Account` to communicate changes back to the App
 
@@ -33,8 +37,30 @@ public protocol AccountService: AnyObject { // TODO identifiable? do we wanna ma
     ///   Make sure to remain in a state where the user is capable of retrying the logout process.
     func logout() async throws
 
-    // TODO document requirement to store it as a weak reference!
-    func inject(account: Account)
-
     // TODO we will/should enforce a Account removal functionality
+
+    // TODO document requirement to store it as a weak reference!
+    // func inject(account: AccountBox)
+}
+
+extension AccountService {
+    /// Default implementation that instantiates an `ObjectIdentifier` using `Self.self`.
+    public var id: ID {
+        ObjectIdentifier(Self.self)
+    }
+
+    /// Default `CustomStringConvertible` returning the type name.
+    public var description: String {
+        "\(Self.self)"
+    }
+
+    /// Default `Hashable` implementation by relying on the hashable ``id`` property.
+    public func hash(into hasher: inout Hasher) {
+        id.hash(into: &hasher)
+    }
+
+    /// Default `Equatable` implementation by relying on the hashable ``id`` property.
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+    }
 }

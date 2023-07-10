@@ -26,5 +26,5 @@ public protocol AccountSetupViewStyle {
     func makePrimaryView() -> PrimaryView
 
     @ViewBuilder
-    func makeAccountSummary(account: AccountInformation) -> AccountSummaryView // TODO provide a default here!
+    func makeAccountSummary(account: AccountDetails) -> AccountSummaryView // TODO provide a default here!
 }

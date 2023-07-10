@@ -91,7 +91,7 @@ public struct AccountSetup<Header: View>: View {
 
                     Spacer()
 
-                    if let account = account.user {
+                    if let account = account.details {
                         displayAccount(account: account)
                     } else {
                         noAccountState
@@ -216,7 +216,7 @@ public struct AccountSetup<Header: View>: View {
         self.header = header()
     }
 
-    func displayAccount(account: AccountInformation) -> some View {
+    func displayAccount(account: AccountDetails) -> some View {
         // TODO how to get the currently active account service!
         let service = self.account.accountServices.first!
 
@@ -242,10 +242,9 @@ struct AccountView_Previews: PreviewProvider {
        ]
     }()
 
-    static let account = AccountInformation.Builder()
+    static let detailsBuilder = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build()
 
     static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
@@ -258,10 +257,7 @@ struct AccountView_Previews: PreviewProvider {
         NavigationStack {
             AccountSetup()
         }
-        .environmentObject(Account(
-            account: account,
-            active: DefaultUsernamePasswordAccountService()
-        ))
+        .environmentObject(Account(building: detailsBuilder, active: DefaultUsernamePasswordAccountService()))
     }
 }
 #endif
