@@ -6,14 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
-public class AccountValueStorageBuilder {
+public class AccountValueStorageBuilder<Container: AccountValueStorageContainer> {
     private var contents: AccountValueStorage.StorageType
 
     public init() {
         self.contents = [:]
     }
 
-    public init<Container: AccountValueStorageContainer>(from container: Container) {
+    public init<Source: AccountValueStorageContainer>(from container: Source) {
         self.contents = container.storage.contents
     }
 
@@ -47,19 +47,21 @@ public class AccountValueStorageBuilder {
         return self
     }
 
-    public func build<Container: AccountValueStorageContainer>(_ type: Container.Type = Container.self) -> Container {
+    public func build() -> Container {
         Container(storage: AccountValueStorage(contents: contents))
     }
+}
 
+extension AccountValueStorageBuilder where Container == SignupRequest {
     public func build(
         checking requirements: AccountValueRequirements? = nil
-    ) -> SignupRequest {
+    ) throws -> Container {
         let storage = AccountValueStorage(contents: contents)
-        let request = SignupRequest(storage: storage)
+        let request = Container(storage: storage)
 
         if let requirements {
             // TODO sanity checks that all required properties are set!
-            requirements.validateRequirements(in: request)
+            try requirements.validateRequirements(in: request)
         }
 
         return request

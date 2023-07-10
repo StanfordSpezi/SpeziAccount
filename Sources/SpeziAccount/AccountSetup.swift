@@ -216,7 +216,7 @@ public struct AccountSetup<Header: View>: View {
         self.header = header()
     }
 
-    func displayAccount(account: UserInfo) -> some View {
+    func displayAccount(account: AccountInformation) -> some View {
         // TODO how to get the currently active account service!
         let service = self.account.accountServices.first!
 
@@ -242,7 +242,7 @@ struct AccountView_Previews: PreviewProvider {
        ]
     }()
 
-    static let account1: UserInfo = AccountValueStorageBuilder()
+    static let account = AccountInformation.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build()
@@ -259,7 +259,7 @@ struct AccountView_Previews: PreviewProvider {
             AccountSetup()
         }
         .environmentObject(Account(
-            account: account1,
+            account: account,
             active: DefaultUsernamePasswordAccountService()
         ))
     }

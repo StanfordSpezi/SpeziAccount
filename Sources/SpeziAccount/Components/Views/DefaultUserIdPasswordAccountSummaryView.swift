@@ -11,7 +11,7 @@ import SwiftUI
 
 public struct DefaultUserIdPasswordAccountSummaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
-    private let account: UserInfo
+    private let account: AccountInformation
 
     @State private var viewState: ViewState = .idle
 
@@ -28,19 +28,19 @@ public struct DefaultUserIdPasswordAccountSummaryView<Service: UserIdPasswordAcc
         }
     }
 
-    public init(using service: Service, account: UserInfo) {
+    public init(using service: Service, account: AccountInformation) {
         self.service = service
         self.account = account
     }
 }
 
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
-    static let account1: UserInfo = AccountValueStorageBuilder()
+    static let account = AccountInformation.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build()
 
     static var previews: some View {
-        DefaultUserIdPasswordAccountSummaryView(using: DefaultUsernamePasswordAccountService(), account: account1)
+        DefaultUserIdPasswordAccountSummaryView(using: DefaultUsernamePasswordAccountService(), account: account)
     }
 }

@@ -7,6 +7,8 @@
 //
 
 public struct SignupRequest: Sendable, AccountValueStorageContainer {
+    public typealias Builder = AccountValueStorageBuilder<Self>
+
     public let storage: AccountValueStorage
 
     public init(storage: AccountValueStorage) {

@@ -18,6 +18,7 @@ extension AccountValueStorageContainer {
     }
 }
 
+// TODO define update strategy => write value and then call account service?
 extension ModifiableAccountValueStorageContainer {
     public var name: NameAccountValueKey.Value {
         get {

@@ -16,9 +16,13 @@ import SwiftUI
 /// The ``Account/Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
 @MainActor
 public class Account: ObservableObject {
-    /// The ``Account/Account/signedIn`` determines if the the current Account context is signed in or not yet signed in.
+    /// The ``Account/signedIn`` property determines if the the current Account context is signed in or not yet signed in.
+    /// It can be easily based around as a binding.
+    ///
+    /// - Note: If the property is set to true, it is guaranteed that ``user`` is present. However, it is recommended
+    ///     to gracefully unwrap the optional if access to the account info is required.
     @Published public var signedIn = false
-    @Published public private(set) var user: UserInfo? // TODO must only be accessible/modifieable through an AccountService!
+    @Published public private(set) var user: AccountInformation? // TODO must only be accessible/modifieable through an AccountService!
     @Published public private(set) var activeAccountService: (any AccountService)?
 
     // TODO how to get to the account service that holds the active account?
@@ -38,7 +42,7 @@ public class Account: ObservableObject {
     }
 
     /// Initializer useful for testing and previewing purposes.
-    nonisolated init(account: UserInfo, active accountService: any AccountService) {
+    nonisolated init(account: AccountInformation, active accountService: any AccountService) {
         self.accountServices = [accountService]
         self._user = Published(wrappedValue: account)
         self._activeAccountService = Published(wrappedValue: accountService)
@@ -46,7 +50,8 @@ public class Account: ObservableObject {
         accountService.inject(account: self)
     }
 
-    public func supplyUserInfo<Service: AccountService>(_ user: UserInfo, by accountService: Service) {
+    // TODO rename!
+    public func supplyUserInfo<Service: AccountService>(_ user: AccountInformation, by accountService: Service) {
         if let activeAccountService {
             precondition(ObjectIdentifier(accountService) == ObjectIdentifier(activeAccountService)) // TODO message
         }

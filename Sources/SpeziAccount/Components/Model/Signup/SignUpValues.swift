@@ -10,7 +10,7 @@ import Foundation
 
 
 /// The collected date instantiated by the sign up views.
-public struct SignUpValues: Sendable {
+public struct SignUpValues: Sendable { // TODO remove!
     /// The username as inputted in the sign up user interface.
     public let userId: String
     /// The password as inputted in the sign up user interface.

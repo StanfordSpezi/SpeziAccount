@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Represents a set of options for data to collect from the user on the sign up form.
-public struct SignUpOptions: OptionSet {
+public struct SignUpOptions: OptionSet { // TODO remove!
     /// Option to collect a username and password.
     public static let usernameAndPassword = SignUpOptions(rawValue: 1 << 0)
     /// Option to collect a name.

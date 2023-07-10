@@ -20,7 +20,9 @@ public enum FieldConfiguration {
         case .username:
             return .username
         case .emailAddress:
-            return .emailAddress
+            // we control email address behavior using the keyboard type
+            // see https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_a_text_input_view
+            return .username
         case .password:
             return .password
         case .newPassword:

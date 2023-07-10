@@ -6,7 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-public protocol AnyEntry: Sendable {}
+// TODO rename ?
+protocol AnyEntry: Sendable {}
 
 public struct AccountValueStorage: Sendable {
     struct Value<Key: AccountValueKey>: AnyEntry {
@@ -45,6 +46,10 @@ public struct AccountValueStorage: Sendable {
         set {
             set(key, value: newValue)
         }
+    }
+
+    public func contains<Key: AccountValueKey>(_ key: Key.Type) -> Bool {
+        contents[ObjectIdentifier(key)] != nil
     }
 
     private func get<Key: AccountValueKey>(_ key: Key.Type) -> Key.Value? {

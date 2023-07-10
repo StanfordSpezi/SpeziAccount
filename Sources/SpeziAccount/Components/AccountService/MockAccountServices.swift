@@ -31,7 +31,7 @@ public class DefaultUsernamePasswordAccountService: UserIdPasswordAccountService
         print("login \(userId) \(password)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
 
-        let user: UserInfo = AccountValueStorageBuilder()
+        let user = AccountInformation.Builder()
             .add(UserIdAccountValueKey.self, value: userId)
             .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build()
@@ -42,10 +42,10 @@ public class DefaultUsernamePasswordAccountService: UserIdPasswordAccountService
         print("signup \(signupRequest)")
         try? await Task.sleep(nanoseconds: 1000_000_000)
 
-        let user: UserInfo = AccountValueStorageBuilder(from: signupRequest)
+        let info = AccountInformation.Builder(from: signupRequest)
             .remove(PasswordAccountValueKey.self)
             .build()
-        await account.supplyUserInfo(user, by: self)
+        await account.supplyUserInfo(info, by: self)
     }
 
     public func resetPassword(userId: String) async throws {

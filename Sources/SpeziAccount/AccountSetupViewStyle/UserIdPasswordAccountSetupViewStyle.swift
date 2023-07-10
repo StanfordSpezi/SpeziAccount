@@ -41,7 +41,7 @@ extension UserIdPasswordAccountSetupViewStyle {
         }
     }
 
-    public func makeAccountSummary(account: UserInfo) -> some View {
+    public func makeAccountSummary(account: AccountInformation) -> some View {
         DefaultUserIdPasswordAccountSummaryView(using: service, account: account)
     }
 

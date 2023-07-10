@@ -116,14 +116,14 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
 
         focusedField = nil
 
-        let requestBuilder = AccountValueStorageBuilder()
+        let builder = SignupRequest.Builder()
             .add(UserIdAccountValueKey.self, value: userId)
             .add(PasswordAccountValueKey.self, value: password)
             .add(NameAccountValueKey.self, value: name)
             .add(GenderIdentityAccountValueKey.self, value: genderIdentity, ifConfigured: signupRequirements)
             .add(DateOfBirthAccountValueKey.self, value: dateOfBirth, ifConfigured: signupRequirements)
 
-        let request: SignupRequest = requestBuilder.build(checking: signupRequirements)
+        let request: SignupRequest = try builder.build(checking: signupRequirements)
 
         // TODO we might want to have keys that have optional value but are still displayed!
         try await service.signUp(signupRequest: request)

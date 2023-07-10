@@ -12,8 +12,7 @@ import SwiftUI
 struct DateOfBirthPicker: View {
     private let titleLocalization: LocalizedStringResource
 
-    @Binding
-    private var date: Date
+    @Binding private var date: Date
 
     private var dateRange: ClosedRange<Date> {
         let calendar = Calendar.current
@@ -36,6 +35,7 @@ struct DateOfBirthPicker: View {
             Text(titleLocalization)
                 .fontWeight(.semibold)
         }
+            // TODO birthday text content type?
     }
 
     init(

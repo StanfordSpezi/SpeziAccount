@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+// TODO list bundeled ones!
 public protocol AccountValueKey { // TODO docs: requirement is static => be sure when you define a required one! most likely an Optional one!
     associatedtype Value: Sendable
 }
-
 
 public protocol OptionalAccountValueKey: AccountValueKey {}

@@ -29,7 +29,7 @@ public struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetu
         Text("Hello World")
     }
 
-    public func makeAccountSummary(account: UserInfo) -> some View {
+    public func makeAccountSummary(account: AccountInformation) -> some View {
         Text("Account for \(account.userId)")
     }
 }

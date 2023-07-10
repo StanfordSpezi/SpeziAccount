@@ -49,7 +49,7 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     }
 
     func updateUser() async {
-        let userInfo: UserInfo = AccountValueStorageBuilder()
+        let userInfo = AccountInformation.Builder()
             .add(UserIdAccountValueKey.self, value: registeredUser.userId)
             .add(NameAccountValueKey.self, value: registeredUser.name)
             .add(GenderIdentityAccountValueKey.self, value: registeredUser.gender)
