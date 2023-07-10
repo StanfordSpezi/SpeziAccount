@@ -47,10 +47,10 @@ public class Account: ObservableObject, Sendable {
     @Published public private(set) var signedIn = false
     @Published public private(set) var details: AccountDetails?
 
-    // TODO make a configuration objet, where all other account services may enter themselves!
-
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     let mappedAccountServices: [AccountService.ID: any AccountService]
+
+    // TODO access control?
     var accountServices: [any AccountService] { // TODO list needs an array?
         Array(mappedAccountServices.values)
     }

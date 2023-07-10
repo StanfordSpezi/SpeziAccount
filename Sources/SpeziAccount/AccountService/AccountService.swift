@@ -14,17 +14,15 @@ import SwiftUI
 /// application defined only requiring logout functionality.
 /// You may improve the user experience or rely on user interface defaults if you adopt protocols like
 /// ``EmbeddableAccountService`` or ``KeyPasswordBasedAccountService``. TODO docs?
-///
+/// TODO document use of the AccountReference property wrapper
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject, Hashable, CustomStringConvertible { // TODO identifiable? do we wanna mandate Actor?
+public protocol AccountService: AnyObject, Hashable, CustomStringConvertible {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
     typealias ID = ObjectIdentifier
 
     /// An identifier to uniquely identify an `AccountService`.
     var id: ID { get }
-
-    // TODO provide access to `Account` to communicate changes back to the App
 
     var viewStyle: ViewStyle { get } // TODO document computed property!
 
@@ -38,9 +36,6 @@ public protocol AccountService: AnyObject, Hashable, CustomStringConvertible { /
     func logout() async throws
 
     // TODO we will/should enforce a Account removal functionality
-
-    // TODO document requirement to store it as a weak reference!
-    // func inject(account: AccountBox)
 }
 
 extension AccountService {

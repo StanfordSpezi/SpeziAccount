@@ -217,8 +217,7 @@ public struct AccountSetup<Header: View>: View {
     }
 
     func displayAccount(account: AccountDetails) -> some View {
-        // TODO how to get the currently active account service!
-        let service = self.account.accountServices.first!
+        let service = account.accountService
 
         // TODO someone needs to place the Continue button?
 
