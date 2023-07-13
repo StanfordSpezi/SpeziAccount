@@ -38,7 +38,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
                         .font(.title3)
 
 
-                    AsyncDataEntrySubmitButton(state: $state, action: submitRequestAction) {
+                    AsyncButton(state: $state, action: submitRequestAction) {
                         Text("Reset Password")
                             .padding(8)
                             .frame(maxWidth: .infinity)
@@ -54,7 +54,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
             }
         }
             .navigationTitle("UP_RESET_PASSWORD".localized(.module).localizedString())
-            .disableAnyDismissiveActions(ifProcessing: state)
+            .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
             .onTapGesture {
                 focusedField = nil
@@ -91,6 +91,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
 struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
+            // TODO AccountReference is not resolved!
             DefaultUserIdPasswordResetView(using: DefaultUsernamePasswordAccountService()) {
                 DefaultSuccessfulPasswordResetView()
             }

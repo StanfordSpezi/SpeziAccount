@@ -11,7 +11,7 @@ import SwiftUI
 
 /// A property wrapper that can be used within ``AccountService`` instances to gain
 /// access to the ``Account`` instance.
-typealias AccountReference = WeakInjectable<Account>
+public typealias AccountReference = WeakInjectable<Account> // TODO global scope?
 
 /// Account-related Spezi module managing a collection of ``AccountService``s.
 /// TODO update docs!
@@ -66,6 +66,7 @@ public class Account: ObservableObject, Sendable {
 
     // TODO rename!
     public func supplyUserInfo(_ details: AccountDetails) {
+        precondition(mappedAccountServices[details.accountServiceId] != nil, "Received AccountDetails from AccountService that was never registered!")
         if let existingDetails = self.details {
             precondition(
                 existingDetails.accountServiceId == details.accountServiceId,

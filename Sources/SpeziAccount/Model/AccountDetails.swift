@@ -15,7 +15,7 @@ public struct AccountDetails: Sendable, ModifiableAccountValueStorageContainer {
     // TODO think about modification?
     public typealias Builder = AccountValueStorageBuilder<Self>
 
-    // This property is accessible once
+    // This property is accessible once the `AccountDetails` were supplied to `Account`
     @AccountReference private var account: Account
 
     public var storage: AccountValueStorage

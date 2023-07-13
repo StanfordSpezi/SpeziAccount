@@ -18,12 +18,11 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
         VStack {
             UserInformation(name: account.name, caption: account.userId)
 
-
-            AsyncDataEntrySubmitButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
+            AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
                 try await account.accountService.logout()
             }
-            .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-            .padding()
+                .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                .padding()
         }
     }
 
@@ -32,6 +31,7 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
     }
 }
 
+#if DEBUG
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
     static let account = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
@@ -39,6 +39,8 @@ struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
         .build(owner: DefaultUsernamePasswordAccountService())
 
     static var previews: some View {
+        // TODO AccountReference is not resolved!
         DefaultUserIdPasswordAccountSummaryView(account: account)
     }
 }
+#endif

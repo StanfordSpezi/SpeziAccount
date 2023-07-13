@@ -10,10 +10,10 @@ import SwiftUI
 
 /// An Account Service is a set of components that is capable setting up and managing an ``Account`` context.
 ///
-/// This base protocol imposes the minimal requirements for an AccountService where setup procedures are entirely
-/// application defined only requiring logout functionality.
+/// This base protocol imposes the minimal requirements for an AccountService where login and signup procedures are entirely
+/// application defined, only requiring logout functionality.
 /// You may improve the user experience or rely on user interface defaults if you adopt protocols like
-/// ``EmbeddableAccountService`` or ``KeyPasswordBasedAccountService``. TODO docs?
+/// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``. TODO docs?
 /// TODO document use of the AccountReference property wrapper
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
 public protocol AccountService: AnyObject, Hashable, CustomStringConvertible {

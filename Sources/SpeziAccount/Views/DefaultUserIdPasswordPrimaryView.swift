@@ -43,11 +43,14 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
     }
 }
 
+#if DEBUG
 struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
+            // TODO AccountReference is not resolved!
             DefaultUserIdPasswordPrimaryView(using: DefaultUsernamePasswordAccountService())
                 .environmentObject(Account())
         }
     }
 }
+#endif

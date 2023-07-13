@@ -18,7 +18,8 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
         )
     }
 
-    weak var account: Account!
+    @AccountReference
+    var account: Account
     let registeredUser = User() // TODO rename!
 
     init() {}
@@ -65,9 +66,5 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
 
     func logout() async throws {
         await account.removeUserInfo()
-    }
-
-    func inject(account: Account) {
-        self.account = account
     }
 }

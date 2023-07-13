@@ -34,12 +34,13 @@ struct DataEntryAccountView: View {
             }
             .viewStateAlert(state: $state)
     }
-    
-    
+
+    @MainActor
     private var resetPasswordButton: some View {
         let localized = LocalizedStringResource(stringLiteral: buttonTitle)
 
-        return AsyncDataEntrySubmitButton(state: $state, action: buttonPressed) {
+        // TODO AsyncButton impsoes MainActor requirement!
+        return AsyncButton(state: $state, action: buttonPressed) {
             Text(localized)
                 .padding(6)
                 .frame(maxWidth: .infinity)

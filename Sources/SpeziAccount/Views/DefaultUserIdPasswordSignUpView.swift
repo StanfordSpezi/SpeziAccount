@@ -32,7 +32,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
     var body: some View {
         form
             .navigationTitle("Sign Up") // TODO localize!
-            .disableAnyDismissiveActions(ifProcessing: state)
+            .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
     }
 
@@ -82,7 +82,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
                 }
             }
 
-            AsyncDataEntrySubmitButton(state: $state, action: signupButtonAction) {
+            AsyncButton(state: $state, action: signupButtonAction) {
                 Text("UP_SIGNUP".localized(.module))
                     .padding(16)
                     .frame(maxWidth: .infinity)
@@ -138,6 +138,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
 struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
+            // TODO AccountReference is not resolved!
             DefaultUserIdPasswordSignUpView(using: DefaultUsernamePasswordAccountService())
         }
     }

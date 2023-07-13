@@ -49,6 +49,9 @@ public enum AccountServiceProviderBuilder<S: Standard> {
 public final class AccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {
     @DynamicDependencies var dynamicDependencies: [any Component<ComponentStandard>]
 
+
+    private var account: Account?
+
     public var observableObjects: [any ObservableObject] {
         guard let account else {
             fatalError("Tried to access ObservableObjectProvider before \(Self.self).configure() was called")
@@ -56,8 +59,6 @@ public final class AccountConfiguration<ComponentStandard: Standard>: Component,
 
         return [account]
     }
-
-    private var account: Account?
 
     public init() {
         self._dynamicDependencies = DynamicDependencies(componentProperties: [])

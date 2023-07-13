@@ -4,13 +4,17 @@
                   
 This source file is part of the Spezi open-source project
 
-SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 
 SPDX-License-Identifier: MIT
              
 -->
 
 Account services describe the mechanism for account management components to display login, signUp, and account-related UI elements.
+
+```swift
+// TODO update this document!
+```
 
 ## Create Your Account Service
 
@@ -25,7 +29,6 @@ The following example demonstrates an example of an ``AccountService``:
 ```swift
 class ExampleAccountService: @unchecked Sendable, AccountService, ObservableObject {
     weak var account: Account?
-    
     
     var loginButton: AnyView {
         AnyView(
@@ -162,6 +165,6 @@ The ``UsernamePasswordAccountService`` provides a username and password-account 
 ### Email And Password Account Service
 
 The ``EmailPasswordAccountService`` is a ``UsernamePasswordAccountService`` subclass providing email related validation rules and 
-customized view buttons enabeling the creation of an email and password-based ``AccountService``.
+customized view buttons enabling the creation of an email and password-based ``AccountService``.
 
 - ``EmailPasswordAccountService``

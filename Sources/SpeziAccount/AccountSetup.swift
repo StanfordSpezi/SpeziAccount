@@ -92,7 +92,7 @@ public struct AccountSetup<Header: View>: View {
                     Spacer()
 
                     if let account = account.details {
-                        displayAccount(account: account)
+                        displayAccount(datails: account)
                     } else {
                         noAccountState
                     }
@@ -216,12 +216,13 @@ public struct AccountSetup<Header: View>: View {
         self.header = header()
     }
 
-    func displayAccount(account: AccountDetails) -> some View {
-        let service = account.accountService
+    func displayAccount(datails: AccountDetails) -> some View {
+
+        let service = datails.accountService
 
         // TODO someone needs to place the Continue button?
 
-        return AnyView(service.viewStyle.makeAccountSummary(account: account))
+        return AnyView(service.viewStyle.makeAccountSummary(account: datails))
     }
 }
 
