@@ -27,7 +27,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
         }
     }
 
-    private var displayedValidationResults: [LocalizedStringResource] {
+    private var displayedValidationResults: [FailedValidationResult] {
         // we want the behavior that we won't display any validation results if the user
         // erases the whole field. We do this by just calling `runValidationOnSubmit` on commit.
         // However, if ,e.g., a button triggers a `runValidation` we still want to show the message
@@ -49,8 +49,8 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 
             HStack {
                 VStack(alignment: .leading) {
-                    ForEach(displayedValidationResults, id: \.key) { message in
-                        Text(message)
+                    ForEach(displayedValidationResults) { result in
+                        Text(result.message)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -88,6 +88,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
         self.textFieldFooter = footer()
     }
 
+    // TODO make this a modifier which injects a onChange of(text) and a onSubmit modifier!
     private func runValidation() {
         debounceTask = Task {
             // Wait 0.5 seconds until you start the validation.

@@ -100,6 +100,9 @@
 "VALIDATION_RULE_UNICODE_LETTERS" = "You must only use letters.";
 "VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
 "VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is not correct.";
+"VALIDATION_RULE_MINIMAL_PASSWORD" = "A password has to have at least 8 characters.";
+"VALIDATION_RULE_MEDIUM_PASSWORD" = "A password has to have at least 10 characters.";
+"VALIDATION_RULE_STRONG_PASSWORD" = "A password has to have at least 12 characters.";
 
 // MARK: - UserIdType
 "USER_ID_EMAIL" = "E-Mail Address";

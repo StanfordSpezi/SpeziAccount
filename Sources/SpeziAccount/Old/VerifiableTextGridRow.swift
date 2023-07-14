@@ -14,7 +14,9 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
     private let description: Description
     private let textField: TextField
     private let validationRules: [ValidationRule]
-    
+
+    // TODO rewrite to use engine?
+
     @Binding private var text: String
     @Binding private var valid: Bool
     
@@ -23,8 +25,8 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
             self.debounceTask?.cancel()
         }
     }
-    @State private var validationResults: [LocalizedStringResource] = []
-    
+    @State private var validationResults: [FailedValidationResult] = []
+
     
     var body: some View {
         DescriptionGridRow {
@@ -37,8 +39,8 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
                     }
                 HStack {
                     VStack(alignment: .leading) {
-                        ForEach(validationResults, id: \.key) { message in
-                            Text(message)
+                        ForEach(validationResults) { result in
+                            Text(result.message)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                     }
