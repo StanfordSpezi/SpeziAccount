@@ -33,14 +33,18 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
 
 #if DEBUG
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
-    static let account = AccountDetails.Builder()
+    // TODO this setup steps are intense!
+    static let accountService = DefaultUsernamePasswordAccountService()
+    static let account = Account(accountService)
+
+    static let details = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: DefaultUsernamePasswordAccountService())
+        .build(owner: accountService, injecting: account)
 
     static var previews: some View {
-        // TODO AccountReference is not resolved!
-        DefaultUserIdPasswordAccountSummaryView(account: account)
+        DefaultUserIdPasswordAccountSummaryView(account: details)
+            .environmentObject(account)
     }
 }
 #endif

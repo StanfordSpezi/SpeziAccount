@@ -19,7 +19,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
 
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: AccountInputFields?
-    @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty)
+    @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty) // TODO use signup validation?
 
     public var body: some View {
         VStack {
@@ -89,12 +89,13 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
 
 #if DEBUG
 struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
+    static let accountService = DefaultUsernamePasswordAccountService()
     static var previews: some View {
         NavigationStack {
-            // TODO AccountReference is not resolved!
-            DefaultUserIdPasswordResetView(using: DefaultUsernamePasswordAccountService()) {
+            DefaultUserIdPasswordResetView(using: accountService) {
                 DefaultSuccessfulPasswordResetView()
             }
+                .environmentObject(Account(accountService))
         }
     }
 }

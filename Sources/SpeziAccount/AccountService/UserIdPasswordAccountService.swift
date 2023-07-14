@@ -36,7 +36,8 @@ public struct UserIdPasswordServiceConfiguration {
         signUpRequirements: AccountValueRequirements = .default,
         userIdType: UserIdType = .emailAddress,
         userIdField: FieldConfiguration = .emailAddress,
-        userIdSignupValidations: [ValidationRule] = [.nonEmpty],
+        // TODO empty rule should catch everything before other rules continue!
+        userIdSignupValidations: [ValidationRule] = [.minimalEmailValidationRule],
         passwordSignupValidations: [ValidationRule] = [.nonEmpty]
     ) {
         self.name = name

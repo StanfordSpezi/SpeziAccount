@@ -55,6 +55,12 @@ extension AccountValueStorageBuilder where Container == AccountDetails {
         let storage = AccountValueStorage(contents: contents)
         return Container(storage: storage, owner: accountService)
     }
+
+    internal func build<Service: AccountService>(owner accountService: Service, injecting account: Account) -> Container {
+        let container = build(owner: accountService)
+        account.injectWeakAccount(into: container)
+        return container
+    }
 }
 
 extension AccountValueStorageBuilder where Container == SignupRequest {

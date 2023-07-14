@@ -120,10 +120,12 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
 
 #if DEBUG
 struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
+    static let accountService = DefaultUsernamePasswordAccountService()
+
     static var previews: some View {
         NavigationStack {
-            // TODO AccountReference is not resolved!
-            DefaultUserIdPasswordEmbeddedView(using: DefaultUsernamePasswordAccountService())
+            DefaultUserIdPasswordEmbeddedView(using: accountService)
+                .environmentObject(Account(accountService))
         }
     }
 }

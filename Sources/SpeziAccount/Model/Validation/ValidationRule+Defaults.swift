@@ -58,7 +58,7 @@ extension ValidationRule {
 
         return ValidationRule(
             regex: regex,
-            message: "EAP_EMAIL_VERIFICATION_ERROR",
+            message: "VALIDATION_RULE_MINIMAL_EMAIL",
             bundle: .module
         )
     }

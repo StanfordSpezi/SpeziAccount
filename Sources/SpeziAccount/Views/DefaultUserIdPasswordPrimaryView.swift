@@ -45,11 +45,11 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
 
 #if DEBUG
 struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
+    static let accountService = DefaultUsernamePasswordAccountService()
     static var previews: some View {
         NavigationStack {
-            // TODO AccountReference is not resolved!
-            DefaultUserIdPasswordPrimaryView(using: DefaultUsernamePasswordAccountService())
-                .environmentObject(Account())
+            DefaultUserIdPasswordPrimaryView(using: accountService)
+                .environmentObject(Account(accountService))
         }
     }
 }

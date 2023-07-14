@@ -11,7 +11,7 @@ import SwiftUI
 
 /// A property wrapper that can be used within ``AccountService`` instances to gain
 /// access to the ``Account`` instance.
-public typealias AccountReference = WeakInjectable<Account> // TODO global scope?
+public typealias AccountReference = WeakInjectable<Account> // TODO global scope => inside AccountService?
 
 /// Account-related Spezi module managing a collection of ``AccountService``s.
 /// TODO update docs!
@@ -54,7 +54,12 @@ public class Account: ObservableObject, Sendable {
         self.supplyUserInfo(builder.build(owner: accountService))
     }
 
-    private nonisolated func injectWeakAccount(into value: Any) {
+    /// Initializer useful for testing and previewing purposes.
+    convenience init(_ services: any AccountService...) {
+        self.init(services: services)
+    }
+
+    nonisolated func injectWeakAccount<V>(into value: V) {
         let mirror = Mirror(reflecting: value)
 
         for (_, value) in mirror.children {
