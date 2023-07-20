@@ -17,8 +17,8 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         try? await Task.sleep(nanoseconds: 1000_000_000)
 
         let details = AccountDetails.Builder()
-            .add(UserIdAccountValueKey.self, value: userId)
-            .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+            .add(\.userId, value: userId)
+            .add(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build(owner: self)
         await account.supplyUserDetails(details)
     }
@@ -28,7 +28,7 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         try? await Task.sleep(nanoseconds: 1000_000_000)
 
         let details = AccountDetails.Builder(from: signupRequest)
-            .remove(PasswordAccountValueKey.self)
+            .remove(\.password)
             .build(owner: self)
         await account.supplyUserDetails(details)
     }

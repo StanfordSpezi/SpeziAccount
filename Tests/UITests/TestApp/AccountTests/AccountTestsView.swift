@@ -61,6 +61,7 @@ struct AccountTestsView: View {
 
 #if DEBUG
 struct AccountTestsView_Previews: PreviewProvider {
+    // TODO some provlems with (4, 34) Main actor-isolated static property '_previews' cannot be used to satisfy nonisolated protocol requirement?
     static var previews: some View {
         NavigationStack {
             AccountTestsView()

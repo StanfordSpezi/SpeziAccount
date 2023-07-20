@@ -9,8 +9,8 @@
 import SpeziAccount
 
 
-final class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
-    var configuration: UserIdPasswordServiceConfiguration {
+actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
+    nonisolated var configuration: UserIdPasswordServiceConfiguration {
         UserIdPasswordServiceConfiguration(
             name: "TestUsernamePasswordAccountService",
             userIdType: .username,
@@ -51,10 +51,10 @@ final class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
 
     func updateUser() async {
         let details = AccountDetails.Builder()
-            .add(UserIdAccountValueKey.self, value: registeredUser.userId)
-            .add(NameAccountValueKey.self, value: registeredUser.name)
-            .add(GenderIdentityAccountValueKey.self, value: registeredUser.gender)
-            .add(DateOfBirthAccountValueKey.self, value: registeredUser.dateOfBirth)
+            .add(\.userId, value: registeredUser.userId)
+            .add(\.name, value: registeredUser.name)
+            .add(\.genderIdentity, value: registeredUser.gender)
+            .add(\.dateOfBirth, value: registeredUser.dateOfBirth)
             .build(owner: self)
 
         await account.supplyUserDetails(details)

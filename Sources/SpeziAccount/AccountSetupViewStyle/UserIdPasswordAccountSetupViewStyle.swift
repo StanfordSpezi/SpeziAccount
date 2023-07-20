@@ -20,4 +20,3 @@ public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewS
     @ViewBuilder
     func makePasswordResetView() -> PasswordResetView
 }
-

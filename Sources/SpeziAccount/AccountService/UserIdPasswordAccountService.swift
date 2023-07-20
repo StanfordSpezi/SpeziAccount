@@ -24,6 +24,8 @@ public struct UserIdPasswordServiceConfiguration {
 
     // TODO they are not the requirements? you might enter optional values, those are displayed but not required!
     public let signUpRequirements: AccountValueRequirements
+    // TODO those are supplied by the user (and matched or not matched by the user!)?
+    //  => if we change these, we need a way to iterate over these!
 
     public let userIdType: UserIdType
     public let userIdField: FieldConfiguration

@@ -121,11 +121,11 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
         focusedField = nil
 
         let builder = SignupRequest.Builder()
-            .add(UserIdAccountValueKey.self, value: userId)
-            .add(PasswordAccountValueKey.self, value: password)
-            .add(NameAccountValueKey.self, value: name)
-            .add(GenderIdentityAccountValueKey.self, value: genderIdentity, ifConfigured: signupRequirements)
-            .add(DateOfBirthAccountValueKey.self, value: dateOfBirth, ifConfigured: signupRequirements)
+            .add(\.userId, value: userId)
+            .add(\.password, value: password)
+            .add(\.name, value: name)
+            .add(\.genderIdentity, value: genderIdentity, ifConfigured: signupRequirements)
+            .add(\.dateOfBirth, value: dateOfBirth, ifConfigured: signupRequirements)
 
         let request: SignupRequest = try builder.build(checking: signupRequirements)
 

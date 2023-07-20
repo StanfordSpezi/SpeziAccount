@@ -17,35 +17,36 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 
     public init<Source: AccountValueStorageContainer>(from storage: Source) {
+        // TODO might just remove them? to avoid anti-patterns?
         self.storage = storage.storage
     }
 
     @discardableResult
-    public func add<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
-        storage[key] = value
+    public func add<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) -> Self {
+        storage[Key.self] = value
         return self
     }
 
     @discardableResult
-    public func add<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        storage[key] = value
+    public func add<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value?) -> Self {
+        storage[Key.self] = value
         return self
     }
 
     @discardableResult
-    public func remove<Key: AccountValueKey>(_ key: Key.Type) -> Self {
-        storage[key] = nil
+    public func remove<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> Self {
+        storage[Key.self] = nil
         return self
     }
 
     @discardableResult
     public func add<Key: AccountValueKey>(
-        _ key: Key.Type,
+        _ keyPath: KeyPath<AccountValueKeys, Key.Type>,
         value: @autoclosure () -> Key.Value,
         ifConfigured requirements: AccountValueRequirements
     ) -> Self {
-        if requirements.configured(key) {
-            return add(key, value: value())
+        if requirements.configured(Key.self) {
+            return add(keyPath, value: value())
         }
         return self
     }

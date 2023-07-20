@@ -37,8 +37,8 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
 #if DEBUG
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
-        .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
-        .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .add(\.userId, value: "andi.bauer@tum.de")
+        .add(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build(owner: MockUsernamePasswordAccountService())
 
     static var previews: some View {

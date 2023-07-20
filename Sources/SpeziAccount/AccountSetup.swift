@@ -245,8 +245,8 @@ struct AccountView_Previews: PreviewProvider {
     }()
 
     static let detailsBuilder = AccountDetails.Builder()
-        .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
-        .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .add(\.userId, value: "andi.bauer@tum.de")
+        .add(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
 
     static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
