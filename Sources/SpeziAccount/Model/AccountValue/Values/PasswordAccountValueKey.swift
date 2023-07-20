@@ -6,10 +6,19 @@
 // SPDX-License-Identifier: MIT
 //
 
-// TODO this is probably optional? It won't be present
-public struct PasswordAccountValueKey: AccountValueKey {
+
+public struct PasswordAccountValueKey: RequiredAccountValueKey {
     public typealias Value = String
 }
+
+
+extension AccountValueKeys {
+    // TODO is password update special (requires existing knowledge?)
+    public var password: PasswordAccountValueKey.Type {
+        PasswordAccountValueKey.self
+    }
+}
+
 
 extension SignupRequest {
     public var password: PasswordAccountValueKey.Value {

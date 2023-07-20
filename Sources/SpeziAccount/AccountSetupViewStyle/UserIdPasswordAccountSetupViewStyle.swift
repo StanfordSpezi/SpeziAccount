@@ -21,36 +21,3 @@ public protocol UserIdPasswordAccountSetupViewStyle: EmbeddableAccountSetupViewS
     func makePasswordResetView() -> PasswordResetView
 }
 
-// TODO move to Default folder as extension file
-extension UserIdPasswordAccountSetupViewStyle {
-    public func makePrimaryView() -> some View {
-        DefaultUserIdPasswordPrimaryView(using: service)
-    }
-
-    public func makeEmbeddedAccountView() -> some View {
-        DefaultUserIdPasswordEmbeddedView(using: service)
-    }
-
-    public func makeSignupView() -> some View {
-        DefaultUserIdPasswordSignUpView(using: service)
-    }
-
-    public func makePasswordResetView() -> some View {
-        DefaultUserIdPasswordResetView(using: service) {
-            DefaultSuccessfulPasswordResetView()
-        }
-    }
-
-    public func makeAccountSummary(account: AccountDetails) -> some View {
-        DefaultUserIdPasswordAccountSummaryView(account: account)
-    }
-
-    public func makeAccountServiceButtonLabel() -> some View {
-        Group {
-            service.configuration.image
-                .font(.title2)
-            Text(service.configuration.name)
-        }
-            .accountServiceButtonBackground()
-    }
-}

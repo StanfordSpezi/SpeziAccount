@@ -7,12 +7,13 @@
 //
 
 public struct AccountValueRequirements {
-    public static var `default` = AccountValueRequirements {
-        UserIdAccountValueKey.self
-        PasswordAccountValueKey.self
-        NameAccountValueKey.self
-        GenderIdentityAccountValueKey.self
-        DateOfBirthAccountValueKey.self
+    // TODO requirements should be specified centrally! (every account services has to adhere!)
+    public static var `default` = AccountValueRequirements { // TODO might a simple array be nicer?
+        \.userId
+        \.password
+        \.name
+        \.genderIdentity
+        \.dateOfBirth
     }
 
     private var requirements: [ObjectIdentifier: AnyAccountValueRequirement] = [:]
@@ -43,8 +44,8 @@ public struct AccountValueRequirements {
         for requirement in requirements.values where requirement.type == .required {
             if !requirement.isContained(in: request.storage) {
                 // TODO log the requirement name if its missing!
-                print("Failed to have value in storage \(requirement)!")
-                throw AccountValueRequirementsError.missingAccountValue
+                print("Failed to have value in storage \(requirement.description)!")
+                throw AccountValueRequirementsError.missingAccountValue(requirement.description)
             }
         }
     }

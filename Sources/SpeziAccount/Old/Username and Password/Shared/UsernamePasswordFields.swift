@@ -87,7 +87,7 @@ struct UsernamePasswordFields: View {
     
     @FocusState var focusedField: AccountInputFields?
     
-    @EnvironmentObject private var usernamePasswordLoginService: UsernamePasswordAccountService
+    // @EnvironmentObject private var usernamePasswordLoginService: UsernamePasswordAccountService
     
     @Binding private var valid: Bool
     @Binding private var username: String
@@ -128,17 +128,11 @@ struct UsernamePasswordFields: View {
     }
     
     private var usernameTextField: some View {
-        let usernameLocalization: FieldLocalizationResource
-        if let username = presentationType.username {
-            usernameLocalization = username
-        } else {
-            switch presentationType {
-            case .login:
-                usernameLocalization = usernamePasswordLoginService.localization.login.username
-            case .signUp:
-                usernameLocalization = usernamePasswordLoginService.localization.signUp.username
-            }
-        }
+        let usernameLocalization = FieldLocalizationResource(
+            title: "UAP_SIGNUP_USERNAME_TITLE",
+            placeholder: "UAP_SIGNUP_USERNAME_PLACEHOLDER",
+            bundle: .module
+        )
         
         return VerifiableTextFieldGridRow(
             text: $username,
@@ -161,17 +155,11 @@ struct UsernamePasswordFields: View {
     }
     
     private var passwordSecureField: some View {
-        let passwordLocalization: FieldLocalizationResource
-        if let password = presentationType.password {
-            passwordLocalization = password
-        } else {
-            switch presentationType {
-            case .login:
-                passwordLocalization = usernamePasswordLoginService.localization.login.password
-            case .signUp:
-                passwordLocalization = usernamePasswordLoginService.localization.signUp.password
-            }
-        }
+        let passwordLocalization = FieldLocalizationResource(
+            title: "UAP_SIGNUP_PASSWORD_TITLE",
+            placeholder: "UAP_SIGNUP_PASSWORD_PLACEHOLDER",
+            bundle: .module
+        )
         
         return VerifiableTextFieldGridRow(
             text: $password,
@@ -201,7 +189,11 @@ struct UsernamePasswordFields: View {
             case .login:
                 preconditionFailure("The password repeat field should never be shown in the login presentation type.")
             case .signUp:
-                passwordRepeatLocalization = usernamePasswordLoginService.localization.signUp.passwordRepeat
+                passwordRepeatLocalization = FieldLocalizationResource(
+                    title: "UAP_SIGNUP_PASSWORD_REPEAT_TITLE",
+                    placeholder: "UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER",
+                    bundle: .module
+                )
             }
         }
         
@@ -213,7 +205,7 @@ struct UsernamePasswordFields: View {
             case .login:
                 preconditionFailure("The password not equal error should never be shown in the login presentation type.")
             case .signUp:
-                passwordNotEqualErrorLocalization = usernamePasswordLoginService.localization.signUp.passwordNotEqualError
+                passwordNotEqualErrorLocalization = String(moduleLocalized: "UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR")
             }
         }
         
@@ -318,7 +310,6 @@ struct UsernamePasswordFields_Previews: PreviewProvider {
                 }
             }
         }
-            .environmentObject(UsernamePasswordAccountService())
     }
 }
 #endif

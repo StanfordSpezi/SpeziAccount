@@ -9,6 +9,7 @@
 import SpeziViews
 import SwiftUI
 
+// TODO this is not userIdPassword specific (and shouldn't be?)
 public struct DefaultUserIdPasswordAccountSummaryView: View {
     private let account: AccountDetails
 
@@ -35,23 +36,13 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
 
 #if DEBUG
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
-    struct PreviewView: View {
-        @EnvironmentObject var account: Account
-
-        var body: some View {
-            if let details = account.details {
-                DefaultUserIdPasswordAccountSummaryView(account: details)
-            }
-        }
-    }
-
-    static let detailsBuilder = AccountDetails.Builder()
+    static let details = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .build(owner: MockUsernamePasswordAccountService())
 
     static var previews: some View {
-        PreviewView()
-            .environmentObject(Account(building: detailsBuilder, active: DefaultUsernamePasswordAccountService()))
+        DefaultUserIdPasswordAccountSummaryView(account: details)
     }
 }
 #endif

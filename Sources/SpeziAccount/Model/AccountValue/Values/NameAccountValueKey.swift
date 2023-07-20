@@ -8,15 +8,25 @@
 
 import Foundation
 
-public struct NameAccountValueKey: AccountValueKey {
+
+public struct NameAccountValueKey: RequiredAccountValueKey {
     public typealias Value = PersonNameComponents
 }
+
+
+extension AccountValueKeys {
+    public var name: NameAccountValueKey.Type {
+        NameAccountValueKey.self
+    }
+}
+
 
 extension AccountValueStorageContainer {
     public var name: NameAccountValueKey.Value {
         storage[NameAccountValueKey.self]
     }
 }
+
 
 // TODO define update strategy => write value and then call account service?
 extension ModifiableAccountValueStorageContainer {

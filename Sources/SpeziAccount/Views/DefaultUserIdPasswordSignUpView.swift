@@ -24,7 +24,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
     @State private var genderIdentity: GenderIdentity = .preferNotToState
 
     @State private var state: ViewState = .idle
-    @FocusState private var focusedField: AccountInputFields?
+    @FocusState private var focusedField: AccountInputFields? // TODO how to make abstract on account values?
 
     @StateObject var userIdValidation: ValidationEngine
     @StateObject var passwordValidation: ValidationEngine
@@ -34,6 +34,9 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
             .navigationTitle("Sign Up") // TODO localize!
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            .onTapGesture {
+                focusedField = nil // TODO what does this do?
+            }
     }
 
     @ViewBuilder var form: some View {
@@ -136,7 +139,7 @@ struct DefaultUserIdPasswordSignUpView<Service: UserIdPasswordAccountService>: V
 
 #if DEBUG
 struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
-    static let accountService = DefaultUsernamePasswordAccountService()
+    static let accountService = MockUsernamePasswordAccountService()
 
     static var previews: some View {
         NavigationStack {

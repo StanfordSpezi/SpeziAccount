@@ -93,7 +93,6 @@ struct DataEntryView_Previews: PreviewProvider {
             ) {
                 Text("Content ...")
             }
-            .environmentObject(UsernamePasswordAccountService())
         }
     }
 }

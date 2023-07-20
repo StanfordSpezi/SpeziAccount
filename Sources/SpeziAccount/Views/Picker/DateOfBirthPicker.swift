@@ -66,7 +66,6 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
             DateOfBirthPicker(date: $date)
                 .padding(32)
         }
-            .environmentObject(UsernamePasswordAccountService())
             .background(Color(.systemGroupedBackground))
     }
 }

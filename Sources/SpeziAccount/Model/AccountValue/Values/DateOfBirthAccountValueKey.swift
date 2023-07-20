@@ -8,15 +8,24 @@
 
 import Foundation
 
-public struct DateOfBirthAccountValueKey: OptionalAccountValueKey {
+
+public struct DateOfBirthAccountValueKey: AccountValueKey {
     public typealias Value = Date
 }
+
+extension AccountValueKeys {
+    public var dateOfBirth: DateOfBirthAccountValueKey.Type {
+        DateOfBirthAccountValueKey.self
+    }
+}
+
 
 extension AccountValueStorageContainer {
     public var dateOfBrith: DateOfBirthAccountValueKey.Value? {
         storage[DateOfBirthAccountValueKey.self]
     }
 }
+
 
 extension ModifiableAccountValueStorageContainer {
     public var dateOfBrith: DateOfBirthAccountValueKey.Value? {

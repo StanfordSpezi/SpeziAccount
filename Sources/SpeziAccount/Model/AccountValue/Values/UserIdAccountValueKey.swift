@@ -6,18 +6,23 @@
 // SPDX-License-Identifier: MIT
 //
 
-// TODO provide explicit UserNameSignupValue?
-// TODO provide explicit E-MailSignup Value?
 
-public struct UserIdAccountValueKey: AccountValueKey {
+public struct UserIdAccountValueKey: RequiredAccountValueKey {
     public typealias Value = String
 }
 
+
+extension AccountValueKeys {
+    // TODO is userId update special? requires verification and stuff?
+    public var userId: UserIdAccountValueKey.Type {
+        UserIdAccountValueKey.self
+    }
+}
+
+
 extension AccountValueStorageContainer {
     public var userId: UserIdAccountValueKey.Value {
-        get {
-            storage[UserIdAccountValueKey.self]
-        }
+        storage[UserIdAccountValueKey.self]
     }
 }
 

@@ -21,7 +21,7 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.6.0")),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/computed-knowledge-source-storage-policy"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0")),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5"))
     ],

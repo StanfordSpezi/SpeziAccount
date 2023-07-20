@@ -89,7 +89,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
 
 #if DEBUG
 struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
-    static let accountService = DefaultUsernamePasswordAccountService()
+    static let accountService = MockUsernamePasswordAccountService()
     static var previews: some View {
         NavigationStack {
             DefaultUserIdPasswordResetView(using: accountService) {

@@ -32,7 +32,7 @@ struct AccountServicesView<Header: View>: View {
                     header
                     Spacer(minLength: 0)
                     VStack(spacing: 16) {
-                        if account.accountServices.isEmpty {
+                        if account.registeredAccountServices.isEmpty {
                             Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
                                 .multilineTextAlignment(.center)
                                 .foregroundColor(.secondary)
@@ -43,9 +43,9 @@ struct AccountServicesView<Header: View>: View {
                                 Text("OPEN_DOCUMENTATION", bundle: .module)
                             }
                         } else {
-                            ForEach(account.accountServices.indices, id: \.self) { index in
+                            ForEach(account.registeredAccountServices.indices, id: \.self) { index in
                                 // TODO iterating over protocols foreach crashes xcode preview!
-                                button(account.accountServices[index])
+                                button(account.registeredAccountServices[index])
                             }
                         }
                     }
@@ -84,7 +84,7 @@ struct AccountServicesView_Previews: PreviewProvider {
         NavigationStack {
             AccountServicesView(header: EmptyView()) { accountService in
                 AnyView(Text("<Login Button>"))
-                // TODO accountService.loginButton
+                // accountService.loginButton
             }
                 .navigationTitle(String(localized: "LOGIN", bundle: .module))
         }

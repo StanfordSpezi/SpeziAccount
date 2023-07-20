@@ -13,13 +13,18 @@ import SwiftUI
 @main
 struct UITestsApp: App {
     @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
-    
+
+    @EnvironmentObject
+    var account: Account
     
     var body: some Scene {
         WindowGroup {
             NavigationStack {
                 AccountTestsView()
                     .spezi(appDelegate)
+                    .onAppear {
+                        account.details?.update(\.genderIdentity, value: .female)
+                    }
             }
         }
     }

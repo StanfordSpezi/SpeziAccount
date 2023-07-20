@@ -6,12 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
+
 public protocol AnyAccountValueRequirement: CustomStringConvertible {
     var type: AccountValueType { get }
     var id: ObjectIdentifier { get }
 
     func isContained(in storage: AccountValueStorage) -> Bool
 }
+
 
 struct AccountValueRequirement<Key: AccountValueKey>: AnyAccountValueRequirement {
     let type: AccountValueType

@@ -70,7 +70,6 @@ struct NameTextFields_Previews: PreviewProvider {
             NameTextFields(name: $name)
                 .padding(32)
         }
-            .environmentObject(UsernamePasswordAccountService())
             .background(Color(.systemGroupedBackground))
     }
 }

@@ -61,7 +61,6 @@ struct GenderIdentityPicker_Previews: PreviewProvider {
             }
                 .padding(32)
         }
-            .environmentObject(UsernamePasswordAccountService())
             .background(Color(.systemGroupedBackground))
     }
 }

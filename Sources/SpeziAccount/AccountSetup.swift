@@ -52,7 +52,7 @@ public struct AccountSetup<Header: View>: View {
     var colorScheme
 
     private var services: [any AccountService] {
-        account.accountServices
+        account.registeredAccountServices
     }
 
     private var identityProviders: [String] {
@@ -231,13 +231,14 @@ public struct AccountSetup<Header: View>: View {
 struct AccountView_Previews: PreviewProvider {
     static var accountServicePermutations: [[any AccountService]] = {
        [
-           [DefaultUsernamePasswordAccountService()],
+           [MockUsernamePasswordAccountService()],
            [MockSimpleAccountService()],
-           [DefaultUsernamePasswordAccountService(), MockSimpleAccountService()],
+           [MockUsernamePasswordAccountService(), MockSimpleAccountService()],
            [
-               DefaultUsernamePasswordAccountService(),
+                // TODO this isn't properly displayed in the preview! (double primary view?)
+               MockUsernamePasswordAccountService(),
                MockSimpleAccountService(),
-               DefaultUsernamePasswordAccountService()
+               MockUsernamePasswordAccountService()
            ],
            []
        ]
@@ -258,7 +259,7 @@ struct AccountView_Previews: PreviewProvider {
         NavigationStack {
             AccountSetup()
         }
-        .environmentObject(Account(building: detailsBuilder, active: DefaultUsernamePasswordAccountService()))
+        .environmentObject(Account(building: detailsBuilder, active: MockUsernamePasswordAccountService()))
     }
 }
 #endif

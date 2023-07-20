@@ -15,7 +15,7 @@ struct UserInformation<Caption: View>: View {
 
     public init(name nameComponents: PersonNameComponents, caption: String) where Caption == Text {
         self.init(name: nameComponents) {
-            Text(verbatim: caption) // TODO use case to also pass LocalizedStringResource?
+            Text(verbatim: caption)
         }
     }
 

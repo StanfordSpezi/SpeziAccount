@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 /// An error that occurs during building or verification of ``AccountValueKey``.
 public enum AccountValueRequirementsError: LocalizedError {
     /// An non-optional ``AccountValueKey`` that was configured but not supplied by the signup view before
@@ -15,7 +16,7 @@ public enum AccountValueRequirementsError: LocalizedError {
     ///
     /// - Note: This is an error in the view logic due to missing user-input sanitization or simply the view
     /// didn't supply the ``AccountValueKey`` when building the ``SignupRequest``.
-    case missingAccountValue
+    case missingAccountValue(_ keyName: String)
 
     public var errorDescription: String? {
         .init(localized: errorDescriptionValue, bundle: .module)
@@ -31,21 +32,21 @@ public enum AccountValueRequirementsError: LocalizedError {
 
     private var errorDescriptionValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue:
+        case .missingAccountValue: // TODO replace value?
             return "ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION"
         }
     }
 
     private var failureReasonValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue:
+        case .missingAccountValue: // TODO replace value?
             return "ACCOUNT_VALUES_MISSING_VALUE_REASON"
         }
     }
 
     private var recoverySuggestionValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue:
+        case .missingAccountValue: // TODO replace value?
             return "ACCOUNT_VALUES_MISSING_VALUE_RECOVERY"
         }
     }

@@ -17,7 +17,7 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
     @State private var password: String = ""
 
     @State private var state: ViewState = .idle
-    @FocusState private var focusedField: AccountInputFields?
+    @FocusState private var focusedField: AccountInputFields? // TODO how to make that dynamic?
 
     // for login we do all checks server-side. Except that don't pass empty values.
     @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty])
@@ -84,11 +84,11 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            // TODO inject somwhere else?
+            .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             .onTapGesture {
                 focusedField = nil // TODO what does this do?
             }
-            // TODO inject somwhere else?
-            .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
     public init(using service: Service) {
@@ -120,7 +120,7 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
 
 #if DEBUG
 struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
-    static let accountService = DefaultUsernamePasswordAccountService()
+    static let accountService = MockUsernamePasswordAccountService()
 
     static var previews: some View {
         NavigationStack {

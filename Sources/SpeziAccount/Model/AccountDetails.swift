@@ -6,40 +6,29 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
+import Spezi
 
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountValueKey`` for a list of bundled `AccountValueKey`s.
 public struct AccountDetails: Sendable, ModifiableAccountValueStorageContainer {
-    // TODO think about modification?
     public typealias Builder = AccountValueStorageBuilder<Self>
 
-    // This property is accessible once the `AccountDetails` were supplied to `Account`
-    @AccountReference private var account: Account
-
-    public var storage: AccountValueStorage
-
-    // we just store the id as we would otherwise impose `Sendable` requirements on the AccountService
-    internal let accountServiceId: ObjectIdentifier
-
-    public var accountService: any AccountService {
-        guard _account.isInjected else {
-            fatalError("You can only access the `accountService` property of the `AccountDetails` if was supplied to the `Account` instance.")
-        }
-
-        guard let service = account.mappedAccountServices[accountServiceId] else {
-            fatalError("AccountDetails stored an AccountService Id that wasn't present in the Account instance!")
-        }
-
-        return service
-    }
+    public var storage: AccountValueStorage // TODO modifieable?
 
     init<Service: AccountService>(storage: AccountValueStorage, owner accountService: Service) {
         self.storage = storage
 
         // patch the storage to make sure we make sure to not expose the plaintext password
-        self.storage.contents[ObjectIdentifier(PasswordAccountValueKey.self)] = nil
-        self.accountServiceId = accountService.id
+        self.storage[PasswordAccountValueKey.self] = nil
+        self.storage[ActiveAccountServiceKey.self] = accountService
+    }
+
+
+    // TODO move to Account Service? => also we need something for "batch" processing (e.g. Edit View!)
+    public func update<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value?) {
+    }
+
+    public func update<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) {
     }
 }

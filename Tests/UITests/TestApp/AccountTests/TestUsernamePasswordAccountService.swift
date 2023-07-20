@@ -9,7 +9,7 @@
 import SpeziAccount
 
 
-class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
+final class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     var configuration: UserIdPasswordServiceConfiguration {
         UserIdPasswordServiceConfiguration(
             name: "TestUsernamePasswordAccountService",
@@ -57,7 +57,7 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
             .add(DateOfBirthAccountValueKey.self, value: registeredUser.dateOfBirth)
             .build(owner: self)
 
-        await account.supplyUserInfo(details)
+        await account.supplyUserDetails(details)
     }
 
     func resetPassword(userId: String) async throws {
@@ -65,6 +65,6 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     }
 
     func logout() async throws {
-        await account.removeUserInfo()
+        await account.removeUserDetails()
     }
 }

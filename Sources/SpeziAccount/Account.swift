@@ -9,40 +9,42 @@
 import Spezi
 import SwiftUI
 
-/// A property wrapper that can be used within ``AccountService`` instances to gain
-/// access to the ``Account`` instance.
-public typealias AccountReference = WeakInjectable<Account> // TODO global scope => inside AccountService?
 
-/// Account-related Spezi module managing a collection of ``AccountService``s.
+/// Account-related Spezi module managing a collection of ``AccountService``s and provide access to ``AccountDetails``
+/// of the currently associated user account.
 /// TODO update docs!
 /// 
 /// The ``Account/Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
 @MainActor
 public class Account: ObservableObject, Sendable {
-    /// The ``Account/signedIn`` property determines if the the current Account context is signed in or not yet signed in.
-    /// It can be easily based around as a binding. TODO not true?
+    /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
     ///
-    /// - Note: If the property is set to true, it is guaranteed that ``details`` is present. However, it is recommended
-    ///     to gracefully unwrap the optional if access to the account info is required.
+    /// You might use the projected value `$signedIn` to get access to the corresponding publisher.
+    ///
+    /// - Important: If the property is set to `true`, it is guaranteed that ``details`` is present.
+    ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
+    ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
+    ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
     @Published public private(set) var signedIn = false
+
+    /// Provides access to associated data of the currently associated user account.
+    ///
+    /// The ``AccountDetails`` acts as a typed collection and is implemented as a
+    /// [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository).
+    ///
+    /// - Note: The associated ``AccountService`` that is responsible for managing the associated user can be retrieved
+    ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
-    let mappedAccountServices: [ObjectIdentifier: any AccountService]
-
-    // TODO access control?
-    var accountServices: [any AccountService] { // TODO list needs an array?
-        Array(mappedAccountServices.values)
-    }
+    let registeredAccountServices: [any AccountService]
 
     
     /// - Parameter services: An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     public nonisolated init(services: [any AccountService] = []) {
-        self.mappedAccountServices = services.reduce(into: [:]) { partialResult, service in
-            partialResult[service.id] = service
-        }
+        registeredAccountServices = services
 
-        for service in mappedAccountServices.values {
+        for service in registeredAccountServices {
             injectWeakAccount(into: service)
         }
     }
@@ -51,7 +53,7 @@ public class Account: ObservableObject, Sendable {
     convenience init<Service: AccountService>(building builder: AccountDetails.Builder, active accountService: Service) {
         self.init(services: [accountService])
 
-        self.supplyUserInfo(builder.build(owner: accountService))
+        self.supplyUserDetails(builder.build(owner: accountService))
     }
 
     /// Initializer useful for testing and previewing purposes.
@@ -59,43 +61,31 @@ public class Account: ObservableObject, Sendable {
         self.init(services: services)
     }
 
-    nonisolated func injectWeakAccount<V>(into value: V) {
+    nonisolated func injectWeakAccount<V: AccountService>(into value: V) {
         let mirror = Mirror(reflecting: value)
 
         for (_, value) in mirror.children {
-            if let weakReference = value as? AccountReference {
+            if let weakReference = value as? V.AccountReference {
                 weakReference.inject(self)
             }
         }
     }
 
-    // TODO rename!
-    public func supplyUserInfo(_ details: AccountDetails) {
-        precondition(mappedAccountServices[details.accountServiceId] != nil, "Received AccountDetails from AccountService that was never registered!")
+    public func supplyUserDetails(_ details: AccountDetails) {
         if let existingDetails = self.details {
             precondition(
-                existingDetails.accountServiceId == details.accountServiceId,
+                existingDetails.accountService.id == details.accountService.id,
                 "The AccountService \(details.accountService) tried to overwrite `AccountDetails` from \(existingDetails.accountService)!"
             )
         }
 
-        injectWeakAccount(into: details)
-
-        // TODO document order!
         self.details = details
         if !signedIn {
             signedIn = true
         }
     }
 
-    public func removeUserInfo() { // TODO rename
-        /*
-         TODO how to check if the right account service removes the user info?
-        if let activeAccountService {
-            precondition(ObjectIdentifier(accountService) == ObjectIdentifier(activeAccountService)) // TODO message
-        }
-        */
-         // TODO document order!
+    public func removeUserDetails() {
         if signedIn {
             signedIn = false
         }

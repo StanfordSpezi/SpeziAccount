@@ -6,13 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
 import SwiftUI
 
-public struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetupViewStyle {
-    public var service: Service
 
-    init(using service: Service) {
+// TODO docs!
+public struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
+    public var service: MockSimpleAccountService
+
+    init(using service: MockSimpleAccountService) {
         self.service = service
     }
 
@@ -20,16 +21,16 @@ public struct DefaultAccountSetupViewStyle<Service: AccountService>: AccountSetu
         Group {
             Image(systemName: "ellipsis.rectangle")
                 .font(.title2)
-            Text("Mock Account Service")
+            Text("Mock Account Service") // TODO configurable?
         }
             .accountServiceButtonBackground()
     }
 
     public func makePrimaryView() -> some View {
-        Text("Hello World")
+        Text("Hello World") // TODO something at least?
     }
 
     public func makeAccountSummary(account: AccountDetails) -> some View {
-        Text("Account for \(account.userId)")
+        DefaultUserIdPasswordAccountSummaryView(account: account)
     }
 }

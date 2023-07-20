@@ -6,32 +6,35 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
+
+
 public class AccountValueStorageBuilder<Container: AccountValueStorageContainer> {
-    private var contents: AccountValueStorage.StorageType
+    private var storage: AccountValueStorage
 
     public init() {
-        self.contents = [:]
+        self.storage = .init()
     }
 
-    public init<Source: AccountValueStorageContainer>(from container: Source) {
-        self.contents = container.storage.contents
+    public init<Source: AccountValueStorageContainer>(from storage: Source) {
+        self.storage = storage.storage
     }
 
     @discardableResult
-    public func add<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
-        contents[ObjectIdentifier(key)] = AccountValueStorage.Value<Key>(value: value)
+    public func add<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
+        storage[key] = value
         return self
     }
 
     @discardableResult
-    public func add<Key: OptionalAccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        contents[ObjectIdentifier(key)] = value.map { AccountValueStorage.Value<Key>(value: $0) }
+    public func add<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
+        storage[key] = value
         return self
     }
 
     @discardableResult
     public func remove<Key: AccountValueKey>(_ key: Key.Type) -> Self {
-        contents[ObjectIdentifier(key)] = nil
+        storage[key] = nil
         return self
     }
 
@@ -48,27 +51,19 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 }
 
-// TODO move them?
 
 extension AccountValueStorageBuilder where Container == AccountDetails {
     public func build<Service: AccountService>(owner accountService: Service) -> Container {
-        let storage = AccountValueStorage(contents: contents)
-        return Container(storage: storage, owner: accountService)
-    }
-
-    internal func build<Service: AccountService>(owner accountService: Service, injecting account: Account) -> Container {
-        let container = build(owner: accountService)
-        account.injectWeakAccount(into: container)
-        return container
+        Container(storage: self.storage, owner: accountService)
     }
 }
+
 
 extension AccountValueStorageBuilder where Container == SignupRequest {
     public func build(
         checking requirements: AccountValueRequirements? = nil
     ) throws -> Container {
-        let storage = AccountValueStorage(contents: contents)
-        let request = Container(storage: storage)
+        let request = Container(storage: self.storage)
 
         if let requirements {
             try requirements.validateRequirements(in: request)

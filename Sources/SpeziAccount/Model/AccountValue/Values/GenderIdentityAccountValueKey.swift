@@ -6,9 +6,18 @@
 // SPDX-License-Identifier: MIT
 //
 
-public struct GenderIdentityAccountValueKey: OptionalAccountValueKey {
+
+public struct GenderIdentityAccountValueKey: AccountValueKey {
     public typealias Value = GenderIdentity
 }
+
+
+extension AccountValueKeys {
+    public var genderIdentity: GenderIdentityAccountValueKey.Type {
+        GenderIdentityAccountValueKey.self
+    }
+}
+
 
 extension AccountValueStorageContainer {
     public var genderIdentity: GenderIdentityAccountValueKey.Value? {

@@ -6,13 +6,23 @@
 // SPDX-License-Identifier: MIT
 //
 
+
 @resultBuilder
 public enum AccountValueRequirementsBuilder {
-    public static func buildExpression<Key: AccountValueKey>(_ expression: Key.Type) -> [AnyAccountValueRequirement] {
+    public static func buildExpression<Key: RequiredAccountValueKey>(_ expression: Key.Type) -> [AnyAccountValueRequirement] {
         [AccountValueRequirement<Key>(type: .required)]
     }
 
-    public static func buildExpression<Key: OptionalAccountValueKey>(_ expression: Key.Type) -> [AnyAccountValueRequirement] {
+    public static func buildExpression<Key: AccountValueKey>(_ expression: Key.Type) -> [AnyAccountValueRequirement] {
+        [AccountValueRequirement<Key>(type: .optional)]
+    }
+
+    public static func buildExpression<Key: RequiredAccountValueKey>(_ expression: KeyPath<AccountValueKeys, Key.Type>) -> [AnyAccountValueRequirement] {
+        // swiftlint:disable:previous line_length
+        [AccountValueRequirement<Key>(type: .required)]
+    }
+
+    public static func buildExpression<Key: AccountValueKey>(_ expression: KeyPath<AccountValueKeys, Key.Type>) -> [AnyAccountValueRequirement] {
         [AccountValueRequirement<Key>(type: .optional)]
     }
 
@@ -38,10 +48,8 @@ public enum AccountValueRequirementsBuilder {
     }
 
     public static func buildArray(_ components: [[AnyAccountValueRequirement]]) -> [AnyAccountValueRequirement] {
-        var result: [AnyAccountValueRequirement] = []
-        for componentArray in components {
-            result.append(contentsOf: componentArray)
+        components.reduce(into: []) { result, requirements in
+            result.append(contentsOf: requirements)
         }
-        return result
     }
 }

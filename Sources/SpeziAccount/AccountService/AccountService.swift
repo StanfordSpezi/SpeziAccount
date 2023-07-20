@@ -16,7 +16,7 @@ import SwiftUI
 /// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``. TODO docs?
 /// TODO document use of the AccountReference property wrapper
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringConvertible where ID == ObjectIdentifier {
+public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringConvertible, Sendable where ID == ObjectIdentifier {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
 

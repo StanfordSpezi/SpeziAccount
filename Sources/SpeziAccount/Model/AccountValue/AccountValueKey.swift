@@ -6,9 +6,22 @@
 // SPDX-License-Identifier: MIT
 //
 
-// TODO list bundeled ones!
-public protocol AccountValueKey { // TODO docs: requirement is static => be sure when you define a required one! most likely an Optional one!
-    associatedtype Value: Sendable
-}
+import Spezi
+import XCTRuntimeAssertions
 
-public protocol OptionalAccountValueKey: AccountValueKey {}
+
+// TODO list bundeled ones!
+public protocol AccountValueKey: KnowledgeSource<AccountAnchor> where Value: Sendable {}
+
+// TODO docs: requirement is static => be sure when you define a required one! most likely an Optional one!
+// TODO maybe "essential" name?
+public protocol RequiredAccountValueKey: AccountValueKey, DefaultProvidingKnowledgeSource {}
+
+extension RequiredAccountValueKey {
+    public static var defaultValue: Value {
+        preconditionFailure("""
+                            A required AccountValue wasn't provided by the respective AccountService! \
+                            Something went wront with checking the requirements.
+                            """)
+    }
+}
