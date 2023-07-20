@@ -13,10 +13,10 @@ class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration(standard: TestAppStandard()) {
             AccountConfiguration {
-                // TODO just put in the account services?
-
-                TestAccountConfiguration() // TODO FeatureFlags.emptyAccountServices
+                // TODO FeatureFlags.emptyAccountServices
+                // TODO test supplying account services!
             }
+            TestAccountConfiguration()
         }
     }
 }

@@ -16,10 +16,9 @@ import SwiftUI
 /// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``. TODO docs?
 /// TODO document use of the AccountReference property wrapper
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject, Hashable, CustomStringConvertible {
+public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringConvertible where ID == ObjectIdentifier {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
-    typealias ID = ObjectIdentifier
 
     /// An identifier to uniquely identify an `AccountService`.
     var id: ID { get }
@@ -49,13 +48,13 @@ extension AccountService {
         "\(Self.self)"
     }
 
-    /// Default `Hashable` implementation by relying on the hashable ``id`` property.
-    public func hash(into hasher: inout Hasher) {
-        id.hash(into: &hasher)
-    }
-
     /// Default `Equatable` implementation by relying on the hashable ``id`` property.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
+    }
+
+    /// Default `Hashable` implementation by relying on the hashable ``id`` property.
+    public func hash(into hasher: inout Hasher) {
+        id.hash(into: &hasher)
     }
 }

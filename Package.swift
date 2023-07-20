@@ -21,21 +21,24 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0"))
+        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.6.0")),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0")),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5"))
     ],
     targets: [
         .target(
             name: "SpeziAccount",
             dependencies: [
                 .product(name: "Spezi", package: "Spezi"),
-                .product(name: "SpeziViews", package: "SpeziViews")
+                .product(name: "SpeziViews", package: "SpeziViews"),
+                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions")
             ]
         ),
         .testTarget(
             name: "SpeziAccountTests",
             dependencies: [
-                .target(name: "SpeziAccount")
+                .target(name: "SpeziAccount"),
+                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions")
             ]
         )
     ]

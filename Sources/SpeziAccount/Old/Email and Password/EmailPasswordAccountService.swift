@@ -35,7 +35,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.login.buttonTitle,
             destination: UsernamePasswordLoginView(
-                usernameValidationRules: [.minimalEmailValidationRule]
+                usernameValidationRules: [.minimalEmail]
             )
         )
     }
@@ -44,7 +44,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         button(
             localization.signUp.buttonTitle,
             destination: UsernamePasswordSignUpView(
-                usernameValidationRules: [.minimalEmailValidationRule]
+                usernameValidationRules: [.minimalEmail]
             )
         )
     }
@@ -53,7 +53,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
         AnyView(
             NavigationLink {
                 UsernamePasswordResetPasswordView(
-                    usernameValidationRules: [.minimalEmailValidationRule]
+                    usernameValidationRules: [.minimalEmail]
                 ) {
                     processSuccessfulResetPasswordView
                 }

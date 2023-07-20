@@ -1,20 +1,23 @@
 //
 // This source file is part of the Spezi open-source project
 //
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
 
 import SpeziAccount
+import SwiftUI
 
 
-class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
+class TestEmailPasswordAccountService: UserIdPasswordAccountService {
     var configuration: UserIdPasswordServiceConfiguration {
         UserIdPasswordServiceConfiguration(
-            name: "TestUsernamePasswordAccountService",
-            userIdType: .username,
-            userIdField: .username
+            name: "TestEmailPasswordAccountService",
+            image: Image(systemName: "envelope.circle.fill")
+                .symbolRenderingMode(.hierarchical),
+            userIdType: .emailAddress,
+            userIdField: .emailAddress
         )
     }
 
@@ -22,23 +25,25 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     var account: Account
     let registeredUser = UserStorage() // simulates the backend
 
+    
     init() {}
-
+    
+    
     func login(userId: String, password: String) async throws {
         try await Task.sleep(for: .seconds(2))
-
-        guard userId == "lelandstanford", password == "StanfordRocks123!" else {
+        
+        guard userId == "lelandstanford@stanford.edu", password == "StanfordRocks123!" else {
             throw MockAccountServiceError.wrongCredentials
         }
 
         registeredUser.userId = userId
         await updateUser()
     }
-
+    
     func signUp(signupRequest: SignupRequest) async throws {
         try await Task.sleep(for: .seconds(2))
-
-        guard signupRequest.userId != "lelandstanford" else {
+        
+        guard signupRequest.userId != "lelandstanford@stanford.edu" else {
             throw MockAccountServiceError.usernameTaken
         }
 
@@ -59,7 +64,7 @@ class TestUsernamePasswordAccountService: UserIdPasswordAccountService {
 
         await account.supplyUserInfo(details)
     }
-
+    
     func resetPassword(userId: String) async throws {
         try await Task.sleep(for: .seconds(2))
     }

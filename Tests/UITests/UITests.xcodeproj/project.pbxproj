@@ -10,8 +10,8 @@
 		2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7B29D6C29B00234098 /* AccountTestsView.swift */; };
 		2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */; };
 		2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */; };
-		2F027C8929D6C2AD00234098 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* User.swift */; };
-		2F027C8A29D6C2AD00234098 /* MockEmailPasswordAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */; };
+		2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* UserStorage.swift */; };
+		2F027C8A29D6C2AD00234098 /* TestEmailPasswordAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7C29D6C29B00234098 /* TestEmailPasswordAccountService.swift */; };
 		2F027C8B29D6C2AD00234098 /* TestUsernamePasswordAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7D29D6C29B00234098 /* TestUsernamePasswordAccountService.swift */; };
 		2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */; };
 		2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */; };
@@ -40,10 +40,10 @@
 /* Begin PBXFileReference section */
 		2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAccountServiceError.swift; sourceTree = "<group>"; };
 		2F027C7B29D6C29B00234098 /* AccountTestsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTestsView.swift; sourceTree = "<group>"; };
-		2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockEmailPasswordAccountService.swift; sourceTree = "<group>"; };
+		2F027C7C29D6C29B00234098 /* TestEmailPasswordAccountService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestEmailPasswordAccountService.swift; sourceTree = "<group>"; };
 		2F027C7D29D6C29B00234098 /* TestUsernamePasswordAccountService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestUsernamePasswordAccountService.swift; sourceTree = "<group>"; };
 		2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAccountConfiguration.swift; sourceTree = "<group>"; };
-		2F027C7F29D6C29B00234098 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		2F027C7F29D6C29B00234098 /* UserStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStorage.swift; sourceTree = "<group>"; };
 		2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountLoginTests.swift; sourceTree = "<group>"; };
 		2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountResetPasswordTests.swift; sourceTree = "<group>"; };
 		2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSignUpTests.swift; sourceTree = "<group>"; };
@@ -85,10 +85,10 @@
 			children = (
 				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
 				2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */,
-				2F027C7C29D6C29B00234098 /* MockEmailPasswordAccountService.swift */,
+				2F027C7C29D6C29B00234098 /* TestEmailPasswordAccountService.swift */,
 				2F027C7D29D6C29B00234098 /* TestUsernamePasswordAccountService.swift */,
 				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
-				2F027C7F29D6C29B00234098 /* User.swift */,
+				2F027C7F29D6C29B00234098 /* UserStorage.swift */,
 			);
 			path = AccountTests;
 			sourceTree = "<group>";
@@ -261,10 +261,10 @@
 				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
 				A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
-				2F027C8929D6C2AD00234098 /* User.swift in Sources */,
+				2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */,
 				2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */,
 				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
-				2F027C8A29D6C2AD00234098 /* MockEmailPasswordAccountService.swift in Sources */,
+				2F027C8A29D6C2AD00234098 /* TestEmailPasswordAccountService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,11 +12,13 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration<ComponentStandard: Standard>: AccountServiceProvider {
-    var accountService: TestUsernamePasswordAccountService
+final class TestAccountConfiguration<ComponentStandard: Standard>: Component {
+    @Provide var usernameAccountService: any AccountService
+    @Provide var emailAccountService: any AccountService
 
     init() {
-        self.accountService = TestUsernamePasswordAccountService()
-        // TODO how to supply the email account service!
+        // TODO we need to somehow tests the different views right?
+        self.usernameAccountService = TestUsernamePasswordAccountService()
+        self.emailAccountService = TestEmailPasswordAccountService()
     }
 }

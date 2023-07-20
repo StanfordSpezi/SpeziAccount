@@ -43,6 +43,7 @@ public struct AccountSetupDefaultHeader: View { // TODO move
     public init() {}
 }
 
+// TODO review accessibility!
 public struct AccountSetup<Header: View>: View {
     private let header: Header
 

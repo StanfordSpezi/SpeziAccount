@@ -14,6 +14,8 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
 
     @State private var viewState: ViewState = .idle
 
+    // TODO extended summary view (=> edit account info, change email?, remove account)
+
     public var body: some View {
         VStack {
             UserInformation(name: account.name, caption: account.userId)
@@ -33,18 +35,23 @@ public struct DefaultUserIdPasswordAccountSummaryView: View {
 
 #if DEBUG
 struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
-    // TODO this setup steps are intense!
-    static let accountService = DefaultUsernamePasswordAccountService()
-    static let account = Account(accountService)
+    struct PreviewView: View {
+        @EnvironmentObject var account: Account
 
-    static let details = AccountDetails.Builder()
+        var body: some View {
+            if let details = account.details {
+                DefaultUserIdPasswordAccountSummaryView(account: details)
+            }
+        }
+    }
+
+    static let detailsBuilder = AccountDetails.Builder()
         .add(UserIdAccountValueKey.self, value: "andi.bauer@tum.de")
         .add(NameAccountValueKey.self, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: accountService, injecting: account)
 
     static var previews: some View {
-        DefaultUserIdPasswordAccountSummaryView(account: details)
-            .environmentObject(account)
+        PreviewView()
+            .environmentObject(Account(building: detailsBuilder, active: DefaultUsernamePasswordAccountService()))
     }
 }
 #endif

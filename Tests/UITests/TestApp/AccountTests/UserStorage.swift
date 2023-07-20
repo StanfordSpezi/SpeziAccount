@@ -10,7 +10,7 @@ import Foundation
 import SpeziAccount
 
 
-class User {
+class UserStorage {
     var userId: String
     var name = PersonNameComponents()
     var gender: GenderIdentity?

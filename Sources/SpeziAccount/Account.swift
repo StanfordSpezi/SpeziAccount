@@ -28,7 +28,7 @@ public class Account: ObservableObject, Sendable {
     @Published public private(set) var details: AccountDetails?
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
-    let mappedAccountServices: [AccountService.ID: any AccountService]
+    let mappedAccountServices: [ObjectIdentifier: any AccountService]
 
     // TODO access control?
     var accountServices: [any AccountService] { // TODO list needs an array?

@@ -6,6 +6,13 @@
 // SPDX-License-Identifier: MIT
 //
 
+// TODO we need a generalized SharedRepository pattern here
+//  - stores e.g. the primary account service
+//  - stores account service configuration elements (by just pulling them out of the account service
+//  - allows for computed account values (e.g., email address source from userId if present, otherwise it may be an optional stored thing?)
+//  - It replaces the TypedCollection.swift for `Spezi`
+//  - allows for distinct instantiations! (e.g. AccountValue system is different from the Spezi typed storage and different between the shared component storage!)
+
 // TODO rename ?
 protocol AnyEntry: Sendable {}
 
@@ -76,8 +83,12 @@ public struct AccountValueStorage: Sendable {
 
 public protocol AccountValueStorageContainer {
     var storage: AccountValueStorage { get }
+
+    // TODO default subscripts?
 }
 
 public protocol ModifiableAccountValueStorageContainer: AccountValueStorageContainer {
     var storage: AccountValueStorage { get set }
+
+    // TODO default subscripts?
 }

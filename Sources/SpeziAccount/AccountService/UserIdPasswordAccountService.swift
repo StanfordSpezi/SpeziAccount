@@ -10,6 +10,8 @@ import Foundation
 import SwiftUI
 
 // TODO this configuration should be user accessible (userIdType, userIdField config)!
+//   => knowledge sources
+//  => AccountServices need to be forced to supply configuration!
 public struct UserIdPasswordServiceConfiguration {
     public static var defaultAccountImage: Image {
         Image(systemName: "person.crop.circle.fill")
