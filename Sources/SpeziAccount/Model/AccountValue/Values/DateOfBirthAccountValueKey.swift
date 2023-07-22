@@ -6,11 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
+import SwiftUI
 
 
 public struct DateOfBirthAccountValueKey: AccountValueKey {
     public typealias Value = Date
+    public typealias DataEntry = DateOfBirthPicker
+
+    public static let signupCategory: SignupCategory = .personalDetails
 }
 
 extension AccountValueKeys {
@@ -35,5 +38,15 @@ extension ModifiableAccountValueStorageContainer {
         set {
             storage[DateOfBirthAccountValueKey.self] = newValue
         }
+    }
+}
+
+
+// MARK: - UI
+extension DateOfBirthPicker: DataEntryView {
+    public typealias Key = DateOfBirthAccountValueKey
+
+    public init(_ value: Binding<Key.Value>) {
+        self.init(date: value)
     }
 }

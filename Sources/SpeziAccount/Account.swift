@@ -36,13 +36,21 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
+    public let signupRequirements: AccountValueRequirements
+
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     let registeredAccountServices: [any AccountService]
 
-    
-    /// - Parameter services: An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
-    public nonisolated init(services: [any AccountService] = []) {
-        registeredAccountServices = services
+    /// TODO docs
+    /// - Parameters:
+    ///   - services: An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
+    ///   - signupRequirements: TODO docs
+    public nonisolated init(
+        services: [any AccountService] = [],
+        requirements signupRequirements: AccountValueRequirements = .default // TODO make something minimal (for Firebase)
+    ) {
+        self.registeredAccountServices = services
+        self.signupRequirements = signupRequirements
 
         for service in registeredAccountServices {
             injectWeakAccount(into: service)
@@ -50,8 +58,16 @@ public class Account: ObservableObject, Sendable {
     }
 
     /// Initializer useful for testing and previewing purposes.
-    convenience init<Service: AccountService>(building builder: AccountDetails.Builder, active accountService: Service) {
-        self.init(services: [accountService])
+    /// - Parameters:
+    ///   - builder: // TODO docs!
+    ///   - accountService:
+    ///   - signupRequirements:
+    convenience init<Service: AccountService>(
+        building builder: AccountDetails.Builder,
+        active accountService: Service,
+        requirements signupRequirements: AccountValueRequirements = .default
+    ) {
+        self.init(services: [accountService], requirements: signupRequirements)
 
         self.supplyUserDetails(builder.build(owner: accountService))
     }

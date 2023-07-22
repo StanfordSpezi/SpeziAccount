@@ -10,14 +10,21 @@ import Foundation
 import SpeziViews
 import SwiftUI
 
-public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
+
+private enum LoginFocusState {
+    case userId
+    case password
+}
+
+
+public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
     @State private var userId: String = ""
     @State private var password: String = ""
 
     @State private var state: ViewState = .idle
-    @FocusState private var focusedField: AccountInputFields? // TODO how to make that dynamic?
+    @FocusState private var focusedField: LoginFocusState?
 
     // for login we do all checks server-side. Except that don't pass empty values.
     @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty])
@@ -87,7 +94,7 @@ public struct DefaultUserIdPasswordEmbeddedView<Service: UserIdPasswordAccountSe
             // TODO inject somwhere else?
             .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             .onTapGesture {
-                focusedField = nil // TODO what does this do?
+                focusedField = nil
             }
     }
 
@@ -124,7 +131,7 @@ struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationStack {
-            DefaultUserIdPasswordEmbeddedView(using: accountService)
+            UserIdPasswordEmbeddedView(using: accountService)
                 .environmentObject(Account(accountService))
         }
     }

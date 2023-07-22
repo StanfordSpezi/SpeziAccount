@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct DateOfBirthPicker: View {
+public struct DateOfBirthPicker: View {
     private let titleLocalization: LocalizedStringResource
 
     @Binding private var date: Date
@@ -26,7 +26,7 @@ struct DateOfBirthPicker: View {
         return startDate...endDate
     }
 
-    var body: some View {
+    public var body: some View {
         DatePicker(
             selection: $date,
             in: dateRange,
@@ -38,15 +38,15 @@ struct DateOfBirthPicker: View {
             // TODO birthday text content type?
     }
 
-    init(
+    public init(
         date: Binding<Date>,
-        title: LocalizedStringResource = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
+        title customTitle: LocalizedStringResource? = nil
     ) {
         self._date = date
-        self.titleLocalization = title
+        self.titleLocalization = customTitle ?? LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
     }
 
-    init(date: Binding<Date>, title: String.LocalizationValue) {
+    public init(date: Binding<Date>, title: String.LocalizationValue) {
         self.init(date: date, title: LocalizedStringResource(title))
     }
 }

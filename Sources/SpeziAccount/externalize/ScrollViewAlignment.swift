@@ -9,7 +9,7 @@
 import SwiftUI
 
 extension View {
-    public func embedIntoScrollViewScaledToFit() -> some View {
+    public func embedIntoScrollViewScaledToFit() -> some View { // TODO remove
         GeometryReader { proxy in
             ScrollView {
                 VStack {
@@ -20,19 +20,3 @@ extension View {
         }
     }
 }
-
-/*
-        GeometryReader { proxy in
-            ScrollView(.vertical) {
-                VStack {
-                    header
-                        .padding(.bottom, 32)
-
-                    form
-                }
-                .padding(.horizontal, AccountSetup.Constants.outerHorizontalPadding)
-                .frame(minHeight: proxy.size.height)
-                .frame(maxWidth: .infinity)
-            }
-        }
-        */

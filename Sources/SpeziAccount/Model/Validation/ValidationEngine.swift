@@ -10,6 +10,9 @@ import Foundation
 
 // TODO shall we move this infrastructure (+ some modifieris) to SpeziViews?
 
+// TODO if we have a generalized "run validation" modifier we could provide a ValidationEngine modifier!
+//   => currently we do this with `SignupSubmitHooks` in the `GeneralizedDataEntryView`.
+
 /// A model that is responsible to verify a list of ``ValidationRule``s.
 ///
 /// You may use a `ValidationEngine` inside your view hierarchy (using `@StateObject`) to manage the evaluation
@@ -18,7 +21,7 @@ import Foundation
 /// The state of the `ValidationEngine` is updated on each invocation of ``runValidation(input:)`` or ``runValidationOnSubmit(input:)``.
 public class ValidationEngine: ObservableObject {
     /// Access to the underlying validation rules
-    public let validationRules: [ValidationRule]
+    public var validationRules: [ValidationRule]
 
     /// A property that indicates if the last processed input is considered valid given the supplied ``ValidationRule`` list.
     @Published public var inputValid = false

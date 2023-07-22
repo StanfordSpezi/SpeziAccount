@@ -86,6 +86,7 @@
 "UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
 "UP_CREDENTIALS" = "Credentials";
 "UP_NAME" = "Name";
+"UP_CONTACT_DETAILS" = "Contact Details";
 "UP_PERSONAL_DETAILS" = "Personal Details";
 "UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
 

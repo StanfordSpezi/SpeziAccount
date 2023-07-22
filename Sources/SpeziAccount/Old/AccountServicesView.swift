@@ -32,6 +32,7 @@ struct AccountServicesView<Header: View>: View {
                     header
                     Spacer(minLength: 0)
                     VStack(spacing: 16) {
+                        // TODO file still here to pull out this thing!
                         if account.registeredAccountServices.isEmpty {
                             Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
                                 .multilineTextAlignment(.center)
@@ -74,7 +75,7 @@ struct AccountServicesView<Header: View>: View {
 struct AccountServicesView_Previews: PreviewProvider {
     @StateObject private static var account: Account = {
         let accountServices: [any AccountService] = [
-            //UsernamePasswordAccountService(),
+            // UsernamePasswordAccountService(),
             // EmailPasswordAccountService()
         ]
         return Account(services: accountServices)
@@ -82,7 +83,7 @@ struct AccountServicesView_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationStack {
-            AccountServicesView(header: EmptyView()) { accountService in
+            AccountServicesView(header: EmptyView()) { _ in
                 AnyView(Text("<Login Button>"))
                 // accountService.loginButton
             }

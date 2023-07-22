@@ -9,8 +9,8 @@
 import SpeziViews
 import SwiftUI
 
-// TODO this is not userIdPassword specific (and shouldn't be?)
-public struct DefaultUserIdPasswordAccountSummaryView: View {
+// TODO this is somewhat userid specific, but could also be more flexible!
+public struct UserIdPasswordAccountSummaryView: View {
     private let account: AccountDetails
 
     @State private var viewState: ViewState = .idle
@@ -42,7 +42,7 @@ struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
         .build(owner: MockUsernamePasswordAccountService())
 
     static var previews: some View {
-        DefaultUserIdPasswordAccountSummaryView(account: details)
+        UserIdPasswordAccountSummaryView(account: details)
     }
 }
 #endif

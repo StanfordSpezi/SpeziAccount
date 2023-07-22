@@ -7,20 +7,23 @@
 //
 
 import Spezi
+import SwiftUI
 
 
 public struct EmailAccountValueKey: AccountValueKey, OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
-    public static func compute<Repository: SharedRepository<Anchor>>(from repository: Repository) -> String? {
+    public static let signupCategory: SignupCategory = .contactDetails // TODO we could add phone number support as well!
+
+    public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
         if let email = repository.get(Self.self) {
             // if we have manually stored a value for this key we return it
             return email
         }
 
         // otherwise return the userid if its a email address
-        // TODO we need to check the configuration!
+        // TODO return nil if userId is not a email address!
 
         return repository[UserIdAccountValueKey.self]
     }
@@ -42,6 +45,30 @@ extension AccountDetails {
         }
         set {
             storage[EmailAccountValueKey.self] = newValue
+        }
+    }
+}
+
+
+// MARK: - UI
+extension EmailAccountValueKey {
+    public struct DataEntry: DataEntryView {
+        public typealias Key = EmailAccountValueKey
+
+        @Binding private var email: Value
+
+        // TODO can we get a default for this type of init so its consistent?
+        @StateObject private var validation = ValidationEngine(rules: .interceptingChain(.nonEmpty), .minimalEmail)
+
+        public init(_ value: Binding<Value>) {
+            self._email = value
+        }
+
+        public var body: some View {
+            VerifiableTextField(UserIdType.emailAddress.localizedStringResource, text: $email)
+                .environmentObject(validation)
+                .fieldConfiguration(.emailAddress)
+                .disableFieldAssistants()
         }
     }
 }

@@ -22,10 +22,9 @@ public struct UserIdPasswordServiceConfiguration {
     public let name: LocalizedStringResource
     public let image: Image
 
-    // TODO they are not the requirements? you might enter optional values, those are displayed but not required!
-    public let signUpRequirements: AccountValueRequirements
-    // TODO those are supplied by the user (and matched or not matched by the user!)?
-    //  => if we change these, we need a way to iterate over these!
+    // TODO annoate supported signup requirements, to check if anything is unsupported?
+    //      (might be that an account service supports everything) => required ting to specify!
+    //    => enum .dynamic, supported(requirements)
 
     public let userIdType: UserIdType
     public let userIdField: FieldConfiguration
@@ -37,7 +36,6 @@ public struct UserIdPasswordServiceConfiguration {
     public init(
         name: LocalizedStringResource,
         image: Image = defaultAccountImage,
-        signUpRequirements: AccountValueRequirements = .default,
         userIdType: UserIdType = .emailAddress,
         userIdField: FieldConfiguration = .emailAddress,
         userIdSignupValidations: [ValidationRule] = [.interceptingChain(.nonEmpty), .minimalEmail],
@@ -45,7 +43,6 @@ public struct UserIdPasswordServiceConfiguration {
     ) {
         self.name = name
         self.image = image
-        self.signUpRequirements = signUpRequirements
         self.userIdType = userIdType
         self.userIdField = userIdField
         self.userIdSignupValidations = userIdSignupValidations

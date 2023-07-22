@@ -11,25 +11,25 @@ import SwiftUI
 
 extension UserIdPasswordAccountSetupViewStyle {
     public func makePrimaryView() -> some View {
-        DefaultUserIdPasswordPrimaryView(using: service)
+        UserIdPasswordPrimaryView(using: service)
     }
 
     public func makeEmbeddedAccountView() -> some View {
-        DefaultUserIdPasswordEmbeddedView(using: service)
+        UserIdPasswordEmbeddedView(using: service)
     }
 
     public func makeSignupView() -> some View {
-        DefaultUserIdPasswordSignUpView(using: service)
+        SignupForm(using: service)
     }
 
     public func makePasswordResetView() -> some View {
-        DefaultUserIdPasswordResetView(using: service) {
-            DefaultSuccessfulPasswordResetView()
+        UserIdPasswordResetView(using: service) {
+            SuccessfulPasswordResetView()
         }
     }
 
     public func makeAccountSummary(account: AccountDetails) -> some View {
-        DefaultUserIdPasswordAccountSummaryView(account: account)
+        UserIdPasswordAccountSummaryView(account: account)
     }
 
     public func makeAccountServiceButtonLabel() -> some View {

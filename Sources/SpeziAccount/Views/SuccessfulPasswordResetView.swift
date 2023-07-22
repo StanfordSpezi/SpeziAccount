@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-public struct DefaultSuccessfulPasswordResetView: View {
+public struct SuccessfulPasswordResetView: View {
     private let successfulLabelLocalization: LocalizedStringResource
 
     public var body: some View {
@@ -42,7 +42,7 @@ public struct DefaultSuccessfulPasswordResetView: View {
 struct DefaultSuccessfulPasswordResetView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            DefaultSuccessfulPasswordResetView()
+            SuccessfulPasswordResetView()
         }
     }
 }

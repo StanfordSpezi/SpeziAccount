@@ -9,7 +9,7 @@
 import SpeziViews
 import SwiftUI
 
-struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
+struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
     var body: some View {
@@ -22,7 +22,7 @@ struct DefaultUserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                     Spacer()
 
                     VStack {
-                        DefaultUserIdPasswordEmbeddedView(using: service)
+                        UserIdPasswordEmbeddedView(using: service)
                     }
                         .padding(.horizontal, Constants.innerHorizontalPadding)
                         .frame(maxWidth: Constants.maxFrameWidth)
@@ -48,7 +48,7 @@ struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static let accountService = MockUsernamePasswordAccountService()
     static var previews: some View {
         NavigationStack {
-            DefaultUserIdPasswordPrimaryView(using: accountService)
+            UserIdPasswordPrimaryView(using: accountService)
                 .environmentObject(Account(accountService))
         }
     }

@@ -23,7 +23,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/computed-knowledge-source-storage-policy"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0")),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5"))
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5")),
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMinor(from: "1.0.4"))
     ],
     targets: [
         .target(
@@ -31,7 +32,8 @@ let package = Package(
             dependencies: [
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "SpeziViews", package: "SpeziViews"),
-                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions")
+                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
+                .product(name: "OrderedCollections", package: "swift-collections")
             ]
         ),
         .testTarget(

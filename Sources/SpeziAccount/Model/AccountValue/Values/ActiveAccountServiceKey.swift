@@ -6,9 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 
-public struct ActiveAccountServiceKey: AccountValueKey {
+
+public struct ActiveAccountServiceKey: KnowledgeSource {
+    public typealias Anchor = AccountAnchor
+    // TODO this should just be a KnowledgeSource!
     public typealias Value = any AccountService
+    // TODO sendable and eqautable conformance for any AccountService?
 }
 
 

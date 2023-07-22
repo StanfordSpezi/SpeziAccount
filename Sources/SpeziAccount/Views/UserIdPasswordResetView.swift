@@ -10,7 +10,13 @@ import Foundation
 import SpeziViews
 import SwiftUI
 
-public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
+
+private enum PasswordResetFocusState {
+    case userId
+}
+
+
+public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
     private let service: Service
     private let successViewBuilder: () -> SuccessView
 
@@ -18,7 +24,7 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
     @State private var requestSubmitted = false
 
     @State private var state: ViewState = .idle
-    @FocusState private var focusedField: AccountInputFields?
+    @FocusState private var focusedField: PasswordResetFocusState?
     @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty) // TODO use signup validation?
 
     public var body: some View {
@@ -56,10 +62,10 @@ public struct DefaultUserIdPasswordResetView<Service: UserIdPasswordAccountServi
             .navigationTitle("UP_RESET_PASSWORD".localized(.module).localizedString())
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            .embedIntoScrollViewScaledToFit()
             .onTapGesture {
                 focusedField = nil
             }
-            .embedIntoScrollViewScaledToFit()
     }
 
     public init(using service: Service, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
@@ -92,8 +98,8 @@ struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
     static let accountService = MockUsernamePasswordAccountService()
     static var previews: some View {
         NavigationStack {
-            DefaultUserIdPasswordResetView(using: accountService) {
-                DefaultSuccessfulPasswordResetView()
+            UserIdPasswordResetView(using: accountService) {
+                SuccessfulPasswordResetView()
             }
                 .environmentObject(Account(accountService))
         }

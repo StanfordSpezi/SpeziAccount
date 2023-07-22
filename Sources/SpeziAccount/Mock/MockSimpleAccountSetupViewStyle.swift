@@ -31,6 +31,6 @@ public struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
     }
 
     public func makeAccountSummary(account: AccountDetails) -> some View {
-        DefaultUserIdPasswordAccountSummaryView(account: account)
+        UserIdPasswordAccountSummaryView(account: account)
     }
 }

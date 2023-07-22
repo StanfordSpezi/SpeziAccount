@@ -6,9 +6,14 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SwiftUI
+
 
 public struct GenderIdentityAccountValueKey: AccountValueKey {
     public typealias Value = GenderIdentity
+    public typealias DataEntry = GenderIdentityPicker
+
+    public static let signupCategory: SignupCategory = .personalDetails
 }
 
 
@@ -25,6 +30,7 @@ extension AccountValueStorageContainer {
     }
 }
 
+
 extension ModifiableAccountValueStorageContainer {
     public var genderIdentity: GenderIdentityAccountValueKey.Value? {
         get {
@@ -33,5 +39,15 @@ extension ModifiableAccountValueStorageContainer {
         set {
             storage[GenderIdentityAccountValueKey.self] = newValue
         }
+    }
+}
+
+
+// MARK: - UI
+extension GenderIdentityPicker: DataEntryView {
+    public typealias Key = GenderIdentityAccountValueKey
+
+    public init(_ value: Binding<GenderIdentity>) {
+        self.init(genderIdentity: value)
     }
 }

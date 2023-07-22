@@ -16,9 +16,13 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         self.storage = .init()
     }
 
-    public init<Source: AccountValueStorageContainer>(from storage: Source) {
+    init(from storage: AccountValueStorage) {
+        self.storage = storage // TODO make this public?
+    }
+
+    public convenience init<Source: AccountValueStorageContainer>(from storage: Source) {
         // TODO might just remove them? to avoid anti-patterns?
-        self.storage = storage.storage
+        self.init(from: storage.storage)
     }
 
     @discardableResult
@@ -39,13 +43,14 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         return self
     }
 
+    // TODO this method can be removed!
     @discardableResult
     public func add<Key: AccountValueKey>(
         _ keyPath: KeyPath<AccountValueKeys, Key.Type>,
         value: @autoclosure () -> Key.Value,
         ifConfigured requirements: AccountValueRequirements
     ) -> Self {
-        if requirements.configured(Key.self) {
+        if requirements.configured(keyPath) {
             return add(keyPath, value: value())
         }
         return self

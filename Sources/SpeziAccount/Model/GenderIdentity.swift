@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Spezi
 
 
 /// Describes the self-identified gender identity
@@ -27,6 +28,14 @@ public enum GenderIdentity: Int, Sendable, CaseIterable, Identifiable, Hashable 
         rawValue
     }
 }
+
+
+extension GenderIdentity: DefaultInitializable {
+    public init() {
+        self = .preferNotToState
+    }
+}
+
 
 extension GenderIdentity: CustomLocalizedStringResourceConvertible {
     private var localizationValue: String.LocalizationValue {

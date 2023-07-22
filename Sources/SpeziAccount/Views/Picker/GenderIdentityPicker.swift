@@ -9,12 +9,12 @@
 import SwiftUI
 
 
-struct GenderIdentityPicker: View {
+public struct GenderIdentityPicker: View {
     private let titleLocalization: LocalizedStringResource
 
     @Binding private var genderIdentity: GenderIdentity
     
-    var body: some View {
+    public var body: some View {
         Picker(
             selection: $genderIdentity,
             content: {
@@ -29,15 +29,15 @@ struct GenderIdentityPicker: View {
         )
     }
 
-    init(
+    public init(
         genderIdentity: Binding<GenderIdentity>,
-        title: LocalizedStringResource = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
+        title customTitle: LocalizedStringResource? = nil
     ) {
         self._genderIdentity = genderIdentity
-        self.titleLocalization = title
+        self.titleLocalization = customTitle ?? LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
     }
     
-    init(genderIdentity: Binding<GenderIdentity>, title: String.LocalizationValue) {
+    public init(genderIdentity: Binding<GenderIdentity>, title: String.LocalizationValue) {
         self.init(genderIdentity: genderIdentity, title: LocalizedStringResource(title))
     }
 }
