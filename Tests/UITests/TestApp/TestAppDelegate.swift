@@ -12,7 +12,7 @@ import Spezi
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
         Configuration {
-            TestAccountConfiguration()
+            TestAccountConfiguration(emptyAccountServices: FeatureFlags.emptyAccountServices)
         }
     }
 }

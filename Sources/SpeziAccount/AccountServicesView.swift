@@ -9,12 +9,20 @@
 import Spezi
 import SwiftUI
 
-
 struct AccountServicesView<Header: View>: View {
     @EnvironmentObject var account: Account
-    
+
     private var header: Header
     private var button: (any AccountService) -> AnyView
+
+    private var documentationUrl: URL {
+        // we may move to a #URL macro once Swift 5.9 is shipping
+        guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
+            fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
+        }
+
+        return docsUrl
+    }
     
     
     var body: some View {
@@ -24,8 +32,20 @@ struct AccountServicesView<Header: View>: View {
                     header
                     Spacer(minLength: 0)
                     VStack(spacing: 16) {
-                        ForEach(account.accountServices, id: \.id) { loginService in
-                            button(loginService)
+                        if account.accountServices.isEmpty {
+                            Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+
+                            Button {
+                                UIApplication.shared.open(documentationUrl)
+                            } label: {
+                                Text("OPEN_DOCUMENTATION", bundle: .module)
+                            }
+                        } else {
+                            ForEach(account.accountServices, id: \.id) { loginService in
+                                button(loginService)
+                            }
                         }
                     }
                         .padding(16)
@@ -58,10 +78,13 @@ struct AccountServicesView_Previews: PreviewProvider {
         ]
         return Account(accountServices: accountServices)
     }()
-    
+
     static var previews: some View {
         NavigationStack {
-            Login()
+            AccountServicesView(header: EmptyView()) { accountService in
+                accountService.loginButton
+            }
+                .navigationTitle(String(localized: "LOGIN", bundle: .module))
         }
             .environmentObject(account)
     }

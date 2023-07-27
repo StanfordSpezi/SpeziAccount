@@ -16,12 +16,14 @@
 		2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */; };
 		2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */; };
 		2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */; };
-		2F027C9329D6C43500234098 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9229D6C43500234098 /* SpeziAccount */; };
 		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
 		2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9A29D6C91E00234098 /* XCTestExtensions */; };
 		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
+		2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2FAD38BF2A455FC200E79ED1 /* SpeziAccount */; };
+		A9EE7D282A3357D900C2B9A9 /* EmptyAccountServicesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */; };
+		A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,12 +49,14 @@
 		2F027C9429D6C63100234098 /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
 		2F027C9729D6C6DB00234098 /* TestAppStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppStandard.swift; sourceTree = "<group>"; };
 		2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestPrimaryButton.swift"; sourceTree = "<group>"; };
-		2F68C3C6292E9F8F00B3E12C /* SpeziAccount */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziAccount; path = ../..; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
+		2FAD38BE2A455F7D00E79ED1 /* SpeziAccount */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziAccount; path = ../..; sourceTree = "<group>"; };
 		2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
+		A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyAccountServicesTests.swift; sourceTree = "<group>"; };
+		A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlags.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F027C9329D6C43500234098 /* SpeziAccount in Frameworks */,
+				2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				2FB0758A299DDB9000C0B37F /* TestApp.xctestplan */,
-				2F68C3C6292E9F8F00B3E12C /* SpeziAccount */,
+				2FAD38BE2A455F7D00E79ED1 /* SpeziAccount */,
 				2F6D139428F5F384007C25D6 /* TestApp */,
 				2F6D13AF28F5F386007C25D6 /* TestAppUITests */,
 				2F6D139328F5F384007C25D6 /* Products */,
@@ -113,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				2F027C9629D6C63300234098 /* AccountTests */,
+				A9EE7D292A3359E800C2B9A9 /* FeatureFlags.swift */,
 				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
 				2F027C9429D6C63100234098 /* TestAppDelegate.swift */,
 				2F027C9729D6C6DB00234098 /* TestAppStandard.swift */,
@@ -127,6 +132,7 @@
 				2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */,
 				2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */,
 				2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */,
+				A9EE7D272A3357D900C2B9A9 /* EmptyAccountServicesTests.swift */,
 				2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */,
 			);
 			path = TestAppUITests;
@@ -156,7 +162,7 @@
 			);
 			name = TestApp;
 			packageProductDependencies = (
-				2F027C9229D6C43500234098 /* SpeziAccount */,
+				2FAD38BF2A455FC200E79ED1 /* SpeziAccount */,
 			);
 			productName = Example;
 			productReference = 2F6D139228F5F384007C25D6 /* TestApp.app */;
@@ -252,6 +258,7 @@
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				2F027C8B29D6C2AD00234098 /* MockUsernamePasswordAccountService.swift in Sources */,
 				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
+				A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
 				2F027C8929D6C2AD00234098 /* User.swift in Sources */,
 				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
@@ -263,6 +270,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9EE7D282A3357D900C2B9A9 /* EmptyAccountServicesTests.swift in Sources */,
 				2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
 				2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */,
@@ -651,20 +659,20 @@
 			repositoryURL = "https://github.com/StanfordSpezi/XCTestExtensions";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.1;
+				minimumVersion = 0.4.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2F027C9229D6C43500234098 /* SpeziAccount */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SpeziAccount;
-		};
 		2F027C9A29D6C91E00234098 /* XCTestExtensions */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */;
 			productName = XCTestExtensions;
+		};
+		2FAD38BF2A455FC200E79ED1 /* SpeziAccount */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SpeziAccount;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

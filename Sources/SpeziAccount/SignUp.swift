@@ -48,7 +48,7 @@ struct SignUp_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationStack {
-            Login()
+            SignUp()
         }
             .environmentObject(account)
     }
