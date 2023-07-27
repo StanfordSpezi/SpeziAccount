@@ -12,7 +12,7 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {
+final class TestAccountConfiguration: Component, ObservableObjectProvider {
     private let account: Account
     private let user: User
     

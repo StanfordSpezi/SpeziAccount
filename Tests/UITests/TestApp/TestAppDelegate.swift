@@ -11,7 +11,7 @@ import Spezi
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration(standard: TestAppStandard()) {
+        Configuration {
             TestAccountConfiguration()
         }
     }
