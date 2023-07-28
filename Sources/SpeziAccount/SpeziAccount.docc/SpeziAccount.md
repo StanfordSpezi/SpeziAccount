@@ -29,7 +29,7 @@ The following example shows a Spezi component that creates a `User` class/actor 
 `ExampleUsernamePasswordAccountService` ``AccountService`` that can then modify the `User` instance based on the login or sign up procedure.
 The `Component` injects the `Account` and `User` instances into the SwiftUI environment so they can be used by SwiftUI views:
 ```swift
-final class ExampleAccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {
+final class ExampleAccountConfiguration: Component, ObservableObjectProvider {
     private let account: Account
     private let user: User
     
@@ -59,7 +59,7 @@ and, e.g., the ``Login`` and ``SignUp`` views:
 ```swift
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration(standard: TestAppStandard()) {
+        Configuration {
             ExampleAccountConfiguration()
             // ...
         }
