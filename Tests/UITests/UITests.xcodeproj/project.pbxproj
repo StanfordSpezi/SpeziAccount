@@ -17,7 +17,6 @@
 		2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */; };
 		2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */; };
 		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
-		2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9729D6C6DB00234098 /* TestAppStandard.swift */; };
 		2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9A29D6C91E00234098 /* XCTestExtensions */; };
 		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
 		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
@@ -262,7 +261,6 @@
 				A9EE7D2A2A3359E800C2B9A9 /* FeatureFlags.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
 				2F027C8929D6C2AD00234098 /* User.swift in Sources */,
-				2F027C9829D6C6DB00234098 /* TestAppStandard.swift in Sources */,
 				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
 				2F027C8A29D6C2AD00234098 /* MockEmailPasswordAccountService.swift in Sources */,
 			);
