@@ -7,11 +7,8 @@
 //
 
 import Foundation
-
 // TODO shall we move this infrastructure (+ some modifieris) to SpeziViews?
 
-// TODO if we have a generalized "run validation" modifier we could provide a ValidationEngine modifier!
-//   => currently we do this with `SignupSubmitHooks` in the `GeneralizedDataEntryView`.
 
 /// A model that is responsible to verify a list of ``ValidationRule``s.
 ///

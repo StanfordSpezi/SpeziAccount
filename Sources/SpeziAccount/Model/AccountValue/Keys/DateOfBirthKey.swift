@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-public struct DateOfBirthAccountValueKey: AccountValueKey {
+public struct DateOfBirthKey: AccountValueKey {
     public typealias Value = Date
     public typealias DataEntry = DateOfBirthPicker
 
@@ -17,26 +17,26 @@ public struct DateOfBirthAccountValueKey: AccountValueKey {
 }
 
 extension AccountValueKeys {
-    public var dateOfBirth: DateOfBirthAccountValueKey.Type {
-        DateOfBirthAccountValueKey.self
+    public var dateOfBirth: DateOfBirthKey.Type {
+        DateOfBirthKey.self
     }
 }
 
 
 extension AccountValueStorageContainer {
-    public var dateOfBrith: DateOfBirthAccountValueKey.Value? {
-        storage[DateOfBirthAccountValueKey.self]
+    public var dateOfBrith: DateOfBirthKey.Value? {
+        storage[DateOfBirthKey.self]
     }
 }
 
 
 extension ModifiableAccountValueStorageContainer {
-    public var dateOfBrith: DateOfBirthAccountValueKey.Value? {
+    public var dateOfBrith: DateOfBirthKey.Value? {
         get {
-            storage[DateOfBirthAccountValueKey.self]
+            storage[DateOfBirthKey.self]
         }
         set {
-            storage[DateOfBirthAccountValueKey.self] = newValue
+            storage[DateOfBirthKey.self] = newValue
         }
     }
 }
@@ -44,7 +44,7 @@ extension ModifiableAccountValueStorageContainer {
 
 // MARK: - UI
 extension DateOfBirthPicker: DataEntryView {
-    public typealias Key = DateOfBirthAccountValueKey
+    public typealias Key = DateOfBirthKey
 
     public init(_ value: Binding<Key.Value>) {
         self.init(date: value)

@@ -27,11 +27,7 @@ extension ValidationRule {
     ///
     /// - See: `Character/isLetter`.
     public static var unicodeLettersOnly: ValidationRule = {
-        func rule(content: String) -> Bool {
-            content.allSatisfy { $0.isLetter }
-        }
-
-        return ValidationRule(rule: rule, message: "VALIDATION_RULE_UNICODE_LETTERS", bundle: .module)
+        ValidationRule(rule: { $0.allSatisfy { $0.isLetter } }, message: "VALIDATION_RULE_UNICODE_LETTERS", bundle: .module)
     }()
 
     /// A `ValidationRule` that checks that the supplied contain only contains ASCII letters.
@@ -39,11 +35,7 @@ extension ValidationRule {
     /// - Note: It is recommended to use ``unicodeLettersOnly`` in production environments.
     /// - See: `Character/isASCII`.
     public static var asciiLettersOnly: ValidationRule = {
-        func rule(content: String) -> Bool {
-            content.allSatisfy { $0.isASCII }
-        }
-
-        return ValidationRule(rule: rule, message: "VALIDATION_RULE_UNICODE_LETTERS_ASCII", bundle: .module)
+        ValidationRule(rule: { $0.allSatisfy { $0.isASCII } }, message: "VALIDATION_RULE_UNICODE_LETTERS_ASCII", bundle: .module)
     }()
 
     /// A `ValidationRule` that imposes minimal constraints on a E-Mail input.

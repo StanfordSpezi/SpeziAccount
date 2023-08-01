@@ -10,12 +10,8 @@ import SpeziAccount
 
 
 actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
-    nonisolated var configuration: UserIdPasswordServiceConfiguration {
-        UserIdPasswordServiceConfiguration(
-            name: "TestUsernamePasswordAccountService",
-            userIdType: .username,
-            userIdField: .username
-        )
+    nonisolated let configuration = AccountServiceConfiguration(name: "TestUsernamePasswordAccountService") {
+        UserIdConfiguration(type: .username, fieldType: .username)
     }
 
     @AccountReference

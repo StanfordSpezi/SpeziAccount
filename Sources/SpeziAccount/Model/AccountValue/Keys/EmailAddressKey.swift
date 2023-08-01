@@ -10,7 +10,7 @@ import Spezi
 import SwiftUI
 
 
-public struct EmailAccountValueKey: AccountValueKey, OptionalComputedKnowledgeSource {
+public struct EmailAddressKey: AccountValueKey, OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
@@ -22,38 +22,42 @@ public struct EmailAccountValueKey: AccountValueKey, OptionalComputedKnowledgeSo
             return email
         }
 
-        // otherwise return the userid if its a email address
-        // TODO return nil if userId is not a email address!
 
-        return repository[UserIdAccountValueKey.self]
+        guard let activeService = repository[ActiveAccountServiceKey.self],
+            activeService.configuration.userIdConfiguration.idType == .emailAddress else {
+            return nil
+        }
+
+        // return the userId if it's a email address
+        return repository[UserIdKey.self]
     }
 }
 
 
 extension AccountValueKeys {
-    public var email: EmailAccountValueKey.Type {
-        EmailAccountValueKey.self
+    public var email: EmailAddressKey.Type {
+        EmailAddressKey.self
     }
 }
 
 
 extension AccountDetails {
-    public var email: EmailAccountValueKey.Value? {
+    public var email: EmailAddressKey.Value? {
         get {
             // TODO we require api access to get as well!
-            storage[EmailAccountValueKey.self]
+            storage[EmailAddressKey.self]
         }
         set {
-            storage[EmailAccountValueKey.self] = newValue
+            storage[EmailAddressKey.self] = newValue
         }
     }
 }
 
 
 // MARK: - UI
-extension EmailAccountValueKey {
+extension EmailAddressKey {
     public struct DataEntry: DataEntryView {
-        public typealias Key = EmailAccountValueKey
+        public typealias Key = EmailAddressKey
 
         @Binding private var email: Value
 

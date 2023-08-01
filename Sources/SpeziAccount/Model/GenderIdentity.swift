@@ -10,17 +10,17 @@ import Foundation
 import Spezi
 
 
-/// Describes the self-identified gender identity
+/// Describes the self-identified gender identity.
 public enum GenderIdentity: Int, Sendable, CaseIterable, Identifiable, Hashable {
-    /// Self-identify as female
+    /// Self-identify as female.
     case female
-    /// Self-identify as male
+    /// Self-identify as male.
     case male
-    /// Self-identify as transgender
+    /// Self-identify as transgender.
     case transgender
-    /// Self-identify as non-binary
+    /// Self-identify as non-binary.
     case nonBinary
-    /// Prefer not to state the self-identified gender
+    /// Prefer not to state the self-identified gender.
     case preferNotToState
     
     

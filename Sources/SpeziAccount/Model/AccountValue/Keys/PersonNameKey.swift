@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
-public struct NameAccountValueKey: RequiredAccountValueKey {
+public struct PersonNameKey: RequiredAccountValueKey {
     public typealias Value = PersonNameComponents
 
     public static let signupCategory: SignupCategory = .name
@@ -23,36 +23,36 @@ public struct NameAccountValueKey: RequiredAccountValueKey {
 
 
 extension AccountValueKeys {
-    public var name: NameAccountValueKey.Type {
-        NameAccountValueKey.self
+    public var name: PersonNameKey.Type {
+        PersonNameKey.self
     }
 }
 
 
 extension AccountValueStorageContainer {
-    public var name: NameAccountValueKey.Value {
-        storage[NameAccountValueKey.self]
+    public var name: PersonNameKey.Value {
+        storage[PersonNameKey.self]
     }
 }
 
 
 // TODO define update strategy => write value and then call account service?
 extension ModifiableAccountValueStorageContainer {
-    public var name: NameAccountValueKey.Value {
+    public var name: PersonNameKey.Value {
         get {
-            storage[NameAccountValueKey.self]
+            storage[PersonNameKey.self]
         }
         set {
-            storage[NameAccountValueKey.self] = newValue
+            storage[PersonNameKey.self] = newValue
         }
     }
 }
 
 
 // MARK: - UI
-extension NameAccountValueKey {
+extension PersonNameKey {
     public struct DataEntry: DataEntryView {
-        public typealias Key = NameAccountValueKey
+        public typealias Key = PersonNameKey
 
         @Environment(\.dataEntryConfiguration)
         var dataEntryConfiguration: DataEntryConfiguration
@@ -71,7 +71,7 @@ extension NameAccountValueKey {
                     placeholder: "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER",
                     bundle: .module
                 ),
-                givenNameFieldIdentifier: Key.focusState + "-givenName",
+                givenNameFieldIdentifier: Key.focusState,
                 familyNameField: FieldLocalizationResource(
                     title: "UAP_SIGNUP_FAMILY_NAME_TITLE",
                     placeholder: "UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER",

@@ -20,8 +20,10 @@ public struct AccountDetails: Sendable, ModifiableAccountValueStorageContainer {
         self.storage = storage
 
         // patch the storage to make sure we make sure to not expose the plaintext password
-        self.storage[PasswordAccountValueKey.self] = nil
+        self.storage[PasswordKey.self] = nil
         self.storage[ActiveAccountServiceKey.self] = accountService
+        // TODO put the userId type into the storage! (overload in the build function as well)
+        // TODO think about how one would extend this from the outside!
     }
 
 

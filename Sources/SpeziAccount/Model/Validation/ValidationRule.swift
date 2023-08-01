@@ -29,10 +29,11 @@ enum CascadingValidationEffect {
 ///     message: "The entered email is not correct."
 /// )
 /// ```
-public struct ValidationRule: Identifiable {
+/// TODO discuss client side validation.
+public struct ValidationRule: Identifiable, Sendable {
     /// A unique identifier for the ``ValidationRule``. Can be used to, e.g., match a ``FailedValidationResult`` to the ValidationRule.
     public let id: UUID
-    private let rule: (String) -> Bool
+    private let rule: @Sendable (String) -> Bool
     private let message: LocalizedStringResource
     let effect: CascadingValidationEffect
 
@@ -40,7 +41,7 @@ public struct ValidationRule: Identifiable {
     // swiftlint:disable:next function_default_parameter_at_end
     init(
         id: UUID = UUID(),
-        ruleClosure: @escaping (String) -> Bool,
+        ruleClosure: @Sendable @escaping (String) -> Bool,
         message: LocalizedStringResource,
         effect: CascadingValidationEffect = .continue
     ) {
@@ -56,7 +57,7 @@ public struct ValidationRule: Identifiable {
     /// - Parameters:
     ///   - rule: An escaping closure that validates a `String` and returns a boolean result.
     ///   - message: A `String` message to display if validation fails.
-    public init(rule: @escaping (String) -> Bool, message: LocalizedStringResource) {
+    public init(rule: @Sendable @escaping (String) -> Bool, message: LocalizedStringResource) {
         self.init(ruleClosure: rule, message: message)
     }
 
@@ -66,7 +67,7 @@ public struct ValidationRule: Identifiable {
     ///   - rule: An escaping closure that validates a `String` and returns a boolean result.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
-    public init(rule: @escaping (String) -> Bool, message: String, bundle: Bundle) {
+    public init(rule: @Sendable @escaping (String) -> Bool, message: String, bundle: Bundle) {
         self.init(ruleClosure: rule, message: message.localized(bundle))
     }
     

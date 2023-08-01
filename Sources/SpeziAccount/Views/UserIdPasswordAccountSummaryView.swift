@@ -9,13 +9,13 @@
 import SpeziViews
 import SwiftUI
 
-// TODO this is somewhat userid specific, but could also be more flexible!
+// TODO this should be non specific to `UserIdPasswordAccountService`; used for simple account services as well!
 public struct UserIdPasswordAccountSummaryView: View {
     private let account: AccountDetails
 
     @State private var viewState: ViewState = .idle
 
-    // TODO extended summary view (=> edit account info, change email?, remove account)
+    // TODO extended summary view (=> edit account info, change email?, remove account) (maybe split it into an "Overview" view?)
 
     public var body: some View {
         VStack {

@@ -19,6 +19,9 @@ private enum LoginFocusState {
 
 public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
+    private var userIdConfiguration: UserIdConfiguration {
+        service.configuration.userIdConfiguration
+    }
 
     @State private var userId: String = ""
     @State private var password: String = ""
@@ -26,7 +29,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: LoginFocusState?
 
-    // for login we do all checks server-side. Except that don't pass empty values.
+    // for login we do all checks server-side. Except that we don't pass empty values.
     @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty])
     @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty])
 
@@ -40,15 +43,18 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         VStack {
             VStack {
                 Group {
-                    VerifiableTextField(service.configuration.userIdType.localizedStringResource, text: $userId)
+                    VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                         .environmentObject(userIdValidation)
-                        .fieldConfiguration(service.configuration.userIdField)
+                        .fieldConfiguration(userIdConfiguration.fieldType)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .padding(.bottom, 0.5)
 
                     // TODO .padding([.leading, .bottom], 8) for the red texts?
 
                     VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure) {
+                        NavigationLink(value: "as") {
+                            EmptyView()
+                        }
                         NavigationLink {
                             service.viewStyle.makePasswordResetView()
                         } label: {

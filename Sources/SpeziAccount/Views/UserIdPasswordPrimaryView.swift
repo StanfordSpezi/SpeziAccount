@@ -9,10 +9,10 @@
 import SpeziViews
 import SwiftUI
 
-struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
+public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {

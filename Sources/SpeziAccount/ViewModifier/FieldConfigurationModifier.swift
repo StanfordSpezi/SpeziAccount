@@ -9,7 +9,7 @@
 import SwiftUI
 
 extension View {
-    public func fieldConfiguration(_ configuration: FieldConfiguration) -> some View {
+    public func fieldConfiguration(_ configuration: FieldType) -> some View {
         self
             .textContentType(configuration.textContentType)
             .keyboardType(configuration.keyboardType)

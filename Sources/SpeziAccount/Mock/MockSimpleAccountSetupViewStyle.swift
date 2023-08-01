@@ -17,15 +17,6 @@ public struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
         self.service = service
     }
 
-    public func makeAccountServiceButtonLabel() -> some View {
-        Group {
-            Image(systemName: "ellipsis.rectangle")
-                .font(.title2)
-            Text("Mock Account Service") // TODO configurable?
-        }
-            .accountServiceButtonBackground()
-    }
-
     public func makePrimaryView() -> some View {
         Text("Hello World") // TODO something at least?
     }

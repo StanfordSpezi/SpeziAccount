@@ -10,32 +10,63 @@ import Spezi
 import SwiftUI
 
 
-// TODO docs, all the ways
+/// Helper protocol to easily retrieve Wrapped.Key types with String value
+private protocol GeneralizedStringEntryView {
+    func validationRules() -> [ValidationRule]
+}
+
+
+/// A View to manage state of a ``DataEntryView``.
+///
+/// Every ``DataEntryView`` is wrapped into a `GeneralizedDataEntryView` which is responsible to manage state of its child-view.
+/// Particularly, the following things are taken care of:
+/// - Declare and manage the state of the value and post any changes back up to the parent view.
+/// - Declare a default `onTapeFocus(focusedField:fieldIdentifier:) to automatically manage focus state based on ``AccountValueKey/focusState``.
+/// - If the value is of type string and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
+///     ``DataEntryView/Key``, a `View/validate(input:for:using)` modifier is automatically injected. One can easily override
+///     the modified by declaring a custom one.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView>: View {
     @Environment(\.dataEntryConfiguration)
-    var dataEntryConfiguration: DataEntryConfiguration
+    private var dataEntryConfiguration: DataEntryConfiguration
     @EnvironmentObject
-    var signupRequest: SignupRequestBuilder
+    private var signupRequest: SignupRequestBuilder
 
-    @State var signupValue: Wrapped.Key.Value
+    @State private var value: Wrapped.Key.Value
+
 
     public var body: some View {
-        buildWrapped()
+        Group {
+            if let stringValue = value as? String,
+               let stringEntryView = self as? GeneralizedStringEntryView {
+                Wrapped($value)
+                    .validate(
+                        input: stringValue,
+                        for: Wrapped.Key.self,
+                        using: stringEntryView.validationRules()
+                    )
+            } else {
+                Wrapped($value)
+            }
+        }
             .onTapFocus(focusedField: dataEntryConfiguration.focusedField, fieldIdentifier: Wrapped.Key.focusState)
-            .onChange(of: signupValue) { newValue in
-                // TODO using initial=false basically solves the problem of never submitted values!
+            .onChange(of: value) { newValue in
+                // ensure parent view has access to the latest value
                 signupRequest.post(for: Wrapped.Key.self, value: newValue)
             }
     }
 
-    public init(initialValue signupValue: Wrapped.Key.Value) {
-        self._signupValue = State(wrappedValue: signupValue)
-    }
 
-    private func buildWrapped() -> some View {
-        let wrapped = Wrapped($signupValue)
-        dataEntryConfiguration.hooks.register(Wrapped.Key.self, hook: wrapped.onDataSubmission)
-        return wrapped
+    /// Initialize a new GeneralizedDataEntryView given a ``Wrapped`` view.
+    /// - Parameter signupValue: The initial value to use. Typically you want to pass some "empty" value.
+    public init(initialValue signupValue: Wrapped.Key.Value) {
+        self._value = State(wrappedValue: signupValue)
+    }
+}
+
+
+extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
+    func validationRules() -> [ValidationRule] {
+        dataEntryConfiguration.serviceConfiguration.fieldValidationRules(for: Wrapped.Key.self)
     }
 }
 

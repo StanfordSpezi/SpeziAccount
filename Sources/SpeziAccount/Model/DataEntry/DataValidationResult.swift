@@ -10,4 +10,5 @@
 public enum DataValidationResult {
     case success
     case failed
+    case failedAtField(focusedField: String)
 }

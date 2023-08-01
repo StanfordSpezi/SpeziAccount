@@ -13,11 +13,21 @@ import SwiftUI
 public actor MockSimpleAccountService: AccountService {
     @AccountReference private var account: Account
 
+    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService")
+
     public nonisolated var viewStyle: some AccountSetupViewStyle {
         MockSimpleAccountSetupViewStyle(using: self)
     }
 
+    public func signUp(signupRequest: SignupRequest) async throws {
+        print("Signup: \(signupRequest)")
+    }
+
     public func logout() async throws {
         print("Logout")
+    }
+
+    public func remove() async throws {
+        print("Remove")
     }
 }

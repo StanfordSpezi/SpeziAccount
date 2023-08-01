@@ -8,7 +8,8 @@
 
 import SwiftUI
 
-public enum FieldConfiguration {
+
+public enum FieldType { // TODO relocate?
     case username
     case emailAddress
     case password
@@ -43,3 +44,6 @@ public enum FieldConfiguration {
         }
     }
 }
+
+
+extension FieldType: Sendable {}

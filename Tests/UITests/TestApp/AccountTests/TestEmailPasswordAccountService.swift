@@ -11,14 +11,10 @@ import SwiftUI
 
 
 actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
-    nonisolated var configuration: UserIdPasswordServiceConfiguration {
-        UserIdPasswordServiceConfiguration(
-            name: "TestEmailPasswordAccountService",
-            image: Image(systemName: "envelope.circle.fill")
-                .symbolRenderingMode(.hierarchical),
-            userIdType: .emailAddress,
-            userIdField: .emailAddress
-        )
+    nonisolated let configuration = AccountServiceConfiguration(name: "TestEmailPasswordAccountService") {
+        AccountServiceImage(Image(systemName: "envelope.circle.fill")
+            .symbolRenderingMode(.hierarchical))
+        UserIdConfiguration(type: .emailAddress, fieldType: .emailAddress)
     }
 
     @AccountReference

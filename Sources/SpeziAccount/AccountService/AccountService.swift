@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+
 /// An Account Service is a set of components that is capable setting up and managing an ``Account`` context.
 ///
 /// This base protocol imposes the minimal requirements for an AccountService where login and signup procedures are entirely
@@ -23,9 +24,14 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
     /// An identifier to uniquely identify an `AccountService`.
     var id: ID { get }
 
+    var configuration: AccountServiceConfiguration { get }
+
     var viewStyle: ViewStyle { get } // TODO document computed property!
 
-    /// This method implements ``Account`` logout functionality.
+
+    func signUp(signupRequest: SignupRequest) async throws
+
+    /// This method implements account logout functionality.
     ///
     /// TODO comments on logging out an not logged in user!
     ///
@@ -34,7 +40,14 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
     ///   Make sure to remain in a state where the user is capable of retrying the logout process.
     func logout() async throws
 
-    // TODO we will/should enforce a Account removal functionality
+    /// This method implements account removal.
+    ///
+    /// This method should remove the account of the currently signed in user.
+    ///
+    /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the removal was unsuccessful
+    ///   to present a localized description to the user on a failed account removal.
+    ///   Make sure to remain in a state where the user is capable of retrying the removal process.
+    func remove() async throws
 }
 
 extension AccountService {

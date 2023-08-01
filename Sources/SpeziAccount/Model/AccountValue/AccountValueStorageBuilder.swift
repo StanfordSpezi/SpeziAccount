@@ -60,7 +60,7 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
 
 extension AccountValueStorageBuilder where Container == AccountDetails {
     public func build<Service: AccountService>(owner accountService: Service) -> Container {
-        Container(storage: self.storage, owner: accountService)
+        AccountDetails(storage: self.storage, owner: accountService)
     }
 }
 
@@ -69,7 +69,7 @@ extension AccountValueStorageBuilder where Container == SignupRequest {
     public func build(
         checking requirements: AccountValueRequirements? = nil
     ) throws -> Container {
-        let request = Container(storage: self.storage)
+        let request = SignupRequest(storage: self.storage)
 
         if let requirements {
             try requirements.validateRequirements(in: request)

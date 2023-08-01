@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-public struct PasswordAccountValueKey: RequiredAccountValueKey {
+public struct PasswordKey: RequiredAccountValueKey {
     public typealias Value = String
 
     public static let signupCategory: SignupCategory = .credentials
@@ -18,27 +18,29 @@ public struct PasswordAccountValueKey: RequiredAccountValueKey {
 
 extension AccountValueKeys {
     // TODO is password update special (requires existing knowledge?)
-    public var password: PasswordAccountValueKey.Type {
-        PasswordAccountValueKey.self
+    public var password: PasswordKey.Type {
+        PasswordKey.self
     }
 }
 
 
 extension SignupRequest {
-    public var password: PasswordAccountValueKey.Value {
-        storage[PasswordAccountValueKey.self]
+    public var password: PasswordKey.Value {
+        storage[PasswordKey.self]
     }
 }
 
 
 // MARK: - UI
-extension PasswordAccountValueKey {
+extension PasswordKey {
     public struct DataEntry: DataEntryView {
-        public typealias Key = PasswordAccountValueKey
+        public typealias Key = PasswordKey
+
+        @Environment(\.dataEntryConfiguration)
+        var dataEntryConfiguration: DataEntryConfiguration
 
         @Binding private var password: Value
 
-        @StateObject var validation = ValidationEngine()
 
         public init(_ value: Binding<Value>) {
             self._password = value
@@ -46,7 +48,6 @@ extension PasswordAccountValueKey {
 
         public var body: some View {
             VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure)
-                .environmentObject(validation)
                 .fieldConfiguration(.newPassword)
                 .disableFieldAssistants()
         }

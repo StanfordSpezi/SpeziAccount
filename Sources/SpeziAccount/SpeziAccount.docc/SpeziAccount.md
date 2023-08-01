@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
              
 -->
 
-Provides account-related functionalty including login, sign up, and reset password functionality.
+Provides account-related functionality including login, sign up, and reset password functionality.
 
 ## The Account Actor
 
@@ -116,6 +116,12 @@ struct AccountExampleView: View {
 ```
 
 ## Topics
+
+### Account Setup
+
+- ``Account/AccountSetup``
+- ``Account/AccountConfiguration``
+- ``Account/Account``
 
 ### Account Services
 

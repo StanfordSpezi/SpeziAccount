@@ -10,16 +10,9 @@ import Spezi
 import SwiftUI
 
 
+// TODO document which environmnet keys and objects one can expect to be injected!
 public protocol DataEntryView<Key>: View {
     associatedtype Key: AccountValueKey
 
     init(_ value: Binding<Key.Value>)
-
-    func onDataSubmission() -> DataValidationResult
-}
-
-extension DataEntryView {
-    public func onDataSubmission() -> DataValidationResult {
-        .success
-    }
 }

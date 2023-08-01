@@ -17,20 +17,30 @@ class SignupRequestBuilder: ObservableObject {
 
     // TODO this is basically like a SignupRequest builder!
 
-    // TODO support optional values! => bindings?
     public func post<Key: AccountValueKey>(for key: Key.Type, value: Key.Value) {
         storage[Key.self] = value
     }
 }
 
 
-// TODO in theory this doesn't have the UserIdPasswordAccountService requirement,
-//  we could just add the signup method to the `AccountService` protocol!
-struct SignupForm<Service: UserIdPasswordAccountService>: View {
+public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
+    private let header: Header
 
     @EnvironmentObject
     private var account: Account
+
+    // TODO use a private type for this, such that it is inaccessible by the sub views
+    @StateObject
+    private var signupRequestBuilder = SignupRequestBuilder()
+    // We just use @State here for the class type, as there is nothing in it that triggers a UI update.
+    // However, we need to preserve the class state across UI updates.
+    @State
+    private var validationClosures = DataEntryValidationClosures()
+
+    @State private var viewState: ViewState = .idle
+    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
+
 
     private var signupRequirements: AccountValueRequirements {
         // TODO this should be account.signupRequirements or the requirements the AccountService supports??
@@ -46,21 +56,13 @@ struct SignupForm<Service: UserIdPasswordAccountService>: View {
 
     private var dataEntryConfiguration: DataEntryConfiguration {
         // only call this computed property from within the view's body
-        .init(viewState: $viewState, configuration: service.configuration, focusedField: _focusedDataEntry, hooks: signupSubmitHooks)
+        .init(configuration: service.configuration, validationClosures: validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
-    // TODO use a private type for this, such that it is inaccessible by the sub views
-    @StateObject
-    private var signupRequestBuilder = SignupRequestBuilder()
-    // this is not a @StateObject, as it is rebuilt every time the view renders
-    var signupSubmitHooks = SignupSubmitHooks()
 
-    @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
-
-    var body: some View {
+    public var body: some View {
         form
-            .navigationTitle("Sign Up") // TODO localize!
+            .navigationTitle("Signup") // TODO localize!
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .onTapGesture {
@@ -68,8 +70,9 @@ struct SignupForm<Service: UserIdPasswordAccountService>: View {
             }
     }
 
-    @ViewBuilder var sectionsView: some View {
-        // ordered dictionary elements conforms to RandomAccessCollection so we can directly use it
+    @ViewBuilder
+    var sectionsView: some View {
+        // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
         ForEach(signupValuesBySections.elements, id: \.key) { category, accountValues in
             Section {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
@@ -80,16 +83,16 @@ struct SignupForm<Service: UserIdPasswordAccountService>: View {
                 if let title = category.categoryTitle {
                     Text(title)
                 } else {
-                    EmptyView() // TODO is it a problem that the Parent is not exactly "EmptyView" type?
+                    EmptyView()
                 }
             }
         }
     }
 
-    @ViewBuilder var form: some View {
+    @ViewBuilder
+    var form: some View {
         Form {
-            // TODO form instructions should be customizable!
-            Text("UP_SIGNUP_INSTRUCTIONS".localized(.module))
+            header
 
             sectionsView
                 .environment(\.dataEntryConfiguration, dataEntryConfiguration)
@@ -108,21 +111,39 @@ struct SignupForm<Service: UserIdPasswordAccountService>: View {
             .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
-    init(using service: Service) {
+
+    init(using service: Service) where Header == Text {
         self.service = service
+        self.header = Text("UP_SIGNUP_INSTRUCTIONS".localized(.module))
     }
 
+    init(service: Service, @ViewBuilder header: () -> Header) {
+        self.service = service
+        self.header = header()
+    }
+
+
     private func signupButtonAction() async throws {
-        // TODO cleanup
-        let results = signupSubmitHooks.storage.values.map { $0() }
-        if results.contains(.failed) {
-            // TODO set cursor to the first thing having failed!
+        let failedFields: [String] = validationClosures.compactMap { entry in
+            let result = entry.validationClosure()
+            switch result {
+            case .success:
+                return nil
+            case .failed:
+                return entry.focusStateValue
+            case let .failedAtField(focusedField):
+                return focusedField
+            }
+        }
+
+        if let failedField = failedFields.first {
+            focusedDataEntry = failedField
             return
         }
 
         focusedDataEntry = nil
 
-        // TODO is the account values builder still necessary
+        // TODO is the account values builder still necessary?
         let builder = SignupRequest.Builder(from: signupRequestBuilder.storage) // TODO review!
 
         // TODO verify against which requirements we are checking!

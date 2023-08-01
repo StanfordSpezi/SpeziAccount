@@ -26,6 +26,7 @@ struct AccountServiceButtonModifier: ViewModifier {
     }
 }
 
+
 extension View {
     public func accountServiceButtonBackground() -> some View {
         modifier(AccountServiceButtonModifier())
@@ -39,7 +40,7 @@ struct UsernamePasswordLoginServiceButton_Previews: PreviewProvider {
         Group {
             Image(systemName: "ellipsis.rectangle")
                 .font(.title2)
-            Text("UAP_LOGIN_BUTTON_TITLE", bundle: .module)
+            Text("USER_ID_EMAIL", bundle: .module)
         }
             .accountServiceButtonBackground()
     }

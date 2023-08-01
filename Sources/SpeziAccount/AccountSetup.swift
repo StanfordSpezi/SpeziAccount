@@ -10,11 +10,13 @@ import AuthenticationServices
 import SpeziViews
 import SwiftUI
 
+
 public enum Constants { // TODO rename!
-    static let outerHorizontalPadding: CGFloat = 16 // TODO use 32?
-    static let innerHorizontalPadding: CGFloat = 16 // TODO use 32?
+    static let outerHorizontalPadding: CGFloat = 16
+    static let innerHorizontalPadding: CGFloat = 16
     static let maxFrameWidth: CGFloat = 450
 }
+
 
 /// A view which provides the default title and subtitle text.
 public struct AccountSetupDefaultHeader: View { // TODO move
@@ -44,7 +46,12 @@ public struct AccountSetupDefaultHeader: View { // TODO move
 }
 
 // TODO review accessibility!
-public struct AccountSetup<Header: View>: View {
+
+
+/// The central `SpeziAccount` view to setup a user account.
+///
+/// TODO docs: drop ``AccountService`` and ``IdentityProvider`` and other stuff
+public struct AccountSetup<Header: View>: View { // TODO docs!
     private let header: Header
 
     @EnvironmentObject var account: Account
@@ -93,9 +100,9 @@ public struct AccountSetup<Header: View>: View {
                     Spacer()
 
                     if let account = account.details {
-                        displayAccount(datails: account)
+                        displayAccount(details: account)
                     } else {
-                        noAccountState
+                        accountSetupView
                     }
 
                     Spacer()
@@ -109,9 +116,10 @@ public struct AccountSetup<Header: View>: View {
         }
     }
 
-    @ViewBuilder var noAccountState: some View {
+    @ViewBuilder
+    private var accountSetupView: some View {
         if services.isEmpty && identityProviders.isEmpty {
-            showEmptyView
+            emptyServicesView
         } else {
             VStack {
                 accountServicesSection
@@ -128,7 +136,8 @@ public struct AccountSetup<Header: View>: View {
         }
     }
 
-    @ViewBuilder var showEmptyView: some View {
+    @ViewBuilder
+    private var emptyServicesView: some View {
         Text("MISSING_ACCOUNT_SERVICES".localized(.module))
             .multilineTextAlignment(.center)
             .foregroundColor(.secondary)
@@ -141,51 +150,32 @@ public struct AccountSetup<Header: View>: View {
             .padding()
     }
 
-    @ViewBuilder var accountServicesSection: some View {
+    @ViewBuilder
+    private var accountServicesSection: some View {
         if let embeddableService = embeddableAccountService {
             let embeddableViewStyle = embeddableService.viewStyle
             AnyView(embeddableViewStyle.makeEmbeddedAccountView())
 
-
             if !nonEmbeddableAccountServices.isEmpty {
                 servicesDivider
 
-                // TODO optimize code reuse below!
-                // TODO relying on the index is not ideal!!
-                ForEach(nonEmbeddableAccountServices.indices, id: \.self) { index in
-                    let service = nonEmbeddableAccountServices[index]
-                    let style = service.viewStyle
-
-                    NavigationLink {
-                        AnyView(style.makePrimaryView())
-                    } label: {
-                        AnyView(style.makeAccountServiceButtonLabel())
-                    }
-                }
+                buildAccountServiceList(nonEmbeddableAccountServices)
             } else {
                 EmptyView()
             }
         } else {
-            ForEach(services.indices, id: \.self) { index in // TODO relying on the index is not ideal!!
-                let service = services[index]
-                let style = service.viewStyle
-
-                NavigationLink {
-                    AnyView(style.makePrimaryView())
-                } label: {
-                    AnyView(style.makeAccountServiceButtonLabel())
-                }
-            }
+            buildAccountServiceList(services)
         }
     }
 
     // The "or" divider between primary account services and the third-party identity providers
-    @ViewBuilder var servicesDivider: some View {
+    @ViewBuilder
+    private var servicesDivider: some View {
         HStack {
             VStack {
                 Divider()
             }
-            Text("or")
+            Text("OR", bundle: .module)
                 .padding(.horizontal, 8)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -197,8 +187,9 @@ public struct AccountSetup<Header: View>: View {
             .padding(.vertical, 16) // TODO use 16 if we expect to place two dividers!
     }
 
-    /// VStack of buttons provided by the identity providers
-    @ViewBuilder var identityProviderSection: some View {
+    /// Buttons provided by the identity providers
+    @ViewBuilder
+    private var identityProviderSection: some View {
         VStack {
             ForEach(identityProviders.indices, id: \.self) { index in
                 SignInWithAppleButton { request in
@@ -212,20 +203,46 @@ public struct AccountSetup<Header: View>: View {
         }
     }
 
+
     // TODO docs
     public init(@ViewBuilder _ header: () -> Header = { AccountSetupDefaultHeader() }) {
         self.header = header()
     }
 
-    func displayAccount(datails: AccountDetails) -> some View {
 
-        let service = datails.accountService
+    private func buildAccountServiceList(_ accountServices: [any AccountService]) -> some View {
+        // We use indices here as the preview provider has some issues with ForEach and a `any` existential.
+        // As the array doesn't change this is completely fine and the index is a stable identifier.
+        ForEach(accountServices.indices, id: \.self) { index in
+            let service = accountServices[index]
+            let style = service.viewStyle
+
+            NavigationLink {
+                AnyView(style.makePrimaryView())
+            } label: {
+                style.makeAnyAccountServiceButtonLabel()
+            }
+        }
+    }
+
+    func displayAccount(details: AccountDetails) -> some View {
+        let service = details.accountService
 
         // TODO someone needs to place the Continue button?
 
-        return AnyView(service.viewStyle.makeAccountSummary(account: datails))
+        return AnyView(service.viewStyle.makeAccountSummary(account: details))
     }
 }
+
+
+extension AccountSetupViewStyle {
+    fileprivate func makeAnyAccountServiceButtonLabel() -> AnyView {
+        // as the `AccountSetup` only has a type-erased view on the `AccountSetupViewStyle`
+        // we can't, because of the default implementation, create the AnyView inline.
+        AnyView(self.makeAccountServiceButtonLabel())
+    }
+}
+
 
 #if DEBUG
 struct AccountView_Previews: PreviewProvider {

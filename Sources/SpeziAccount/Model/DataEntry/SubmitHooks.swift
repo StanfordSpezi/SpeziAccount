@@ -6,11 +6,50 @@
 // SPDX-License-Identifier: MIT
 //
 
+import OrderedCollections
+import SwiftUI
 
-class SignupSubmitHooks {
-    var storage: [ObjectIdentifier: () -> DataValidationResult] = [:]
 
-    func register<Key: AccountValueKey>(_ key: Key.Type, hook: @escaping () -> DataValidationResult) {
-        storage[key.id] = hook
+public class DataEntryValidationClosures {
+    public struct Entry {
+        public let validationClosure: () -> DataValidationResult
+        public let focusStateValue: String
+    }
+
+
+    // we use an ordered dictionary to preserve the order in which the user is corrected on invalid input
+    // (e.g. focusState should move to the first input field that is incorrect input!)
+    private var storage: OrderedDictionary<ObjectIdentifier, Entry> = [:]
+
+
+    public func register<Key: AccountValueKey>(_ key: Key.Type, validation: @escaping () -> DataValidationResult) {
+        // TODO this currently doesn't allow for multi field inputs!
+        storage[key.id] = Entry(validationClosure: validation, focusStateValue: key.focusState)
+    }
+}
+
+
+extension DataEntryValidationClosures: Collection {
+    public typealias Index = OrderedDictionary<ObjectIdentifier, Entry>.Index
+
+    public var startIndex: Index {
+        storage.values.startIndex
+    }
+
+    public var endIndex: Index {
+        storage.values.endIndex
+    }
+
+    public func index(after index: Index) -> Index {
+        storage.values.index(after: index)
+    }
+
+    // swiftlint:disable:next identifier_name discouraged_optional_boolean
+    public func _customContainsEquatableElement(_ element: Element) -> Bool? {
+        storage.values._customContainsEquatableElement(element)
+    }
+
+    public subscript(position: Index) -> Entry {
+        storage.values[position]
     }
 }

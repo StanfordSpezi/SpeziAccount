@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-public struct GenderIdentityAccountValueKey: AccountValueKey {
+public struct GenderIdentityKey: AccountValueKey {
     public typealias Value = GenderIdentity
     public typealias DataEntry = GenderIdentityPicker
 
@@ -18,26 +18,26 @@ public struct GenderIdentityAccountValueKey: AccountValueKey {
 
 
 extension AccountValueKeys {
-    public var genderIdentity: GenderIdentityAccountValueKey.Type {
-        GenderIdentityAccountValueKey.self
+    public var genderIdentity: GenderIdentityKey.Type {
+        GenderIdentityKey.self
     }
 }
 
 
 extension AccountValueStorageContainer {
-    public var genderIdentity: GenderIdentityAccountValueKey.Value? {
-        storage[GenderIdentityAccountValueKey.self]
+    public var genderIdentity: GenderIdentityKey.Value? {
+        storage[GenderIdentityKey.self]
     }
 }
 
 
 extension ModifiableAccountValueStorageContainer {
-    public var genderIdentity: GenderIdentityAccountValueKey.Value? {
+    public var genderIdentity: GenderIdentityKey.Value? {
         get {
-            storage[GenderIdentityAccountValueKey.self]
+            storage[GenderIdentityKey.self]
         }
         set {
-            storage[GenderIdentityAccountValueKey.self] = newValue
+            storage[GenderIdentityKey.self] = newValue
         }
     }
 }
@@ -45,7 +45,7 @@ extension ModifiableAccountValueStorageContainer {
 
 // MARK: - UI
 extension GenderIdentityPicker: DataEntryView {
-    public typealias Key = GenderIdentityAccountValueKey
+    public typealias Key = GenderIdentityKey
 
     public init(_ value: Binding<GenderIdentity>) {
         self.init(genderIdentity: value)

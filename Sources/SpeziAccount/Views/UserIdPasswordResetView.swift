@@ -20,6 +20,10 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
     private let service: Service
     private let successViewBuilder: () -> SuccessView
 
+    private var userIdConfiguration: UserIdConfiguration {
+        service.configuration.userIdConfiguration
+    }
+
     @State private var userId = ""
     @State private var requestSubmitted = false
 
@@ -35,11 +39,11 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 VStack {
                     // TODO maybe center this thing in the scroll view (e.g. iPad view?)
 
-                    VerifiableTextField(service.configuration.userIdType.localizedStringResource, text: $userId)
+                    VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                         .environmentObject(validationEngine)
                         .textFieldStyle(.roundedBorder)
                         .disableFieldAssistants()
-                        .fieldConfiguration(service.configuration.userIdField)
+                        .fieldConfiguration(userIdConfiguration.fieldType)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .font(.title3)
 
