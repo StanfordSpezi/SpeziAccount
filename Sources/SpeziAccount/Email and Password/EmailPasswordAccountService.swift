@@ -31,7 +31,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
     }
     
     override open var localization: Localization {
-        let usernameField = FieldLocalization(
+        let usernameField = FieldLocalizationResource(
             title: String(moduleLocalized: "EAP_LOGIN_USERNAME_TITLE"),
             placeholder: String(moduleLocalized: "EAP_LOGIN_USERNAME_PLACEHOLDER")
         )

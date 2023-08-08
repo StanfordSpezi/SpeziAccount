@@ -85,7 +85,7 @@ public struct UsernamePasswordResetPasswordView: View {
     }
     
     private var usernameTextField: some View {
-        let usernameLocalization: FieldLocalization
+        let usernameLocalization: FieldLocalizationResource
         switch localization {
         case .environment:
             usernameLocalization = usernamePasswordAccountService.localization.resetPassword.username

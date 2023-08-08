@@ -19,7 +19,7 @@ extension Localization {
     /// ```swift
     /// ResetPassword(
     ///     navigationTitle: "CUSTOM_NAVIGATION_TITLE",
-    ///     username: FieldLocalization(
+    ///     username: FieldLocalizationResource(
     ///        title: "CUSTOM_USERNAME",
     ///        placeholder: "CUSTOM_USERNAME_PLACEHOLDER"
     ///     )
@@ -30,7 +30,7 @@ extension Localization {
         public static let `default` = ResetPassword(
             buttonTitle: String(moduleLocalized: "UAP_RESET_PASSWORD_BUTTON_TITLE"),
             navigationTitle: String(moduleLocalized: "UAP_RESET_PASSWORD_NAVIGATION_TITLE"),
-            username: FieldLocalization(
+            username: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_RESET_PASSWORD_USERNAME_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER")
             ),
@@ -44,8 +44,8 @@ extension Localization {
         public let buttonTitle: String
         /// A localized `String` for the reset password view's navigation title.
         public let navigationTitle: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        public let username: FieldLocalization
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        public let username: FieldLocalizationResource
         /// A localized `String` to display on the reset password action button.
         public let resetPasswordActionButtonTitle: String
         /// A localized `String` to display when the reset password process has been successful.
@@ -59,14 +59,14 @@ extension Localization {
         /// - Parameters:
         ///   - buttonTitle: A localized `String` title for the reset password button.
         ///   - navigationTitle: A localized `String` for the reset password view's navigation title.
-        ///   - username: A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
+        ///   - username: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
         ///   - resetPasswordActionbuttonTitle: A localized `String` to display on the reset password action button.
         ///   - processSuccessfulLabel: A localized `String` to display when the reset password process has been successful.
         ///   - defaultResetPasswordFailedError: A localized `String` to display when the reset password process has failed.
         public init(
             buttonTitle: String = ResetPassword.default.buttonTitle,
             navigationTitle: String = ResetPassword.default.navigationTitle,
-            username: FieldLocalization = ResetPassword.default.username,
+            username: FieldLocalizationResource = ResetPassword.default.username,
             resetPasswordActionButtonTitle: String = ResetPassword.default.resetPasswordActionButtonTitle,
             processSuccessfulLabel: String = ResetPassword.default.processSuccessfulLabel,
             defaultResetPasswordFailedError: String = ResetPassword.default.defaultResetPasswordFailedError

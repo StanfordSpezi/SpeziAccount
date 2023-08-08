@@ -19,7 +19,7 @@ extension Localization {
     /// ```swift
     /// SignUp(
     ///     navigationTitle: "CUSTOM_NAVIGATION_TITLE",
-    ///     username: FieldLocalization(
+    ///     username: FieldLocalizationResource(
     ///        title: "CUSTOM_USERNAME",
     ///        placeholder: "CUSTOM_USERNAME_PLACEHOLDER"
     ///     )
@@ -30,24 +30,24 @@ extension Localization {
         public static let `default` = SignUp(
             buttonTitle: String(moduleLocalized: "UAP_SIGNUP_BUTTION_TITLE"),
             navigationTitle: String(moduleLocalized: "UAP_SIGNUP_NAVIGATION_TITLE"),
-            username: FieldLocalization(
+            username: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_SIGNUP_USERNAME_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_SIGNUP_USERNAME_PLACEHOLDER")
             ),
-            password: FieldLocalization(
+            password: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_PLACEHOLDER")
             ),
-            passwordRepeat: FieldLocalization(
+            passwordRepeat: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_REPEAT_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER")
             ),
             passwordNotEqualError: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR"),
-            givenName: FieldLocalization(
+            givenName: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_SIGNUP_GIVEN_NAME_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER")
             ),
-            familyName: FieldLocalization(
+            familyName: FieldLocalizationResource(
                 title: String(moduleLocalized: "UAP_SIGNUP_FAMILY_NAME_TITLE"),
                 placeholder: String(moduleLocalized: "UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER")
             ),
@@ -62,18 +62,18 @@ extension Localization {
         public let buttonTitle: String
         /// A localized `String` for sign up view's localized navigation title.
         public let navigationTitle: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        public let username: FieldLocalization
-        /// A  `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        public let password: FieldLocalization
-        /// A  `FieldLocalization` instance containing the localized title and placeholder text for the password repeat field.
-        public let passwordRepeat: FieldLocalization
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        public let username: FieldLocalizationResource
+        /// A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password field.
+        public let password: FieldLocalizationResource
+        /// A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password repeat field.
+        public let passwordRepeat: FieldLocalizationResource
         /// A localized`String` error message to be displayed when the text in the password and password repeat fields are not equal.
         public let passwordNotEqualError: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the given name (first name) field.
-        public let givenName: FieldLocalization
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the family name (last name) field.
-        public let familyName: FieldLocalization
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the given name (first name) field.
+        public let givenName: FieldLocalizationResource
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the family name (last name) field.
+        public let familyName: FieldLocalizationResource
         /// A localized `String` label for the gender identity field.
         public let genderIdentityTitle: String
         /// A localized `String` label for the date of birth field.
@@ -89,12 +89,12 @@ extension Localization {
         /// - Parameters:
         ///   - buttonTitle: A localized `String` to display on the sign up button.
         ///   - navigationTitle: A localized `String` for sign up view's localized navigation title.
-        ///   - username: A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        ///   - password: A  `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        ///   - passwordRepeat: A  `FieldLocalization` instance containing the localized title and placeholder text for the password repeat field.
+        ///   - username: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        ///   - password: A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password field.
+        ///   - passwordRepeat: A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password repeat field.
         ///   - passwordNotEqualError: A localized`String` error message to be displayed when the text in the password and password repeat fields are not equal.
-        ///   - givenName: A `FieldLocalization` instance containing the localized title and placeholder text for the given name (first name) field.
-        ///   - familyName: A `FieldLocalization` instance containing the localized title and placeholder text for the family name (last name) field.
+        ///   - givenName: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the given name (first name) field.
+        ///   - familyName: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the family name (last name) field.
         ///   - genderIdentityTitle: A localized `String` label for the gender identity field.
         ///   - dateOfBirthTitle: A localized `String` label for the date of birth field.
         ///   - signUpActionButtonTitle: A localized `String` title for the sign up action button.
@@ -102,12 +102,12 @@ extension Localization {
         public init(
             buttonTitle: String = SignUp.default.buttonTitle,
             navigationTitle: String = SignUp.default.navigationTitle,
-            username: FieldLocalization = SignUp.default.username,
-            password: FieldLocalization = SignUp.default.password,
-            passwordRepeat: FieldLocalization = SignUp.default.passwordRepeat,
+            username: FieldLocalizationResource = SignUp.default.username,
+            password: FieldLocalizationResource = SignUp.default.password,
+            passwordRepeat: FieldLocalizationResource = SignUp.default.passwordRepeat,
             passwordNotEqualError: String = SignUp.default.passwordNotEqualError,
-            givenName: FieldLocalization = SignUp.default.givenName,
-            familyName: FieldLocalization = SignUp.default.familyName,
+            givenName: FieldLocalizationResource = SignUp.default.givenName,
+            familyName: FieldLocalizationResource = SignUp.default.familyName,
             genderIdentityTitle: String = SignUp.default.genderIdentityTitle,
             dateOfBirthTitle: String = SignUp.default.dateOfBirthTitle,
             signUpActionButtonTitle: String = SignUp.default.signUpActionButtonTitle,
