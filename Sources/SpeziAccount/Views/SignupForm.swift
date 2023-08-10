@@ -11,18 +11,6 @@ import SpeziViews
 import SwiftUI
 
 
-// TODO generalize to data entry build or something (or just account value builder?)
-class SignupRequestBuilder: ObservableObject {
-    @Published var storage = AccountValueStorage()
-
-    // TODO this is basically like a SignupRequest builder!
-
-    public func post<Key: AccountValueKey>(for key: Key.Type, value: Key.Value) {
-        storage[Key.self] = value
-    }
-}
-
-
 public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header
@@ -30,9 +18,8 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @EnvironmentObject
     private var account: Account
 
-    // TODO use a private type for this, such that it is inaccessible by the sub views
     @StateObject
-    private var signupRequestBuilder = SignupRequestBuilder()
+    private var signupDetailsBuilder = SignupDetails.Builder()
     // We just use @State here for the class type, as there is nothing in it that triggers a UI update.
     // However, we need to preserve the class state across UI updates.
     @State
@@ -48,9 +35,9 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         account.signupRequirements
     }
 
-    private var signupValuesBySections: OrderedDictionary<SignupCategory, [any AccountValueKey.Type]> {
+    private var signupValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
         signupRequirements.reduce(into: [:]) { result, requirement in
-            result[requirement.anyKey.signupCategory, default: []] += [requirement.anyKey]
+            result[requirement.anyKey.category, default: []] += [requirement.anyKey]
         }
     }
 
@@ -96,7 +83,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
             sectionsView
                 .environment(\.dataEntryConfiguration, dataEntryConfiguration)
-                .environmentObject(signupRequestBuilder)
+                .environmentObject(signupDetailsBuilder)
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP".localized(.module))
@@ -143,18 +130,19 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
         focusedDataEntry = nil
 
-        // TODO is the account values builder still necessary?
-        let builder = SignupRequest.Builder(from: signupRequestBuilder.storage) // TODO review!
-
         // TODO verify against which requirements we are checking!
-        let request: SignupRequest = try builder.build(checking: signupRequirements)
+        let request: SignupDetails = try signupDetailsBuilder.build(checking: signupRequirements)
 
-        try await service.signUp(signupRequest: request)
-        // TODO do we impose any requirements, that there should a logged in user after this?
+        try await service.signUp(signupDetails: request)
+        // TODO do we impose any requirements, that there should be a logged-in user after this?
 
         // TODO navigate back if the encapsulating view doesn't do anything!
     }
 }
+
+
+extension AccountValueStorageBuilder: ObservableObject {}
+
 
 extension AccountValueKey {
     fileprivate static var anyDataEntryView: AnyView {

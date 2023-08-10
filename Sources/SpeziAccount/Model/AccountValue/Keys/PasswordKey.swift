@@ -9,22 +9,29 @@
 import SwiftUI
 
 
+/// The password of a user account.
+///
+/// This ``AccountValueKey`` transports the plain-text password of a user account.
+/// - Note: This account value is only present in the ``SignupDetails`` and never present in the ``AccountDetails``.
 public struct PasswordKey: RequiredAccountValueKey {
     public typealias Value = String
 
-    public static let signupCategory: SignupCategory = .credentials
+    public static let category: AccountValueCategory = .credentials
 }
 
 
 extension AccountValueKeys {
-    // TODO is password update special (requires existing knowledge?)
+    /// The password ``AccountValueKey``.
+    ///
+    /// - Note: This account value is only present in the ``SignupDetails``.
     public var password: PasswordKey.Type {
-        PasswordKey.self
+        PasswordKey.self // TODO this is accessible everywhere, make something specific for signupdetails?
     }
 }
 
 
-extension SignupRequest {
+extension SignupDetails {
+    /// Access the password of a user in the ``SignupDetails``.
     public var password: PasswordKey.Value {
         storage[PasswordKey.self]
     }
@@ -48,7 +55,7 @@ extension PasswordKey {
 
         public var body: some View {
             VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure)
-                .fieldConfiguration(.newPassword)
+                .textContentType(.newPassword)
                 .disableFieldAssistants()
         }
     }

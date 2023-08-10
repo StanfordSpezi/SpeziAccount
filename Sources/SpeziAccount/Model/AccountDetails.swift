@@ -11,26 +11,25 @@ import Spezi
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountValueKey`` for a list of bundled `AccountValueKey`s.
-public struct AccountDetails: Sendable, ModifiableAccountValueStorageContainer {
+public struct AccountDetails: Sendable, AccountValueStorageContainer { // TODO iterable for the edit view?
     public typealias Builder = AccountValueStorageBuilder<Self>
 
-    public var storage: AccountValueStorage // TODO modifieable?
+    public let storage: AccountValueStorage
+
 
     init<Service: AccountService>(storage: AccountValueStorage, owner accountService: Service) {
-        self.storage = storage
+        var storage = storage
 
         // patch the storage to make sure we make sure to not expose the plaintext password
-        self.storage[PasswordKey.self] = nil
-        self.storage[ActiveAccountServiceKey.self] = accountService
-        // TODO put the userId type into the storage! (overload in the build function as well)
-        // TODO think about how one would extend this from the outside!
+        storage[PasswordKey.self] = nil
+        storage[ActiveAccountServiceKey.self] = accountService
+        self.storage = storage
     }
+}
 
 
-    // TODO move to Account Service? => also we need something for "batch" processing (e.g. Edit View!)
-    public func update<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value?) {
-    }
-
-    public func update<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) {
+extension AccountValueStorageBuilder where Container == AccountDetails {
+    public func build<Service: AccountService>(owner accountService: Service) -> Container {
+        AccountDetails(storage: self.storage, owner: accountService)
     }
 }

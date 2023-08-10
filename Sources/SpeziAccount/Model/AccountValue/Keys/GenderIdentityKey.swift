@@ -9,15 +9,17 @@
 import SwiftUI
 
 
+/// The gender identity of a user.
 public struct GenderIdentityKey: AccountValueKey {
     public typealias Value = GenderIdentity
     public typealias DataEntry = GenderIdentityPicker
 
-    public static let signupCategory: SignupCategory = .personalDetails
+    public static let category: AccountValueCategory = .personalDetails
 }
 
 
 extension AccountValueKeys {
+    /// The gender identity ``AccountValueKey``.
     public var genderIdentity: GenderIdentityKey.Type {
         GenderIdentityKey.self
     }
@@ -25,20 +27,9 @@ extension AccountValueKeys {
 
 
 extension AccountValueStorageContainer {
-    public var genderIdentity: GenderIdentityKey.Value? {
+    /// Access the gender identity of a user.
+    public var genderIdentity: GenderIdentity? {
         storage[GenderIdentityKey.self]
-    }
-}
-
-
-extension ModifiableAccountValueStorageContainer {
-    public var genderIdentity: GenderIdentityKey.Value? {
-        get {
-            storage[GenderIdentityKey.self]
-        }
-        set {
-            storage[GenderIdentityKey.self] = newValue
-        }
     }
 }
 

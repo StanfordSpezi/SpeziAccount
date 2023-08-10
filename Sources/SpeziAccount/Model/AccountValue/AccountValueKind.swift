@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-/// Type erased way to encode the type of an ``AccountValueKey``.
-public enum AccountValueType {
+/// Type erased way to encode the kind of ``AccountValueKey``.
+public enum AccountValueKind {
     /// The respective AccountValue MUST be provided by the user.
     /// See ``RequiredAccountValueKey``.
     case required

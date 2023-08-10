@@ -14,7 +14,9 @@ public struct EmailAddressKey: AccountValueKey, OptionalComputedKnowledgeSource 
     public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
-    public static let signupCategory: SignupCategory = .contactDetails // TODO we could add phone number support as well!
+
+    public static let category: AccountValueCategory = .contactDetails // TODO we could add phone number support as well! => https://github.com/marmelroy/PhoneNumberKit
+
 
     public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
         if let email = repository.get(Self.self) {
@@ -41,15 +43,9 @@ extension AccountValueKeys {
 }
 
 
-extension AccountDetails {
+extension AccountValueStorageContainer {
     public var email: EmailAddressKey.Value? {
-        get {
-            // TODO we require api access to get as well!
-            storage[EmailAddressKey.self]
-        }
-        set {
-            storage[EmailAddressKey.self] = newValue
-        }
+        storage[EmailAddressKey.self]
     }
 }
 
@@ -61,17 +57,13 @@ extension EmailAddressKey {
 
         @Binding private var email: Value
 
-        // TODO can we get a default for this type of init so its consistent?
-        @StateObject private var validation = ValidationEngine(rules: .interceptingChain(.nonEmpty), .minimalEmail)
-
         public init(_ value: Binding<Value>) {
             self._email = value
         }
 
         public var body: some View {
             VerifiableTextField(UserIdType.emailAddress.localizedStringResource, text: $email)
-                .environmentObject(validation)
-                .fieldConfiguration(.emailAddress)
+                .textContentType(.emailAddress)
                 .disableFieldAssistants()
         }
     }

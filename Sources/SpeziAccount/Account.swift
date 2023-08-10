@@ -14,7 +14,7 @@ import SwiftUI
 /// of the currently associated user account.
 /// TODO update docs!
 /// 
-/// The ``Account/Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
+/// The ``Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
 @MainActor
 public class Account: ObservableObject, Sendable {
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.

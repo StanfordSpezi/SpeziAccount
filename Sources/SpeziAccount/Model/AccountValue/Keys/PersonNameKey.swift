@@ -6,23 +6,21 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziViews
 import SwiftUI
 
 
+/// The name of a user.
 public struct PersonNameKey: RequiredAccountValueKey {
     public typealias Value = PersonNameComponents
 
-    public static let signupCategory: SignupCategory = .name
-
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        // TODO person name components default init!
-        GeneralizedDataEntryView(initialValue: .init())
-    }
+    public static let category: AccountValueCategory = .name
 }
 
 
 extension AccountValueKeys {
+    /// The name ``AccountValueKey``
     public var name: PersonNameKey.Type {
         PersonNameKey.self
     }
@@ -30,21 +28,9 @@ extension AccountValueKeys {
 
 
 extension AccountValueStorageContainer {
-    public var name: PersonNameKey.Value {
+    /// Access the name of a user.
+    public var name: PersonNameComponents {
         storage[PersonNameKey.self]
-    }
-}
-
-
-// TODO define update strategy => write value and then call account service?
-extension ModifiableAccountValueStorageContainer {
-    public var name: PersonNameKey.Value {
-        get {
-            storage[PersonNameKey.self]
-        }
-        set {
-            storage[PersonNameKey.self] = newValue
-        }
     }
 }
 
@@ -83,3 +69,6 @@ extension PersonNameKey {
         }
     }
 }
+
+
+extension PersonNameComponents: DefaultInitializable {}

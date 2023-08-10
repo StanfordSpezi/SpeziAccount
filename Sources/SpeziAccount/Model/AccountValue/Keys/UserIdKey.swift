@@ -8,13 +8,8 @@
 
 import SwiftUI
 
-// TODO write a article "how to create new account value keys"
-//  - consider: required vs. optional;
-//  - declare protocol conformance (Valu, Category, Anchor!) -> link to shared repository
-//  - extension to AccountValueKeys struct => if you should be able to modify it?!
-//  - AccountValueStorageContainer extension (or ModifiableAccountValueStorageContainer?; or SignupRequest or AccountDetails?)
 
-/// A ``RequiredAccountValueKey`` that models a string-based user identifier.
+/// A string-based, unique user identifier.
 ///
 /// The `userId` is used to uniquely identify a given account. The value might carry
 /// additional semantics. For example, the `userId` might, at the same time, be the primary email address
@@ -25,7 +20,7 @@ import SwiftUI
 public struct UserIdKey: RequiredAccountValueKey { // TODO introduce required values after the fact?
     public typealias Value = String
 
-    public static let signupCategory: SignupCategory = .credentials
+    public static let category: AccountValueCategory = .credentials
 }
 
 
@@ -41,19 +36,6 @@ extension AccountValueStorageContainer {
     /// Provides access to the value of the ``UserIdKey`` of an account.
     public var userId: UserIdKey.Value {
         storage[UserIdKey.self]
-    }
-}
-
-// TODO one might not change the user id!
-extension ModifiableAccountValueStorageContainer {
-    /// Provides access to the value of the ``UserIdKey`` of an account.
-    public var userId: UserIdKey.Value {
-        get {
-            storage[UserIdKey.self]
-        }
-        set {
-            storage[UserIdKey.self] = newValue
-        }
     }
 }
 
@@ -80,7 +62,8 @@ extension UserIdKey {
 
         public var body: some View {
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                .fieldConfiguration(userIdConfiguration.fieldType)
+                .textContentType(userIdConfiguration.textContentType)
+                .keyboardType(userIdConfiguration.keyboardType)
                 .disableFieldAssistants()
         }
     }

@@ -9,25 +9,25 @@
 import Foundation
 
 
-public struct SignupCategory {
-    public static let credentials = SignupCategory(
+public struct AccountValueCategory {
+    public static let credentials = AccountValueCategory(
         id: "credentials",
         title: LocalizedStringResource("UP_CREDENTIALS", bundle: .atURL(from: .module))
     )
 
-    public static let name = SignupCategory(id: "name", title: LocalizedStringResource("UP_NAME", bundle: .atURL(from: .module)))
+    public static let name = AccountValueCategory(id: "name", title: LocalizedStringResource("UP_NAME", bundle: .atURL(from: .module)))
 
-    public static let contactDetails = SignupCategory(
+    public static let contactDetails = AccountValueCategory(
         id: "contactDetails",
         title: LocalizedStringResource("UP_CONTACT_DETAILS", bundle: .atURL(from: .module))
     )
 
-    public static let personalDetails = SignupCategory(
+    public static let personalDetails = AccountValueCategory(
         id: "personalDetails",
         title: LocalizedStringResource("UP_PERSONAL_DETAILS", bundle: .atURL(from: .module))
     )
 
-    public static let other = SignupCategory(id: "other")
+    public static let other = AccountValueCategory(id: "other")
 
     public let id: String
     public let categoryTitle: LocalizedStringResource?
@@ -44,8 +44,8 @@ public struct SignupCategory {
 }
 
 
-extension SignupCategory: Identifiable, Hashable {
-    public static func == (lhs: SignupCategory, rhs: SignupCategory) -> Bool {
+extension AccountValueCategory: Identifiable, Hashable {
+    public static func == (lhs: AccountValueCategory, rhs: AccountValueCategory) -> Bool {
         lhs.id == rhs.id
     }
 

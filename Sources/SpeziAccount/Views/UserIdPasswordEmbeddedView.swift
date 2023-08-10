@@ -45,7 +45,8 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                 Group {
                     VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                         .environmentObject(userIdValidation)
-                        .fieldConfiguration(userIdConfiguration.fieldType)
+                        .textContentType(userIdConfiguration.textContentType)
+                        .keyboardType(userIdConfiguration.keyboardType)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .padding(.bottom, 0.5)
 
@@ -65,7 +66,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                         }
                     }
                         .environmentObject(passwordValidation)
-                        .fieldConfiguration(.password)
+                        .textContentType(.password)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
                 }
                     .disableFieldAssistants()

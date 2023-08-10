@@ -10,8 +10,8 @@
 @propertyWrapper
 public struct WeakInjectable<Type: AnyObject> {
     // we split that out into it's own type such that we don't need to make the whole `WeakInjectable` unchecked.
-    fileprivate final class UncheckedWeakBox<Type: AnyObject> {
-        fileprivate weak var reference: Type?
+    fileprivate final class UncheckedWeakBox<ObjectType: AnyObject> {
+        fileprivate weak var reference: ObjectType?
     }
 
     private let storage: UncheckedWeakBox<Type> = .init()

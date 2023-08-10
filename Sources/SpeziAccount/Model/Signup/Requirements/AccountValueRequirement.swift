@@ -10,7 +10,7 @@ import SwiftUI
 
 
 public protocol AnyAccountValueRequirement: CustomStringConvertible {
-    var type: AccountValueType { get }
+    var type: AccountValueKind { get }
     var id: ObjectIdentifier { get }
 
     var anyKey: any AccountValueKey.Type { get }
@@ -20,7 +20,7 @@ public protocol AnyAccountValueRequirement: CustomStringConvertible {
 
 
 struct AccountValueRequirement<Key: AccountValueKey>: AnyAccountValueRequirement, Identifiable {
-    let type: AccountValueType
+    let type: AccountValueKind
 
     var id: ObjectIdentifier {
         Key.id
@@ -34,7 +34,7 @@ struct AccountValueRequirement<Key: AccountValueKey>: AnyAccountValueRequirement
         "\(Key.self)"
     }
 
-    init(type: AccountValueType) {
+    init(type: AccountValueKind) {
         self.type = type
     }
 

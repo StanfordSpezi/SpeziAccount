@@ -19,8 +19,8 @@ public actor MockSimpleAccountService: AccountService {
         MockSimpleAccountSetupViewStyle(using: self)
     }
 
-    public func signUp(signupRequest: SignupRequest) async throws {
-        print("Signup: \(signupRequest)")
+    public func signUp(signupDetails: SignupDetails) async throws {
+        print("Signup: \(signupDetails)")
     }
 
     public func logout() async throws {
@@ -29,5 +29,9 @@ public actor MockSimpleAccountService: AccountService {
 
     public func remove() async throws {
         print("Remove")
+    }
+
+    public func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
+        print("Update: \(details)")
     }
 }

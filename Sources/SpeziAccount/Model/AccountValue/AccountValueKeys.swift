@@ -6,12 +6,18 @@
 // SPDX-License-Identifier: MIT
 //
 
-
-// TODO use this KeyPath thingy to formulate the requirements?
+/// A collection of ``AccountValueKeys`` type instances.
+///
+/// This type is used across `SpeziAccount` API to easily and intuitively access the metatype of an ``AccountValueKey``.
+///
+/// Below is a short example creating a ``AccountServiceConfiguration`` demonstrating the use of `KeyPath`-based access
+/// to the metatype of an ``AccountValueKey``.
+///
+/// ```swift
+/// AccountServiceConfiguration(name: "TestEmailPasswordAccountService") {
+///     FieldValidationRules(for: \.password, rules: .interceptingChain(.nonEmpty), .strongPassword)
+/// }
+/// ```
 public struct AccountValueKeys {
-    var instance: AccountValueKeys {
-        AccountValueKeys()
-    }
-
     private init() {}
 }

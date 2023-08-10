@@ -44,10 +44,6 @@ extension DataEntryValidationClosures: Collection {
         storage.values.index(after: index)
     }
 
-    // swiftlint:disable:next identifier_name discouraged_optional_boolean
-    public func _customContainsEquatableElement(_ element: Element) -> Bool? {
-        storage.values._customContainsEquatableElement(element)
-    }
 
     public subscript(position: Index) -> Entry {
         storage.values[position]

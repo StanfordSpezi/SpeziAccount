@@ -15,7 +15,7 @@ public enum AccountValueRequirementsError: LocalizedError {
     /// being passed to the ``AccountService``.
     ///
     /// - Note: This is an error in the view logic due to missing user-input sanitization or simply the view
-    /// didn't supply the ``AccountValueKey`` when building the ``SignupRequest``.
+    /// didn't supply the ``AccountValueKey`` when building the ``SignupDetails``.
     case missingAccountValue(_ keyName: String)
 
     public var errorDescription: String? {

@@ -9,6 +9,7 @@
 import Spezi
 
 
+/// A `KnowledgeSource` to access the ``AccountService`` associated with the ``AccountDetails``.
 public struct ActiveAccountServiceKey: KnowledgeSource {
     public typealias Anchor = AccountAnchor
     public typealias Value = any AccountService
@@ -16,7 +17,8 @@ public struct ActiveAccountServiceKey: KnowledgeSource {
 
 
 extension AccountDetails {
-    public var accountService: ActiveAccountServiceKey.Value {
+    /// Access the ``AccountService`` associated with the ``AccountDetails``.
+    public var accountService: any AccountService {
         guard let accountService = storage[ActiveAccountServiceKey.self] else {
             fatalError("""
                        The active Account Service is not present in the AccountDetails storage. \
@@ -25,5 +27,19 @@ extension AccountDetails {
         }
 
         return accountService
+    }
+}
+
+
+extension AccountDetails {
+    /// Short-hand access to the ``AccountServiceConfiguration``.
+    public var accountServiceConfiguration: AccountServiceConfiguration {
+        accountService.configuration
+    }
+
+    /// Short-hand access to the ``UserIdType`` stored in the ``UserIdConfiguration`` of
+    /// the ``AccountServiceConfiguration`` of the currently active ``AccountService``.
+    public var userIdType: UserIdType {
+        accountService.configuration.userIdConfiguration.idType
     }
 }

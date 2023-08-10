@@ -21,17 +21,17 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         try? await Task.sleep(for: .seconds(1))
 
         let details = AccountDetails.Builder()
-            .add(\.userId, value: userId)
-            .add(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+            .set(\.userId, value: userId)
+            .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build(owner: self)
         await account.supplyUserDetails(details)
     }
 
-    public func signUp(signupRequest: SignupRequest) async throws {
-        print("Mock Signup: \(signupRequest)")
+    public func signUp(signupDetails: SignupDetails) async throws {
+        print("Mock Signup: \(signupDetails)")
         try? await Task.sleep(for: .seconds(1))
 
-        let details = AccountDetails.Builder(from: signupRequest)
+        let details = AccountDetails.Builder(from: signupDetails)
             .remove(\.password)
             .build(owner: self)
         await account.supplyUserDetails(details)
@@ -52,5 +52,9 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         print("Mock Remove Account")
         try? await Task.sleep(for: .seconds(1))
         await account.removeUserDetails()
+    }
+
+    public func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
+        // TODO update the previous details!
     }
 }

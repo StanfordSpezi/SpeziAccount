@@ -45,7 +45,7 @@ public class DataEntryConfiguration {
     /// For more information see ``DataEntryValidationClosures/register(_:validation:)`` method.
     public let validationClosures: DataEntryValidationClosures
     /// The `FocusState` of the parent view.
-    /// Focus state is typically handled automatically using the ``AccountValueKey.Type/focusState`` property.
+    /// Focus state is typically handled automatically using the ``AccountValueKey/focusState`` property.
     /// Access to this property is useful when defining a ``DataEntryView`` that exposes more than one field.
     public let focusedField: FocusState<String?> // see `AccountValueKey.Type/focusState`
     /// Provides access to the Spezi `ViewState` of the parent view.

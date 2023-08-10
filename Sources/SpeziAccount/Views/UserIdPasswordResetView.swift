@@ -43,7 +43,8 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                         .environmentObject(validationEngine)
                         .textFieldStyle(.roundedBorder)
                         .disableFieldAssistants()
-                        .fieldConfiguration(userIdConfiguration.fieldType)
+                        .textContentType(userIdConfiguration.textContentType)
+                        .keyboardType(userIdConfiguration.keyboardType)
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .font(.title3)
 

@@ -9,14 +9,16 @@
 import SwiftUI
 
 
+/// The date of birth of a user.
 public struct DateOfBirthKey: AccountValueKey {
     public typealias Value = Date
     public typealias DataEntry = DateOfBirthPicker
 
-    public static let signupCategory: SignupCategory = .personalDetails
+    public static let category: AccountValueCategory = .personalDetails
 }
 
 extension AccountValueKeys {
+    /// The date of birth ``AccountValueKey``.
     public var dateOfBirth: DateOfBirthKey.Type {
         DateOfBirthKey.self
     }
@@ -24,20 +26,9 @@ extension AccountValueKeys {
 
 
 extension AccountValueStorageContainer {
-    public var dateOfBrith: DateOfBirthKey.Value? {
+    /// Access the date of birth of a user.
+    public var dateOfBrith: Date? {
         storage[DateOfBirthKey.self]
-    }
-}
-
-
-extension ModifiableAccountValueStorageContainer {
-    public var dateOfBrith: DateOfBirthKey.Value? {
-        get {
-            storage[DateOfBirthKey.self]
-        }
-        set {
-            storage[DateOfBirthKey.self] = newValue
-        }
     }
 }
 

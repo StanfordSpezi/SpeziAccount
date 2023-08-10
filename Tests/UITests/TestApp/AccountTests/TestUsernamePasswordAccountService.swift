@@ -11,12 +11,12 @@ import SpeziAccount
 
 actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
     nonisolated let configuration = AccountServiceConfiguration(name: "TestUsernamePasswordAccountService") {
-        UserIdConfiguration(type: .username, fieldType: .username)
+        UserIdConfiguration(type: .username)
     }
 
     @AccountReference
     var account: Account
-    let registeredUser = UserStorage() // simulates the backend
+    var registeredUser = UserStorage() // simulates the backend
 
     init() {}
 
@@ -31,26 +31,30 @@ actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
         await updateUser()
     }
 
-    func signUp(signupRequest: SignupRequest) async throws {
+    func signUp(signupDetails: SignupDetails) async throws {
         try await Task.sleep(for: .seconds(2))
 
-        guard signupRequest.userId != "lelandstanford" else {
+        guard signupDetails.userId != "lelandstanford" else {
             throw MockAccountServiceError.usernameTaken
         }
 
-        registeredUser.userId = signupRequest.userId
-        registeredUser.name = signupRequest.name
-        registeredUser.gender = signupRequest.genderIdentity
-        registeredUser.dateOfBirth = signupRequest.dateOfBrith
+        registeredUser.userId = signupDetails.userId
+        registeredUser.name = signupDetails.name
+        registeredUser.gender = signupDetails.genderIdentity
+        registeredUser.dateOfBirth = signupDetails.dateOfBrith
         await updateUser()
+    }
+
+    func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
+        // TODO implement
     }
 
     func updateUser() async {
         let details = AccountDetails.Builder()
-            .add(\.userId, value: registeredUser.userId)
-            .add(\.name, value: registeredUser.name)
-            .add(\.genderIdentity, value: registeredUser.gender)
-            .add(\.dateOfBirth, value: registeredUser.dateOfBirth)
+            .set(\.userId, value: registeredUser.userId)
+            .set(\.name, value: registeredUser.name)
+            .set(\.genderIdentity, value: registeredUser.gender)
+            .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
             .build(owner: self)
 
         await account.supplyUserDetails(details)
@@ -62,5 +66,10 @@ actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
 
     func logout() async throws {
         await account.removeUserDetails()
+    }
+
+    func remove() async throws {
+        await account.removeUserDetails()
+        registeredUser = UserStorage()
     }
 }

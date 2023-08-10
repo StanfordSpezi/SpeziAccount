@@ -9,12 +9,13 @@
 import Spezi
 
 
-public typealias AccountValueStorage = ValueRepository<AccountAnchor>
-
+/// A ``AccountValueStorage`` container.
 public protocol AccountValueStorageContainer {
+    /// The underlying storage.
     var storage: AccountValueStorage { get }
 }
 
-public protocol ModifiableAccountValueStorageContainer: AccountValueStorageContainer {
-    var storage: AccountValueStorage { get set }
-}
+/// A `ValueRepository` that stores `KnowledgeSource`s anchored to the ``AccountAnchor``.
+///
+/// This is the underlying storage type user in, e.g., ``AccountDetails``, ``SignupDetails`` or ``ModifiedAccountDetails``.
+public typealias AccountValueStorage = ValueRepository<AccountAnchor>

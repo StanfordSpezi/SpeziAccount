@@ -86,7 +86,6 @@ public struct ValidationRule: Identifiable, Sendable {
     ///   - regex: A `Regex` regular expression to match for validating text.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
-    ///   - effect: An optional ``CascadingValidationEffect`` to control how to handle subsequent validation rules.
     public init(regex: Regex<AnyRegexOutput>, message: String, bundle: Bundle) {
         self.init(regex: regex, message: message.localized(bundle))
     }

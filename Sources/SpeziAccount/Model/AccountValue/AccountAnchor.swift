@@ -9,5 +9,5 @@
 import Spezi
 
 
-// TODO docs
+/// A `RepositoryAnchor` for ``AccountValueStorage``.
 public struct AccountAnchor: RepositoryAnchor, Sendable {}

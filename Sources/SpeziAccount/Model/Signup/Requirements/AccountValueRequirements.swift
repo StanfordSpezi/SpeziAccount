@@ -37,7 +37,7 @@ public struct AccountValueRequirements {
         }
     }
 
-    private func requirementType<Key: AccountValueKey>(for keyPath: KeyPath<AccountValueKeys, Key.Type>) -> AccountValueType? {
+    private func requirementType<Key: AccountValueKey>(for keyPath: KeyPath<AccountValueKeys, Key.Type>) -> AccountValueKind? {
         requirements[Key.id]?.type
     }
 
@@ -49,7 +49,7 @@ public struct AccountValueRequirements {
         requirementType(for: keyPath) == .required
     }
 
-    public func validateRequirements(in request: SignupRequest) throws {
+    public func validateRequirements(in request: SignupDetails) throws {
         for requirement in requirements.values where requirement.type == .required {
             if !requirement.isContained(in: request.storage) {
                 // TODO log the requirement name if its missing!
@@ -67,6 +67,7 @@ extension AccountValueRequirements: Collection {
     public var startIndex: Index {
         requirements.values.startIndex
     }
+
     public var endIndex: Index {
         requirements.values.endIndex
     }
@@ -76,10 +77,6 @@ extension AccountValueRequirements: Collection {
         requirements.values.index(after: index)
     }
 
-    // swiftlint:disable:next identifier_name discouraged_optional_boolean
-    public func _customContainsEquatableElement(_ element: AnyAccountValueRequirement) -> Bool? {
-        requirements.values._customContainsEquatableElement(element)
-    }
 
     public subscript(position: Index) -> AnyAccountValueRequirement {
         requirements.values[position]

@@ -48,7 +48,7 @@ public struct AccountSetupDefaultHeader: View { // TODO move
 // TODO review accessibility!
 
 
-/// The central `SpeziAccount` view to setup a user account.
+/// The central `SpeziAccount` view to login into or signup for a user account.
 ///
 /// TODO docs: drop ``AccountService`` and ``IdentityProvider`` and other stuff
 public struct AccountSetup<Header: View>: View { // TODO docs!
@@ -84,6 +84,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
 
     private var documentationUrl: URL {
         // we may move to a #URL macro once Swift 5.9 is shipping
+        // TODO update docs URL!
         guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
             fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
         }
@@ -262,8 +263,8 @@ struct AccountView_Previews: PreviewProvider {
     }()
 
     static let detailsBuilder = AccountDetails.Builder()
-        .add(\.userId, value: "andi.bauer@tum.de")
-        .add(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
 
     static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
