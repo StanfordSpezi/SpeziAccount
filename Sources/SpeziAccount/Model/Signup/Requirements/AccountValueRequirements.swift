@@ -8,11 +8,15 @@
 
 import OrderedCollections
 
+// TODO do modifications of values (also the edit view)
+//    => requires iterable of `AccountDetails`, everything with a concept! (how to we establish an order there?)
+//    => rethink requirements specification: required, optional in signup (presented), optional (not presented)
+//  do the account service specifies which requirements they support and delegate everything else somewhere else!
+
 
 // TODO maybe rename type to `SignupRequriements`
 // TODO maybe consider new name, as these are only what gets displayed!
 public struct AccountValueRequirements {
-    // TODO requirements should be specified centrally! (every account services has to adhere!)
     public static var `default` = AccountValueRequirements { // TODO might a simple array be nicer?
         \.userId
         \.password
@@ -21,9 +25,6 @@ public struct AccountValueRequirements {
         \.dateOfBirth
     }
 
-    // TODO can we bring back the OptionSet?
-
-    // TODO make sure you can't pass one thing twice!
     // its important for displaying purposes to keep the order.
     private var requirements: OrderedDictionary<ObjectIdentifier, AnyAccountValueRequirement> = [:]
 

@@ -23,7 +23,7 @@ public class DataEntryValidationClosures {
 
 
     public func register<Key: AccountValueKey>(_ key: Key.Type, validation: @escaping () -> DataValidationResult) {
-        // TODO this currently doesn't allow for multi field inputs!
+        // TODO this currently doesn't allow for multi field inputs (focus state will apply to what?)!
         storage[key.id] = Entry(validationClosure: validation, focusStateValue: key.focusState)
     }
 }

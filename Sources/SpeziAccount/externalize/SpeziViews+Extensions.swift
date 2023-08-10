@@ -11,7 +11,6 @@ import SpeziViews
 import SwiftUI
 
 extension View {
-    // TODO remove "any" in name!
     public func disableDismissiveActions(isProcessing state: ViewState) -> some View {
         self
             .navigationBarBackButtonHidden(state == .processing)

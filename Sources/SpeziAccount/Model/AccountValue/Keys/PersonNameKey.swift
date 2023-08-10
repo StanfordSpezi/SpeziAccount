@@ -20,7 +20,7 @@ public struct PersonNameKey: RequiredAccountValueKey {
 
 
 extension AccountValueKeys {
-    /// The name ``AccountValueKey``
+    /// The name ``AccountValueKey`` metatype.
     public var name: PersonNameKey.Type {
         PersonNameKey.self
     }

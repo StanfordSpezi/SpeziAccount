@@ -19,11 +19,11 @@ public struct DataEntryConfigurationKey: EnvironmentKey {
 }
 
 
-/// A `DataEntryConfiguration` provides access configuration state of the parent view of ``DataEntryView``s.
+/// A `DataEntryConfiguration` provides access to the configuration state of the parent view of a ``DataEntryView``.
 ///
-/// Data entry views include built-in views like ``SignupForm``. TODO more? maybe rather modeled as a topics section?
+/// Data entry views include built-in views like ``SignupForm``.
 /// In subviews like implementations of ``DataEntryView`` you can access the parents views
-/// configuration using the `EnvironmentValues/dataEntryConfiguration` environment value.
+/// configuration using the ``SwiftUI/EnvironmentValues/dataEntryConfiguration`` environment value.
 ///
 /// ```swift
 /// struct SomeDataEntryView: View {
@@ -35,8 +35,8 @@ public struct DataEntryConfigurationKey: EnvironmentKey {
 ///     }
 /// }
 ///
-/// - Note: Accessing the `DataEntryConfiguration` outside of a data entry parent view
 /// ```
+/// - Note: Accessing the `DataEntryConfiguration` outside of a data entry parent view is undefined behavior.
 public class DataEntryConfiguration {
     /// The `AccountServiceConfiguration` of the ``AccountService`` for which we currently perform data entry.
     public let serviceConfiguration: AccountServiceConfiguration

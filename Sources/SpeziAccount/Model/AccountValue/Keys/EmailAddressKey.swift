@@ -10,12 +10,13 @@ import Spezi
 import SwiftUI
 
 
+/// The email address of a user.
 public struct EmailAddressKey: AccountValueKey, OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
 
-    public static let category: AccountValueCategory = .contactDetails // TODO we could add phone number support as well! => https://github.com/marmelroy/PhoneNumberKit
+    public static let category: AccountValueCategory = .contactDetails
 
 
     public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
@@ -37,6 +38,7 @@ public struct EmailAddressKey: AccountValueKey, OptionalComputedKnowledgeSource 
 
 
 extension AccountValueKeys {
+    /// The email ``EmailAddressKey`` metatype.
     public var email: EmailAddressKey.Type {
         EmailAddressKey.self
     }

@@ -10,7 +10,6 @@ import Foundation
 import Spezi
 import XCTRuntimeAssertions
 
-// TODO can we split out some functionality into different targets? (e.g. AccountService side vs User side?
 
 // TODO docs! everywhere!
 public final class AccountConfiguration: Component, ObservableObjectProvider {

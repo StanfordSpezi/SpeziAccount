@@ -14,10 +14,10 @@ import SwiftUI
 /// The `userId` is used to uniquely identify a given account. The value might carry
 /// additional semantics. For example, the `userId` might, at the same time, be the primary email address
 /// of the user. Such semantics can be controlled by the ``AccountService``
-/// using the ``UserIdType`` configuration. TODO can the user also control this?
+/// using the ``UserIdType`` configuration.
 ///
 /// - Note: You may also refer to the ``EmailAddressKey`` to query the email address of an account.
-public struct UserIdKey: RequiredAccountValueKey { // TODO introduce required values after the fact?
+public struct UserIdKey: RequiredAccountValueKey {
     public typealias Value = String
 
     public static let category: AccountValueCategory = .credentials
@@ -25,7 +25,7 @@ public struct UserIdKey: RequiredAccountValueKey { // TODO introduce required va
 
 
 extension AccountValueKeys {
-    /// Refer to the ``UserIdKey`` for documentation.
+    /// The userid ``UserIdKey`` metatype.
     public var userId: UserIdKey.Type {
         UserIdKey.self
     }
@@ -33,8 +33,8 @@ extension AccountValueKeys {
 
 
 extension AccountValueStorageContainer {
-    /// Provides access to the value of the ``UserIdKey`` of an account.
-    public var userId: UserIdKey.Value {
+    /// Access the user id of a user (see ``UserIdKey``).
+    public var userId: String {
         storage[UserIdKey.self]
     }
 }

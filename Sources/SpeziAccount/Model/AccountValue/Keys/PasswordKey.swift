@@ -21,7 +21,7 @@ public struct PasswordKey: RequiredAccountValueKey {
 
 
 extension AccountValueKeys {
-    /// The password ``AccountValueKey``.
+    /// The password ``AccountValueKey`` metatype.
     ///
     /// - Note: This account value is only present in the ``SignupDetails``.
     public var password: PasswordKey.Type {

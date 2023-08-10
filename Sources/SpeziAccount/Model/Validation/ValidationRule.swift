@@ -29,7 +29,10 @@ enum CascadingValidationEffect {
 ///     message: "The entered email is not correct."
 /// )
 /// ```
-/// TODO discuss client side validation.
+///
+/// - Important: Never rely on security-relevant validations with `ValidationRule`. These are client-side validations only!
+///     Security-related validations MUST be checked at the server side (e.g., password length) and are just checked
+///     on client-side for visualization.
 public struct ValidationRule: Identifiable, Sendable {
     /// A unique identifier for the ``ValidationRule``. Can be used to, e.g., match a ``FailedValidationResult`` to the ValidationRule.
     public let id: UUID

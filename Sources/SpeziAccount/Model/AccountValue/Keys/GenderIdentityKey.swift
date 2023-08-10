@@ -19,7 +19,7 @@ public struct GenderIdentityKey: AccountValueKey {
 
 
 extension AccountValueKeys {
-    /// The gender identity ``AccountValueKey``.
+    /// The gender identity ``AccountValueKey`` metatype.
     public var genderIdentity: GenderIdentityKey.Type {
         GenderIdentityKey.self
     }

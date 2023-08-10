@@ -1,6 +1,6 @@
 # Adding new Account Values
 
-Add new user account details by defining your own ``AccountValueKey``.
+Support new user account details by defining your own ``AccountValueKey``.
 
 <!--
                   
@@ -78,6 +78,8 @@ A ``AccountValueKey`` provides the mechanism through the ``DataEntryView`` proto
 This protocol has two requirements: ``DataEntryView/Key`` defines the associated ``AccountValueKey`` type (what we just implemented) 
 and provides an ``DataEntryView/init(_:)`` to retrieve a `Binding` to the current (or empty) account value
 from the parent view (refer to ``GeneralizedDataEntryView`` for more information).
+
+> Note: Refer to ``DataEntryConfiguration`` on how to access the configuration of the parent view in your ``DataEntryView`` implementation.
 
 Below is a short code example on how one could implement the ``DataEntryView`` for our new biography account value.
 ```swift

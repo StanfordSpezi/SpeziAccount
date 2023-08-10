@@ -18,7 +18,7 @@ public struct DateOfBirthKey: AccountValueKey {
 }
 
 extension AccountValueKeys {
-    /// The date of birth ``AccountValueKey``.
+    /// The date of birth ``AccountValueKey`` metatype.
     public var dateOfBirth: DateOfBirthKey.Type {
         DateOfBirthKey.self
     }

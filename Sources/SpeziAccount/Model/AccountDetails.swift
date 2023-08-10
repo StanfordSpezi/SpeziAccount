@@ -11,7 +11,7 @@ import Spezi
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountValueKey`` for a list of bundled `AccountValueKey`s.
-public struct AccountDetails: Sendable, AccountValueStorageContainer { // TODO iterable for the edit view?
+public struct AccountDetails: Sendable, AccountValueStorageContainer {
     public typealias Builder = AccountValueStorageBuilder<Self>
 
     public let storage: AccountValueStorage

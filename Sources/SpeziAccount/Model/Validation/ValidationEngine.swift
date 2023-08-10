@@ -35,8 +35,6 @@ public class ValidationEngine: ObservableObject {
     }
 
     private func runValidation0(input: String) {
-        // TODO do we want to run this on an async thread?
-
         var results: [FailedValidationResult] = []
         for rule in validationRules {
             if let failedValidation = rule.validate(input) {

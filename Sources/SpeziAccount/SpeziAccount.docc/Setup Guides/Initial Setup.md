@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 -->
 
-A quick-start guide that shows you how to setup `SpeziAccount`.
+A quick-start guide that shows you how to setup `SpeziAccount` in your App.
 
 ## Overview
 

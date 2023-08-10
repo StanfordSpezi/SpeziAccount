@@ -88,7 +88,6 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
         self.textFieldFooter = footer()
     }
 
-    // TODO make this a modifier which injects a onChange of(text) and a onSubmit modifier!
     private func runValidation() {
         debounceTask = Task {
             // Wait 0.5 seconds until you start the validation.

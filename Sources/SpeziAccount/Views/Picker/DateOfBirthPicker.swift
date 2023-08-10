@@ -35,7 +35,6 @@ public struct DateOfBirthPicker: View {
             Text(titleLocalization)
                 .fontWeight(.semibold)
         }
-            // TODO birthday text content type?
     }
 
     public init(

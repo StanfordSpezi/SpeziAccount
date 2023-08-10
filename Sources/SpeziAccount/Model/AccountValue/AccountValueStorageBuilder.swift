@@ -18,7 +18,7 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 
     init(from storage: AccountValueStorage) {
-        self.storage = storage // TODO make this public?
+        self.storage = storage
     }
 
     public convenience init<Source: AccountValueStorageContainer>(from storage: Source) {
