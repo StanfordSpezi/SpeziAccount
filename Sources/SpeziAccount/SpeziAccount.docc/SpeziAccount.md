@@ -1,6 +1,17 @@
 # ``SpeziAccount``
 
 A Spezi framework that provides account-related functionality including login, sign up and reset password functionality.
+
+<!--
+                  
+This source file is part of the Spezi open-source project
+
+SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+
+SPDX-License-Identifier: MIT
+             
+-->
+
 <!-- TODO rephrase? -->
 
 ```swift
