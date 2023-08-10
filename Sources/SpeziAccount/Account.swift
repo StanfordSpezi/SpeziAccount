@@ -13,7 +13,7 @@ import SwiftUI
 /// Account-related Spezi module managing a collection of ``AccountService``s and provide access to ``AccountDetails``
 /// of the currently associated user account.
 /// TODO update docs!
-/// 
+///
 /// The ``Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
 @MainActor
 public class Account: ObservableObject, Sendable {
@@ -73,7 +73,7 @@ public class Account: ObservableObject, Sendable {
     }
 
     /// Initializer useful for testing and previewing purposes.
-    convenience init(_ services: any AccountService...) {
+    convenience nonisolated init(_ services: any AccountService...) {
         self.init(services: services)
     }
 

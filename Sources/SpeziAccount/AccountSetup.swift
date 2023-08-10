@@ -266,7 +266,7 @@ struct AccountView_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
 
-    static var previews: some View {
+    @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
             NavigationStack {
                 AccountSetup()

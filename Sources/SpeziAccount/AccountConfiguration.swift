@@ -13,7 +13,7 @@ import XCTRuntimeAssertions
 // TODO can we split out some functionality into different targets? (e.g. AccountService side vs User side?
 
 // TODO docs! everywhere!
-public final class AccountConfiguration<ComponentStandard: Standard>: Component, ObservableObjectProvider {
+public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// The array of ``AccountService``s provided through other Spezi `Components`.
     @Collect
     private var accountServices: [any AccountService]

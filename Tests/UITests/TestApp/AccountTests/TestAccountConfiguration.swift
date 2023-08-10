@@ -12,7 +12,7 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration<ComponentStandard: Standard>: Component {
+final class TestAccountConfiguration: Component {
     @Provide var usernameAccountService: any AccountService
     @Provide var emailAccountService: any AccountService
 

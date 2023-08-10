@@ -11,7 +11,7 @@ import SpeziAccount
 
 class TestAppDelegate: SpeziAppDelegate {
     override var configuration: Configuration {
-        Configuration(standard: TestAppStandard()) {
+        Configuration {
             AccountConfiguration {
                 // TODO FeatureFlags.emptyAccountServices
                 // TODO test supplying account services!
