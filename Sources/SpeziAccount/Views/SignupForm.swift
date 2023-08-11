@@ -15,15 +15,14 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header
 
-    @EnvironmentObject
-    private var account: Account
+    @EnvironmentObject private var account: Account
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.logger) private var logger
 
-    @StateObject
-    private var signupDetailsBuilder = SignupDetails.Builder()
+    @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
     // We just use @State here for the class type, as there is nothing in it that triggers a UI update.
     // However, we need to preserve the class state across UI updates.
-    @State
-    private var validationClosures = DataEntryValidationClosures()
+    @State private var validationClosures = DataEntryValidationClosures()
 
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
@@ -49,7 +48,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     public var body: some View {
         form
-            .navigationTitle("Signup") // TODO localize!
+            .navigationTitle("UP_SIGNUP".localized(.module).localizedString())
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .onTapGesture {
@@ -57,8 +56,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             }
     }
 
-    @ViewBuilder
-    var sectionsView: some View {
+    @ViewBuilder var sectionsView: some View {
         // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
         ForEach(signupValuesBySections.elements, id: \.key) { category, accountValues in
             Section {
@@ -76,8 +74,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         }
     }
 
-    @ViewBuilder
-    var form: some View {
+    @ViewBuilder var form: some View {
         Form {
             header
 
@@ -134,9 +131,12 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         let request: SignupDetails = try signupDetailsBuilder.build(checking: signupRequirements)
 
         try await service.signUp(signupDetails: request)
-        // TODO do we impose any requirements, that there should be a logged-in user after this?
 
-        // TODO navigate back if the encapsulating view doesn't do anything!
+        if !account.signedIn {
+            logger.error("Didn't find any AccountDetails provided after the signup call to \(Service.self). Please verify your AccountService implementation!")
+        }
+
+        dismiss()
     }
 }
 

@@ -66,7 +66,7 @@ extension ValidationRule {
     /// We propose to use the password length as the sole factor to determine password complexity. We rely on the
     /// recommendations of NIST who discuss the [Strength of Memorized Secrets](https://pages.nist.gov/800-63-3/sp800-63b.html#appA)
     /// great detail and recommend against password rules that mandated a certain mix of character types.
-    public static var minimalPassword: ValidationRule = { // TODO is above a prominent location for such a discussion?
+    public static var minimalPassword: ValidationRule = {
         guard let regex = try? Regex(#".{8,}"#) else {
             fatalError("Failed to build the minimalPassword validation rule!")
         }

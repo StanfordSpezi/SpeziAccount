@@ -13,8 +13,8 @@ import SwiftUI
 /// A `EnvironmentKey` that stores an instance of ``DataEntryConfiguration`` used exposed by data entry views.
 public struct DataEntryConfigurationKey: EnvironmentKey {
     public static var defaultValue: DataEntryConfiguration {
-        // TODO log that, something was accessed wrongfully!
-        .init(configuration: .init(name: "MOCK"), validationClosures: .init(), focusedField: .init(), viewState: .constant(.idle))
+        LoggerKey.defaultValue.warning("The @Environment(\\.dataEntryConfiguration) property was accessed outside a data entry view.")
+        return .init(configuration: .init(name: "MOCK"), validationClosures: .init(), focusedField: .init(), viewState: .constant(.idle))
     }
 }
 

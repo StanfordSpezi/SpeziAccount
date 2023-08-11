@@ -11,6 +11,7 @@ import Spezi
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountValueKey`` for a list of bundled `AccountValueKey`s.
+/// TODO docs on how to build?
 public struct AccountDetails: Sendable, AccountValueStorageContainer {
     public typealias Builder = AccountValueStorageBuilder<Self>
 

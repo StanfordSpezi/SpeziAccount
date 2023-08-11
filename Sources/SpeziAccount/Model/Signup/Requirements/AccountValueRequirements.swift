@@ -14,8 +14,8 @@ import OrderedCollections
 //  do the account service specifies which requirements they support and delegate everything else somewhere else!
 
 
-// TODO maybe rename type to `SignupRequriements`
-// TODO maybe consider new name, as these are only what gets displayed!
+// TODO maybe rename type to `SignupRequirements`
+//  maybe consider new name, as these are only what gets displayed!
 public struct AccountValueRequirements {
     public static var `default` = AccountValueRequirements { // TODO might a simple array be nicer?
         \.userId
@@ -53,8 +53,7 @@ public struct AccountValueRequirements {
     public func validateRequirements(in request: SignupDetails) throws {
         for requirement in requirements.values where requirement.type == .required {
             if !requirement.isContained(in: request.storage) {
-                // TODO log the requirement name if its missing!
-                print("Failed to have value in storage \(requirement.description)!")
+                LoggerKey.defaultValue.warning("\(requirement.description) was required to be provided but weren't provided!")
                 throw AccountValueRequirementsError.missingAccountValue(requirement.description)
             }
         }

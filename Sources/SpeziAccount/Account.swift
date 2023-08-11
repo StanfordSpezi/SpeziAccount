@@ -10,11 +10,53 @@ import Spezi
 import SwiftUI
 
 
-/// Account-related Spezi module managing a collection of ``AccountService``s and provide access to ``AccountDetails``
-/// of the currently associated user account.
-/// TODO update docs!
+/// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
-/// The ``Account`` type also enables interaction with the ``AccountService``s from anywhere in the view hierarchy.
+/// The `Account` object is responsible to manage the state of the currently logged in user.
+/// You can simply access the currently ``signedIn`` state of the user (or via the `$signedIn` publisher) or
+/// access the account information from the ``details`` property (or via the `$details` publisher).
+///
+/// - Note: For more information on how to access and use the `Account` object when implementing a custom ``AccountService``
+///     refer to the <doc:Creating-your-own-Account-Service> article.
+///
+/// ### Accessing `Account` in your view
+///
+/// To access the `Account` object from anywhere in your view hierarchy (assuming you have ``AccountConfiguration`` configured),
+/// you may just declare the respective `EnvironmentObject` property wrapper as in the code sample below.
+///
+/// ```swift
+/// struct MyView: View {
+///     @EnvironmentObject var account: Account
+///
+///     var body: some View {
+///         if let details = account.details {
+///             Text("Hello \(details.name.formatted(.name(style: .medium)))")
+///         } else {
+///             Text("Hello World")
+///         }
+///     }
+/// }
+/// ```
+///
+/// ## Topics
+///
+/// ### Retrieving Account state
+/// This section provides an overview on how to retrieve the currently logged in user from your views.
+///
+/// - ``signedIn``
+/// - ``details``
+///
+/// ### Managing Account state
+/// This section provides an overview on how to manage and manipulate the current user account as an ``AccountService``.
+///
+/// - ``supplyUserDetails(_:)``
+/// - ``removeUserDetails()``
+///
+/// ### Initializers for your Preview Provider
+///
+/// - ``init(services:requirements:)``
+/// - ``init(_:requirements:)``
+/// - ``init(building:active:requirements:)``
 @MainActor
 public class Account: ObservableObject, Sendable {
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
@@ -25,7 +67,7 @@ public class Account: ObservableObject, Sendable {
     ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
     ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
     ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
-    @Published public private(set) var signedIn = false
+    @Published public private(set) var signedIn: Bool
 
     /// Provides access to associated data of the currently associated user account.
     ///
@@ -36,46 +78,66 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
-    public let signupRequirements: AccountValueRequirements
+    public let signupRequirements: AccountValueRequirements // TODO document use once finalized!
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     let registeredAccountServices: [any AccountService]
 
-    /// TODO docs
+    /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
-    ///   - services: An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
-    ///   - signupRequirements: TODO docs
-    public nonisolated init(
-        services: [any AccountService] = [],
-        requirements signupRequirements: AccountValueRequirements = .default // TODO make something minimal (for Firebase)
+    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
+    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
+    ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
+    private nonisolated init(
+        services: [any AccountService],
+        signupRequirements: AccountValueRequirements = .default,
+        details: AccountDetails? = nil
     ) {
-        self.registeredAccountServices = services
+        self._signedIn = Published(wrappedValue: details != nil)
+        self._details = Published(wrappedValue: details)
         self.signupRequirements = signupRequirements
+        self.registeredAccountServices = services
 
         for service in registeredAccountServices {
             injectWeakAccount(into: service)
         }
     }
 
-    /// Initializer useful for testing and previewing purposes.
+    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
+    ///
+    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
     /// - Parameters:
-    ///   - builder: // TODO docs!
-    ///   - accountService:
-    ///   - signupRequirements:
-    convenience init<Service: AccountService>(
+    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
+    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
+    public nonisolated convenience init(services: [any AccountService] = [], requirements signupRequirements: AccountValueRequirements = .default) {
+        self.init(services: services, signupRequirements: signupRequirements)
+    }
+
+    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
+    ///
+    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
+    /// - Parameters:
+    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
+    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
+    public nonisolated convenience init(_ services: any AccountService..., requirements signupRequirements: AccountValueRequirements = .default) {
+        self.init(services: services, signupRequirements: signupRequirements)
+    }
+
+    /// Initializes a new `Account` object with a logged in user for usage within a `PreviewProvider`.
+    ///
+    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
+    /// - Parameters:
+    ///   - builder: A ``AccountDetails/Builder`` with all account details for the logged in user.
+    ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
+    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support. TODO will we check for exposed account value requirements of the account service here in the init?
+    public nonisolated convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,
         requirements signupRequirements: AccountValueRequirements = .default
     ) {
-        self.init(services: [accountService], requirements: signupRequirements)
-
-        self.supplyUserDetails(builder.build(owner: accountService))
+        self.init(services: [accountService], signupRequirements: signupRequirements, details: builder.build(owner: accountService))
     }
 
-    /// Initializer useful for testing and previewing purposes.
-    convenience nonisolated init(_ services: any AccountService...) {
-        self.init(services: services)
-    }
 
     nonisolated func injectWeakAccount<V: AccountService>(into value: V) {
         let mirror = Mirror(reflecting: value)
@@ -87,6 +149,12 @@ public class Account: ObservableObject, Sendable {
         }
     }
 
+    /// Supply the ``AccountDetails`` of the currently logged in user.
+    ///
+    /// This method is called by the ``AccountService`` every time the state of the user account changes.
+    /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
+    ///
+    /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
     public func supplyUserDetails(_ details: AccountDetails) {
         if let existingDetails = self.details {
             precondition(
@@ -101,6 +169,10 @@ public class Account: ObservableObject, Sendable {
         }
     }
 
+    /// Removes the currently logged in user.
+    ///
+    /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
+    /// signed in user and notify others that the user logged out (or the account was removed).
     public func removeUserDetails() {
         if signedIn {
             signedIn = false

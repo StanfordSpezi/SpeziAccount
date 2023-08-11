@@ -29,54 +29,65 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: PasswordResetFocusState?
-    @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty) // TODO use signup validation?
+    @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty)
+
 
     public var body: some View {
-        VStack {
-            if requestSubmitted {
-                successViewBuilder()
-            } else {
+        GeometryReader { proxy in
+            ScrollView(.vertical) {
                 VStack {
-                    // TODO maybe center this thing in the scroll view (e.g. iPad view?)
+                    if requestSubmitted {
+                        successViewBuilder()
+                    } else {
+                        resetPasswordForm
 
-                    VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                        .environmentObject(validationEngine)
-                        .textFieldStyle(.roundedBorder)
-                        .disableFieldAssistants()
-                        .textContentType(userIdConfiguration.textContentType)
-                        .keyboardType(userIdConfiguration.keyboardType)
-                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
-                        .font(.title3)
-
-
-                    AsyncButton(state: $state, action: submitRequestAction) {
-                        Text("Reset Password")
-                            .padding(8)
-                            .frame(maxWidth: .infinity)
+                        Spacer()
                     }
-                        .buttonStyle(.borderedProminent)
-                        .padding(.top, 20)
-                        .padding()
                 }
-                    .padding()
-                    .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
-                Spacer()
+                    .navigationTitle("UP_RESET_PASSWORD".localized(.module).localizedString())
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                    .disableDismissiveActions(isProcessing: state)
+                    .viewStateAlert(state: $state)
+                    .onTapGesture {
+                        focusedField = nil
+                    }
             }
         }
-            .navigationTitle("UP_RESET_PASSWORD".localized(.module).localizedString())
-            .disableDismissiveActions(isProcessing: state)
-            .viewStateAlert(state: $state)
-            .embedIntoScrollViewScaledToFit()
-            .onTapGesture {
-                focusedField = nil
-            }
     }
+
+    @ViewBuilder private var resetPasswordForm: some View {
+        VStack {
+            // TODO maybe center this thing in the scroll view (e.g. iPad view?)
+
+            VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
+                .environmentObject(validationEngine)
+                .textFieldStyle(.roundedBorder)
+                .disableFieldAssistants()
+                .textContentType(userIdConfiguration.textContentType)
+                .keyboardType(userIdConfiguration.keyboardType)
+                .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
+                .font(.title3)
+
+
+            AsyncButton(state: $state, action: submitRequestAction) {
+                Text("Reset Password")
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+            }
+                .buttonStyle(.borderedProminent)
+                .padding(.top, 20)
+                .padding()
+        }
+            .padding()
+            .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+    }
+
 
     public init(using service: Service, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
         self.service = service
         self.successViewBuilder = successViewBuilder
     }
+
 
     private func submitRequestAction() async throws {
         validationEngine.runValidation(input: userId)
@@ -98,9 +109,12 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
     }
 }
 
+
 #if DEBUG
 struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
     static let accountService = MockUsernamePasswordAccountService()
+
+
     static var previews: some View {
         NavigationStack {
             UserIdPasswordResetView(using: accountService) {

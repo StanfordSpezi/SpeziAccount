@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
 
 ### Retrieving configuration
 
-Below is a list of configuration options built into the `SpeziAccount` framework.
+Below is a list of configuration options built into the ``SpeziAccount`` framework.
 
 - ``name``
 - ``image``

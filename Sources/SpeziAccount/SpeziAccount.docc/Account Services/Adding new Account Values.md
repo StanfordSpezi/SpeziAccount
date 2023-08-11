@@ -46,7 +46,7 @@ public struct BiographyKey: AccountValueKey {
 
 ### Accessors
 
-In order for our new ``AccountValueKey`` implementation to work seamlessly with the `SpeziAccount` infrastructure,
+In order for our new ``AccountValueKey`` implementation to work seamlessly with the ``SpeziAccount`` infrastructure,
 we have to declare several extensions, so we can easily access the ``AccountValueKey`` meta-type or the value stored for a given user. 
 
 First, an extension to the ``AccountValueKeys`` type, to use the shorthand notation to refer to the ``AccountValueKey`` type.

@@ -23,6 +23,9 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         service.configuration.userIdConfiguration
     }
 
+    @EnvironmentObject private var account: Account
+    @Environment(\.logger) private var logger
+
     @State private var userId: String = ""
     @State private var password: String = ""
 
@@ -81,6 +84,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                     .frame(maxWidth: .infinity)
             }
                 .buttonStyle(.borderedProminent)
+                .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 .padding(.bottom, 12)
                 .padding(.top)
 
@@ -98,8 +102,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
-            // TODO inject somwhere else?
-            .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             .onTapGesture {
                 focusedField = nil
             }
@@ -127,8 +129,9 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
         try await service.login(userId: userId, password: password)
 
-        // TODO we could emit a debug warning if there was a login request but the
-        //  user isn't logged in afterwards?
+        if !account.signedIn {
+            logger.error("Didn't find any AccountDetails provided after the login call to \(Service.self). Please verify your AccountService implementation!")
+        }
     }
 }
 

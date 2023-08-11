@@ -13,8 +13,7 @@ struct InputValidationModifier<Key: AccountValueKey>: ViewModifier {
     private let inputValue: String
     private let fieldIdentifierOverride: String?
 
-    @Environment(\.dataEntryConfiguration)
-    private var dataEntryConfiguration
+    @Environment(\.dataEntryConfiguration) private var dataEntryConfiguration
 
     @StateObject private var validation: ValidationEngine
 
@@ -25,11 +24,16 @@ struct InputValidationModifier<Key: AccountValueKey>: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content
+        buildBody(content: content)
+    }
+
+    func buildBody(content: Content) -> some View {
+        // we don't retrieve a binding for the `inputValue`. Therefore we refresh the supplied closure everytime
+        // the body gets rebuilt. This also frees the previous view object.
+        dataEntryConfiguration.validationClosures.register(Key.self, validation: onDataSubmission)
+
+        return content
             .environmentObject(validation)
-            .onAppear {
-                dataEntryConfiguration.validationClosures.register(Key.self, validation: onDataSubmission)
-            }
     }
 
     func onDataSubmission() -> DataValidationResult {

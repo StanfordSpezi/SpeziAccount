@@ -45,7 +45,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
                     SecureField(text: $text, label: { label })
                 }
             }
-                .onSubmit(runValidation) // TODO trigger onSubmit with focus change!
+                .onSubmit(runValidation)
 
             HStack {
                 VStack(alignment: .leading) {

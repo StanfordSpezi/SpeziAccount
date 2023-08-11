@@ -12,6 +12,7 @@ import SwiftUI
 public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
+
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
@@ -38,14 +39,18 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
         // TODO navigation title?
     }
 
+
     init(using service: Service) {
         self.service = service
     }
 }
 
+
 #if DEBUG
 struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static let accountService = MockUsernamePasswordAccountService()
+
+
     static var previews: some View {
         NavigationStack {
             UserIdPasswordPrimaryView(using: accountService)

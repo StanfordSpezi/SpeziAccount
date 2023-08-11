@@ -7,11 +7,12 @@
 //
 
 import AuthenticationServices
+import os
 import SpeziViews
 import SwiftUI
 
 
-public enum Constants { // TODO rename!
+enum Constants { // TODO rename and move!
     static let outerHorizontalPadding: CGFloat = 16
     static let innerHorizontalPadding: CGFloat = 16
     static let maxFrameWidth: CGFloat = 450
@@ -20,8 +21,7 @@ public enum Constants { // TODO rename!
 
 /// A view which provides the default title and subtitle text.
 public struct AccountSetupDefaultHeader: View { // TODO move
-    @EnvironmentObject
-    private var account: Account
+    @EnvironmentObject private var account: Account
 
     public var body: some View {
         // TODO provide customizable with AccountViewStyle!
@@ -48,15 +48,17 @@ public struct AccountSetupDefaultHeader: View { // TODO move
 // TODO review accessibility!
 
 
-/// The central `SpeziAccount` view to login into or signup for a user account.
+/// The central ``SpeziAccount`` view to login into or signup for a user account.
+///
+/// - Note: This view assumes to have a ``Account`` object in its environment. An ``Account`` object is
+///     automatically injected into your view hierarchy by using the ``AccountConfiguration``.
 ///
 /// TODO docs: drop ``AccountService`` and ``IdentityProvider`` and other stuff
 public struct AccountSetup<Header: View>: View { // TODO docs!
     private let header: Header
 
     @EnvironmentObject var account: Account
-    @Environment(\.colorScheme)
-    var colorScheme
+    @Environment(\.colorScheme) var colorScheme
 
     private var services: [any AccountService] {
         account.registeredAccountServices
@@ -117,8 +119,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
         }
     }
 
-    @ViewBuilder
-    private var accountSetupView: some View {
+    @ViewBuilder private var accountSetupView: some View {
         if services.isEmpty && identityProviders.isEmpty {
             emptyServicesView
         } else {
@@ -137,8 +138,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
         }
     }
 
-    @ViewBuilder
-    private var emptyServicesView: some View {
+    @ViewBuilder private var emptyServicesView: some View {
         Text("MISSING_ACCOUNT_SERVICES".localized(.module))
             .multilineTextAlignment(.center)
             .foregroundColor(.secondary)
@@ -151,8 +151,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
             .padding()
     }
 
-    @ViewBuilder
-    private var accountServicesSection: some View {
+    @ViewBuilder private var accountServicesSection: some View {
         if let embeddableService = embeddableAccountService {
             let embeddableViewStyle = embeddableService.viewStyle
             AnyView(embeddableViewStyle.makeEmbeddedAccountView())
@@ -170,8 +169,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
     }
 
     // The "or" divider between primary account services and the third-party identity providers
-    @ViewBuilder
-    private var servicesDivider: some View {
+    @ViewBuilder private var servicesDivider: some View {
         HStack {
             VStack {
                 Divider()
@@ -189,8 +187,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
     }
 
     /// Buttons provided by the identity providers
-    @ViewBuilder
-    private var identityProviderSection: some View {
+    @ViewBuilder private var identityProviderSection: some View {
         VStack {
             ForEach(identityProviders.indices, id: \.self) { index in
                 SignInWithAppleButton { request in
@@ -205,7 +202,6 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
     }
 
 
-    // TODO docs
     public init(@ViewBuilder _ header: () -> Header = { AccountSetupDefaultHeader() }) {
         self.header = header()
     }
