@@ -6,16 +6,17 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SwiftUI
 
 
 struct DateOfBirthPicker: View {
     @Binding private var date: Date
     @EnvironmentObject private var localizationEnvironmentObject: UsernamePasswordAccountService
-    private let localization: ConfigurableLocalization<String>
+    private let localization: ConfigurableLocalization<LocalizedStringResource>
     
     
-    private var dateOfBirthTitle: String {
+    private var dateOfBirthTitle: LocalizedStringResource {
         switch localization {
         case .environment:
             return localizationEnvironmentObject.localization.signUp.dateOfBirthTitle
@@ -50,7 +51,7 @@ struct DateOfBirthPicker: View {
     }
     
     
-    init(date: Binding<Date>, title: String) {
+    init(date: Binding<Date>, title: LocalizedStringResource) {
         self._date = date
         self.localization = .value(title)
     }

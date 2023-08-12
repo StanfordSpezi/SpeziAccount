@@ -31,13 +31,13 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
     }
     
     override open var localization: Localization {
-        let usernameField = FieldLocalization(
-            title: String(moduleLocalized: "EAP_LOGIN_USERNAME_TITLE"),
-            placeholder: String(moduleLocalized: "EAP_LOGIN_USERNAME_PLACEHOLDER")
+        let usernameField = FieldLocalizationResource(
+            title: LocalizedStringResource("EAP_LOGIN_USERNAME_TITLE", bundle: .atURL(from: .module)),
+            placeholder: LocalizedStringResource("EAP_LOGIN_USERNAME_PLACEHOLDER", bundle: .atURL(from: .module))
         )
         return Localization(
-            login: .init(buttonTitle: String(moduleLocalized: "EAP_LOGIN_BUTTON_TITLE"), username: usernameField),
-            signUp: .init(buttonTitle: String(moduleLocalized: "EAP_SIGNUP_BUTTON_TITLE"), username: usernameField),
+            login: .init(buttonTitle: LocalizedStringResource("EAP_LOGIN_BUTTON_TITLE", bundle: .atURL(from: .module)), username: usernameField),
+            signUp: .init(buttonTitle: LocalizedStringResource("EAP_SIGNUP_BUTTON_TITLE", bundle: .atURL(from: .module)), username: usernameField),
             resetPassword: .init(username: usernameField)
         )
     }
@@ -76,7 +76,7 @@ open class EmailPasswordAccountService: UsernamePasswordAccountService {
     }
     
     
-    override open func button<V: View>(_ title: String, destination: V) -> AnyView {
+    override open func button<V: View>(_ title: LocalizedStringResource, destination: V) -> AnyView {
         AnyView(
             NavigationLink {
                 destination

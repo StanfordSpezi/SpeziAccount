@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SpeziViews
 
 
@@ -19,7 +20,7 @@ extension Localization {
     /// ```swift
     /// ResetPassword(
     ///     navigationTitle: "CUSTOM_NAVIGATION_TITLE",
-    ///     username: FieldLocalization(
+    ///     username: FieldLocalizationResource(
     ///        title: "CUSTOM_USERNAME",
     ///        placeholder: "CUSTOM_USERNAME_PLACEHOLDER"
     ///     )
@@ -28,55 +29,55 @@ extension Localization {
     public struct ResetPassword: Codable {
         /// A default configuration for providing localized text to reset password views
         public static let `default` = ResetPassword(
-            buttonTitle: String(moduleLocalized: "UAP_RESET_PASSWORD_BUTTON_TITLE"),
-            navigationTitle: String(moduleLocalized: "UAP_RESET_PASSWORD_NAVIGATION_TITLE"),
-            username: FieldLocalization(
-                title: String(moduleLocalized: "UAP_RESET_PASSWORD_USERNAME_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER")
+            buttonTitle: LocalizedStringResource("UAP_RESET_PASSWORD_BUTTON_TITLE", bundle: .atURL(from: .module)),
+            navigationTitle: LocalizedStringResource("UAP_RESET_PASSWORD_NAVIGATION_TITLE", bundle: .atURL(from: .module)),
+            username: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_RESET_PASSWORD_USERNAME_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            resetPasswordActionButtonTitle: String(moduleLocalized: "UAP_RESET_PASSWORD_ACTION_BUTTON_TITLE"),
-            processSuccessfulLabel: String(moduleLocalized: "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL"),
-            defaultResetPasswordFailedError: String(moduleLocalized: "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR")
+            resetPasswordActionButtonTitle: LocalizedStringResource("UAP_RESET_PASSWORD_ACTION_BUTTON_TITLE", bundle: .atURL(from: .module)),
+            processSuccessfulLabel: LocalizedStringResource("UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL", bundle: .atURL(from: .module)),
+            defaultResetPasswordFailedError: LocalizedStringResource("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module))
         )
         
         
-        /// A localized `String` to display on the reset password button.
-        public let buttonTitle: String
-        /// A localized `String` for the reset password view's navigation title.
-        public let navigationTitle: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        public let username: FieldLocalization
-        /// A localized `String` to display on the reset password action button.
-        public let resetPasswordActionButtonTitle: String
-        /// A localized `String` to display when the reset password process has been successful.
-        public let processSuccessfulLabel: String
-        /// A localized `String` to display when the reset password process has failed.
-        public let defaultResetPasswordFailedError: String
+        /// A localized `LocalizedStringResource` to display on the reset password button.
+        public let buttonTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` for the reset password view's navigation title.
+        public let navigationTitle: LocalizedStringResource
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        public let username: FieldLocalizationResource
+        /// A localized `LocalizedStringResource` to display on the reset password action button.
+        public let resetPasswordActionButtonTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` to display when the reset password process has been successful.
+        public let processSuccessfulLabel: LocalizedStringResource
+        /// A localized `LocalizedStringResource` to display when the reset password process has failed.
+        public let defaultResetPasswordFailedError: LocalizedStringResource
         
         
         /// Creates a localization configuration for reset password views.
         ///
         /// - Parameters:
-        ///   - buttonTitle: A localized `String` title for the reset password button.
-        ///   - navigationTitle: A localized `String` for the reset password view's navigation title.
-        ///   - username: A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        ///   - resetPasswordActionbuttonTitle: A localized `String` to display on the reset password action button.
-        ///   - processSuccessfulLabel: A localized `String` to display when the reset password process has been successful.
-        ///   - defaultResetPasswordFailedError: A localized `String` to display when the reset password process has failed.
+        ///   - buttonTitle: A localized `LocalizedStringResource` title for the reset password button.
+        ///   - navigationTitle: A localized `LocalizedStringResource` for the reset password view's navigation title.
+        ///   - username: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        ///   - resetPasswordActionbuttonTitle: A localized `LocalizedStringResource` to display on the reset password action button.
+        ///   - processSuccessfulLabel: A localized `LocalizedStringResource` to display when the reset password process has been successful.
+        ///   - defaultResetPasswordFailedError: A localized `LocalizedStringResource` to display when the reset password process has failed.
         public init(
-            buttonTitle: String = ResetPassword.default.buttonTitle,
-            navigationTitle: String = ResetPassword.default.navigationTitle,
-            username: FieldLocalization = ResetPassword.default.username,
-            resetPasswordActionButtonTitle: String = ResetPassword.default.resetPasswordActionButtonTitle,
-            processSuccessfulLabel: String = ResetPassword.default.processSuccessfulLabel,
-            defaultResetPasswordFailedError: String = ResetPassword.default.defaultResetPasswordFailedError
+            buttonTitle: LocalizedStringResource = ResetPassword.default.buttonTitle,
+            navigationTitle: LocalizedStringResource = ResetPassword.default.navigationTitle,
+            username: FieldLocalizationResource = ResetPassword.default.username,
+            resetPasswordActionButtonTitle: LocalizedStringResource = ResetPassword.default.resetPasswordActionButtonTitle,
+            processSuccessfulLabel: LocalizedStringResource = ResetPassword.default.processSuccessfulLabel,
+            defaultResetPasswordFailedError: LocalizedStringResource = ResetPassword.default.defaultResetPasswordFailedError
         ) {
-            self.buttonTitle = buttonTitle.localized
-            self.navigationTitle = navigationTitle.localized
+            self.buttonTitle = buttonTitle
+            self.navigationTitle = navigationTitle
             self.username = username
-            self.resetPasswordActionButtonTitle = resetPasswordActionButtonTitle.localized
-            self.processSuccessfulLabel = processSuccessfulLabel.localized
-            self.defaultResetPasswordFailedError = defaultResetPasswordFailedError.localized
+            self.resetPasswordActionButtonTitle = resetPasswordActionButtonTitle
+            self.processSuccessfulLabel = processSuccessfulLabel
+            self.defaultResetPasswordFailedError = defaultResetPasswordFailedError
         }
     }
 }

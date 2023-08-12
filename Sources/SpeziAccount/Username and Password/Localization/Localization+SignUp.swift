@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SpeziViews
 
 
@@ -19,7 +20,7 @@ extension Localization {
     /// ```swift
     /// SignUp(
     ///     navigationTitle: "CUSTOM_NAVIGATION_TITLE",
-    ///     username: FieldLocalization(
+    ///     username: FieldLocalizationResource(
     ///        title: "CUSTOM_USERNAME",
     ///        placeholder: "CUSTOM_USERNAME_PLACEHOLDER"
     ///     )
@@ -28,103 +29,103 @@ extension Localization {
     public struct SignUp: Codable {
         /// A default configuration for providing localized text to sign up views.
         public static let `default` = SignUp(
-            buttonTitle: String(moduleLocalized: "UAP_SIGNUP_BUTTION_TITLE"),
-            navigationTitle: String(moduleLocalized: "UAP_SIGNUP_NAVIGATION_TITLE"),
-            username: FieldLocalization(
-                title: String(moduleLocalized: "UAP_SIGNUP_USERNAME_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_SIGNUP_USERNAME_PLACEHOLDER")
+            buttonTitle: LocalizedStringResource("UAP_SIGNUP_BUTTION_TITLE", bundle: .atURL(from: .module)),
+            navigationTitle: LocalizedStringResource("UAP_SIGNUP_NAVIGATION_TITLE", bundle: .atURL(from: .module)),
+            username: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_SIGNUP_USERNAME_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_SIGNUP_USERNAME_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            password: FieldLocalization(
-                title: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_PLACEHOLDER")
+            password: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_SIGNUP_PASSWORD_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_SIGNUP_PASSWORD_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            passwordRepeat: FieldLocalization(
-                title: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_REPEAT_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER")
+            passwordRepeat: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_SIGNUP_PASSWORD_REPEAT_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            passwordNotEqualError: String(moduleLocalized: "UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR"),
-            givenName: FieldLocalization(
-                title: String(moduleLocalized: "UAP_SIGNUP_GIVEN_NAME_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER")
+            passwordNotEqualError: LocalizedStringResource("UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR", bundle: .atURL(from: .module)),
+            givenName: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_SIGNUP_GIVEN_NAME_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            familyName: FieldLocalization(
-                title: String(moduleLocalized: "UAP_SIGNUP_FAMILY_NAME_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER")
+            familyName: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_SIGNUP_FAMILY_NAME_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            genderIdentityTitle: String(moduleLocalized: "UAP_SIGNUP_GENDER_IDENTITY_TITLE"),
-            dateOfBirthTitle: String(moduleLocalized: "UAP_SIGNUP_DATE_OF_BIRTH_TITLE"),
-            signUpActionButtonTitle: String(moduleLocalized: "UAP_SIGNUP_ACTION_BUTTON_TITLE"),
-            defaultSignUpFailedError: String(moduleLocalized: "UAP_SIGNUP_FAILED_DEFAULT_ERROR")
+            genderIdentityTitle: LocalizedStringResource("UAP_SIGNUP_GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module)),
+            dateOfBirthTitle: LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module)),
+            signUpActionButtonTitle: LocalizedStringResource("UAP_SIGNUP_ACTION_BUTTON_TITLE", bundle: .atURL(from: .module)),
+            defaultSignUpFailedError: LocalizedStringResource("UAP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module))
         )
         
         
-        /// A localized `String` to display on the sign up button.
-        public let buttonTitle: String
-        /// A localized `String` for sign up view's localized navigation title.
-        public let navigationTitle: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        public let username: FieldLocalization
-        /// A  `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        public let password: FieldLocalization
-        /// A  `FieldLocalization` instance containing the localized title and placeholder text for the password repeat field.
-        public let passwordRepeat: FieldLocalization
-        /// A localized`String` error message to be displayed when the text in the password and password repeat fields are not equal.
-        public let passwordNotEqualError: String
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the given name (first name) field.
-        public let givenName: FieldLocalization
-        /// A `FieldLocalization` instance containing the localized title and placeholder text for the family name (last name) field.
-        public let familyName: FieldLocalization
-        /// A localized `String` label for the gender identity field.
-        public let genderIdentityTitle: String
-        /// A localized `String` label for the date of birth field.
-        public let dateOfBirthTitle: String
-        /// A localized `String` title for the sign up action button.
-        public let signUpActionButtonTitle: String
-        /// A localized `String` message to display when sign up fails.
-        public let defaultSignUpFailedError: String
+        /// A localized `LocalizedStringResource` to display on the sign up button.
+        public let buttonTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` for sign up view's localized navigation title.
+        public let navigationTitle: LocalizedStringResource
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        public let username: FieldLocalizationResource
+        /// A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password field.
+        public let password: FieldLocalizationResource
+        /// A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password repeat field.
+        public let passwordRepeat: FieldLocalizationResource
+        /// A localized`LocalizedStringResource` error message to be displayed when the text in the password and password repeat fields are not equal.
+        public let passwordNotEqualError: LocalizedStringResource
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the given name (first name) field.
+        public let givenName: FieldLocalizationResource
+        /// A `FieldLocalizationResource` instance containing the localized title and placeholder text for the family name (last name) field.
+        public let familyName: FieldLocalizationResource
+        /// A localized `LocalizedStringResource` label for the gender identity field.
+        public let genderIdentityTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` label for the date of birth field.
+        public let dateOfBirthTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` title for the sign up action button.
+        public let signUpActionButtonTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` message to display when sign up fails.
+        public let defaultSignUpFailedError: LocalizedStringResource
         
         
         /// Creates a localization configuration for signup views.
         ///
         /// - Parameters:
-        ///   - buttonTitle: A localized `String` to display on the sign up button.
-        ///   - navigationTitle: A localized `String` for sign up view's localized navigation title.
-        ///   - username: A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        ///   - password: A  `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        ///   - passwordRepeat: A  `FieldLocalization` instance containing the localized title and placeholder text for the password repeat field.
-        ///   - passwordNotEqualError: A localized`String` error message to be displayed when the text in the password and password repeat fields are not equal.
-        ///   - givenName: A `FieldLocalization` instance containing the localized title and placeholder text for the given name (first name) field.
-        ///   - familyName: A `FieldLocalization` instance containing the localized title and placeholder text for the family name (last name) field.
-        ///   - genderIdentityTitle: A localized `String` label for the gender identity field.
-        ///   - dateOfBirthTitle: A localized `String` label for the date of birth field.
-        ///   - signUpActionButtonTitle: A localized `String` title for the sign up action button.
-        ///   - defaultSignUpFailedError: A localized `String` message to display when sign up fails.
+        ///   - buttonTitle: A localized `LocalizedStringResource` to display on the sign up button.
+        ///   - navigationTitle: A localized `LocalizedStringResource` for sign up view's localized navigation title.
+        ///   - username: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the username field.
+        ///   - password: A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password field.
+        ///   - passwordRepeat: A  `FieldLocalizationResource` instance containing the localized title and placeholder text for the password repeat field.
+        ///   - passwordNotEqualError: A localized`LocalizedStringResource` error message to be displayed when the text in the password and password repeat fields are not equal.
+        ///   - givenName: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the given name (first name) field.
+        ///   - familyName: A `FieldLocalizationResource` instance containing the localized title and placeholder text for the family name (last name) field.
+        ///   - genderIdentityTitle: A localized `LocalizedStringResource` label for the gender identity field.
+        ///   - dateOfBirthTitle: A localized `LocalizedStringResource` label for the date of birth field.
+        ///   - signUpActionButtonTitle: A localized `LocalizedStringResource` title for the sign up action button.
+        ///   - defaultSignUpFailedError: A localized `LocalizedStringResource` message to display when sign up fails.
         public init(
-            buttonTitle: String = SignUp.default.buttonTitle,
-            navigationTitle: String = SignUp.default.navigationTitle,
-            username: FieldLocalization = SignUp.default.username,
-            password: FieldLocalization = SignUp.default.password,
-            passwordRepeat: FieldLocalization = SignUp.default.passwordRepeat,
-            passwordNotEqualError: String = SignUp.default.passwordNotEqualError,
-            givenName: FieldLocalization = SignUp.default.givenName,
-            familyName: FieldLocalization = SignUp.default.familyName,
-            genderIdentityTitle: String = SignUp.default.genderIdentityTitle,
-            dateOfBirthTitle: String = SignUp.default.dateOfBirthTitle,
-            signUpActionButtonTitle: String = SignUp.default.signUpActionButtonTitle,
-            defaultSignUpFailedError: String = SignUp.default.defaultSignUpFailedError
+            buttonTitle: LocalizedStringResource = SignUp.default.buttonTitle,
+            navigationTitle: LocalizedStringResource = SignUp.default.navigationTitle,
+            username: FieldLocalizationResource = SignUp.default.username,
+            password: FieldLocalizationResource = SignUp.default.password,
+            passwordRepeat: FieldLocalizationResource = SignUp.default.passwordRepeat,
+            passwordNotEqualError: LocalizedStringResource = SignUp.default.passwordNotEqualError,
+            givenName: FieldLocalizationResource = SignUp.default.givenName,
+            familyName: FieldLocalizationResource = SignUp.default.familyName,
+            genderIdentityTitle: LocalizedStringResource = SignUp.default.genderIdentityTitle,
+            dateOfBirthTitle: LocalizedStringResource = SignUp.default.dateOfBirthTitle,
+            signUpActionButtonTitle: LocalizedStringResource = SignUp.default.signUpActionButtonTitle,
+            defaultSignUpFailedError: LocalizedStringResource = SignUp.default.defaultSignUpFailedError
         ) {
-            self.buttonTitle = buttonTitle.localized
-            self.navigationTitle = navigationTitle.localized
+            self.buttonTitle = buttonTitle
+            self.navigationTitle = navigationTitle
             self.username = username
             self.password = password
             self.passwordRepeat = passwordRepeat
-            self.passwordNotEqualError = passwordNotEqualError.localized
+            self.passwordNotEqualError = passwordNotEqualError
             self.givenName = givenName
             self.familyName = familyName
-            self.genderIdentityTitle = genderIdentityTitle.localized
-            self.dateOfBirthTitle = dateOfBirthTitle.localized
-            self.signUpActionButtonTitle = signUpActionButtonTitle.localized
-            self.defaultSignUpFailedError = defaultSignUpFailedError.localized
+            self.genderIdentityTitle = genderIdentityTitle
+            self.dateOfBirthTitle = dateOfBirthTitle
+            self.signUpActionButtonTitle = signUpActionButtonTitle
+            self.defaultSignUpFailedError = defaultSignUpFailedError
         }
     }
 }

@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import SpeziViews
 
 
@@ -28,58 +29,58 @@ extension Localization {
     public struct Login: Codable {
         /// A default configuration for providing localized text to login views.
         public static let `default` = Login(
-            buttonTitle: String(moduleLocalized: "UAP_LOGIN_BUTTON_TITLE"),
-            navigationTitle: String(moduleLocalized: "UAP_LOGIN_NAVIGATION_TITLE"),
-            username: FieldLocalization(
-                title: String(moduleLocalized: "UAP_LOGIN_USERNAME_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_LOGIN_USERNAME_PLACEHOLDER")
+            buttonTitle: LocalizedStringResource("UAP_LOGIN_BUTTON_TITLE", bundle: .atURL(from: .module)),
+            navigationTitle: LocalizedStringResource("UAP_LOGIN_NAVIGATION_TITLE", bundle: .atURL(from: .module)),
+            username: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_LOGIN_USERNAME_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_LOGIN_USERNAME_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            password: FieldLocalization(
-                title: String(moduleLocalized: "UAP_LOGIN_PASSWORD_TITLE"),
-                placeholder: String(moduleLocalized: "UAP_LOGIN_PASSWORD_PLACEHOLDER")
+            password: FieldLocalizationResource(
+                title: LocalizedStringResource("UAP_LOGIN_PASSWORD_TITLE", bundle: .atURL(from: .module)),
+                placeholder: LocalizedStringResource("UAP_LOGIN_PASSWORD_PLACEHOLDER", bundle: .atURL(from: .module))
             ),
-            loginActionButtonTitle: String(moduleLocalized: "UAP_LOGIN_ACTION_BUTTON_TITLE"),
-            defaultLoginFailedError: String(moduleLocalized: "UAP_LOGIN_FAILED_DEFAULT_ERROR")
+            loginActionButtonTitle: LocalizedStringResource("UAP_LOGIN_ACTION_BUTTON_TITLE", bundle: .atURL(from: .module)),
+            defaultLoginFailedError: LocalizedStringResource("UAP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module))
         )
         
         
-        /// A localized `String` to display on the login button.
-        public let buttonTitle: String
-        /// A localized `String` for login view's navigation title.
-        public let navigationTitle: String
+        /// A localized `LocalizedStringResource` to display on the login button.
+        public let buttonTitle: LocalizedStringResource
+        /// A localized `LocalizedStringResource` for login view's navigation title.
+        public let navigationTitle: LocalizedStringResource
         /// A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
-        public let username: FieldLocalization
+        public let username: FieldLocalizationResource
         /// A  `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        public let password: FieldLocalization
-        /// A localized `String` to display on the login action button.
-        public let loginActionButtonTitle: String
-        /// A localized`String` error message to be displayed when login fails.
-        public let defaultLoginFailedError: String
+        public let password: FieldLocalizationResource
+        /// A localized `LocalizedStringResource` to display on the login action button.
+        public let loginActionButtonTitle: LocalizedStringResource
+        /// A localized`LocalizedStringResource` error message to be displayed when login fails.
+        public let defaultLoginFailedError: LocalizedStringResource
         
         
         /// Creates a localization configuration for login views.
         ///
         /// - Parameters:
-        ///   - buttonTitle: A localized `String` to display on the login button.
-        ///   - navigationTitle: A localized `String` for the login view's navigation title.
+        ///   - buttonTitle: A localized `LocalizedStringResource` to display on the login button.
+        ///   - navigationTitle: A localized `LocalizedStringResource` for the login view's navigation title.
         ///   - username: A `FieldLocalization` instance containing the localized title and placeholder text for the username field.
         ///   - password: A `FieldLocalization` instance containing the localized title and placeholder text for the password field.
-        ///   - loginActionButtonTitle: A localized `String` to display on the login action button.
-        ///   - defaultLoginFailedError: A localized `String` error message to be displayed when login fails.
+        ///   - loginActionButtonTitle: A localized `LocalizedStringResource` to display on the login action button.
+        ///   - defaultLoginFailedError: A localized `LocalizedStringResource` error message to be displayed when login fails.
         public init(
-            buttonTitle: String = Login.default.buttonTitle,
-            navigationTitle: String = Login.default.navigationTitle,
-            username: FieldLocalization = Login.default.username,
-            password: FieldLocalization = Login.default.password,
-            loginActionButtonTitle: String = Login.default.loginActionButtonTitle,
-            defaultLoginFailedError: String = Login.default.defaultLoginFailedError
+            buttonTitle: LocalizedStringResource = Login.default.buttonTitle,
+            navigationTitle: LocalizedStringResource = Login.default.navigationTitle,
+            username: FieldLocalizationResource = Login.default.username,
+            password: FieldLocalizationResource = Login.default.password,
+            loginActionButtonTitle: LocalizedStringResource = Login.default.loginActionButtonTitle,
+            defaultLoginFailedError: LocalizedStringResource = Login.default.defaultLoginFailedError
         ) {
-            self.buttonTitle = buttonTitle.localized
-            self.navigationTitle = navigationTitle.localized
+            self.buttonTitle = buttonTitle
+            self.navigationTitle = navigationTitle
             self.username = username
             self.password = password
-            self.loginActionButtonTitle = loginActionButtonTitle.localized
-            self.defaultLoginFailedError = defaultLoginFailedError.localized
+            self.loginActionButtonTitle = loginActionButtonTitle
+            self.defaultLoginFailedError = defaultLoginFailedError
         }
     }
 }

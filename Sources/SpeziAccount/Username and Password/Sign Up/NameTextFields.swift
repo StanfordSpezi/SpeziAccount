@@ -15,12 +15,12 @@ struct NameTextFields: View {
     @FocusState private var focusedField: AccountInputFields?
     @EnvironmentObject var localizationEnvironmentObject: UsernamePasswordAccountService
     private let localization: ConfigurableLocalization<(
-        givenName: FieldLocalization,
-        familyName: FieldLocalization
+        givenName: FieldLocalizationResource,
+        familyName: FieldLocalizationResource
     )>
     
     
-    private var givenName: FieldLocalization {
+    private var givenName: FieldLocalizationResource {
         switch localization {
         case .environment:
             return localizationEnvironmentObject.localization.signUp.givenName
@@ -29,7 +29,7 @@ struct NameTextFields: View {
         }
     }
     
-    private var familyName: FieldLocalization {
+    private var familyName: FieldLocalizationResource {
         switch localization {
         case .environment:
             return localizationEnvironmentObject.localization.signUp.familyName
@@ -53,8 +53,8 @@ struct NameTextFields: View {
     
     init(
         name: Binding<PersonNameComponents>,
-        givenName: FieldLocalization,
-        familyName: FieldLocalization,
+        givenName: FieldLocalizationResource,
+        familyName: FieldLocalizationResource,
         focusState: FocusState<AccountInputFields?> = FocusState<AccountInputFields?>()
     ) {
         self._name = name

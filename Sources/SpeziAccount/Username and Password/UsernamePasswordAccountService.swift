@@ -112,7 +112,7 @@ open class UsernamePasswordAccountService: @unchecked Sendable, AccountService, 
     ///   - title: The title of the button.
     ///   - destination: The destination of the button.
     /// - Returns: Returns the styled button in accordance to the ``UsernamePasswordAccountService`` or its subclasses.
-    open func button<V: View>(_ title: String, destination: V) -> AnyView {
+    open func button<V: View>(_ title: LocalizedStringResource, destination: V) -> AnyView {
         AnyView(
             NavigationLink {
                 destination

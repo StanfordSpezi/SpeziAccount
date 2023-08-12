@@ -81,11 +81,11 @@ public struct UsernamePasswordResetPasswordView: View {
                 )
             }
         }
-            .navigationTitle(navigationTitle)
+            .navigationTitle(navigationTitle.localizedString())
     }
     
     private var usernameTextField: some View {
-        let usernameLocalization: FieldLocalization
+        let usernameLocalization: FieldLocalizationResource
         switch localization {
         case .environment:
             usernameLocalization = usernamePasswordAccountService.localization.resetPassword.username
@@ -117,7 +117,7 @@ public struct UsernamePasswordResetPasswordView: View {
             .padding(.vertical, 12)
     }
     
-    private var resetPasswordButtonTitleLocalization: String {
+    private var resetPasswordButtonTitleLocalization: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.resetPassword.resetPasswordActionButtonTitle
@@ -126,7 +126,7 @@ public struct UsernamePasswordResetPasswordView: View {
         }
     }
     
-    private var navigationTitle: String {
+    private var navigationTitle: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.resetPassword.navigationTitle
@@ -135,7 +135,7 @@ public struct UsernamePasswordResetPasswordView: View {
         }
     }
     
-    private var defaultResetPasswordFailedError: String {
+    private var defaultResetPasswordFailedError: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.resetPassword.defaultResetPasswordFailedError
