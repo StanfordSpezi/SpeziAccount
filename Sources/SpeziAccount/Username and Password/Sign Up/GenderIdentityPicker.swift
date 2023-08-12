@@ -12,10 +12,10 @@ import SwiftUI
 struct GenderIdentityPicker: View {
     @Binding private var genderIdentity: GenderIdentity
     @EnvironmentObject private var localizationEnvironmentObject: UsernamePasswordAccountService
-    private let localization: ConfigurableLocalization<String>
+    private let localization: ConfigurableLocalization<LocalizedStringResource>
     
     
-    private var genderIdentityTitle: String {
+    private var genderIdentityTitle: LocalizedStringResource {
         switch localization {
         case .environment:
             return localizationEnvironmentObject.localization.signUp.genderIdentityTitle
@@ -40,7 +40,7 @@ struct GenderIdentityPicker: View {
     }
     
     
-    init(genderIdentity: Binding<GenderIdentity>, title: String) {
+    init(genderIdentity: Binding<GenderIdentity>, title: LocalizedStringResource) {
         self._genderIdentity = genderIdentity
         self.localization = .value(title)
     }

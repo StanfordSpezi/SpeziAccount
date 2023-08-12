@@ -12,10 +12,10 @@ import SwiftUI
 
 struct DataEntryAccountView: View {
     private let content: AnyView
-    private let buttonTitle: String
+    private let buttonTitle: LocalizedStringResource
     private let buttonPressed: () async throws -> Void
     private let footer: AnyView
-    private let defaultError: String
+    private let defaultError: LocalizedStringResource
     
     @Binding private var valid: Bool
     @FocusState private var focusedField: AccountInputFields?
@@ -57,8 +57,8 @@ struct DataEntryAccountView: View {
     
     
     init<Content: View, Footer: View>(
-        buttonTitle: String,
-        defaultError: String,
+        buttonTitle: LocalizedStringResource,
+        defaultError: LocalizedStringResource,
         focusState: FocusState<AccountInputFields?> = FocusState<AccountInputFields?>(),
         valid: Binding<Bool> = .constant(true),
         buttonPressed: @escaping () async throws -> Void,
