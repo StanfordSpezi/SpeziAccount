@@ -87,7 +87,7 @@ public struct UsernamePasswordSignUpView: View {
             signUpButton
             footer
         }
-        .navigationTitle(navigationTitle.localizedString())
+            .navigationTitle(navigationTitle.localizedString())
             .navigationBarBackButtonHidden(state == .processing)
             .viewStateAlert(state: $state)
     }

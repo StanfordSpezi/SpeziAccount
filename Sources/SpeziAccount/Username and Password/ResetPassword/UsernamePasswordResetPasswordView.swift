@@ -81,7 +81,7 @@ public struct UsernamePasswordResetPasswordView: View {
                 )
             }
         }
-        .navigationTitle(navigationTitle.localizedString())
+            .navigationTitle(navigationTitle.localizedString())
     }
     
     private var usernameTextField: some View {

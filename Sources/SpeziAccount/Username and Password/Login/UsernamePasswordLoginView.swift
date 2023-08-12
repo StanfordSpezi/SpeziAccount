@@ -73,7 +73,7 @@ public struct UsernamePasswordLoginView: View {
             )
             footer
         }
-        .navigationTitle(navigationTitle.localizedString())
+            .navigationTitle(navigationTitle.localizedString())
     }
     
     private var usernamePasswordSection: some View {
