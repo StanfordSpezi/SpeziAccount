@@ -73,7 +73,7 @@ public struct UsernamePasswordLoginView: View {
             )
             footer
         }
-            .navigationTitle(navigationTitle)
+        .navigationTitle(navigationTitle.localizedString())
     }
     
     private var usernamePasswordSection: some View {
@@ -112,7 +112,7 @@ public struct UsernamePasswordLoginView: View {
             .padding(.vertical, 12)
     }
     
-    private var loginButtonTitleLocalization: String {
+    private var loginButtonTitleLocalization: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.login.loginActionButtonTitle
@@ -121,7 +121,7 @@ public struct UsernamePasswordLoginView: View {
         }
     }
     
-    private var navigationTitle: String {
+    private var navigationTitle: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.login.navigationTitle
@@ -130,7 +130,7 @@ public struct UsernamePasswordLoginView: View {
         }
     }
     
-    private var defaultLoginFailedError: String {
+    private var defaultLoginFailedError: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.login.defaultLoginFailedError

@@ -22,7 +22,7 @@ struct UsernamePasswordFields: View {
             username: FieldLocalizationResource,
             password: FieldLocalizationResource,
             passwordRepeat: FieldLocalizationResource,
-            passwordNotEqualError: String
+            passwordNotEqualError: LocalizedStringResource
         )>)
         
         
@@ -70,7 +70,7 @@ struct UsernamePasswordFields: View {
             }
         }
         
-        var passwordNotEqualError: String? {
+        var passwordNotEqualError: LocalizedStringResource? {
             switch self {
             case let .signUp(.value((_, _, _, passwordNotEqualError))):
                 return passwordNotEqualError
@@ -205,7 +205,7 @@ struct UsernamePasswordFields: View {
             }
         }
         
-        let passwordNotEqualErrorLocalization: String
+        let passwordNotEqualErrorLocalization: LocalizedStringResource
         if let passwordNotEqualError = presentationType.passwordNotEqualError {
             passwordNotEqualErrorLocalization = passwordNotEqualError
         } else {

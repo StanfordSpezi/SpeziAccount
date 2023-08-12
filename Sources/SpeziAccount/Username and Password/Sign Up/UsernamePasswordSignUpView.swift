@@ -87,7 +87,7 @@ public struct UsernamePasswordSignUpView: View {
             signUpButton
             footer
         }
-            .navigationTitle(navigationTitle)
+        .navigationTitle(navigationTitle.localizedString())
             .navigationBarBackButtonHidden(state == .processing)
             .viewStateAlert(state: $state)
     }
@@ -131,7 +131,7 @@ public struct UsernamePasswordSignUpView: View {
     }
     
     private var signUpButton: some View {
-        let signUpButtonLocalization: String
+        let signUpButtonLocalization: LocalizedStringResource
         switch localization {
         case .environment:
             signUpButtonLocalization = usernamePasswordAccountService.localization.signUp.signUpActionButtonTitle
@@ -158,7 +158,7 @@ public struct UsernamePasswordSignUpView: View {
             .listRowBackground(Color.clear)
     }
     
-    private var navigationTitle: String {
+    private var navigationTitle: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.signUp.navigationTitle
@@ -167,7 +167,7 @@ public struct UsernamePasswordSignUpView: View {
         }
     }
     
-    private var defaultSignUpFailedError: String {
+    private var defaultSignUpFailedError: LocalizedStringResource {
         switch localization {
         case .environment:
             return usernamePasswordAccountService.localization.signUp.defaultSignUpFailedError
