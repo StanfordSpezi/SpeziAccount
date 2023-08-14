@@ -33,7 +33,6 @@ public struct DateOfBirthPicker: View {
             displayedComponents: [.date]
         ) {
             Text(titleLocalization)
-                .fontWeight(.semibold)
         }
     }
 
@@ -42,7 +41,7 @@ public struct DateOfBirthPicker: View {
         title customTitle: LocalizedStringResource? = nil
     ) {
         self._date = date
-        self.titleLocalization = customTitle ?? LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
+        self.titleLocalization = customTitle ?? DateOfBirthKey.name
     }
 
     public init(date: Binding<Date>, title: String.LocalizationValue) {

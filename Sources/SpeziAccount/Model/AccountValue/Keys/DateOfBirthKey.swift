@@ -14,6 +14,8 @@ public struct DateOfBirthKey: AccountValueKey {
     public typealias Value = Date
     public typealias DataEntry = DateOfBirthPicker
 
+    public static let name = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
+
     public static let category: AccountValueCategory = .personalDetails
 }
 
@@ -34,6 +36,37 @@ extension AccountValueStorageContainer {
 
 
 // MARK: - UI
+
+extension DateOfBirthKey {
+    public struct DataDisplay: DataDisplayView {
+        public typealias Key = DateOfBirthKey
+
+        private let value: Date
+
+        @Environment(\.locale) private var locale
+
+        private var formatStyle: Date.FormatStyle {
+            .init()
+                .locale(locale)
+                .year(.defaultDigits)
+                .month(locale.identifier == "en_US" ? .abbreviated : .defaultDigits)
+                .day(.defaultDigits)
+        }
+
+        public var body: some View {
+            Text(Key.name)
+            Spacer()
+            Text(value.formatted(formatStyle))
+                .foregroundColor(.secondary)
+        }
+
+
+        public init(_ value: Date) {
+            self.value = value
+        }
+    }
+}
+
 extension DateOfBirthPicker: DataEntryView {
     public typealias Key = DateOfBirthKey
 

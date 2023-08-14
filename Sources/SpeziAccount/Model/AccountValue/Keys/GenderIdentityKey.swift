@@ -14,6 +14,8 @@ public struct GenderIdentityKey: AccountValueKey {
     public typealias Value = GenderIdentity
     public typealias DataEntry = GenderIdentityPicker
 
+    public static let name = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
+
     public static let category: AccountValueCategory = .personalDetails
 }
 

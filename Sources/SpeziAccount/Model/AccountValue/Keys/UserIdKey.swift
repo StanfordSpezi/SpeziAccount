@@ -20,6 +20,8 @@ import SwiftUI
 public struct UserIdKey: RequiredAccountValueKey {
     public typealias Value = String
 
+    public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
+
     public static let category: AccountValueCategory = .credentials
 }
 

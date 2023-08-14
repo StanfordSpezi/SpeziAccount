@@ -13,8 +13,6 @@ import Spezi
 /// Refer to ``AccountValueKey`` for a list of bundled `AccountValueKey`s.
 /// TODO docs on how to build?
 public struct AccountDetails: Sendable, AccountValueStorageContainer {
-    public typealias Builder = AccountValueStorageBuilder<Self>
-
     public let storage: AccountValueStorage
 
 

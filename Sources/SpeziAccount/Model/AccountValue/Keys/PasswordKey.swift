@@ -16,6 +16,8 @@ import SwiftUI
 public struct PasswordKey: RequiredAccountValueKey {
     public typealias Value = String
 
+    public static let name = LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module))
+
     public static let category: AccountValueCategory = .credentials
 }
 
@@ -54,7 +56,7 @@ extension PasswordKey {
         }
 
         public var body: some View {
-            VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure)
+            VerifiableTextField(Key.name, text: $password, type: .secure)
                 .textContentType(.newPassword)
                 .disableFieldAssistants()
         }

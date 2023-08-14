@@ -13,7 +13,7 @@ public protocol AnyAccountValueConfigurationEntry: CustomStringConvertible {
 
     var id: ObjectIdentifier { get }
 
-    func isContained(in storage: AccountValueStorage) -> Bool
+    func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool
 }
 
 
@@ -43,7 +43,7 @@ extension AccountValueConfigurationEntry {
     }
 
 
-    public func isContained(in storage: AccountValueStorage) -> Bool {
-        storage.contains(Key.self)
+    public func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
+        Key.isContained(in: container)
     }
 }

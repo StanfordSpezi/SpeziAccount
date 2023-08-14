@@ -15,6 +15,7 @@ public struct EmailAddressKey: AccountValueKey, OptionalComputedKnowledgeSource 
     public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
+    public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
 
     public static let category: AccountValueCategory = .contactDetails
 
@@ -64,7 +65,7 @@ extension EmailAddressKey {
         }
 
         public var body: some View {
-            VerifiableTextField(UserIdType.emailAddress.localizedStringResource, text: $email)
+            VerifiableTextField(Key.name, text: $email)
                 .textContentType(.emailAddress)
                 .disableFieldAssistants()
         }

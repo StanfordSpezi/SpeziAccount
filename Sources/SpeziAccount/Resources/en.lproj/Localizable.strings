@@ -100,10 +100,12 @@
 "VALIDATION_RULE_STRONG_PASSWORD" = "A password has to have at least 12 characters.";
 
 // MARK: - User Id
+"USER_ID" = "User Id";
 "USER_ID_EMAIL" = "E-Mail Address";
 "USER_ID_USERNAME" = "Username";
 
 // MARK: - Person Name
+"NAME" = "Name";
 "UAP_SIGNUP_GIVEN_NAME_TITLE" = "First Name";
 "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "Enter your first name ...";
 "UAP_SIGNUP_FAMILY_NAME_TITLE" = "Last Name";

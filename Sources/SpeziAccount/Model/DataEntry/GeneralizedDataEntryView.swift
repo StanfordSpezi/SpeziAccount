@@ -25,11 +25,11 @@ private protocol GeneralizedStringEntryView {
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
-public struct GeneralizedDataEntryView<Wrapped: DataEntryView>: View {
+public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: AccountValueStorageContainer>: View {
     @Environment(\.dataEntryConfiguration)
     private var dataEntryConfiguration: DataEntryConfiguration
     @EnvironmentObject
-    private var signupDetails: SignupDetails.Builder
+    private var detailsBuilder: AccountValueStorageBuilder<Container>
 
     @State private var value: Wrapped.Key.Value
 
@@ -51,7 +51,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView>: View {
             .onTapFocus(focusedField: dataEntryConfiguration.focusedField, fieldIdentifier: Wrapped.Key.focusState)
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
-                signupDetails.set(Wrapped.Key.self, value: newValue)
+                detailsBuilder.set(Wrapped.Key.self, value: newValue)
             }
     }
 
@@ -67,43 +67,5 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView>: View {
 extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
     func validationRules() -> [ValidationRule] {
         dataEntryConfiguration.serviceConfiguration.fieldValidationRules(for: Wrapped.Key.self)
-    }
-}
-
-
-extension AccountValueKey where Value: DefaultInitializable {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        GeneralizedDataEntryView(initialValue: .init())
-    }
-}
-
-extension AccountValueKey where Value == String {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        GeneralizedDataEntryView(initialValue: "")
-    }
-}
-
-extension AccountValueKey where Value == Date {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        GeneralizedDataEntryView(initialValue: Date())
-    }
-}
-
-extension AccountValueKey where Value: AdditiveArithmetic {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        // this catches all the numeric types
-        GeneralizedDataEntryView(initialValue: .zero)
-    }
-}
-
-extension AccountValueKey where Value: ExpressibleByArrayLiteral {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        GeneralizedDataEntryView(initialValue: [])
-    }
-}
-
-extension AccountValueKey where Value: ExpressibleByDictionaryLiteral {
-    public static var dataEntryView: GeneralizedDataEntryView<DataEntry> {
-        GeneralizedDataEntryView(initialValue: [:])
     }
 }

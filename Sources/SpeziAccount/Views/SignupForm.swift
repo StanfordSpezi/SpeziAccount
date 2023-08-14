@@ -20,7 +20,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @Environment(\.logger) private var logger
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
-    // We just use @State here for the class type, as there is nothing in it that triggers a UI update.
+    // We just use @State here for the class type, as there is nothing in it that should trigger an UI update.
     // However, we need to preserve the class state across UI updates.
     @State private var validationClosures = DataEntryValidationClosures()
 
@@ -30,6 +30,11 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     private var signupValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
         account.configuration.reduce(into: [:]) { result, requirement in
+            guard requirement.requirement != .supported else {
+                // we only show required and collected values in signup
+                return
+            }
+
             result[requirement.anyKey.category, default: []] += [requirement.anyKey]
         }
     }
@@ -56,13 +61,11 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             Section {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
                 ForEach(accountValues.indices, id: \.self) { index in
-                    accountValues[index].anyDataEntryView
+                    accountValues[index].emptyDataEntryView(for: SignupDetails.self)
                 }
             } header: {
                 if let title = category.categoryTitle {
                     Text(title)
-                } else {
-                    EmptyView()
                 }
             }
         }
@@ -135,14 +138,8 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 }
 
 
+// TODO this extension is used somwhere else as well!
 extension AccountValueStorageBuilder: ObservableObject {}
-
-
-extension AccountValueKey {
-    fileprivate static var anyDataEntryView: AnyView {
-        AnyView(dataEntryView)
-    }
-}
 
 
 #if DEBUG

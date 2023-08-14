@@ -15,6 +15,8 @@ import SwiftUI
 public struct PersonNameKey: RequiredAccountValueKey {
     public typealias Value = PersonNameComponents
 
+    public static let name = LocalizedStringResource("NAME", bundle: .atURL(from: .module))
+
     public static let category: AccountValueCategory = .name
 }
 
@@ -36,6 +38,28 @@ extension AccountValueStorageContainer {
 
 
 // MARK: - UI
+
+extension PersonNameKey {
+    public struct DataDisplay: DataDisplayView {
+        public typealias Key = PersonNameKey
+
+        private let value: PersonNameComponents
+
+        public var body: some View {
+            // TODO place navigation link with sheet?
+            Text(Key.name)
+            Spacer()
+            Text(value.formatted(.name(style: .long)))
+                .foregroundColor(.secondary)
+        }
+
+
+        public init(_ value: PersonNameComponents) {
+            self.value = value
+        }
+    }
+}
+
 extension PersonNameKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PersonNameKey

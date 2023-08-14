@@ -24,7 +24,6 @@ public struct GenderIdentityPicker: View {
                 }
             }, label: {
                 Text(titleLocalization)
-                    .fontWeight(.semibold)
             }
         )
     }
@@ -34,7 +33,7 @@ public struct GenderIdentityPicker: View {
         title customTitle: LocalizedStringResource? = nil
     ) {
         self._genderIdentity = genderIdentity
-        self.titleLocalization = customTitle ?? LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
+        self.titleLocalization = customTitle ?? GenderIdentityKey.name
     }
     
     public init(genderIdentity: Binding<GenderIdentity>, title: String.LocalizationValue) {

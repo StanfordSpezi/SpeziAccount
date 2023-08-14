@@ -9,8 +9,6 @@
 
 // just another wrapper though which specific meaning!
 public struct ModifiedAccountDetails: Sendable, AccountValueStorageContainer { // TODO support iterating over all keys and values!
-    public typealias Builder = AccountValueStorageBuilder<Self>
-
     public let storage: AccountValueStorage
 
 
