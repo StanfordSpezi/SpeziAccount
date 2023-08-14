@@ -15,9 +15,14 @@ public actor MockSimpleAccountService: AccountService {
 
     public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService")
 
+
     public nonisolated var viewStyle: some AccountSetupViewStyle {
         MockSimpleAccountSetupViewStyle(using: self)
     }
+
+
+    public init() {}
+
 
     public func signUp(signupDetails: SignupDetails) async throws {
         print("Signup: \(signupDetails)")

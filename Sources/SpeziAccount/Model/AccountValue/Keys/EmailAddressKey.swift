@@ -46,7 +46,7 @@ extension AccountValueKeys {
 
 
 extension AccountValueStorageContainer {
-    public var email: EmailAddressKey.Value? {
+    public var email: String? {
         storage[EmailAddressKey.self]
     }
 }

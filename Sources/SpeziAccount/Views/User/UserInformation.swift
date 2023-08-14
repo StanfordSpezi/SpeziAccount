@@ -45,6 +45,8 @@ struct UserInformation<Caption: View>: View {
     }
 }
 
+
+#if DEBUG
 struct UserInformation_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
@@ -60,3 +62,4 @@ struct UserInformation_Previews: PreviewProvider {
             .padding()
     }
 }
+#endif

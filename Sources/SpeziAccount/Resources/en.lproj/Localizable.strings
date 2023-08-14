@@ -60,7 +60,7 @@
 
 // MARK: - AccountValues
 "ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Value";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON" = "A required Account Value was not supplied.";
+"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "The required Account Value %@ was not supplied.";
 "ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Raise an issue with the developer of the Account Service.";
 
 // MARK: - UserId and Password

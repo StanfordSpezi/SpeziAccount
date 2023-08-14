@@ -8,13 +8,14 @@
 
 import Foundation
 
-// TODO docs!
+// TODO docs! rename UserId => make userid type controlable!
 public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
 
     public let configuration = AccountServiceConfiguration(name: "Mock AccountService")
 
+    public init() {}
 
     public func login(userId: String, password: String) async throws {
         print("Mock Login: \(userId) \(password)")

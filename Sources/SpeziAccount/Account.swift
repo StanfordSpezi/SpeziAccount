@@ -9,6 +9,11 @@
 import Spezi
 import SwiftUI
 
+// TODO some generic todos:
+//  - iterable account details!
+//  - allow account services to specify their supported account values (arbitrary, exactly(_:)) and use Standard constraint for storage of additional
+//  - also allow account services to specify which account values are required (e.g. userId and password (or a which level?)!); minimal set; extension set!
+
 
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
@@ -78,7 +83,7 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
-    public let signupRequirements: AccountValueRequirements // TODO document use once finalized!
+    public let configuration: AccountValueConfiguration // TODO document use, once finalized!
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     let registeredAccountServices: [any AccountService]
@@ -86,16 +91,16 @@ public class Account: ObservableObject, Sendable {
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
+    ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
     private nonisolated init(
         services: [any AccountService],
-        signupRequirements: AccountValueRequirements = .default,
+        supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
         self._signedIn = Published(wrappedValue: details != nil)
         self._details = Published(wrappedValue: details)
-        self.signupRequirements = signupRequirements
+        self.configuration = supportedConfiguration
         self.registeredAccountServices = services
 
         for service in registeredAccountServices {
@@ -108,9 +113,9 @@ public class Account: ObservableObject, Sendable {
     /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
-    public nonisolated convenience init(services: [any AccountService] = [], requirements signupRequirements: AccountValueRequirements = .default) {
-        self.init(services: services, signupRequirements: signupRequirements)
+    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    public nonisolated convenience init(services: [any AccountService] = [], configuration: AccountValueConfiguration = .default) {
+        self.init(services: services, supportedConfiguration: configuration)
     }
 
     /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
@@ -118,9 +123,9 @@ public class Account: ObservableObject, Sendable {
     /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support.
-    public nonisolated convenience init(_ services: any AccountService..., requirements signupRequirements: AccountValueRequirements = .default) {
-        self.init(services: services, signupRequirements: signupRequirements)
+    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    public nonisolated convenience init(_ services: any AccountService..., configuration: AccountValueConfiguration = .default) {
+        self.init(services: services, supportedConfiguration: configuration)
     }
 
     /// Initializes a new `Account` object with a logged in user for usage within a `PreviewProvider`.
@@ -129,13 +134,13 @@ public class Account: ObservableObject, Sendable {
     /// - Parameters:
     ///   - builder: A ``AccountDetails/Builder`` with all account details for the logged in user.
     ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
-    ///   - signupRequirements: The ``AccountValueRequirements`` to user intends to support. TODO will we check for exposed account value requirements of the account service here in the init?
+    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support. TODO will we check for exposed account value requirements of the account service here in the init?
     public nonisolated convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,
-        requirements signupRequirements: AccountValueRequirements = .default
+        configuration: AccountValueConfiguration = .default
     ) {
-        self.init(services: [accountService], signupRequirements: signupRequirements, details: builder.build(owner: accountService))
+        self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
     }
 
 

@@ -18,7 +18,7 @@ public struct AccountDetails: Sendable, AccountValueStorageContainer {
     public let storage: AccountValueStorage
 
 
-    init<Service: AccountService>(storage: AccountValueStorage, owner accountService: Service) {
+    fileprivate init<Service: AccountService>(storage: AccountValueStorage, owner accountService: Service) {
         var storage = storage
 
         // patch the storage to make sure we make sure to not expose the plaintext password

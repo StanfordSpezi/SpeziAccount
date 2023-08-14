@@ -9,14 +9,15 @@
 import Foundation
 
 
-/// An error that occurs during building or verification of ``AccountValueKey``.
-public enum AccountValueRequirementsError: LocalizedError {
-    /// An non-optional ``AccountValueKey`` that was configured but not supplied by the signup view before
+/// An error that occurs due to restrictions or requirements of a ``AccountValueConfiguration``.
+public enum AccountValueConfigurationError: LocalizedError {
+    /// A ``AccountValueRequirement/required`` ``AccountValueKey`` that was not supplied by the signup view before
     /// being passed to the ``AccountService``.
     ///
     /// - Note: This is an error in the view logic due to missing user-input sanitization or simply the view
-    /// didn't supply the ``AccountValueKey`` when building the ``SignupDetails``.
+    /// forgot to supply the ``AccountValueKey`` when building the ``SignupDetails``.
     case missingAccountValue(_ keyName: String)
+
 
     public var errorDescription: String? {
         .init(localized: errorDescriptionValue, bundle: .module)
@@ -30,23 +31,24 @@ public enum AccountValueRequirementsError: LocalizedError {
         .init(localized: recoverySuggestionValue, bundle: .module)
     }
 
+
     private var errorDescriptionValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue: // TODO replace value?
+        case .missingAccountValue:
             return "ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION"
         }
     }
 
     private var failureReasonValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue: // TODO replace value?
-            return "ACCOUNT_VALUES_MISSING_VALUE_REASON"
+        case let .missingAccountValue(keyName):
+            return "ACCOUNT_VALUES_MISSING_VALUE_REASON \(keyName)"
         }
     }
 
     private var recoverySuggestionValue: String.LocalizationValue {
         switch self {
-        case .missingAccountValue: // TODO replace value?
+        case .missingAccountValue:
             return "ACCOUNT_VALUES_MISSING_VALUE_RECOVERY"
         }
     }

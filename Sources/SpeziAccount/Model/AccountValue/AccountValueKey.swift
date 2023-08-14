@@ -11,6 +11,8 @@ import SwiftUI
 import XCTRuntimeAssertions
 
 
+// TODO rename everything to AccountDetail, AccountDetailCategory?
+
 /// A typed storage key to store values associated with an user account.
 ///
 /// The `AccountValueKey` protocol builds upon the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository)

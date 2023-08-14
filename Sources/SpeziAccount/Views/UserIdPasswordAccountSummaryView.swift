@@ -19,6 +19,7 @@ public struct UserIdPasswordAccountSummaryView: View {
 
     public var body: some View {
         VStack {
+            // TODO don't assume name existence!(?)
             UserInformation(name: account.name, caption: account.userId)
 
             AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {

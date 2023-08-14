@@ -28,14 +28,8 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
 
 
-    private var signupRequirements: AccountValueRequirements {
-        // TODO this should be account.signupRequirements or the requirements the AccountService supports??
-        //  => generally we shouldn't collect more than the user wants; but AccountService has to deal with less being collected than it could!
-        account.signupRequirements
-    }
-
     private var signupValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
-        signupRequirements.reduce(into: [:]) { result, requirement in
+        account.configuration.reduce(into: [:]) { result, requirement in
             result[requirement.anyKey.category, default: []] += [requirement.anyKey]
         }
     }
@@ -128,7 +122,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         focusedDataEntry = nil
 
         // TODO verify against which requirements we are checking!
-        let request: SignupDetails = try signupDetailsBuilder.build(checking: signupRequirements)
+        let request: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 
         try await service.signUp(signupDetails: request)
 

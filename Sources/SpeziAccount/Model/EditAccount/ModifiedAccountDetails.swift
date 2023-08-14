@@ -13,7 +13,8 @@ public struct ModifiedAccountDetails: Sendable, AccountValueStorageContainer { /
 
     public let storage: AccountValueStorage
 
-    init(storage: AccountValueStorage) {
+
+    fileprivate init(storage: AccountValueStorage) {
         self.storage = storage
     }
 }

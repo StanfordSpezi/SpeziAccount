@@ -23,12 +23,15 @@ import XCTRuntimeAssertions
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
 public final class AccountConfiguration: Component, ObservableObjectProvider {
-    /// The array of ``AccountService``s provided through other Spezi `Components`.
-    @Collect private var accountServices: [any AccountService]
+    private let supportedAccountValues: AccountValueConfiguration // TODO docs
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
-    private var providedAccountServices: [any AccountService]
+    private let providedAccountServices: [any AccountService]
 
     private var account: Account?
+
+    /// The array of ``AccountService``s provided through other Spezi `Components`.
+    @Collect private var accountServices: [any AccountService]
+
 
     public var observableObjects: [any ObservableObject] {
         guard let account else {
@@ -42,7 +45,11 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// Initializes a `AccountConfiguration` without directly  providing any ``AccountService`` instances.
     ///
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
-    public init() {
+    ///
+    /// - Parameter configuration: TODO docs
+    public init(configuration: [ConfiguredAccountValue] = .default) {
+        // TODO variadic arguments! once we have those we can remove the intermediate accesosor!
+        self.supportedAccountValues = AccountValueConfiguration(configuration)
         self.providedAccountServices = []
     }
 
@@ -51,15 +58,22 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// In addition to the supplied ``AccountService``s, ``SpeziAccount`` will collect any ``AccountService`` instances
     /// provided by other Spezi `Component`s.
     ///
-    /// - Parameter accountServices: Account Services provided through a ``AccountServiceBuilder``.
-    public init(@AccountServiceBuilder _ accountServices: () -> [any AccountService]) {
+    /// - Parameters:
+    ///   - configuration: TODO docs
+    ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
+    public init(
+        configuration: [ConfiguredAccountValue] = .default,
+        @AccountServiceBuilder _ accountServices: () -> [any AccountService]
+    ) {  // TODO variadic arguments!
+        self.supportedAccountValues = AccountValueConfiguration(configuration)
         self.providedAccountServices = accountServices()
     }
+
 
     public func configure() {
         // assemble the final array of account services
         let accountServices = providedAccountServices + self.accountServices
 
-        self.account = Account(services: accountServices) // TODO pass signup requirements!
+        self.account = Account(services: accountServices, configuration: supportedAccountValues)
     }
 }
