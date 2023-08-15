@@ -83,6 +83,7 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
+    // TODO make this configuration avaialble from the AccountDetails? its about the details itself is it?
     public let configuration: AccountValueConfiguration // TODO document use, once finalized!
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.

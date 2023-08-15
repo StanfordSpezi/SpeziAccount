@@ -25,13 +25,21 @@ extension AccountValueKey {
     }
 
     static func dataEntryViewWithCurrentStoredValue<Storage: AccountValueStorageContainer>(
-        from details: AccountDetails,
+        details: AccountDetails,
         for container: Storage.Type
     ) -> AnyView? {
-        // This is the reason for the `Stored` part of this method. We will only consider
-        // values that are actually stored in the AccountDetails, ignoring computed ones.
         guard let value = details.storage.get(Self.self) else {
-            // TODO is this a problem for computed values?
+            return nil
+        }
+
+        return AnyView(GeneralizedDataEntryView<DataEntry, Storage>(initialValue: value))
+    }
+
+    static func dataEntryViewFromBuilder<Storage: AccountValueStorageContainer>(
+        builder: ModifiedAccountDetails.Builder,
+        for container: Storage.Type
+    ) -> AnyView? {
+        guard let value = builder.get(Self.self) else {
             return nil
         }
 
@@ -40,7 +48,7 @@ extension AccountValueKey {
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {
         guard let value = details.storage.get(Self.self) else {
-            return nil // TODO make something to just retrieve the current stored value?
+            return nil
         }
 
         return AnyView(DataDisplay(value))

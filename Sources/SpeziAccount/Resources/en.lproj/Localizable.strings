@@ -102,18 +102,19 @@
 "CANCEL" = "Cancel";
 "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Could not save account details!";
 "REMOVE_DEFAULT_ERROR"= "Could not remove account!";
+"SECURITY" = "Security";
 
 // MARK: - Validation Rules
 "VALIDATION_RULE_NON_EMPTY" = "This field cannot be empty.";
 "VALIDATION_RULE_UNICODE_LETTERS" = "You must only use letters.";
 "VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
-"VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is not correct.";
-"VALIDATION_RULE_MINIMAL_PASSWORD" = "A password has to have at least 8 characters.";
-"VALIDATION_RULE_MEDIUM_PASSWORD" = "A password has to have at least 10 characters.";
-"VALIDATION_RULE_STRONG_PASSWORD" = "A password has to have at least 12 characters.";
+"VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is invalid.";
+"VALIDATION_RULE_MINIMAL_PASSWORD" = "Your password must be at least 8 characters long.";
+"VALIDATION_RULE_MEDIUM_PASSWORD" = "Your password must be at least 10 characters long.";
+"VALIDATION_RULE_STRONG_PASSWORD" = "Your password must be at least 12 characters long.";
 
 // MARK: - User Id
-"USER_ID" = "User Id";
+"USER_ID" = "User Identifier";
 "USER_ID_EMAIL" = "E-Mail Address";
 "USER_ID_USERNAME" = "Username";
 

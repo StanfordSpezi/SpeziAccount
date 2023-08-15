@@ -14,9 +14,9 @@ struct AccountOverviewValuesComparator: SortComparator {
 
     private let id = UUID()
     private let accountDetails: AccountDetails
-    private let addedAccountValues: AddedAccountValues
+    private let addedAccountValues: CategorizedAccountValues
 
-    init(accountDetails: AccountDetails, addedAccountValues: AddedAccountValues) {
+    init(accountDetails: AccountDetails, addedAccountValues: CategorizedAccountValues) {
         self.accountDetails = accountDetails
         self.addedAccountValues = addedAccountValues
     }

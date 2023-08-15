@@ -12,13 +12,14 @@ import SpeziViews
 import SwiftUI
 
 
+@MainActor
 class AccountOverviewFormViewModel: ObservableObject {
     private static var logger: Logger {
         LoggerKey.defaultValue
     }
 
     private let account: Account
-    private let accountDetails: AccountDetails
+    let accountDetails: AccountDetails
 
     private var service: any AccountService {
         accountDetails.accountService
@@ -34,10 +35,11 @@ class AccountOverviewFormViewModel: ObservableObject {
     @Published var presentingLogoutAlert = false
     @Published var presentingRemovalAlert = false
 
-    @Published var addedAccountValues = AddedAccountValues()
+    @Published var addedAccountValues = CategorizedAccountValues()
+    @Published var removedAccountValues = CategorizedAccountValues() // TODO communicate them back to the account service!
 
     // We are not updating the view based on the properties here. We just need to track these states for processing.
-    // As we are using a reference type, state is presisted accross views.
+    // As we are using a reference type, state is persisted across views.
     var modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
     private var validationClosures = DataEntryValidationClosures()
     var actionTask: Task<Void, Never>?
@@ -50,8 +52,8 @@ class AccountOverviewFormViewModel: ObservableObject {
         // to manage additional state.
 
         let results = account.configuration.reduce(into: OrderedDictionary()) { result, requirement in
-            guard requirement.anyKey.category != AccountValueCategory.credentials else {
-                // TODO name shouldn't be displayed!!!!
+            guard requirement.anyKey.category != AccountValueCategory.credentials
+                    && requirement.anyKey.id != PersonNameKey.id else {
                 return
             }
             // TODO we need to handle `Credentials` categories differently!
@@ -127,8 +129,17 @@ class AccountOverviewFormViewModel: ObservableObject {
             return
         }
 
+        // TODO check if it's part of the removed account values? (but set an empty value?)
+
         Self.logger.debug("Adding new account value \(value) to the edit view!")
-        addedAccountValues.append(value)
+
+        if let index = removedAccountValues.index(of: value) {
+            // This is a account value for which the user has a value set, but which he marked as removed in this session
+            // and is now adding back a value for.
+            removedAccountValues.remove(at: index, for: value.category)
+        } else {
+            addedAccountValues.append(value)
+        }
     }
 
     func deleteAccountValue(at indexSet: IndexSet, in accountValues: [any AccountValueKey.Type]) {
@@ -138,18 +149,24 @@ class AccountOverviewFormViewModel: ObservableObject {
             if let addedValueIndex = addedAccountValues.index(of: value) {
                 // remove an account value which was just added in the current edit session
                 addedAccountValues.remove(at: addedValueIndex, for: value.category)
-            } else {
-                print("mark deleted: \(value)")
-                // TODO we need to track deleted elements and also hide them in the implementation
-                //   => additionally, our ModifiedDetails data structure isn't enough anymore!
-            }
 
-            // TODO this currently doesn't work; still creates the discard changes prompt
-            modifiedDetailsBuilder.remove(any: value)
+                // make sure we discard potential changes
+                modifiedDetailsBuilder.remove(any: value) // TODO does this work (preventing the discard confirmation dialog)?
+                print(modifiedDetailsBuilder.storage) // TODO remove
+            } else {
+                removedAccountValues.append(value)
+
+                // set a empty value to:
+                // - have an empty value if it gets added again
+                // - the discard button will ask for confirmation
+                modifiedDetailsBuilder.setEmptyValue(for: value)
+                print(modifiedDetailsBuilder.storage) // TODO remove
+            }
         }
     }
 
     func cancelEditAction(editMode: Binding<EditMode>?) {
+        Self.logger.debug("Pressed the cancel button!")
         if !hasUnsavedChanges {
             discardChangesAction(editMode: editMode)
             return
@@ -161,7 +178,7 @@ class AccountOverviewFormViewModel: ObservableObject {
     }
 
     func discardChangesAction(editMode: Binding<EditMode>?) {
-        Self.logger.debug("Exciting edit mode and discarding changes.")
+        Self.logger.debug("Exiting edit mode and discarding changes.")
 
         resetEditState(editMode: editMode)
     }
@@ -203,15 +220,14 @@ class AccountOverviewFormViewModel: ObservableObject {
     private func resetEditState(editMode: Binding<EditMode>?) {
         // clearing the builder before switching the edit mode
         modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
-        addedAccountValues = AddedAccountValues()
+        addedAccountValues = CategorizedAccountValues()
 
         editMode?.wrappedValue = .inactive
         validationClosures = DataEntryValidationClosures()
     }
 
     func deleteDisabled(for value: any AccountValueKey.Type) -> Bool {
-        if value.isContained(in: accountDetails) {
-            // TODO an easier way to inject those properties into the details themselves?
+        if value.isContained(in: accountDetails) && !removedAccountValues.contains(value) {
             return account.configuration[value]?.requirement == .required
         }
 

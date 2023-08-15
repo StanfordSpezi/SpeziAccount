@@ -65,6 +65,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 if let title = category.categoryTitle {
                     Text(title)
                 }
+            } footer: {
+                if category == .credentials && account.configuration[PasswordKey.self] != nil {
+                    PasswordValidationRuleFooter(configuration: service.configuration)
+                }
             }
         }
     }

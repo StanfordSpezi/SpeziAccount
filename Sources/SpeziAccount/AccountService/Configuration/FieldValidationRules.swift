@@ -91,6 +91,7 @@ public struct FieldValidationRules<Key: AccountValueKey>: AccountServiceConfigur
         } else if Key.self == PasswordKey.self {
             return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty), .minimalPassword)
         } else {
+            // TODO only if the account value is configured to be required!
             return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty))
         }
     }

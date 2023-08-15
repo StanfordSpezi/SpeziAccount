@@ -13,7 +13,11 @@ import SwiftUI
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 struct AccountOverviewForm: View {
-    private let accountDetails: AccountDetails
+    private var accountDetails: AccountDetails {
+        model.accountDetails
+    }
+
+    @EnvironmentObject private var account: Account
 
     @Environment(\.logger) private var logger
     @Environment(\.defaultErrorDescription) private var defaultErrorDescription
@@ -33,7 +37,7 @@ struct AccountOverviewForm: View {
             .toolbar {
                 if editMode?.wrappedValue.isEditing == true && !model.isProcessing {
                     ToolbarItemGroup(placement: .cancellationAction) {
-                        Button(role: .cancel, action: {
+                        Button(action: {
                             model.cancelEditAction(editMode: editMode)
                         }) {
                             Text("CANCEL", bundle: .module)
@@ -89,9 +93,32 @@ struct AccountOverviewForm: View {
             }
 
         Section {
-            // TODO "Name" if available, followed by userId name!
-            NavigationLink("Name, E-Mail Address", value: "True") // TODO locales
-            NavigationLink("Password & Security", value: "asdf") // TODO how to extend? password only if password is in signup requirements!
+            NavigationLink {
+                NameOverview(model: model)
+                    .environmentObject(model.dataEntryConfiguration)
+                    .environmentObject(model.modifiedDetailsBuilder)
+            } label: {
+                HStack(spacing: 0) {
+                    if accountDetails.storage.get(PersonNameKey.self) != nil {
+                        Text("NAME", bundle: .module)
+                        Text(verbatim: ", ")
+                    }
+                    Text(accountDetails.userIdType.localizedStringResource)
+                }
+            }
+            NavigationLink {
+                SecurityOverview(model: model)
+                    .environmentObject(model.dataEntryConfiguration)
+                    .environmentObject(model.modifiedDetailsBuilder)
+            } label: {
+                HStack(spacing: 0) {
+                    if account.configuration[PasswordKey.self] != nil {
+                        Text("UP_PASSWORD", bundle: .module)
+                        Text(" & ")
+                    }
+                    Text("SECURITY", bundle: .module)
+                }
+            }
         }
 
         sectionsView
@@ -172,7 +199,6 @@ struct AccountOverviewForm: View {
         destructiveState: Binding<ViewState>,
         focusedField: FocusState<String?>
     ) {
-        self.accountDetails = accountDetails
         self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(
             account: account,
             details: accountDetails,
@@ -184,13 +210,17 @@ struct AccountOverviewForm: View {
 
 
     @ViewBuilder
-    private func buildRow(for accountValue: any AccountValueKey.Type) -> some View {
+    private func buildRow(for accountValue: any AccountValueKey.Type) -> some View { // TODO move to separate view?
         if editMode?.wrappedValue.isEditing == true {
             // we place everything in the same HStack, such that animations are smooth
             let hStack = HStack {
-                if let view = accountValue.dataEntryViewWithCurrentStoredValue(from: accountDetails, for: ModifiedAccountDetails.self) {
-                    view
-                } else if model.addedAccountValues.contains(accountValue) {
+                if accountValue.isContained(in: accountDetails) && !model.removedAccountValues.contains(accountValue) {
+                    if let view = accountValue.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
+                        view
+                    } else if let view = accountValue.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
+                        view
+                    }
+                } else if model.addedAccountValues.contains(accountValue) { // no need to repeat the removedAccountValues condition
                     accountValue.emptyDataEntryView(for: ModifiedAccountDetails.self)
                         .deleteDisabled(false)
                 } else {
@@ -220,17 +250,19 @@ struct AccountOverviewForm: View {
     }
 
     private func onEditModeChange(newValue: EditMode?) {
+        // TODO we have a problem, were the edit mode just flicks back and forth when pressing the cancel button (and then the UI freezes)
+        print("current edit mode: \(editMode) new mode \(newValue)")
         guard newValue == .inactive,
               model.viewState.wrappedValue != .processing else {
             return
         }
 
         guard !model.modifiedDetailsBuilder.isEmpty else {
-            logger.debug("Not saving anything, as there is were no changes!")
+            logger.debug("Not saving anything, as there were no changes!")
             return
         }
 
-        logger.debug("Exciting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
+        logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
 
         withAnimation(.easeOut(duration: 0.2)) {
             model.viewState.wrappedValue = .processing

@@ -44,6 +44,24 @@ extension AccountValueStorageContainer {
 
 // MARK: - UI
 extension UserIdKey {
+    public struct DataDisplay: DataDisplayView {
+        public typealias Key = UserIdKey
+
+        private let value: String
+
+        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
+
+        public var body: some View {
+            SimpleTextRow(name: dataEntryConfiguration.serviceConfiguration.userIdConfiguration.idType.localizedStringResource) {
+                Text(verbatim: value)
+            }
+        }
+
+        public init(_ value: String) {
+            self.value = value
+        }
+    }
+    
     public struct DataEntry: DataEntryView {
         public typealias Key = UserIdKey
 

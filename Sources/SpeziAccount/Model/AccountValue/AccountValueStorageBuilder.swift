@@ -41,21 +41,33 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         storage = .init()
     }
 
+    public func get<Key: AccountValueKey>(_ key: Key.Type) -> Key.Value? {
+        storage.get(key)
+    }
+
     @discardableResult
-    public func set<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
+    fileprivate func set0<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
         storage[Key.self] = value
         return self
     }
 
+
     @discardableResult
-    public func set<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        storage[Key.self] = value
-        return self
+    public func set<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
+        set0(key, value: value)
     }
 
     @discardableResult
     public func set<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) -> Self {
-        set(Key.self, value: value)
+        set0(Key.self, value: value)
+    }
+
+    @discardableResult
+    public func set<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
+        if let value {
+            return set0(key, value: value)
+        }
+        return self
     }
 
     @discardableResult
@@ -73,11 +85,20 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     public func remove<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> Self {
         remove(Key.self)
     }
+}
 
+// MARK: - AccountOverview Extensions
+
+extension AccountValueStorageBuilder {
     @discardableResult
     func remove(any accountValue: any AccountValueKey.Type) -> Self {
-        // TODO generalize this API?
         accountValue.remove(from: self)
+        return self
+    }
+
+    @discardableResult
+    func setEmptyValue(for accountValue: any AccountValueKey.Type) -> Self {
+        accountValue.setEmpty(in: self)
         return self
     }
 }
@@ -85,5 +106,9 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
 extension AccountValueKey {
     fileprivate static func remove<Container: AccountValueStorageContainer>(from builder: AccountValueStorageBuilder<Container>) {
         builder.remove(Self.self)
+    }
+
+    fileprivate static func setEmpty<Container: AccountValueStorageContainer>(in builder: AccountValueStorageBuilder<Container>) {
+        builder.set0(Self.self, value: emptyValue)
     }
 }

@@ -46,9 +46,12 @@ public struct AccountOverview: View {
                     }
                 }
                 .padding(.top, -20)
+                .navigationTitle("Account Overview") // TODO localize
+                .navigationBarTitleDisplayMode(.inline)
         } else {
             // TODO handle
             Text("No active Account!")
+            // TODO documentation link!
         }
     }
 

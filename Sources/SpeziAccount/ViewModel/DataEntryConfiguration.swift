@@ -42,6 +42,8 @@ public class DataEntryConfiguration: ObservableObject { // TODO this is a view M
     /// Provides access to the Spezi `ViewState` of the parent view.
     public var viewState: Binding<ViewState>
 
+    // TODO make it possible for the view to detect in which kind of subview it is placed: signup vs overview!
+
 
     /// Initializes a new DataEntryConfiguration object.
     /// - Parameters:

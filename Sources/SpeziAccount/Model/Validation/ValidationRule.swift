@@ -37,7 +37,8 @@ public struct ValidationRule: Identifiable, Sendable {
     /// A unique identifier for the ``ValidationRule``. Can be used to, e.g., match a ``FailedValidationResult`` to the ValidationRule.
     public let id: UUID
     private let rule: @Sendable (String) -> Bool
-    private let message: LocalizedStringResource
+    /// A localized message that describes the requirements imposed by this validation rule.
+    public let message: LocalizedStringResource
     let effect: CascadingValidationEffect
 
 

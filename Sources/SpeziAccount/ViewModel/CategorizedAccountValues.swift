@@ -9,7 +9,7 @@
 import OrderedCollections
 
 
-struct AddedAccountValues {
+struct CategorizedAccountValues {
     private var addedAccountValues: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
 
     init() {
