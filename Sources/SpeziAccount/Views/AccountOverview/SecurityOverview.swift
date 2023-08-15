@@ -10,8 +10,10 @@ import SwiftUI
 
 
 struct SecurityOverview: View {
-    private var accountDetails: AccountDetails {
-        model.accountDetails
+    private let accountDetails: AccountDetails
+
+    private var service: any AccountService {
+        accountDetails.accountService
     }
 
     @ObservedObject private var model: AccountOverviewFormViewModel
@@ -27,6 +29,9 @@ struct SecurityOverview: View {
                 .sheet(isPresented: $presentingPasswordChangeSheet) {
                     passwordChangeSheet
                 }
+
+            // TODO place all the credentials things here?
+            //  => assume: UserId will be the only credential that is not about passwords!
         }
             .navigationTitle("Password & Security") // TODO titlte
             .onDisappear {
@@ -54,7 +59,7 @@ struct SecurityOverview: View {
                 // TODO place password guidelines
                 // => "Your password must be at least 8 characters long."
             }
-                .environmentObject(model.dataEntryConfiguration)
+                .environmentObject(model.dataEntryConfiguration(service: service))
                 .environmentObject(model.modifiedDetailsBuilder)
                 .navigationTitle("Change Password")
                 .navigationBarTitleDisplayMode(.inline)
@@ -72,8 +77,9 @@ struct SecurityOverview: View {
         }
     }
 
-    init(model: AccountOverviewFormViewModel) {
+    init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model
+        self.accountDetails = accountDetails
     }
 }
 

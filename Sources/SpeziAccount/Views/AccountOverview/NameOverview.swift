@@ -10,8 +10,10 @@ import SwiftUI
 
 
 struct NameOverview: View {
-    private var accountDetails: AccountDetails {
-        model.accountDetails
+    private let accountDetails: AccountDetails
+
+    private var service: any AccountService {
+        accountDetails.accountService
     }
 
     @ObservedObject private var model: AccountOverviewFormViewModel
@@ -56,7 +58,7 @@ struct NameOverview: View {
             // TODO set focus on the first name!
         }
             .navigationTitle("Name")
-            .environmentObject(model.dataEntryConfiguration)
+            .environmentObject(model.dataEntryConfiguration(service: service))
             .environmentObject(model.modifiedDetailsBuilder)
             .toolbar {
                 Button("Done", action: { print("Done")}) // TODO async button
@@ -75,7 +77,7 @@ struct NameOverview: View {
             UserIdKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
         }
             .navigationTitle("E-Mail Address")
-            .environmentObject(model.dataEntryConfiguration)
+            .environmentObject(model.dataEntryConfiguration(service: service))
             .environmentObject(model.modifiedDetailsBuilder)
             .toolbar {
                 Button("Done", action: { print("Done")}) // TODO async button
@@ -89,8 +91,9 @@ struct NameOverview: View {
             }
     }
 
-    init(model: AccountOverviewFormViewModel) {
+    init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model
+        self.accountDetails = accountDetails
     }
 }
 

@@ -13,8 +13,10 @@ import SwiftUI
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 struct AccountOverviewForm: View {
-    private var accountDetails: AccountDetails {
-        model.accountDetails
+    private let accountDetails: AccountDetails
+
+    private var service: any AccountService {
+        accountDetails.accountService
     }
 
     @EnvironmentObject private var account: Account
@@ -28,7 +30,7 @@ struct AccountOverviewForm: View {
 
 
     var body: some View {
-        accountHeaderSection
+        AccountOverviewHeader(details: accountDetails)
             // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
             // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || model.isProcessing)
@@ -64,7 +66,7 @@ struct AccountOverviewForm: View {
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
-                    try await model.accountLogoutAction()
+                    try await service.logout()
                     dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
@@ -78,7 +80,7 @@ struct AccountOverviewForm: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
-                    try await model.accountRemovalAction()
+                    try await service.delete()
                     dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
@@ -94,8 +96,8 @@ struct AccountOverviewForm: View {
 
         Section {
             NavigationLink {
-                NameOverview(model: model)
-                    .environmentObject(model.dataEntryConfiguration)
+                NameOverview(model: model, details: accountDetails)
+                    .environmentObject(model.dataEntryConfiguration(service: service))
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
                 HStack(spacing: 0) {
@@ -107,8 +109,8 @@ struct AccountOverviewForm: View {
                 }
             }
             NavigationLink {
-                SecurityOverview(model: model)
-                    .environmentObject(model.dataEntryConfiguration)
+                SecurityOverview(model: model, details: accountDetails)
+                    .environmentObject(model.dataEntryConfiguration(service: service))
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
                 HStack(spacing: 0) {
@@ -122,7 +124,7 @@ struct AccountOverviewForm: View {
         }
 
         sectionsView
-            .environmentObject(model.dataEntryConfiguration)
+            .environmentObject(model.dataEntryConfiguration(service: service))
             .environmentObject(model.modifiedDetailsBuilder)
             .animation(nil, value: editMode?.wrappedValue)
 
@@ -147,31 +149,8 @@ struct AccountOverviewForm: View {
                 .frame(maxWidth: .infinity, alignment: .center)
     }
 
-    @ViewBuilder var accountHeaderSection: some View {
-        VStack {
-            // we gracefully check if the account details have a name, bypassing the subscript overloads
-            if let name = accountDetails.storage.get(PersonNameKey.self) {
-                UserProfileView(name: name) // TODO may we support an "image loader"? => issue
-                    .frame(height: 90)
-            }
-
-            Text(model.accountHeadline)
-                .font(.title2)
-                .fontWeight(.semibold)
-
-            if let accountSubheadline = model.accountSubheadline {
-                Text(accountSubheadline)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-        }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-    }
-
     @ViewBuilder private var sectionsView: some View {
-        ForEach(model.accountValuesBySections.elements, id: \.key) { category, accountValues in
+        ForEach(model.accountValuesBySections(details: accountDetails).elements, id: \.key) { category, accountValues in
             if !sectionIsEmpty(accountValues) {
                 Section {
                     // While the stored values in `AccountDetails` can change, the list of displayed
@@ -199,9 +178,9 @@ struct AccountOverviewForm: View {
         destructiveState: Binding<ViewState>,
         focusedField: FocusState<String?>
     ) {
+        self.accountDetails = accountDetails
         self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(
             account: account,
-            details: accountDetails,
             state: viewState,
             destructiveState: destructiveState,
             focusedField: focusedField
@@ -227,13 +206,13 @@ struct AccountOverviewForm: View {
                     Button(action: {
                         model.addAccountDetail(for: accountValue)
                     }) {
-                        Text("Add \(accountValue.name)") // TODO localize
+                        Text("VALUE_ADD \(accountValue.name)", bundle: .module)
                     }
                 }
             }
 
-            // for some reason, SwiftUI doesn't update the view, if the `deleteDisabled` changes
-            if model.deleteDisabled(for: accountValue) {
+            // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes
+            if isDeleteDisabled(for: accountValue) {
                 hStack
                     .deleteDisabled(true)
             } else {
@@ -244,14 +223,11 @@ struct AccountOverviewForm: View {
                 HStack {
                     view
                 }
-                    .deleteDisabled(true)
             }
         }
     }
 
     private func onEditModeChange(newValue: EditMode?) {
-        // TODO we have a problem, were the edit mode just flicks back and forth when pressing the cancel button (and then the UI freezes)
-        print("current edit mode: \(editMode) new mode \(newValue)")
         guard newValue == .inactive,
               model.viewState.wrappedValue != .processing else {
             return
@@ -271,7 +247,7 @@ struct AccountOverviewForm: View {
         model.actionTask = Task {
             do {
                 // TODO do all the visual debounce like AsyncButton?
-                try await model.onEditModeChange(editMode: editMode, newValue: newValue)
+                try await model.onEditModeChange(service: service, editMode: editMode, newValue: newValue)
 
                 withAnimation(.easeIn(duration: 0.2)) {
                     model.viewState.wrappedValue = .idle
@@ -297,5 +273,14 @@ struct AccountOverviewForm: View {
         return accountValues.allSatisfy { element in
             !element.isContained(in: accountDetails)
         }
+    }
+
+    func isDeleteDisabled(for value: any AccountValueKey.Type) -> Bool {
+        if value.isContained(in: accountDetails) && !model.removedAccountValues.contains(value) {
+            return account.configuration[value]?.requirement == .required
+        }
+
+        // if not in the addedAccountValues, it's a "add" button
+        return !model.addedAccountValues.contains(value)
     }
 }

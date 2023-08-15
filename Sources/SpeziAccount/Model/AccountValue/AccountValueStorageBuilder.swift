@@ -46,26 +46,9 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 
     @discardableResult
-    fileprivate func set0<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
-        storage[Key.self] = value
-        return self
-    }
-
-
-    @discardableResult
-    public func set<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {
-        set0(key, value: value)
-    }
-
-    @discardableResult
-    public func set<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) -> Self {
-        set0(Key.self, value: value)
-    }
-
-    @discardableResult
     public func set<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) -> Self {
         if let value {
-            return set0(key, value: value)
+            storage[Key.self] = value
         }
         return self
     }
@@ -109,6 +92,6 @@ extension AccountValueKey {
     }
 
     fileprivate static func setEmpty<Container: AccountValueStorageContainer>(in builder: AccountValueStorageBuilder<Container>) {
-        builder.set0(Self.self, value: emptyValue)
+        builder.set(Self.self, value: emptyValue)
     }
 }

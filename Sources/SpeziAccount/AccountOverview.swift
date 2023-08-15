@@ -22,7 +22,7 @@ public struct AccountOverview: View {
     public var body: some View {
         if let details = account.details {
             Form {
-                // splitting everything into a separate subview was actually necessary for the EditButton
+                // Splitting everything into a separate subview was actually necessary for the EditButton
                 // to work in conjunction with the EditMode. Not even the example that Apple provides for the
                 // EditMode works. See https://developer.apple.com/forums/thread/716434
                 AccountOverviewForm(
@@ -46,7 +46,7 @@ public struct AccountOverview: View {
                     }
                 }
                 .padding(.top, -20)
-                .navigationTitle("Account Overview") // TODO localize
+                .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
         } else {
             // TODO handle
@@ -65,13 +65,11 @@ struct AccountOverView_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", middleName: "Michael", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
-        // TODO .set(\.dateOfBirth, value: Date())
 
     static var previews: some View {
         NavigationStack {
             AccountOverview()
                 .environmentObject(Account(building: details, active: MockUsernamePasswordAccountService()))
-                // TODO .environment(\.locale, .init(identifier: "de"))
         }
     }
 }

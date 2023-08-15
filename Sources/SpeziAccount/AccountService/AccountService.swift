@@ -54,7 +54,7 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
 
 
     // TODO its the account services choice to mandate how to handle userId and password changes!
-    func updateAccountDetails(_ details: ModifiedAccountDetails) async throws
+    func updateAccountDetails(_ modifiedDetails: ModifiedAccountDetails) async throws
 
     func updateAccountDetail<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) async throws
 

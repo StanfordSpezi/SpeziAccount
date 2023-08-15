@@ -23,8 +23,25 @@ public class DataEntryValidationClosures { // TODO part of the view model
 
 
     public func register<Key: AccountValueKey>(_ key: Key.Type, validation: @escaping () -> DataValidationResult) {
-        // TODO this currently doesn't allow for multi field inputs (focus state will apply to what?)!
         storage[key.id] = Entry(validationClosure: validation, focusStateValue: key.focusState)
+    }
+
+    func clear() {
+        storage = [:]
+    }
+
+    func runAlLValidationsReturningFailed() -> [String] {
+        self.compactMap { entry in
+            let result = entry.validationClosure()
+            switch result {
+            case .success:
+                return nil
+            case .failed:
+                return entry.focusStateValue
+            case let .failedAtField(focusedField):
+                return focusedField
+            }
+        }
     }
 }
 

@@ -19,6 +19,8 @@ public protocol AccountValueStorageContainer {
 
     /// Checks if the provided ``AccountValueKey`` is currently stored in the container.
     func contains<Key: AccountValueKey>(_ key: Key.Type) -> Bool
+
+    func acceptAll<Visitor: AccountValueVisitor>(_ visitor: Visitor) -> Visitor.FinalResult
 }
 
 /// A `ValueRepository` that stores `KnowledgeSource`s anchored to the ``AccountAnchor``.

@@ -53,26 +53,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             .submitLabel(.done)
     }
 
-    @ViewBuilder var sectionsView: some View {
-        // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
-        ForEach(signupValuesBySections.elements, id: \.key) { category, accountValues in
-            Section {
-                // the array doesn't change, so its fine to rely on the indices as identifiers
-                ForEach(accountValues.indices, id: \.self) { index in
-                    accountValues[index].emptyDataEntryView(for: SignupDetails.self)
-                }
-            } header: {
-                if let title = category.categoryTitle {
-                    Text(title)
-                }
-            } footer: {
-                if category == .credentials && account.configuration[PasswordKey.self] != nil {
-                    PasswordValidationRuleFooter(configuration: service.configuration)
-                }
-            }
-        }
-    }
-
     @ViewBuilder var form: some View {
         Form {
             header
@@ -94,6 +74,26 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
+    @ViewBuilder var sectionsView: some View {
+        // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
+        ForEach(signupValuesBySections.elements, id: \.key) { category, accountValues in
+            Section {
+                // the array doesn't change, so its fine to rely on the indices as identifiers
+                ForEach(accountValues.indices, id: \.self) { index in
+                    accountValues[index].emptyDataEntryView(for: SignupDetails.self)
+                }
+            } header: {
+                if let title = category.categoryTitle {
+                    Text(title)
+                }
+            } footer: {
+                if category == .credentials && account.configuration[PasswordKey.self] != nil {
+                    PasswordValidationRuleFooter(configuration: service.configuration)
+                }
+            }
+        }
+    }
+
 
     init(using service: Service) where Header == Text {
         self.service = service
@@ -107,17 +107,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
 
     private func signupButtonAction() async throws {
-        let failedFields: [String] = validationClosures.compactMap { entry in
-            let result = entry.validationClosure()
-            switch result {
-            case .success:
-                return nil
-            case .failed:
-                return entry.focusStateValue
-            case let .failedAtField(focusedField):
-                return focusedField
-            }
-        }
+        let failedFields: [String] = validationClosures.runAlLValidationsReturningFailed()
 
         if let failedField = failedFields.first {
             focusedDataEntry = failedField
@@ -140,7 +130,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 }
 
 
-// TODO this extension is used somwhere else as well!
+// TODO this extension is used somewhere else as well!
 extension AccountValueStorageBuilder: ObservableObject {}
 
 

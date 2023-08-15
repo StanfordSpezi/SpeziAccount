@@ -9,17 +9,14 @@
 import SpeziViews
 import SwiftUI
 
-// TODO this should be non specific to `UserIdPasswordAccountService`; used for simple account services as well!
 public struct AccountSummary: View {
     private let account: AccountDetails
 
     @State private var viewState: ViewState = .idle
 
-    // TODO extended summary view (=> edit account info, change email?, remove account) (maybe split it into an "Overview" view?)
-
     public var body: some View {
         VStack {
-            // TODO don't assume name existence!(?)
+            // TODO don't assume name existence!(?) and userId?
             UserInformation(name: account.name, caption: account.userId)
 
             AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {

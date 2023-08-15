@@ -10,6 +10,23 @@ import Foundation
 
 // TODO docs! rename UserId => make userid type controllable!
 public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
+    private struct AccountValueUpdater: AccountValueVisitor {
+        var detailsBuilder: AccountDetails.Builder
+
+        init(details: AccountDetails) {
+            self.detailsBuilder = .init(from: details)
+        }
+
+        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountValueKey {
+            print("Setting \(Key.self) to \(value)")
+            detailsBuilder.set(key, value: value)
+        }
+
+        func buildFinal() -> AccountDetails.Builder {
+            detailsBuilder
+        }
+    }
+
     @AccountReference private var account: Account
 
 
@@ -55,9 +72,13 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         await account.removeUserDetails()
     }
 
-    public func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
-        print("Update Account Details")
+    public func updateAccountDetails(_ modifiedDetails: ModifiedAccountDetails) async throws {
+        guard let details = await account.details else {
+            return
+        }
+
         try? await Task.sleep(for: .seconds(1))
-        // TODO update the previous details!
+        let builder = modifiedDetails.acceptAll(AccountValueUpdater(details: details))
+        await account.supplyUserDetails(builder.build(owner: self))
     }
 }
