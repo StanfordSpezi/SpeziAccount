@@ -44,7 +44,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                         Spacer()
                     }
                 }
-                    .navigationTitle(Text("UP_RESET_PASSWORD".localized(.module)))
+                    .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                     .disableDismissiveActions(isProcessing: state)
                     .viewStateAlert(state: $state)

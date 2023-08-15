@@ -47,7 +47,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     public var body: some View {
         form
-            .navigationTitle(Text("UP_SIGNUP".localized(.module)))
+            .navigationTitle(Text("UP_SIGNUP", bundle: .module))
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .submitLabel(.done)

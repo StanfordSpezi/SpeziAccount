@@ -64,8 +64,26 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 
     @discardableResult
-    public func remove<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> Self {
-        storage[Key.self] = nil
+    public func remove<Key: AccountValueKey>(_ key: Key.Type) -> Self {
+        storage[key] = nil
         return self
+    }
+
+    @discardableResult
+    public func remove<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> Self {
+        remove(Key.self)
+    }
+
+    @discardableResult
+    func remove(any accountValue: any AccountValueKey.Type) -> Self {
+        // TODO generalize this API?
+        accountValue.remove(from: self)
+        return self
+    }
+}
+
+extension AccountValueKey {
+    fileprivate static func remove<Container: AccountValueStorageContainer>(from builder: AccountValueStorageBuilder<Container>) {
+        builder.remove(Self.self)
     }
 }

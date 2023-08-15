@@ -10,7 +10,7 @@ import OrderedCollections
 import SwiftUI
 
 
-public class DataEntryValidationClosures {
+public class DataEntryValidationClosures { // TODO part of the view model
     public struct Entry {
         public let validationClosure: () -> DataValidationResult
         public let focusStateValue: String

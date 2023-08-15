@@ -15,113 +15,77 @@ import SwiftUI
 struct AccountOverviewForm: View {
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
-    @EnvironmentObject private var account: Account
     @Environment(\.logger) private var logger
-    @Environment(\.processingDebounceDuration) var processingDebounceDuration
+    @Environment(\.defaultErrorDescription) private var defaultErrorDescription
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
 
-    @State private var addedAccountValues: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> = [:]
-    @StateObject private var modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
-    // We just use @State here for the class type, as there is nothing in it that should trigger an UI update.
-    // However, we need to preserve the class state across UI updates.
-    @State private var validationClosures = DataEntryValidationClosures()
-
-    @Binding private var viewState: ViewState
-    @FocusState private var focusedDataEntry: String?
-
-    // TODO can we split stuff out into subviews?
-    @State private var actionTask: Task<Void, Never>?
-    @State private var presentingCancellationDialog = false
-
-    // TODO at this point a ViewModel would be ideal right?
-    private var accountValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
-        // We could also just iterate over the `AccountDetails` and show whatever is present.
-        // However, we deliberately don't do that. We have the `.supported` requirement option for such cases.
-        // And not doing this allows for modelling "shadow" account values that are present but never shown to the user
-        // to manage additional state.
-
-        let results = account.configuration.reduce(into: OrderedDictionary()) { result, requirement in
-            guard requirement.anyKey.category != AccountValueCategory.credentials else {
-                // TODO name shouldn't be displayed!!!!
-                return
-            }
-            // TODO we need to handle `Credentials` categories differently!
-            //  => assume: UserId will be the only credential that is not about passwords!
-            //  => everything else is placed into the `Password & Security` section(?)
-            //   => can we do different categories for password and userId?
-
-            result[requirement.anyKey.category, default: []] += [requirement.anyKey]
-        }
-
-        return results.mapValues { value in
-            // We make sure that for all values where there isn't a value stored in the `AccountDetails`
-            // the `add` button is presented at the bottom of the section.
-            value.sorted { lhs, rhs in
-                // we are (strictly) in increasing order, if lhs is true and rhs is false
-                lhs.isContained(in: accountDetails) && !rhs.isContained(in: accountDetails)
-            }
-        }
-    }
-
-    private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, validationClosures: validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
-    }
-
-
-    private var accountHeadline: String {
-        // we gracefully check if the account details have a name, bypassing the subscript overloads
-        if let name = accountDetails.storage.get(PersonNameKey.self) {
-            return name.formatted(.name(style: .long))
-        } else {
-            // otherwise we display the userId
-            return accountDetails.userId
-        }
-    }
-
-    private var accountSubheadline: String? {
-        if accountDetails.storage.get(PersonNameKey.self) != nil {
-            // If the accountHeadline uses the name, we display the userId as the subheadline
-            return accountDetails.userId
-        } else if accountDetails.userIdType != .emailAddress,
-                  let email = accountDetails.email {
-            // Otherwise, headline will be the userId. Therefore, we check if the userId is not already
-            // displaying the email address. In this case the subheadline will be the email if available.
-            return email
-        }
-
-        return nil
-    }
+    @StateObject private var model: AccountOverviewFormViewModel
 
 
     var body: some View {
         accountHeaderSection
             // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
             // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
-            .interactiveDismissDisabled(!modifiedDetailsBuilder.isEmpty) // prevent skipping our confirmation dialog
-            .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false) // we show a cancel button in this case
+            .interactiveDismissDisabled(model.hasUnsavedChanges || model.isProcessing)
+            .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || model.isProcessing)
             .onChange(of: editMode?.wrappedValue, perform: onEditModeChange)
             .toolbar {
-                if editMode?.wrappedValue.isEditing == true {
+                if editMode?.wrappedValue.isEditing == true && !model.isProcessing {
                     ToolbarItemGroup(placement: .cancellationAction) {
-                        Button(role: .cancel, action: cancelAction) {
-                            Text("Cancel") // TODO localized
+                        Button(role: .cancel, action: {
+                            model.cancelEditAction(editMode: editMode)
+                        }) {
+                            Text("CANCEL", bundle: .module)
                         }
                     }
                 }
             }
-            // TODO not sure if the title is displayed!
-            .confirmationDialog(Text("DISCARD_CHANGES_TITLE".localized(.module)), isPresented: $presentingCancellationDialog) {
-                Button(role: .destructive, action: discardChangesAction) {
-                    Text("DISCARD_CHANGES".localized(.module))
+            .confirmationDialog(
+                Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
+                isPresented: $model.presentingCancellationDialog,
+                titleVisibility: .visible
+            ) {
+                Button(role: .destructive, action: {
+                    model.discardChangesAction(editMode: editMode)
+                }) {
+                    Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
                 }
                 Button(role: .cancel, action: {}) {
-                    Text("KEEP_EDITING".localized(.module))
+                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
                 }
+            }
+            .alert(Text("CONFIRMATION_LOGOUT", bundle: .module), isPresented: $model.presentingLogoutAlert) {
+                // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
+                // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
+                // to manage our async task and setting the ViewState.
+                AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                    try await model.accountLogoutAction()
+                    dismiss()
+                }) {
+                    Text("UP_LOGOUT", bundle: .module)
+                }
+                    .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+
+                Button(role: .cancel, action: {}) {
+                    Text("CANCEL", bundle: .module)
+                }
+            }
+            .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
+                // see the discussion of the AsyncButton in the above alert closure
+                AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                    try await model.accountRemovalAction()
+                    dismiss()
+                }) {
+                    Text("DELETE", bundle: .module)
+                }
+                    .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+
+                Button(role: .cancel, action: {}) {
+                    Text("CANCEL", bundle: .module)
+                }
+            } message: {
+                Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
 
         Section {
@@ -131,22 +95,25 @@ struct AccountOverviewForm: View {
         }
 
         sectionsView
-            .environmentObject(dataEntryConfiguration)
-            .environmentObject(modifiedDetailsBuilder)
+            .environmentObject(model.dataEntryConfiguration)
+            .environmentObject(model.modifiedDetailsBuilder)
             .animation(nil, value: editMode?.wrappedValue)
 
             // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?
-            Group {
+            HStack {
                 if editMode?.wrappedValue.isEditing == true {
-                    AsyncButton("Delete Account", role: .destructive) {
-                        // TODO confirm removal
-                        try? await service.delete() // TODO catch and default error!
-                        dismiss()
+                    AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                        // While the action closure itself is not async, we rely on ability to render loading indicator
+                        // of the AsyncButton which based on the externally supplied viewState.
+                        model.presentingRemovalAlert = true
+                    }) {
+                        Text("DELETE_ACCOUNT", bundle: .module)
                     }
                 } else {
-                    AsyncButton("Logout", role: .destructive) {
-                        try? await service.logout() // TODO catch and default error
-                        dismiss()
+                    AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                        model.presentingLogoutAlert = true
+                    }) {
+                        Text("UP_LOGOUT", bundle: .module)
                     }
                 }
             }
@@ -157,15 +124,15 @@ struct AccountOverviewForm: View {
         VStack {
             // we gracefully check if the account details have a name, bypassing the subscript overloads
             if let name = accountDetails.storage.get(PersonNameKey.self) {
-                UserProfileView(name: name) // TODO may we support an "image loader"?
-                    .frame(height: 90) // TODO verify on other devices?
+                UserProfileView(name: name) // TODO may we support an "image loader"? => issue
+                    .frame(height: 90)
             }
 
-            Text(accountHeadline)
+            Text(model.accountHeadline)
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            if let accountSubheadline {
+            if let accountSubheadline = model.accountSubheadline {
                 Text(accountSubheadline)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -177,7 +144,7 @@ struct AccountOverviewForm: View {
     }
 
     @ViewBuilder private var sectionsView: some View {
-        ForEach(accountValuesBySections.elements, id: \.key) { category, accountValues in
+        ForEach(model.accountValuesBySections.elements, id: \.key) { category, accountValues in
             if !sectionIsEmpty(accountValues) {
                 Section {
                     // While the stored values in `AccountDetails` can change, the list of displayed
@@ -185,24 +152,9 @@ struct AccountOverviewForm: View {
                     ForEach(accountValues.indices, id: \.self) { index in
                         buildRow(for: accountValues[index])
                     }
-                        .onDelete { index in
-                            // TODO we need to track deleted elements and also hide them in the implementation
-                            //   => additionally, our ModifiedDetails data structure isn't enough anymore!
-                            print("deleted \(index)")
+                        .onDelete { indexSet in
+                            model.deleteAccountValue(at: indexSet, in: accountValues)
                         }
-
-                    // addedAccountValues will only be populated in edit mode, so no need to explicitly check for it
-                    if let addedValues = addedAccountValues[category] {
-                        // as addedValues is append only, the indices are stable identifiers
-                        ForEach(addedValues.indices, id: \.self) { index in
-                            addedValues[index].emptyDataEntryView(for: ModifiedAccountDetails.self)
-                        }
-                            .onDelete { index in
-                                // TODO so the index is not a stable identifier anymore!
-                                addedAccountValues[category]?.remove(atOffsets: index)
-                                print("deleted index \(index)")
-                            }
-                    }
                 } header: {
                     if let title = category.categoryTitle {
                         Text(title)
@@ -213,30 +165,49 @@ struct AccountOverviewForm: View {
     }
 
 
-    init(details account: AccountDetails, state viewState: Binding<ViewState>, focusedField: FocusState<String?>) {
-        self.accountDetails = account
-        self._viewState = viewState
-        self._focusedDataEntry = focusedField
+    init(
+        account: Account,
+        details accountDetails: AccountDetails,
+        state viewState: Binding<ViewState>,
+        destructiveState: Binding<ViewState>,
+        focusedField: FocusState<String?>
+    ) {
+        self.accountDetails = accountDetails
+        self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(
+            account: account,
+            details: accountDetails,
+            state: viewState,
+            destructiveState: destructiveState,
+            focusedField: focusedField
+        ))
     }
 
 
     @ViewBuilder
     private func buildRow(for accountValue: any AccountValueKey.Type) -> some View {
         if editMode?.wrappedValue.isEditing == true {
-            if let view = accountValue.dataEntryViewWithCurrentStoredValue(from: accountDetails, for: ModifiedAccountDetails.self) {
-                HStack {
+            // we place everything in the same HStack, such that animations are smooth
+            let hStack = HStack {
+                if let view = accountValue.dataEntryViewWithCurrentStoredValue(from: accountDetails, for: ModifiedAccountDetails.self) {
                     view
+                } else if model.addedAccountValues.contains(accountValue) {
+                    accountValue.emptyDataEntryView(for: ModifiedAccountDetails.self)
+                        .deleteDisabled(false)
+                } else {
+                    Button(action: {
+                        model.addAccountDetail(for: accountValue)
+                    }) {
+                        Text("Add \(accountValue.name)") // TODO localize
+                    }
                 }
-                    .deleteDisabled(account.configuration[accountValue]?.requirement == .required)
-            } else if !addedAccountValues[accountValue.category, default: []].contains(where: { $0.id == accountValue.id }) {
-                // TODO simplify if condition
-                // only display a add button if we are not currently adding a new value for it
-                Button(action: {
-                    addDetail(for: accountValue)
-                }) {
-                    Text("Add \(accountValue.name)") // TODO localize
-                }
+            }
+
+            // for some reason, SwiftUI doesn't update the view, if the `deleteDisabled` changes
+            if model.deleteDisabled(for: accountValue) {
+                hStack
                     .deleteDisabled(true)
+            } else {
+                hStack
             }
         } else {
             if let view = accountValue.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
@@ -248,103 +219,38 @@ struct AccountOverviewForm: View {
         }
     }
 
-
-    private func cancelAction() {
-        if modifiedDetailsBuilder.isEmpty {
-            discardChangesAction()
-            return
-        }
-
-        presentingCancellationDialog = true
-
-        logger.debug("Found \(modifiedDetailsBuilder.count) modified elements. Asking to discard.")
-    }
-
-    private func discardChangesAction() {
-        logger.debug("Exciting edit mode and discarding changes.")
-
-        resetState()
-    }
-
-    private func addDetail(for value: any AccountValueKey.Type) {
-        logger.debug("Adding new account value \(value) to the edit view!")
-
-        addedAccountValues[value.category, default: []]
-            .append(value) // TODO prevent double clicks?
-    }
-
     private func onEditModeChange(newValue: EditMode?) {
         guard newValue == .inactive,
-              viewState != .processing else {
+              model.viewState.wrappedValue != .processing else {
             return
         }
 
-        guard !modifiedDetailsBuilder.isEmpty else {
+        guard !model.modifiedDetailsBuilder.isEmpty else {
             logger.debug("Not saving anything, as there is were no changes!")
             return
         }
 
-        logger.debug("Exciting edit mode and saving \(modifiedDetailsBuilder.count) changes to AccountService!")
+        logger.debug("Exciting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
 
         withAnimation(.easeOut(duration: 0.2)) {
-            viewState = .processing
+            model.viewState.wrappedValue = .processing
         }
 
-        actionTask = Task {
+        model.actionTask = Task {
             do {
                 // TODO do all the visual debounce like AsyncButton?
-
-                if validateInputs() {
-                    try await service.updateAccountDetails(modifiedDetailsBuilder.build())
-                    logger.debug("\(modifiedDetailsBuilder.count) items saved successfully.")
-
-                    resetState() // this reset the edit mode
-                } else {
-                    logger.debug("Some input validation failed. Staying in edit mode!")
-                }
+                try await model.onEditModeChange(editMode: editMode, newValue: newValue)
 
                 withAnimation(.easeIn(duration: 0.2)) {
-                    viewState = .idle
+                    model.viewState.wrappedValue = .idle
                 }
             } catch {
-                viewState = .error(AnyLocalizedError(
+                model.viewState.wrappedValue = .error(AnyLocalizedError(
                     error: error,
-                    defaultErrorDescription: "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR".localized(.module)
+                    defaultErrorDescription: defaultErrorDescription
                 ))
             }
         }
-    }
-
-    private func validateInputs() -> Bool {
-        // TODO this is a 1:1 code copy!
-        let failedFields: [String] = validationClosures.compactMap { entry in
-            let result = entry.validationClosure()
-            switch result {
-            case .success:
-                return nil
-            case .failed:
-                return entry.focusStateValue
-            case let .failedAtField(focusedField):
-                return focusedField
-            }
-        }
-
-        if let failedField = failedFields.first {
-            focusedDataEntry = failedField
-            return false
-        }
-
-        focusedDataEntry = nil
-        return true
-    }
-
-    private func resetState() {
-        // clearing the builder before switching the edit mode
-        modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
-        addedAccountValues = [:]
-
-        editMode?.wrappedValue = .inactive
-        validationClosures = DataEntryValidationClosures()
     }
 
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing

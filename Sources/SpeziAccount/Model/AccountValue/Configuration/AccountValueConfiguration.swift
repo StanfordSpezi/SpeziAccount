@@ -9,7 +9,7 @@
 import OrderedCollections
 
 
-public struct AccountValueConfiguration {
+public struct AccountValueConfiguration { // TODO model it as a OptionSet?
     public static let `default` = AccountValueConfiguration(.default)
 
 
@@ -49,7 +49,8 @@ extension Array where Element == ConfiguredAccountValue {
         .requires(\.password),
         .requires(\.name),
         .collects(\.dateOfBirth),
-        .collects(\.genderIdentity)
+        .collects(\.genderIdentity),
+        .collects(\.email) // TODO remove
     ]
 }
 

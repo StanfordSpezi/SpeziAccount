@@ -14,6 +14,8 @@ public struct AccountOverview: View {
     @EnvironmentObject private var account: Account
 
     @State private var viewState: ViewState = .idle
+    // separate view state for any destructive actions like logout or account removal
+    @State private var destructiveViewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
 
 
@@ -23,17 +25,25 @@ public struct AccountOverview: View {
                 // splitting everything into a separate subview was actually necessary for the EditButton
                 // to work in conjunction with the EditMode. Not even the example that Apple provides for the
                 // EditMode works. See https://developer.apple.com/forums/thread/716434
-                AccountOverviewForm(details: details, state: $viewState, focusedField: _focusedDataEntry)
+                AccountOverviewForm(
+                    account: account,
+                    details: details,
+                    state: $viewState,
+                    destructiveState: $destructiveViewState,
+                    focusedField: _focusedDataEntry
+                )
+                    .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             }
                 .viewStateAlert(state: $viewState)
-                .submitLabel(.done)
+                .viewStateAlert(state: $destructiveViewState)
+                .submitLabel(.done) // TODO next label?
                 .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
-                        EditButton()
-                            .processingOverlay(isProcessing: viewState)
+                    if destructiveViewState == .idle {
+                        ToolbarItemGroup(placement: .primaryAction) {
+                            EditButton()
+                                .processingOverlay(isProcessing: viewState)
+                        }
                     }
-                    // TODO warn discarding changes when pressin back button
-                    //  => hide back button and place a cancel button!
                 }
                 .padding(.top, -20)
         } else {

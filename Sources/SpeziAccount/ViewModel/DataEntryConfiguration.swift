@@ -28,7 +28,7 @@ import SwiftUI
 ///
 /// ```
 /// - Note: Accessing the `DataEntryConfiguration` outside of a data entry parent view is undefined behavior.
-public class DataEntryConfiguration: ObservableObject {
+public class DataEntryConfiguration: ObservableObject { // TODO this is a view Model
     /// The `AccountServiceConfiguration` of the ``AccountService`` for which we currently perform data entry.
     public let serviceConfiguration: AccountServiceConfiguration
     /// A control structure that allows you to register data entry validation closures to run input validation
