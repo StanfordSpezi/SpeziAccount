@@ -21,49 +21,27 @@ class AccountOverviewFormViewModel: ObservableObject {
     private let account: Account // we just access this for static data
 
 
-    @Published var viewState: Binding<ViewState>
-    // we have custom state to control the loading indicator of destructive actions (logout, removal)
-    @Published var destructiveViewState: Binding<ViewState>
-
-    @FocusState var focusedDataEntry: String? // TODO this must also be published?
     @Published var presentingCancellationDialog = false
     @Published var presentingLogoutAlert = false
     @Published var presentingRemovalAlert = false
 
     @Published var addedAccountValues = CategorizedAccountValues()
-    @Published var removedAccountValues = CategorizedAccountValues() // TODO communicate them back to the account service!
+    @Published var removedAccountValues = CategorizedAccountValues()
 
     // We are not updating the view based on the properties here. We just need to track these states for processing.
     // As we are using a reference type, state is persisted across views.
     let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
-    private var validationClosures = DataEntryValidationClosures()
-    var actionTask: Task<Void, Never>?
-
+    let validationClosures = DataEntryValidationClosures()
 
     var hasUnsavedChanges: Bool {
         !modifiedDetailsBuilder.isEmpty
     }
 
-    var isProcessing: Bool {
-        viewState.wrappedValue == .processing || destructiveViewState.wrappedValue == .processing
-    }
 
-
-    init(
-        account: Account,
-        state viewState: Binding<ViewState>,
-        destructiveState: Binding<ViewState>,
-        focusedField: FocusState<String?>
-    ) {
+    init(account: Account) {
         self.account = account
-        self._viewState = Published(wrappedValue: viewState)
-        self._destructiveViewState = Published(wrappedValue: destructiveState)
-        self._focusedDataEntry = focusedField
     }
 
-    func dataEntryConfiguration(service: any AccountService) -> DataEntryConfiguration {
-        .init(configuration: service.configuration, validationClosures: validationClosures, focusedField: _focusedDataEntry, viewState: viewState)
-    }
 
     func accountValuesBySections(details accountDetails: AccountDetails) -> OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
         // We could also just iterate over the `AccountDetails` and show whatever is present.
@@ -148,27 +126,22 @@ class AccountOverviewFormViewModel: ObservableObject {
         resetEditState(editMode: editMode)
     }
 
-    func onEditModeChange(service: any AccountService, editMode: Binding<EditMode>?, newValue: EditMode?) async throws {
-        if validateInputs() {
-            try await service.updateAccountDetails(modifiedDetailsBuilder.build())
-            Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
+    func updateAccountDetails(service: any AccountService, details: AccountDetails, editMode: Binding<EditMode>?) async throws {
+        let removedDetailsBuilder = RemovedAccountDetails.Builder()
 
-            resetEditState(editMode: editMode) // this reset the edit mode as well
-        } else {
-            Self.logger.debug("Some input validation failed. Staying in edit mode!")
-        }
-    }
-
-    private func validateInputs() -> Bool {
-        let failedFields: [String] = validationClosures.runAlLValidationsReturningFailed()
-
-        if let failedField = failedFields.first {
-            focusedDataEntry = failedField
-            return false
+        for removedKey in removedAccountValues.values {
+            removedKey.addValue(to: removedDetailsBuilder, from: details)
         }
 
-        focusedDataEntry = nil
-        return true
+        let modifications = AccountModifications(
+            modifiedDetails: modifiedDetailsBuilder.build(),
+            removedAccountDetails: removedDetailsBuilder.build()
+        )
+
+        try await service.updateAccountDetails(modifications)
+        Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
+
+        resetEditState(editMode: editMode) // this reset the edit mode as well
     }
 
     private func resetEditState(editMode: Binding<EditMode>?) {
@@ -180,5 +153,19 @@ class AccountOverviewFormViewModel: ObservableObject {
         validationClosures.clear()
 
         editMode?.wrappedValue = .inactive
+    }
+}
+
+
+extension AccountValueKey {
+    fileprivate static func addValue<Container: AccountValueStorageContainer>(
+        to builder: AccountValueStorageBuilder<Container>,
+        from details: AccountDetails
+    ) {
+        guard let value = details.storage.get(Self.self) else {
+            return
+        }
+
+        builder.set(Self.self, value: value)
     }
 }

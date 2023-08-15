@@ -53,9 +53,11 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
     func delete() async throws
 
 
-    // TODO its the account services choice to mandate how to handle userId and password changes!
-    func updateAccountDetails(_ modifiedDetails: ModifiedAccountDetails) async throws
+    // TODO docs: its the account services choice to mandate how to handle userId and password changes!
+    func updateAccountDetails(_ modifications: AccountModifications) async throws
 
+
+    // TODO are all these overloads necessary?
     func updateAccountDetail<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) async throws
 
     func updateAccountDetail<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) async throws
@@ -94,7 +96,12 @@ extension AccountService {
         let modifiedDetails = ModifiedAccountDetails.Builder()
             .set(Key.self, value: value)
             .build()
-        try await updateAccountDetails(modifiedDetails)
+
+        let modifications = AccountModifications(
+            modifiedDetails: modifiedDetails,
+            removedAccountDetails: RemovedAccountDetails.Builder().build()
+        )
+        try await updateAccountDetails(modifications)
     }
 
     public func updateAccountDetail<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) async throws {

@@ -48,17 +48,17 @@ public class DataEntryConfiguration: ObservableObject { // TODO this is a view M
     /// Initializes a new DataEntryConfiguration object.
     /// - Parameters:
     ///   - configuration: The ``AccountServiceConfiguration`` of the ``AccountService`` we currently perform data entry for.
-    ///   - validationClosures: The ``DataEntryValidationClosures`` object where subviews can register the submission hooks.
+    ///   - closures: The ``DataEntryValidationClosures`` object where subviews can register the submission hooks.
     ///   - focusedField: The `FocusState` of the data entry view.
     ///   - viewState: The Spezi `ViewState` of the data entry view.
     init(
         configuration: AccountServiceConfiguration,
-        validationClosures: DataEntryValidationClosures,
+        closures: DataEntryValidationClosures,
         focusedField: FocusState<String?>,
         viewState: Binding<ViewState>
     ) {
         self.serviceConfiguration = configuration
-        self.validationClosures = validationClosures
+        self.validationClosures = closures
         self.focusedField = focusedField
         self.viewState = viewState
     }

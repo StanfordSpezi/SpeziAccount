@@ -27,6 +27,23 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         }
     }
 
+    private struct AccountValueRemover: AccountValueVisitor {
+        var detailsBuilder: AccountDetails.Builder
+
+        init(builder detailsBuilder: AccountDetails.Builder) {
+            self.detailsBuilder = detailsBuilder
+        }
+
+        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountValueKey {
+            print("Removing \(key) with old value \(value)")
+            detailsBuilder.remove(key)
+        }
+
+        func buildFinal() -> AccountDetails.Builder {
+            detailsBuilder
+        }
+    }
+
     @AccountReference private var account: Account
 
 
@@ -72,13 +89,19 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         await account.removeUserDetails()
     }
 
-    public func updateAccountDetails(_ modifiedDetails: ModifiedAccountDetails) async throws {
+    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
         guard let details = await account.details else {
             return
         }
 
         try? await Task.sleep(for: .seconds(1))
-        let builder = modifiedDetails.acceptAll(AccountValueUpdater(details: details))
-        await account.supplyUserDetails(builder.build(owner: self))
+
+        // TODO can this API surface be more elegant?
+        let builder = modifications.modifiedDetails
+            .acceptAll(AccountValueUpdater(details: details))
+        let finalBuilder = modifications.removedAccountDetails
+            .acceptAll(AccountValueRemover(builder: builder))
+
+        await account.supplyUserDetails(finalBuilder.build(owner: self))
     }
 }

@@ -12,7 +12,7 @@ import SwiftUI
 
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
-struct AccountOverviewForm: View {
+struct AccountOverviewSections: View {
     private let accountDetails: AccountDetails
 
     private var service: any AccountService {
@@ -22,28 +22,55 @@ struct AccountOverviewForm: View {
     @EnvironmentObject private var account: Account
 
     @Environment(\.logger) private var logger
-    @Environment(\.defaultErrorDescription) private var defaultErrorDescription
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var model: AccountOverviewFormViewModel
 
+    @State private var viewState: ViewState = .idle
+    // separate view state for any destructive actions like logout or account removal
+    @State private var destructiveViewState: ViewState = .idle
+    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
+
+
+    var isProcessing: Bool {
+        viewState == .processing || destructiveViewState == .processing
+    }
+
+    var dataEntryConfiguration: DataEntryConfiguration {
+        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+    }
+
 
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
+            // TODO move them back to the Form!
             // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
             // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
-            .interactiveDismissDisabled(model.hasUnsavedChanges || model.isProcessing)
-            .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || model.isProcessing)
-            .onChange(of: editMode?.wrappedValue, perform: onEditModeChange)
+            .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
+            .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || isProcessing)
+            .viewStateAlert(state: $viewState)
+            .viewStateAlert(state: $destructiveViewState)
             .toolbar {
-                if editMode?.wrappedValue.isEditing == true && !model.isProcessing {
+                if editMode?.wrappedValue.isEditing == true && !isProcessing {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(action: {
                             model.cancelEditAction(editMode: editMode)
                         }) {
                             Text("CANCEL", bundle: .module)
                         }
+                    }
+                }
+                if destructiveViewState == .idle {
+                    ToolbarItemGroup(placement: .primaryAction) {
+                        AsyncButton(state: $viewState, action: editButtonAction) {
+                            if editMode?.wrappedValue.isEditing == true {
+                                Text("DONE", bundle: .module)
+                            } else {
+                                Text("EDIT", bundle: .module)
+                            }
+                        }
+                            .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                     }
                 }
             }
@@ -65,7 +92,7 @@ struct AccountOverviewForm: View {
                 // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
-                AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.logout()
                     dismiss()
                 }) {
@@ -79,7 +106,7 @@ struct AccountOverviewForm: View {
             }
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
-                AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.delete()
                     dismiss()
                 }) {
@@ -97,7 +124,7 @@ struct AccountOverviewForm: View {
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
-                    .environmentObject(model.dataEntryConfiguration(service: service))
+                    .environmentObject(dataEntryConfiguration)
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
                 HStack(spacing: 0) {
@@ -110,7 +137,7 @@ struct AccountOverviewForm: View {
             }
             NavigationLink {
                 SecurityOverview(model: model, details: accountDetails)
-                    .environmentObject(model.dataEntryConfiguration(service: service))
+                    .environmentObject(dataEntryConfiguration)
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
                 HStack(spacing: 0) {
@@ -124,29 +151,29 @@ struct AccountOverviewForm: View {
         }
 
         sectionsView
-            .environmentObject(model.dataEntryConfiguration(service: service))
+            .environmentObject(dataEntryConfiguration)
             .environmentObject(model.modifiedDetailsBuilder)
             .animation(nil, value: editMode?.wrappedValue)
 
-            // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?
-            HStack {
-                if editMode?.wrappedValue.isEditing == true {
-                    AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
-                        // While the action closure itself is not async, we rely on ability to render loading indicator
-                        // of the AsyncButton which based on the externally supplied viewState.
-                        model.presentingRemovalAlert = true
-                    }) {
-                        Text("DELETE_ACCOUNT", bundle: .module)
-                    }
-                } else {
-                    AsyncButton(role: .destructive, state: model.destructiveViewState, action: {
-                        model.presentingLogoutAlert = true
-                    }) {
-                        Text("UP_LOGOUT", bundle: .module)
-                    }
+        // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?
+        HStack {
+            if editMode?.wrappedValue.isEditing == true {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    // While the action closure itself is not async, we rely on ability to render loading indicator
+                    // of the AsyncButton which based on the externally supplied viewState.
+                    model.presentingRemovalAlert = true
+                }) {
+                    Text("DELETE_ACCOUNT", bundle: .module)
+                }
+            } else {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    model.presentingLogoutAlert = true
+                }) {
+                    Text("UP_LOGOUT", bundle: .module)
                 }
             }
-                .frame(maxWidth: .infinity, alignment: .center)
+        }
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     @ViewBuilder private var sectionsView: some View {
@@ -173,18 +200,10 @@ struct AccountOverviewForm: View {
 
     init(
         account: Account,
-        details accountDetails: AccountDetails,
-        state viewState: Binding<ViewState>,
-        destructiveState: Binding<ViewState>,
-        focusedField: FocusState<String?>
+        details accountDetails: AccountDetails
     ) {
         self.accountDetails = accountDetails
-        self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(
-            account: account,
-            state: viewState,
-            destructiveState: destructiveState,
-            focusedField: focusedField
-        ))
+        self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(account: account))
     }
 
 
@@ -227,38 +246,39 @@ struct AccountOverviewForm: View {
         }
     }
 
-    private func onEditModeChange(newValue: EditMode?) {
-        guard newValue == .inactive,
-              model.viewState.wrappedValue != .processing else {
+    private func editButtonAction() async throws {
+        if editMode?.wrappedValue.isEditing == false {
+            editMode?.wrappedValue = .active
             return
         }
 
+        // TODO move that back into the model again?
+
         guard !model.modifiedDetailsBuilder.isEmpty else {
             logger.debug("Not saving anything, as there were no changes!")
+            model.discardChangesAction(editMode: editMode)
             return
         }
 
         logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
 
-        withAnimation(.easeOut(duration: 0.2)) {
-            model.viewState.wrappedValue = .processing
+        if validateInputs() {
+            try await model.updateAccountDetails(service: service, details: accountDetails, editMode: editMode)
+        } else {
+            logger.debug("Some input validation failed. Staying in edit mode!")
+        }
+    }
+
+    private func validateInputs() -> Bool {
+        let failedFields: [String] = model.validationClosures.runAlLValidationsReturningFailed()
+
+        if let failedField = failedFields.first {
+            focusedDataEntry = failedField
+            return false
         }
 
-        model.actionTask = Task {
-            do {
-                // TODO do all the visual debounce like AsyncButton?
-                try await model.onEditModeChange(service: service, editMode: editMode, newValue: newValue)
-
-                withAnimation(.easeIn(duration: 0.2)) {
-                    model.viewState.wrappedValue = .idle
-                }
-            } catch {
-                model.viewState.wrappedValue = .error(AnyLocalizedError(
-                    error: error,
-                    defaultErrorDescription: defaultErrorDescription
-                ))
-            }
-        }
+        focusedDataEntry = nil
+        return true
     }
 
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing

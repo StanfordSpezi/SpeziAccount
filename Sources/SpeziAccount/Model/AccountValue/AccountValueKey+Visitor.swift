@@ -9,7 +9,7 @@
 import Spezi
 
 
-extension AccountValueStorageContainer {
+extension AccountValueStorageBaseContainer {
     public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: Visitor) -> Visitor.FinalResult {
         for entry in storage {
             print("Visiting entry \(entry)!")

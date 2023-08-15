@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -17,6 +18,13 @@ struct NameOverview: View {
     }
 
     @ObservedObject private var model: AccountOverviewFormViewModel
+
+    @State private var viewState: ViewState = .idle
+    @FocusState private var focusedDataEntry: String?
+
+    var dataEntryConfiguration: DataEntryConfiguration {
+        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+    }
 
     var body: some View {
         Form {
@@ -46,6 +54,7 @@ struct NameOverview: View {
                 }
             }
         }
+            .viewStateAlert(state: $viewState)
             .navigationTitle("Name, E-Mail Address") // TODO navigation title
             .onDisappear {
                 // TODO as we are reusing parent view model, clear all state!
@@ -58,7 +67,7 @@ struct NameOverview: View {
             // TODO set focus on the first name!
         }
             .navigationTitle("Name")
-            .environmentObject(model.dataEntryConfiguration(service: service))
+            .environmentObject(dataEntryConfiguration)
             .environmentObject(model.modifiedDetailsBuilder)
             .toolbar {
                 Button("Done", action: { print("Done")}) // TODO async button
@@ -77,7 +86,7 @@ struct NameOverview: View {
             UserIdKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
         }
             .navigationTitle("E-Mail Address")
-            .environmentObject(model.dataEntryConfiguration(service: service))
+            .environmentObject(dataEntryConfiguration)
             .environmentObject(model.modifiedDetailsBuilder)
             .toolbar {
                 Button("Done", action: { print("Done")}) // TODO async button

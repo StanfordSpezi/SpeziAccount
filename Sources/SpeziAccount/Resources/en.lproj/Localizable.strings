@@ -99,6 +99,8 @@
 "CONFIRMATION_REMOVAL" = "Are you sure you want to delete your account?";
 "CONFIRMATION_REMOVAL_SUGGESTION" = "This change is permanent and you won't be able to recover your account information.";
 "DELETE_ACCOUNT" = "Delete Account";
+"DONE" = "Done";
+"EDIT" = "Edit";
 "DELETE"= "Delete";
 "CANCEL" = "Cancel";
 "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Could not save account details!";

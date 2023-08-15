@@ -48,6 +48,8 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
             }
         }
             .onChange(of: value) { newValue in
+                // TODO shall we remove empty strings (aka empty values?) => will need to fix validation rules
+
                 // ensure parent view has access to the latest value
                 detailsBuilder.set(Wrapped.Key.self, value: newValue)
             }

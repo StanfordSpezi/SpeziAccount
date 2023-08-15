@@ -9,8 +9,8 @@
 import Spezi
 
 
-public class AccountValueStorageBuilder<Container: AccountValueStorageContainer> {
-    var storage: AccountValueStorage
+public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>: AccountValueStorageBaseContainer {
+    public var storage: AccountValueStorage // TODO make some protocol such that this can stay!
 
     /// The count of elements stored in the builder.
     public var count: Int {

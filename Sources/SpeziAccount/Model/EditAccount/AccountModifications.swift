@@ -10,5 +10,10 @@
 // TDOO use
 public struct AccountModifications {
     public let modifiedDetails: ModifiedAccountDetails
-    public let removedAccountDetails: [any AccountValueKey.Type] // TODO shall we transport the previous value to facilitate existing infrastructure?
+    public let removedAccountDetails: RemovedAccountDetails
+
+    init(modifiedDetails: ModifiedAccountDetails, removedAccountDetails: RemovedAccountDetails) {
+        self.modifiedDetails = modifiedDetails
+        self.removedAccountDetails = removedAccountDetails
+    }
 }

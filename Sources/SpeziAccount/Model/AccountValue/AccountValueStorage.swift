@@ -8,12 +8,7 @@
 
 import Spezi
 
-
-/// A ``AccountValueStorage`` container.
-public protocol AccountValueStorageContainer {
-    /// Builder pattern to build a container of this type.
-    typealias Builder = AccountValueStorageBuilder<Self>
-
+public protocol AccountValueStorageBaseContainer {
     /// The underlying storage.
     var storage: AccountValueStorage { get }
 
@@ -23,13 +18,21 @@ public protocol AccountValueStorageContainer {
     func acceptAll<Visitor: AccountValueVisitor>(_ visitor: Visitor) -> Visitor.FinalResult
 }
 
+
+/// A ``AccountValueStorage`` container.
+public protocol AccountValueStorageContainer: AccountValueStorageBaseContainer {
+    /// Builder pattern to build a container of this type.
+    typealias Builder = AccountValueStorageBuilder<Self>
+}
+
+
 /// A `ValueRepository` that stores `KnowledgeSource`s anchored to the ``AccountAnchor``.
 ///
 /// This is the underlying storage type user in, e.g., ``AccountDetails``, ``SignupDetails`` or ``ModifiedAccountDetails``.
 public typealias AccountValueStorage = ValueRepository<AccountAnchor>
 
 
-extension AccountValueStorageContainer {
+extension AccountValueStorageBaseContainer {
     /// Default contains implementation forwarding to the Shared Repository.
     public func contains<Key: AccountValueKey>(_ key: Key.Type) -> Bool {
         storage.contains(key)

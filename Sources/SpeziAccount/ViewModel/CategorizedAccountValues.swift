@@ -12,6 +12,12 @@ import OrderedCollections
 struct CategorizedAccountValues {
     private var addedAccountValues: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
 
+    var values: [any AccountValueKey.Type] {
+        addedAccountValues.values.reduce(into: []) { result, keys in
+            result.append(contentsOf: keys)
+        }
+    }
+
     init() {
         addedAccountValues = [:]
     }

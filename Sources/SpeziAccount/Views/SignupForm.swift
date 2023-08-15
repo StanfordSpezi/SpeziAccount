@@ -41,7 +41,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     private var dataEntryConfiguration: DataEntryConfiguration {
         // only call this computed property from within the view's body
-        .init(configuration: service.configuration, validationClosures: validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, closures: validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
 

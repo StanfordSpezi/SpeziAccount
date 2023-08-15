@@ -36,7 +36,7 @@ public actor MockSimpleAccountService: AccountService {
         print("Remove")
     }
 
-    public func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
-        print("Update: \(details)")
+    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
+        print("Modifications: \(modifications)")
     }
 }

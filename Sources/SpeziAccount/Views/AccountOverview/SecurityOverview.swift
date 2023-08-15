@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -20,6 +21,13 @@ struct SecurityOverview: View {
 
     @State private var presentingPasswordChangeSheet = false
 
+    @State private var viewState: ViewState = .idle
+    @FocusState private var focusedDataEntry: String?
+
+    var dataEntryConfiguration: DataEntryConfiguration {
+        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+    }
+
 
     var body: some View {
         Form {
@@ -33,6 +41,7 @@ struct SecurityOverview: View {
             // TODO place all the credentials things here?
             //  => assume: UserId will be the only credential that is not about passwords!
         }
+            .viewStateAlert(state: $viewState)
             .navigationTitle("Password & Security") // TODO titlte
             .onDisappear {
                 // TODO reset all state!
@@ -59,7 +68,7 @@ struct SecurityOverview: View {
                 // TODO place password guidelines
                 // => "Your password must be at least 8 characters long."
             }
-                .environmentObject(model.dataEntryConfiguration(service: service))
+                .environmentObject(dataEntryConfiguration)
                 .environmentObject(model.modifiedDetailsBuilder)
                 .navigationTitle("Change Password")
                 .navigationBarTitleDisplayMode(.inline)
