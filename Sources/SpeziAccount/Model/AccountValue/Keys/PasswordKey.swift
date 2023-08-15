@@ -45,8 +45,7 @@ extension PasswordKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PasswordKey
 
-        @Environment(\.dataEntryConfiguration)
-        var dataEntryConfiguration: DataEntryConfiguration
+        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
 
         @Binding private var password: Value
 

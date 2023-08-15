@@ -64,8 +64,7 @@ extension PersonNameKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PersonNameKey
 
-        @Environment(\.dataEntryConfiguration)
-        var dataEntryConfiguration: DataEntryConfiguration
+        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
 
         @Binding private var name: Value
 

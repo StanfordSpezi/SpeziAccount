@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 // TODO this should be non specific to `UserIdPasswordAccountService`; used for simple account services as well!
-public struct UserIdPasswordAccountSummaryView: View {
+public struct AccountSummary: View {
     private let account: AccountDetails
 
     @State private var viewState: ViewState = .idle
@@ -36,14 +36,14 @@ public struct UserIdPasswordAccountSummaryView: View {
 }
 
 #if DEBUG
-struct DefaultUserIdPasswordAccountSummaryView_Previews: PreviewProvider {
+struct AccountSummary_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build(owner: MockUsernamePasswordAccountService())
 
     static var previews: some View {
-        UserIdPasswordAccountSummaryView(account: details)
+        AccountSummary(account: details)
     }
 }
 #endif

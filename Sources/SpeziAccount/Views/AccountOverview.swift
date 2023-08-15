@@ -14,6 +14,7 @@ public struct AccountOverview: View {
     @EnvironmentObject private var account: Account
 
     @State private var viewState: ViewState = .idle
+    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
 
 
     public var body: some View {
@@ -22,9 +23,10 @@ public struct AccountOverview: View {
                 // splitting everything into a separate subview was actually necessary for the EditButton
                 // to work in conjunction with the EditMode. Not even the example that Apple provides for the
                 // EditMode works. See https://developer.apple.com/forums/thread/716434
-                AccountOverviewForm(details: details, state: $viewState)
+                AccountOverviewForm(details: details, state: $viewState, focusedField: _focusedDataEntry)
             }
                 .viewStateAlert(state: $viewState)
+                .submitLabel(.done)
                 .toolbar {
                     ToolbarItemGroup(placement: .primaryAction) {
                         EditButton()
@@ -49,14 +51,14 @@ struct AccountOverView_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", middleName: "Michael", familyName: "Bauer"))
-        // TODO .set(\.genderIdentity, value: .male)
-        .set(\.dateOfBirth, value: Date())
+        .set(\.genderIdentity, value: .male)
+        // TODO .set(\.dateOfBirth, value: Date())
 
     static var previews: some View {
         NavigationStack {
             AccountOverview()
                 .environmentObject(Account(building: details, active: MockUsernamePasswordAccountService()))
-                // .environment(\.locale, .init(identifier: "de"))
+                // TODO .environment(\.locale, .init(identifier: "de"))
         }
     }
 }

@@ -20,17 +20,25 @@ struct AccountOverviewForm: View {
     }
 
     @EnvironmentObject private var account: Account
+    @Environment(\.logger) private var logger
+    @Environment(\.processingDebounceDuration) var processingDebounceDuration
     @Environment(\.editMode) private var editMode
+    @Environment(\.dismiss) private var dismiss
 
+    @State private var addedAccountValues: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> = [:]
     @StateObject private var modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
     // We just use @State here for the class type, as there is nothing in it that should trigger an UI update.
     // However, we need to preserve the class state across UI updates.
     @State private var validationClosures = DataEntryValidationClosures()
 
     @Binding private var viewState: ViewState
-    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
-    @State private var editModeCancelled = false
+    @FocusState private var focusedDataEntry: String?
 
+    // TODO can we split stuff out into subviews?
+    @State private var actionTask: Task<Void, Never>?
+    @State private var presentingCancellationDialog = false
+
+    // TODO at this point a ViewModel would be ideal right?
     private var accountValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
         // We could also just iterate over the `AccountDetails` and show whatever is present.
         // However, we deliberately don't do that. We have the `.supported` requirement option for such cases.
@@ -94,53 +102,76 @@ struct AccountOverviewForm: View {
         accountHeaderSection
             // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
             // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
-            .interactiveDismissDisabled(editMode?.wrappedValue.isEditing ?? false)
-            // TODO hide back button? and place a custom one if there may be discarded changes!
+            .interactiveDismissDisabled(!modifiedDetailsBuilder.isEmpty) // prevent skipping our confirmation dialog
+            .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false) // we show a cancel button in this case
             .onChange(of: editMode?.wrappedValue, perform: onEditModeChange)
             .toolbar {
                 if editMode?.wrappedValue.isEditing == true {
                     ToolbarItemGroup(placement: .cancellationAction) {
                         Button(role: .cancel, action: cancelAction) {
-                            Text("Cancel")
+                            Text("Cancel") // TODO localized
                         }
                     }
+                }
+            }
+            // TODO not sure if the title is displayed!
+            .confirmationDialog(Text("DISCARD_CHANGES_TITLE".localized(.module)), isPresented: $presentingCancellationDialog) {
+                Button(role: .destructive, action: discardChangesAction) {
+                    Text("DISCARD_CHANGES".localized(.module))
+                }
+                Button(role: .cancel, action: {}) {
+                    Text("KEEP_EDITING".localized(.module))
                 }
             }
 
         Section {
             // TODO "Name" if available, followed by userId name!
-            NavigationLink("Name, E-Mail Address", value: "True")
+            NavigationLink("Name, E-Mail Address", value: "True") // TODO locales
             NavigationLink("Password & Security", value: "asdf") // TODO how to extend? password only if password is in signup requirements!
         }
 
         sectionsView
-            .environment(\.dataEntryConfiguration, dataEntryConfiguration)
+            .environmentObject(dataEntryConfiguration)
             .environmentObject(modifiedDetailsBuilder)
             .animation(nil, value: editMode?.wrappedValue)
+
+            // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?
+            Group {
+                if editMode?.wrappedValue.isEditing == true {
+                    AsyncButton("Delete Account", role: .destructive) {
+                        // TODO confirm removal
+                        try? await service.delete() // TODO catch and default error!
+                        dismiss()
+                    }
+                } else {
+                    AsyncButton("Logout", role: .destructive) {
+                        try? await service.logout() // TODO catch and default error
+                        dismiss()
+                    }
+                }
+            }
+                .frame(maxWidth: .infinity, alignment: .center)
     }
 
     @ViewBuilder var accountHeaderSection: some View {
-        HStack {
-            Spacer()
-            VStack {
-                // we gracefully check if the account details have a name, bypassing the subscript overloads
-                if let name = accountDetails.storage.get(PersonNameKey.self) {
-                    UserProfileView(name: name) // TODO may we support an "image loader"?
-                        .frame(height: 90) // TODO verify on other devices?
-                }
-
-                Text(accountHeadline)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-
-                if let accountSubheadline {
-                    Text(accountSubheadline)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+        VStack {
+            // we gracefully check if the account details have a name, bypassing the subscript overloads
+            if let name = accountDetails.storage.get(PersonNameKey.self) {
+                UserProfileView(name: name) // TODO may we support an "image loader"?
+                    .frame(height: 90) // TODO verify on other devices?
             }
-            Spacer()
+
+            Text(accountHeadline)
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            if let accountSubheadline {
+                Text(accountSubheadline)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
         }
+            .frame(maxWidth: .infinity, alignment: .center)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
     }
@@ -154,6 +185,24 @@ struct AccountOverviewForm: View {
                     ForEach(accountValues.indices, id: \.self) { index in
                         buildRow(for: accountValues[index])
                     }
+                        .onDelete { index in
+                            // TODO we need to track deleted elements and also hide them in the implementation
+                            //   => additionally, our ModifiedDetails data structure isn't enough anymore!
+                            print("deleted \(index)")
+                        }
+
+                    // addedAccountValues will only be populated in edit mode, so no need to explicitly check for it
+                    if let addedValues = addedAccountValues[category] {
+                        // as addedValues is append only, the indices are stable identifiers
+                        ForEach(addedValues.indices, id: \.self) { index in
+                            addedValues[index].emptyDataEntryView(for: ModifiedAccountDetails.self)
+                        }
+                            .onDelete { index in
+                                // TODO so the index is not a stable identifier anymore!
+                                addedAccountValues[category]?.remove(atOffsets: index)
+                                print("deleted index \(index)")
+                            }
+                    }
                 } header: {
                     if let title = category.categoryTitle {
                         Text(title)
@@ -164,62 +213,138 @@ struct AccountOverviewForm: View {
     }
 
 
-    init(details account: AccountDetails, state viewState: Binding<ViewState>) {
+    init(details account: AccountDetails, state viewState: Binding<ViewState>, focusedField: FocusState<String?>) {
         self.accountDetails = account
         self._viewState = viewState
+        self._focusedDataEntry = focusedField
     }
 
 
     @ViewBuilder
     private func buildRow(for accountValue: any AccountValueKey.Type) -> some View {
         if editMode?.wrappedValue.isEditing == true {
-            HStack {
-                if let view = accountValue.dataEntryViewWithCurrentStoredValue(from: accountDetails, for: ModifiedAccountDetails.self) {
+            if let view = accountValue.dataEntryViewWithCurrentStoredValue(from: accountDetails, for: ModifiedAccountDetails.self) {
+                HStack {
                     view
-                } else {
-                    Button(action: {
-                        addDetail(for: accountValue)
-                    }) {
-                        Text("Add \(accountValue.name)") // TODO localize
-                    }
                 }
+                    .deleteDisabled(account.configuration[accountValue]?.requirement == .required)
+            } else if !addedAccountValues[accountValue.category, default: []].contains(where: { $0.id == accountValue.id }) {
+                // TODO simplify if condition
+                // only display a add button if we are not currently adding a new value for it
+                Button(action: {
+                    addDetail(for: accountValue)
+                }) {
+                    Text("Add \(accountValue.name)") // TODO localize
+                }
+                    .deleteDisabled(true)
             }
         } else {
             if let view = accountValue.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                 HStack {
                     view
                 }
+                    .deleteDisabled(true)
             }
         }
     }
 
 
     private func cancelAction() {
-        print("cancel")
-        // TODO this triggers the save thingy!
-        editModeCancelled = true
-        editMode?.wrappedValue = .inactive
-    }
-
-    private func addDetail(for value: any AccountValueKey.Type) {
-        print("adding \(value.name)")
-    }
-
-    private func onEditModeChange(newValue: EditMode?) {
-        if editModeCancelled {
-            editModeCancelled = false
+        if modifiedDetailsBuilder.isEmpty {
+            discardChangesAction()
             return
         }
 
-        if newValue == .inactive {
-            // TODO control loading indicator of parentview!
-            print("LOADING!")
-            viewState = .processing // TODO reset indicator!
-            Task {
-                try? await Task.sleep(for: .seconds(1))
-                viewState = .idle
+        presentingCancellationDialog = true
+
+        logger.debug("Found \(modifiedDetailsBuilder.count) modified elements. Asking to discard.")
+    }
+
+    private func discardChangesAction() {
+        logger.debug("Exciting edit mode and discarding changes.")
+
+        resetState()
+    }
+
+    private func addDetail(for value: any AccountValueKey.Type) {
+        logger.debug("Adding new account value \(value) to the edit view!")
+
+        addedAccountValues[value.category, default: []]
+            .append(value) // TODO prevent double clicks?
+    }
+
+    private func onEditModeChange(newValue: EditMode?) {
+        guard newValue == .inactive,
+              viewState != .processing else {
+            return
+        }
+
+        guard !modifiedDetailsBuilder.isEmpty else {
+            logger.debug("Not saving anything, as there is were no changes!")
+            return
+        }
+
+        logger.debug("Exciting edit mode and saving \(modifiedDetailsBuilder.count) changes to AccountService!")
+
+        withAnimation(.easeOut(duration: 0.2)) {
+            viewState = .processing
+        }
+
+        actionTask = Task {
+            do {
+                // TODO do all the visual debounce like AsyncButton?
+
+                if validateInputs() {
+                    try await service.updateAccountDetails(modifiedDetailsBuilder.build())
+                    logger.debug("\(modifiedDetailsBuilder.count) items saved successfully.")
+
+                    resetState() // this reset the edit mode
+                } else {
+                    logger.debug("Some input validation failed. Staying in edit mode!")
+                }
+
+                withAnimation(.easeIn(duration: 0.2)) {
+                    viewState = .idle
+                }
+            } catch {
+                viewState = .error(AnyLocalizedError(
+                    error: error,
+                    defaultErrorDescription: "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR".localized(.module)
+                ))
             }
         }
+    }
+
+    private func validateInputs() -> Bool {
+        // TODO this is a 1:1 code copy!
+        let failedFields: [String] = validationClosures.compactMap { entry in
+            let result = entry.validationClosure()
+            switch result {
+            case .success:
+                return nil
+            case .failed:
+                return entry.focusStateValue
+            case let .failedAtField(focusedField):
+                return focusedField
+            }
+        }
+
+        if let failedField = failedFields.first {
+            focusedDataEntry = failedField
+            return false
+        }
+
+        focusedDataEntry = nil
+        return true
+    }
+
+    private func resetState() {
+        // clearing the builder before switching the edit mode
+        modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
+        addedAccountValues = [:]
+
+        editMode?.wrappedValue = .inactive
+        validationClosures = DataEntryValidationClosures()
     }
 
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing
@@ -230,6 +355,7 @@ struct AccountOverviewForm: View {
             return false
         }
 
+        // we don't have to check for `addedAccountValues` as these are only relevant in edit mode
         return accountValues.allSatisfy { element in
             !element.isContained(in: accountDetails)
         }

@@ -43,14 +43,14 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
     ///   Make sure to remain in a state where the user is capable of retrying the logout process.
     func logout() async throws
 
-    /// This method implements account removal.
+    /// This method implements account deletion.
     ///
-    /// This method should remove the account of the currently signed in user.
+    /// This method should delete the account and all associated data of the currently signed in user.
     ///
     /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the removal was unsuccessful
     ///   to present a localized description to the user on a failed account removal.
     ///   Make sure to remain in a state where the user is capable of retrying the removal process.
-    func remove() async throws
+    func delete() async throws
 
 
     // TODO its the account services choice to mandate how to handle userId and password changes!

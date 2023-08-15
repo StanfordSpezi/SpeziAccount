@@ -13,7 +13,7 @@ struct InputValidationModifier<Key: AccountValueKey>: ViewModifier {
     private let inputValue: String
     private let fieldIdentifierOverride: String?
 
-    @Environment(\.dataEntryConfiguration) private var dataEntryConfiguration
+    @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
 
     @StateObject private var validation: ValidationEngine
 

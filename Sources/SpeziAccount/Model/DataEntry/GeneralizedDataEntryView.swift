@@ -26,10 +26,8 @@ private protocol GeneralizedStringEntryView {
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: AccountValueStorageContainer>: View {
-    @Environment(\.dataEntryConfiguration)
-    private var dataEntryConfiguration: DataEntryConfiguration
-    @EnvironmentObject
-    private var detailsBuilder: AccountValueStorageBuilder<Container>
+    @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
+    @EnvironmentObject private var detailsBuilder: AccountValueStorageBuilder<Container>
 
     @State private var value: Wrapped.Key.Value
 
@@ -44,11 +42,11 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
                         for: Wrapped.Key.self,
                         using: stringEntryView.validationRules()
                     )
+                    .focused(dataEntryConfiguration.focusedField.projectedValue, equals: Wrapped.Key.focusState)
             } else {
                 Wrapped($value)
             }
         }
-            .onTapFocus(focusedField: dataEntryConfiguration.focusedField, fieldIdentifier: Wrapped.Key.focusState)
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
                 detailsBuilder.set(Wrapped.Key.self, value: newValue)

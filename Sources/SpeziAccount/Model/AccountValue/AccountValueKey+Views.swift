@@ -10,8 +10,6 @@ import Spezi
 import SwiftUI
 
 
-// TODO supply default DataEntryViews?
-
 extension AccountValueKey where Value: StringProtocol {
     public typealias DataDisplay = StringDataDisplayView<Self>
 }

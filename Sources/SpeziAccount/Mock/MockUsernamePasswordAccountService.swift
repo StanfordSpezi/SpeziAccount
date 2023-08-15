@@ -8,7 +8,7 @@
 
 import Foundation
 
-// TODO docs! rename UserId => make userid type controlable!
+// TODO docs! rename UserId => make userid type controllable!
 public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
@@ -49,13 +49,15 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
         await account.removeUserDetails()
     }
 
-    public func remove() async throws {
+    public func delete() async throws {
         print("Mock Remove Account")
         try? await Task.sleep(for: .seconds(1))
         await account.removeUserDetails()
     }
 
     public func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
+        print("Update Account Details")
+        try? await Task.sleep(for: .seconds(1))
         // TODO update the previous details!
     }
 }

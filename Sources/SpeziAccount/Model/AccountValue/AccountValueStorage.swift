@@ -11,6 +11,7 @@ import Spezi
 
 /// A ``AccountValueStorage`` container.
 public protocol AccountValueStorageContainer {
+    /// Builder pattern to build a container of this type.
     typealias Builder = AccountValueStorageBuilder<Self>
 
     /// The underlying storage.

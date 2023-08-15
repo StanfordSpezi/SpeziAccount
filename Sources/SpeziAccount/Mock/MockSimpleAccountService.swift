@@ -32,7 +32,7 @@ public actor MockSimpleAccountService: AccountService {
         print("Logout")
     }
 
-    public func remove() async throws {
+    public func delete() async throws {
         print("Remove")
     }
 

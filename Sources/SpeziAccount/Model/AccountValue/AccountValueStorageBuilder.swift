@@ -12,6 +12,16 @@ import Spezi
 public class AccountValueStorageBuilder<Container: AccountValueStorageContainer> {
     var storage: AccountValueStorage
 
+    /// The count of elements stored in the builder.
+    public var count: Int {
+        storage.count
+    }
+
+    /// Indicates if the builder is empty.
+    public var isEmpty: Bool {
+        storage.isEmpty
+    }
+
 
     public init() {
         self.storage = .init()
@@ -26,6 +36,10 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         self.init(from: storage.storage)
     }
 
+
+    public func clear() {
+        storage = .init()
+    }
 
     @discardableResult
     public func set<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) -> Self {

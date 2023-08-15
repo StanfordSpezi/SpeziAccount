@@ -14,8 +14,7 @@ actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
         UserIdConfiguration(type: .username)
     }
 
-    @AccountReference
-    var account: Account
+    @AccountReference var account: Account
     var registeredUser = UserStorage() // simulates the backend
 
     init() {}
@@ -68,7 +67,7 @@ actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
         await account.removeUserDetails()
     }
 
-    func remove() async throws {
+    func delete() async throws {
         await account.removeUserDetails()
         registeredUser = UserStorage()
     }

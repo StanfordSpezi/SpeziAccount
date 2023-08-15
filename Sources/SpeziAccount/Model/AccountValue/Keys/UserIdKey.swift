@@ -47,8 +47,7 @@ extension UserIdKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = UserIdKey
 
-        @Environment(\.dataEntryConfiguration)
-        var dataEntryConfiguration: DataEntryConfiguration
+        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
 
         @Binding var userId: Value
 

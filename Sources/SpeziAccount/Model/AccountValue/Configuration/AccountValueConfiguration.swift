@@ -29,6 +29,10 @@ public struct AccountValueConfiguration {
     }
 
 
+    public subscript(_ key: any AccountValueKey.Type) -> AnyAccountValueConfigurationEntry? {
+        configuration[key.id]
+    }
+
     public subscript<Key: AccountValueKey>(_ key: Key.Type) -> AnyAccountValueConfigurationEntry? {
         configuration[Key.id]
     }

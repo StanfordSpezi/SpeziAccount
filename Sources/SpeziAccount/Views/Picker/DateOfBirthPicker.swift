@@ -34,6 +34,7 @@ public struct DateOfBirthPicker: View {
         ) {
             Text(titleLocalization)
         }
+            .zIndex(100)
     }
 
     public init(

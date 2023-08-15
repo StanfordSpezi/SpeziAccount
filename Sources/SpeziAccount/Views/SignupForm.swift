@@ -47,12 +47,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     public var body: some View {
         form
-            .navigationTitle("UP_SIGNUP".localized(.module).localizedString())
+            .navigationTitle(Text("UP_SIGNUP".localized(.module)))
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
-            .onTapGesture {
-                focusedDataEntry = nil
-            }
+            .submitLabel(.done)
     }
 
     @ViewBuilder var sectionsView: some View {
@@ -76,7 +74,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             header
 
             sectionsView
-                .environment(\.dataEntryConfiguration, dataEntryConfiguration)
+                .environmentObject(dataEntryConfiguration)
                 .environmentObject(signupDetailsBuilder)
 
             AsyncButton(state: $viewState, action: signupButtonAction) {

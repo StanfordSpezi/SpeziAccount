@@ -17,8 +17,7 @@ actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
         UserIdConfiguration(type: .emailAddress, keyboardType: .emailAddress)
     }
 
-    @AccountReference
-    var account: Account
+    @AccountReference var account: Account
     var registeredUser = UserStorage() // simulates the backend
 
     
@@ -73,7 +72,7 @@ actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
         await account.removeUserDetails()
     }
 
-    func remove() async throws {
+    func delete() async throws {
         await account.removeUserDetails()
         registeredUser = UserStorage()
     }
