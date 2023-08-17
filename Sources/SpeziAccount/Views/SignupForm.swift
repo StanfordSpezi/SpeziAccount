@@ -128,10 +128,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 }
 
 
-// TODO this extension is used somewhere else as well!
-extension AccountValueStorageBuilder: ObservableObject {}
-
-
 #if DEBUG
 struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
     static let accountService = MockUsernamePasswordAccountService()

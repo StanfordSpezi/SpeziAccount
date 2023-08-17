@@ -6,11 +6,12 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import Spezi
 
 
-public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>: AccountValueStorageBaseContainer {
-    public var storage: AccountValueStorage // TODO make some protocol such that this can stay!
+public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>: ObservableObject, AccountValueStorageBaseContainer {
+    @Published public var storage: AccountValueStorage // TODO make some protocol such that this can stay internal!
 
     /// The count of elements stored in the builder.
     public var count: Int {
@@ -32,7 +33,6 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     }
 
     public convenience init<Source: AccountValueStorageContainer>(from storage: Source) {
-        // TODO might just remove them? to avoid anti-patterns?
         self.init(from: storage.storage)
     }
 

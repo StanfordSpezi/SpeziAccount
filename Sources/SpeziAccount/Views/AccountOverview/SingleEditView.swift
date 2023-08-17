@@ -21,7 +21,6 @@ struct SingleEditView<Key: AccountValueKey>: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
 
-
     // TODO duplicate! (reconstruct?) just forward?
     private var dataEntryConfiguration: DataEntryConfiguration {
         .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry, viewState: $viewState)
@@ -38,16 +37,10 @@ struct SingleEditView<Key: AccountValueKey>: View {
             .environmentObject(model.modifiedDetailsBuilder)
             .environmentObject(model.validationClosures) // TODO easily fails?
             .toolbar {
-                let button = AsyncButton(state: $viewState, action: submitChange) {
+                AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
                 }
-
-                if !model.hasUnsavedChanges { // TODO model details builder doesn't refresh the view!
-                    button
-                        .disabled(false) // TODO fix
-                } else {
-                    button
-                }
+                    .disabled(!model.hasUnsavedChanges || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self))
             }
             .onDisappear {
                 model.resetModelState()

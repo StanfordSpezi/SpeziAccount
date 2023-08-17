@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Combine
 import OrderedCollections
 import os
 import SpeziViews
@@ -39,9 +40,7 @@ class AccountOverviewFormViewModel: ObservableObject {
     private let categorizedAccountKeys: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
 
 
-    // We are not updating the view based on the properties here. We just need to track these states for processing.
-    // As we are using a reference type, state is persisted across views.
-    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
+    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder() // nested ObservableObject, see init
     let validationClosures = ValidationClosures<String>()
 
     @Published var presentingCancellationDialog = false
@@ -59,10 +58,17 @@ class AccountOverviewFormViewModel: ObservableObject {
         .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module))
     }
 
+    private var anyCancellable: AnyCancellable? = nil
 
     init(account: Account) {
         self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, requirement in
             result[requirement.anyKey.category, default: []] += [requirement.anyKey]
+        }
+
+        // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
+        // Otherwise, changes to the object wouldn't be important.
+        anyCancellable = modifiedDetailsBuilder.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
         }
     }
 
@@ -168,6 +174,18 @@ class AccountOverviewFormViewModel: ObservableObject {
         validationClosures.clear()
 
         editMode?.wrappedValue = .inactive
+    }
+
+    func accountIdentifierLabel(details accountDetails: AccountDetails) -> Text {
+        let userId = Text(accountDetails.userIdType.localizedStringResource)
+
+        if accountDetails.storage.get(PersonNameKey.self) != nil {
+            return Text(PersonNameKey.name)
+                + Text(", ")
+                + userId
+        }
+
+        return userId
     }
 
     func accountSecurityLabel(_ configuration: AccountValueConfiguration) -> Text {

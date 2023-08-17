@@ -56,7 +56,7 @@ struct NameOverview: View {
             }
         }
             .viewStateAlert(state: $viewState)
-            .navigationTitle("Name, E-Mail Address") // TODO navigation title
+            .navigationTitle(model.accountIdentifierLabel(details: accountDetails))
     }
 
 

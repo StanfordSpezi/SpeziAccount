@@ -18,35 +18,23 @@ struct FailedResult<FieldIdentifier> {
 
 struct ValidationClosure<FieldIdentifier> {
     let id: UUID
-    let validationClosure: () -> FailedResult<FieldIdentifier>?
+    private let fieldIdentifier: FieldIdentifier?
+    private let validationClosure: () -> ValidationResult
 
     init(id: UUID, for fieldIdentifier: FieldIdentifier?, closure: @escaping () -> ValidationResult) {
         self.id = id
-        self.validationClosure = {
-            switch closure() {
-            case .success:
-                return nil
-            case .failed:
-                // fieldIdentifier might be nil for fieldIdentifiers of type Never
-                return FailedResult(validationEngineId: id, failedFieldIdentifier: fieldIdentifier)
-            }
-        }
-    }
-
-    init(id: UUID, closure: @escaping () -> FieldValidationResult<FieldIdentifier>) {
-        self.id = id
-        self.validationClosure = {
-            switch closure() {
-            case .success:
-                return nil
-            case let .failedAtField(fieldIdentifier):
-                return FailedResult(validationEngineId: id, failedFieldIdentifier: fieldIdentifier)
-            }
-        }
+        self.fieldIdentifier = fieldIdentifier
+        self.validationClosure = closure
     }
 
     func callAsFunction() -> FailedResult<FieldIdentifier>? {
-        validationClosure()
+        switch validationClosure() {
+        case .success:
+            return nil
+        case .failed:
+            // fieldIdentifier might be nil for fieldIdentifiers of type Never
+            return FailedResult(validationEngineId: id, failedFieldIdentifier: fieldIdentifier)
+        }
     }
 }
 
@@ -136,7 +124,8 @@ struct ValidationClosure<FieldIdentifier> {
 /// ### Registering Validation Closures yourself
 /// While the above section described how to easily use ``ValidationClosures`` _without using it_ (by relying on
 /// the ``SwiftUI/View/managedValidation(input:for:rules:)`` modifier, this section provides a short code example how
-/// you would do that yourself.
+/// you would do that yourself. This might be useful if you have to implement validation for a type that consist
+/// of multiple substrings that need to be checked separately (e.g. `PersonNameComponents`).
 ///
 /// ```swift
 /// struct MySubView: View {
@@ -167,9 +156,6 @@ struct ValidationClosure<FieldIdentifier> {
 ///     }
 /// }
 /// ```
-///
-/// - Note: If you want to validate multiple fields in a single validation closure, you can easily use
-///     ``register(running:validation:)-2ocmb`` to dynamically report the failed field identifier.
 public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
     // deliberately now @Published, registered methods should not trigger a UI update
     private var storage: OrderedDictionary<UUID, ValidationClosure<FieldIdentifier>>
@@ -204,16 +190,6 @@ public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
         validation: @escaping () -> ValidationResult
     ) -> EmptyView {
         register(validation: ValidationClosure(id: engine.id, for: field, closure: validation))
-    }
-
-    /// Register a new validation closure that dynamically reports the failed field identifier.
-    /// - Parameters:
-    ///   - engine: The ``ValidationEngine`` to register the closure for. This is used to uniquely identify the validation closure.
-    ///   - validation: The validation closure returning a ``FieldValidationResult`` which allows to dynamically set the failed field identifier.
-    /// - Returns: A `EmptyView` such that you can easily call this method in your view body.
-    @discardableResult
-    public func register(running engine: ValidationEngine, validation: @escaping () -> FieldValidationResult<FieldIdentifier>) -> EmptyView {
-        register(validation: ValidationClosure(id: engine.id, closure: validation))
     }
 
     /// Register a new validation closure.

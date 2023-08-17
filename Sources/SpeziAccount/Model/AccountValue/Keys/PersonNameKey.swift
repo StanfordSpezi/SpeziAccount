@@ -98,7 +98,6 @@ extension PersonNameKey {
 
         public var body: some View {
             if nameIsRequired {
-                // TODO remove old types of registering!
                 closures.register(running: validationGivenName, for: givenNameField, validation: onGivenNameSubmission)
                 closures.register(running: validationFamilyName, for: familyNameField, validation: onFamilyNameSubmission)
             }

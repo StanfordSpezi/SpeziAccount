@@ -126,13 +126,7 @@ struct AccountOverviewSections: View {
                     .environmentObject(dataEntryConfiguration)
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
-                HStack(spacing: 0) {
-                    if accountDetails.storage.get(PersonNameKey.self) != nil {
-                        Text("NAME", bundle: .module)
-                        Text(verbatim: ", ")
-                    }
-                    Text(accountDetails.userIdType.localizedStringResource)
-                }
+                model.accountIdentifierLabel(details: accountDetails)
             }
             NavigationLink {
                 SecurityOverview(model: model, details: accountDetails)
@@ -177,6 +171,7 @@ struct AccountOverviewSections: View {
                         ForEachAccountKeyWrapper(accountValue: $0)
                     }
 
+                    // TODO seems like the order isn't updated/respected anymore?
                     ForEach(forEachWrappers, id: \.id) { wrapper in
                         buildRow(for: wrapper.accountValue)
                     }
@@ -225,7 +220,7 @@ struct AccountOverviewSections: View {
                 }
             }
 
-            // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes
+            // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes in our scenario
             if isDeleteDisabled(for: accountValue) {
                 hStack
                     .deleteDisabled(true)
