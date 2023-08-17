@@ -38,7 +38,7 @@ struct AccountOverviewSections: View {
     }
 
     var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
 
@@ -70,7 +70,7 @@ struct AccountOverviewSections: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                            .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
             }
@@ -94,7 +94,6 @@ struct AccountOverviewSections: View {
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.logout()
-                    dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
                 }
@@ -108,7 +107,6 @@ struct AccountOverviewSections: View {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.delete()
-                    dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
                 }
@@ -124,6 +122,7 @@ struct AccountOverviewSections: View {
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
+                    .environmentObject(model.validationClosures) // TODO error prone
                     .environmentObject(dataEntryConfiguration)
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
@@ -137,21 +136,14 @@ struct AccountOverviewSections: View {
             }
             NavigationLink {
                 SecurityOverview(model: model, details: accountDetails)
-                    .environmentObject(dataEntryConfiguration)
-                    .environmentObject(model.modifiedDetailsBuilder)
             } label: {
-                HStack(spacing: 0) {
-                    if account.configuration[PasswordKey.self] != nil {
-                        Text("UP_PASSWORD", bundle: .module)
-                        Text(" & ")
-                    }
-                    Text("SECURITY", bundle: .module)
-                }
+                model.accountSecurityLabel(account.configuration)
             }
         }
 
         sectionsView
             .environmentObject(dataEntryConfiguration)
+            .environmentObject(model.validationClosures)
             .environmentObject(model.modifiedDetailsBuilder)
             .animation(nil, value: editMode?.wrappedValue)
 
@@ -177,13 +169,16 @@ struct AccountOverviewSections: View {
     }
 
     @ViewBuilder private var sectionsView: some View {
-        ForEach(model.accountValuesBySections(details: accountDetails).elements, id: \.key) { category, accountValues in
+        ForEach(model.editableAccountKeys(details: accountDetails).elements, id: \.key) { category, accountValues in
             if !sectionIsEmpty(accountValues) {
                 Section {
-                    // While the stored values in `AccountDetails` can change, the list of displayed
-                    // account values (the AccountValueConfiguration) does not change! So index based access is okay here.
-                    ForEach(accountValues.indices, id: \.self) { index in
-                        buildRow(for: accountValues[index])
+                    // the id property of AccountValueKey.Type is static, so we can't reference it by a KeyPath, therefore the wrapper
+                    let forEachWrappers = accountValues.map {
+                        ForEachAccountKeyWrapper(accountValue: $0)
+                    }
+
+                    ForEach(forEachWrappers, id: \.id) { wrapper in
+                        buildRow(for: wrapper.accountValue)
                     }
                         .onDelete { indexSet in
                             model.deleteAccountValue(at: indexSet, in: accountValues)
@@ -260,25 +255,16 @@ struct AccountOverviewSections: View {
             return
         }
 
-        logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
-
-        if validateInputs() {
-            try await model.updateAccountDetails(service: service, details: accountDetails, editMode: editMode)
-        } else {
+        guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
             logger.debug("Some input validation failed. Staying in edit mode!")
-        }
-    }
-
-    private func validateInputs() -> Bool {
-        let failedFields: [String] = model.validationClosures.runAlLValidationsReturningFailed()
-
-        if let failedField = failedFields.first {
-            focusedDataEntry = failedField
-            return false
+            return
         }
 
         focusedDataEntry = nil
-        return true
+
+        logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
+
+        try await model.updateAccountDetails(details: accountDetails, editMode: editMode)
     }
 
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing

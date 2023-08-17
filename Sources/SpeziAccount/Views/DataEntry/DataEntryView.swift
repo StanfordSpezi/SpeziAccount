@@ -10,7 +10,7 @@ import Spezi
 import SwiftUI
 
 
-// TODO document which environmnet keys and objects one can expect to be injected!
+// TODO document which environment keys and objects one can expect to be injected!
 public protocol DataEntryView<Key>: View {
     associatedtype Key: AccountValueKey
 

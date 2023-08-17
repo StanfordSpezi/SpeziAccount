@@ -20,9 +20,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @Environment(\.logger) private var logger
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
-    // We just use @State here for the class type, as there is nothing in it that should trigger an UI update.
-    // However, we need to preserve the class state across UI updates.
-    @State private var validationClosures = DataEntryValidationClosures()
+    @StateObject private var validationClosures = ValidationClosures<String>()
 
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
@@ -41,7 +39,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     private var dataEntryConfiguration: DataEntryConfiguration {
         // only call this computed property from within the view's body
-        .init(configuration: service.configuration, closures: validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
 
@@ -58,6 +56,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             header
 
             sectionsView
+                .environmentObject(validationClosures)
                 .environmentObject(dataEntryConfiguration)
                 .environmentObject(signupDetailsBuilder)
 
@@ -80,7 +79,9 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             Section {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
                 ForEach(accountValues.indices, id: \.self) { index in
-                    accountValues[index].emptyDataEntryView(for: SignupDetails.self)
+                    VStack {
+                        accountValues[index].emptyDataEntryView(for: SignupDetails.self)
+                    }
                 }
             } header: {
                 if let title = category.categoryTitle {
@@ -107,10 +108,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
 
     private func signupButtonAction() async throws {
-        let failedFields: [String] = validationClosures.runAlLValidationsReturningFailed()
-
-        if let failedField = failedFields.first {
-            focusedDataEntry = failedField
+        guard validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
             return
         }
 

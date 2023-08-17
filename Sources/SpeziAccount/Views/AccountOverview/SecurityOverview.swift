@@ -13,19 +13,17 @@ import SwiftUI
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
+    @EnvironmentObject private var account: Account
     @ObservedObject private var model: AccountOverviewFormViewModel
+
+    @State private var viewState: ViewState = .idle // TODO default error?
+    @FocusState private var focusedDataEntry: String?
 
     @State private var presentingPasswordChangeSheet = false
 
-    @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
-
-    var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+    // TODO duplicate! (reconstruct?) just forward?
+    private var dataEntryConfiguration: DataEntryConfiguration {
+        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
 
@@ -35,56 +33,32 @@ struct SecurityOverview: View {
                 presentingPasswordChangeSheet = true
             })
                 .sheet(isPresented: $presentingPasswordChangeSheet) {
-                    passwordChangeSheet
+                    PasswordChangeSheet(model: model, details: accountDetails)
                 }
 
-            // TODO place all the credentials things here?
-            //  => assume: UserId will be the only credential that is not about passwords!
+            // we place every account key of the `.credentials` section except the userId and password below
+            let forEachWrappers = model.accountKeys(by: .credentials, using: accountDetails)
+                .filter { $0 != UserIdKey.self && $0 != PasswordKey.self }
+                .map { ForEachAccountKeyWrapper(accountValue: $0) }
+
+            // TODO each section or combined?
+            ForEach(forEachWrappers, id: \.id) { wrapper in
+                Section {
+                    // TODO build row reuse!
+                }
+            } // TODO onDelete modifier?
+                .environmentObject(dataEntryConfiguration)
+                .environmentObject(model.validationClosures)
+                .environmentObject(model.modifiedDetailsBuilder)
+                .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
-            .navigationTitle("Password & Security") // TODO titlte
+            .navigationTitle(model.accountSecurityLabel(account.configuration))
             .onDisappear {
-                // TODO reset all state!
+                model.resetModelState()
             }
     }
 
-    @State private var newPassword: String = ""
-    @State private var repeatPassword: String = ""
-
-    @ViewBuilder private var passwordChangeSheet: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    VerifiableTextField("Password", text: $newPassword)
-                        .textContentType(.newPassword)
-                        .environmentObject(ValidationEngine())
-                    VerifiableTextField("Repeat Password", text: $repeatPassword)
-                        .textContentType(.newPassword)
-                        .environmentObject(ValidationEngine())
-                } footer: {
-                    PasswordValidationRuleFooter(configuration: accountDetails.accountServiceConfiguration)
-                }
-
-                // TODO place password guidelines
-                // => "Your password must be at least 8 characters long."
-            }
-                .environmentObject(dataEntryConfiguration)
-                .environmentObject(model.modifiedDetailsBuilder)
-                .navigationTitle("Change Password")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
-                        Button("Done", action: {})
-                    }
-                    ToolbarItemGroup(placement: .cancellationAction) {
-                        Button("Cancel", action: {
-                            presentingPasswordChangeSheet = false
-                            // TODO dismiss should also work in view hierachy!!
-                        })
-                    }
-                }
-        }
-    }
 
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model

@@ -22,15 +22,16 @@ struct NameOverview: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
 
+    // TODO duplicate! (reconstruct?) just forward? noo
     var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, closures: model.validationClosures, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, focusedField: _focusedDataEntry, viewState: $viewState)
     }
 
     var body: some View {
         Form {
             Section {
                 NavigationLink {
-                    userIdEditView
+                    SingleEditView<UserIdKey>(model: model, details: accountDetails)
                 } label: {
                     HStack {
                         UserIdKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
@@ -41,7 +42,7 @@ struct NameOverview: View {
             if accountDetails.storage.get(PersonNameKey.self) != nil {
                 Section {
                     NavigationLink {
-                        nameEditView
+                        SingleEditView<PersonNameKey>(model: model, details: accountDetails)
                     } label: {
                         HStack {
                             PersonNameKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
@@ -56,49 +57,8 @@ struct NameOverview: View {
         }
             .viewStateAlert(state: $viewState)
             .navigationTitle("Name, E-Mail Address") // TODO navigation title
-            .onDisappear {
-                // TODO as we are reusing parent view model, clear all state!
-            }
     }
 
-    @ViewBuilder var nameEditView: some View {
-        Form {
-            PersonNameKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
-            // TODO set focus on the first name!
-        }
-            .navigationTitle("Name")
-            .environmentObject(dataEntryConfiguration)
-            .environmentObject(model.modifiedDetailsBuilder)
-            .toolbar {
-                Button("Done", action: { print("Done")}) // TODO async button
-                    .disabled(true) // TODO enable based on changes?
-            }
-            .onAppear {
-                // TODO model.focusedDataEntry = PersonNameKey.focusState
-            }
-            .onDisappear {
-                // TODO clear modified state! (and hooks?)
-            }
-    }
-
-    @ViewBuilder var userIdEditView: some View {
-        Form {
-            UserIdKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
-        }
-            .navigationTitle("E-Mail Address")
-            .environmentObject(dataEntryConfiguration)
-            .environmentObject(model.modifiedDetailsBuilder)
-            .toolbar {
-                Button("Done", action: { print("Done")}) // TODO async button
-                    .disabled(true) // TODO enable based on changes?
-            }
-            .onAppear {
-                // TODO model.focusedDataEntry = PersonNameKey.focusState
-            }
-            .onDisappear {
-                // TODO clear modified state! (and hooks?)
-            }
-    }
 
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model

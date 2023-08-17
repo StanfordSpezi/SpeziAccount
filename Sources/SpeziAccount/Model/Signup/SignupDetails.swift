@@ -17,7 +17,7 @@ public struct SignupDetails: Sendable, AccountValueStorageContainer {
 
 
     fileprivate func validateRequirements(checking configuration: AccountValueConfiguration) throws {
-        for configuration in configuration where !configuration.isContained(in: self) {
+        for configuration in configuration where configuration.requirement == .required && !configuration.isContained(in: self) {
             LoggerKey.defaultValue.warning("\(configuration.description) was required to be provided but weren't provided!")
             throw AccountValueConfigurationError.missingAccountValue(configuration.description)
         }

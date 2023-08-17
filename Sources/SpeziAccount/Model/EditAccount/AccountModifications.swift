@@ -8,7 +8,7 @@
 
 
 // TDOO use
-public struct AccountModifications {
+public struct AccountModifications: Sendable {
     public let modifiedDetails: ModifiedAccountDetails
     public let removedAccountDetails: RemovedAccountDetails
 

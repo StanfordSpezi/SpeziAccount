@@ -37,7 +37,7 @@ public struct ValidationRule: Identifiable, Sendable {
     /// A unique identifier for the ``ValidationRule``. Can be used to, e.g., match a ``FailedValidationResult`` to the ValidationRule.
     public let id: UUID
     private let rule: @Sendable (String) -> Bool
-    /// A localized message that describes the requirements imposed by this validation rule.
+    /// A localized message that describes a recovery suggestion if the validation rule fails.
     public let message: LocalizedStringResource
     let effect: CascadingValidationEffect
 
@@ -78,7 +78,7 @@ public struct ValidationRule: Identifiable, Sendable {
     /// Creates a validation rule from a regular expression.
     ///
     /// - Parameters:
-    ///   - regex: A `Regex` regular expression to match for validating text.
+    ///   - regex: A `Regex` regular expression to match for validating text. Note, the `wholeMatch` operation is used.
     ///   - message: A `LocalizedStringResource` message to display if validation fails.
     public init(regex: Regex<AnyRegexOutput>, message: LocalizedStringResource) {
         self.init(ruleClosure: { (try? regex.wholeMatch(in: $0) != nil) ?? false }, message: message)
@@ -87,12 +87,21 @@ public struct ValidationRule: Identifiable, Sendable {
     /// Creates a validation rule from a regular expression.
     ///
     /// - Parameters:
-    ///   - regex: A `Regex` regular expression to match for validating text.
+    ///   - regex: A `Regex` regular expression to match for validating text. Note, the `wholeMatch` operation is used.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
     public init(regex: Regex<AnyRegexOutput>, message: String, bundle: Bundle) {
         self.init(regex: regex, message: message.localized(bundle))
     }
+
+    /// Creates a validation rule by copying the rule contents from another `ValidationRule`.
+    /// - Parameters:
+    ///   - validationRule: The `ValidationRule` to copy the rule from.
+    ///   - message: A new message for the copied validation rule.
+    public init(copy validationRule: ValidationRule, message: LocalizedStringResource) {
+        self.init(ruleClosure: validationRule.rule, message: message)
+    }
+
     
     /// Validates the contents of a given `String` input.
     /// - Parameter input: The input to validate.

@@ -98,6 +98,10 @@ extension BiographyKey {
             VerifiableTextField("A short biography", text: $biography, axis: .vertical)
                 .lineLimit(3...6)
         }
+        
+        // TODO you have to handle validation of data given the thing is required (if it's not a string)!
+        
+        // TODO show DataDisplay view implementation
     }
 }
 ```

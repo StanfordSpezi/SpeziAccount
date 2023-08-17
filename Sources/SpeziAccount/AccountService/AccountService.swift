@@ -55,16 +55,6 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
 
     // TODO docs: its the account services choice to mandate how to handle userId and password changes!
     func updateAccountDetails(_ modifications: AccountModifications) async throws
-
-
-    // TODO are all these overloads necessary?
-    func updateAccountDetail<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) async throws
-
-    func updateAccountDetail<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) async throws
-
-    func updateAccountDetail<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) async throws
-
-    func updateAccountDetail<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value?) async throws
 }
 
 
@@ -87,40 +77,5 @@ extension AccountService {
     /// Default `Hashable` implementation by relying on the hashable ``AccountService/id-9icbd`` property.
     public func hash(into hasher: inout Hasher) {
         id.hash(into: &hasher)
-    }
-}
-
-
-extension AccountService {
-    public func updateAccountDetail0<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value) async throws {
-        let modifiedDetails = ModifiedAccountDetails.Builder()
-            .set(Key.self, value: value)
-            .build()
-
-        let modifications = AccountModifications(
-            modifiedDetails: modifiedDetails,
-            removedAccountDetails: RemovedAccountDetails.Builder().build()
-        )
-        try await updateAccountDetails(modifications)
-    }
-
-    public func updateAccountDetail<Key: RequiredAccountValueKey>(_ key: Key.Type, value: Key.Value) async throws {
-        try await updateAccountDetail0(Key.self, value: value)
-    }
-
-    public func updateAccountDetail<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value) async throws {
-        try await updateAccountDetail0(Key.self, value: value)
-    }
-
-    public func updateAccountDetail<Key: AccountValueKey>(_ key: Key.Type, value: Key.Value?) async throws {
-        guard let value else {
-            return
-        }
-
-        try await updateAccountDetail0(Key.self, value: value)
-    }
-
-    public func updateAccountDetail<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, value: Key.Value?) async throws {
-        try await updateAccountDetail(Key.self, value: value)
     }
 }

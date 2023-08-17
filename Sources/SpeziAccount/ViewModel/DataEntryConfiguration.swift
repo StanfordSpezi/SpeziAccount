@@ -28,13 +28,14 @@ import SwiftUI
 ///
 /// ```
 /// - Note: Accessing the `DataEntryConfiguration` outside of a data entry parent view is undefined behavior.
-public class DataEntryConfiguration: ObservableObject { // TODO this is a view Model
+public class DataEntryConfiguration: ObservableObject { // TODO we could strive to remove this?
     /// The `AccountServiceConfiguration` of the ``AccountService`` for which we currently perform data entry.
     public let serviceConfiguration: AccountServiceConfiguration
     /// A control structure that allows you to register data entry validation closures to run input validation
     /// once the submit button is pressed.
     /// For more information see ``DataEntryValidationClosures/register(_:validation:)`` method.
-    public let validationClosures: DataEntryValidationClosures
+    // TODO public let validationClosures: DataEntryValidationClosures
+
     /// The `FocusState` of the parent view.
     /// Focus state is typically handled automatically using the ``AccountValueKey/focusState`` property.
     /// Access to this property is useful when defining a ``DataEntryView`` that exposes more than one field.
@@ -53,12 +54,12 @@ public class DataEntryConfiguration: ObservableObject { // TODO this is a view M
     ///   - viewState: The Spezi `ViewState` of the data entry view.
     init(
         configuration: AccountServiceConfiguration,
-        closures: DataEntryValidationClosures,
+        // TODO closures: DataEntryValidationClosures,
         focusedField: FocusState<String?>,
         viewState: Binding<ViewState>
     ) {
         self.serviceConfiguration = configuration
-        self.validationClosures = closures
+        // TODO self.validationClosures = closures
         self.focusedField = focusedField
         self.viewState = viewState
     }

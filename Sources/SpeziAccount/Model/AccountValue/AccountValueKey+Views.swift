@@ -51,8 +51,6 @@ extension AccountValueKey {
             return nil
         }
 
-        print("Displaying \(value) for \(Self.self)") // TODO remove
-
         return AnyView(DataDisplay(value))
     }
 }

@@ -8,7 +8,7 @@
 
 
 /// The result of a data validation task
-public enum DataValidationResult {
+public enum ValidationResult {
     /// Data was validated successfully. No malformed input found.
     case success
     /// The input data was not valid.
@@ -19,11 +19,19 @@ public enum DataValidationResult {
     /// - Note: If you have a ``AccountValueKey`` that is composed of multiple fields, you may use
     ///     ``failedAtField(focusedField:)`` to specify which field should receive focus.
     case failed
+    /*
+     TODO docs
     /// The input data was not valid for a specified field.
     ///
     /// This indicates that the current value can't be considered valid and must not be used or saved.
     ///
     /// If this is the first field for which validation failed, focus will automatically move the
     /// specified field.
-    case failedAtField(focusedField: String)
+    case failedAtField(focusedField: FieldIdentifier) // TODO remove?
+    */
+}
+
+public enum FieldValidationResult<FieldIdentifier> {
+    case success
+    case failedAtField(fieldIdentifier: FieldIdentifier)
 }

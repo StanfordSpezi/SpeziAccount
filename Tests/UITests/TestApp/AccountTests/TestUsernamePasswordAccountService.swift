@@ -44,8 +44,8 @@ actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
         await updateUser()
     }
 
-    func updateAccountDetails(_ details: ModifiedAccountDetails) async throws {
-        // TODO implement
+    func updateAccountDetails(_ modifications: AccountModifications) async throws {
+        // TODO implement!
     }
 
     func updateUser() async {

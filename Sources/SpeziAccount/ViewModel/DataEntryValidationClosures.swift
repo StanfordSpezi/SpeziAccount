@@ -10,6 +10,7 @@ import OrderedCollections
 import SwiftUI
 
 
+/*
 public class DataEntryValidationClosures { // TODO part of the view model
     public struct Entry {
         public let validationClosure: () -> DataValidationResult
@@ -66,3 +67,5 @@ extension DataEntryValidationClosures: Collection {
         storage.values[position]
     }
 }
+
+ */

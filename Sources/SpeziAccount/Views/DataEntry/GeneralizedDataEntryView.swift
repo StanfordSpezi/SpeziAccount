@@ -37,14 +37,11 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {
                 Wrapped($value)
-                    .validate(
-                        input: stringValue,
-                        for: Wrapped.Key.self,
-                        using: stringEntryView.validationRules()
-                    )
                     .focused(dataEntryConfiguration.focusedField.projectedValue, equals: Wrapped.Key.focusState)
+                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
             } else {
                 Wrapped($value)
+                    // TODO display red text if "empty"
             }
         }
             .onChange(of: value) { newValue in

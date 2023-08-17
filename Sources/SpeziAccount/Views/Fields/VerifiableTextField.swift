@@ -21,19 +21,6 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
     @Binding private var text: String
 
     @EnvironmentObject var validationEngine: ValidationEngine
-    @State private var debounceTask: Task<Void, Never>? {
-        willSet {
-            debounceTask?.cancel()
-        }
-    }
-
-    private var displayedValidationResults: [FailedValidationResult] {
-        // we want the behavior that we won't display any validation results if the user
-        // erases the whole field. We do this by just calling `runValidationOnSubmit` on commit.
-        // However, if ,e.g., a button triggers a `runValidation` we still want to show the message
-        // even on an empty field.
-        validationEngine.inputValid ? [] : validationEngine.validationResults
-    }
 
     public var body: some View {
         VStack {
@@ -48,14 +35,8 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
                 .onSubmit(runValidation)
 
             HStack {
-                VStack(alignment: .leading) {
-                    ForEach(displayedValidationResults) { result in
-                        Text(result.message)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                .font(.footnote)
-                .foregroundColor(.red)
+                ValidationResultsView(results: validationEngine.displayedValidationResults)
+
                 Spacer()
 
                 textFieldFooter
@@ -89,20 +70,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
     }
 
     private func runValidation() {
-        debounceTask = Task {
-            // Wait 0.5 seconds until you start the validation.
-            try? await Task.sleep(for: .seconds(0.2))
-
-            guard !Task.isCancelled else {
-                return
-            }
-
-            withAnimation(.easeInOut(duration: 0.2)) {
-                validationEngine.runValidationOnSubmit(input: text)
-            }
-
-            self.debounceTask = nil
-        }
+        validationEngine.submit(input: text, debounce: true)
     }
 }
 
@@ -110,11 +78,11 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
 struct VerifiableTextField_Previews: PreviewProvider {
     private struct PreviewView: View {
         @State var text = ""
-        @StateObject var engine = ValidationEngine(rules: .asciiLettersOnly)
+        @StateObject var engine = ValidationEngine(rules: .nonEmpty)
 
         var body: some View {
             VerifiableTextField(text: $text) {
-                Text("Text")
+                Text("Password Text")
             } footer: {
                 Text("Some Hint")
                     .font(.footnote)

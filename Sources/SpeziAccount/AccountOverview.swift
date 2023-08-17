@@ -14,25 +14,26 @@ public struct AccountOverview: View {
     @EnvironmentObject private var account: Account
 
     public var body: some View {
-        if let details = account.details {
-            Form {
-                // Splitting everything into a separate subview was actually necessary for the EditMode to work.
-                // Not even the example that Apple provides for the EditMode works. See https://developer.apple.com/forums/thread/716434
-                AccountOverviewSections(
-                    account: account,
-                    details: details
-                )
+        ZStack {
+            if let details = account.details {
+                Form {
+                    // Splitting everything into a separate subview was actually necessary for the EditMode to work.
+                    // Not even the example that Apple provides for the EditMode works. See https://developer.apple.com/forums/thread/716434
+                    AccountOverviewSections(
+                        account: account,
+                        details: details
+                    )
+                }
+                    // TODO placement of those?
+                    .submitLabel(.done) // TODO next label?
+                    .padding(.top, -20)
+            } else {
+                Text("No active Account!")
+                // TODO documentation link!
             }
-                // TODO placementof those?
-                .submitLabel(.done) // TODO next label?
-                .padding(.top, -20)
-                .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-                .navigationBarTitleDisplayMode(.inline)
-        } else {
-            // TODO handle
-            Text("No active Account!")
-            // TODO documentation link!
         }
+            .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
+            .navigationBarTitleDisplayMode(.inline)
     }
 
     public init() {}
@@ -49,8 +50,8 @@ struct AccountOverView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountOverview()
-                .environmentObject(Account(building: details, active: MockUsernamePasswordAccountService()))
         }
+            .environmentObject(Account(building: details, active: MockUsernamePasswordAccountService()))
     }
 }
 #endif

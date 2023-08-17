@@ -16,7 +16,7 @@ extension ValidationRule {
     /// The definition of **non-empty** in this context refers to: a string that is not the empty string and
     /// does also not just contain whitespace-only characters.
     public static var nonEmpty: ValidationRule = {
-        guard let regex = try? Regex(#"\S+"#) else {
+        guard let regex = try? Regex(#".*\S+.*"#) else {
             fatalError("Failed to build the nonEmpty validation rule!")
         }
 

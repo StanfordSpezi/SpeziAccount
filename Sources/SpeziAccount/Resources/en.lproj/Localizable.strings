@@ -65,6 +65,8 @@
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Password";
+"NEW_PASSWORD" = "New Password";
+"REPEAT_PASSWORD" = "Repeat Password";
 "UP_FORGOT_PASSWORD" = "Forgot Password?";
 "UP_LOGIN" = "Login";
 "UP_SIGNUP" = "Signup";
@@ -107,6 +109,7 @@
 "REMOVE_DEFAULT_ERROR"= "Could not remove account!";
 "SECURITY" = "Security";
 "VALUE_ADD %@" = "Add %@";
+"CHANGE_PASSWORD" = "Change Password";
 
 // MARK: - Validation Rules
 "VALIDATION_RULE_NON_EMPTY" = "This field cannot be empty.";
@@ -116,6 +119,9 @@
 "VALIDATION_RULE_MINIMAL_PASSWORD" = "Your password must be at least 8 characters long.";
 "VALIDATION_RULE_MEDIUM_PASSWORD" = "Your password must be at least 10 characters long.";
 "VALIDATION_RULE_STRONG_PASSWORD" = "Your password must be at least 12 characters long.";
+"VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Passwords do not match.";
+"VALIDATION_RULE_GIVEN_NAME_EMPTY" = "The first name field cannot be empty!";
+"VALIDATION_RULE_FAMILY_NAME_EMPTY" = "The last name field cannot be empty!";
 
 // MARK: - User Id
 "USER_ID" = "User Identifier";

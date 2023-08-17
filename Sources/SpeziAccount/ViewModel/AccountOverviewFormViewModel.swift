@@ -12,14 +12,37 @@ import SpeziViews
 import SwiftUI
 
 
+struct ForEachAccountKeyWrapper: Identifiable {
+    var id: ObjectIdentifier {
+        accountValue.id
+    }
+
+    var accountValue: any AccountValueKey.Type
+
+    init(accountValue: any AccountValueKey.Type) {
+        self.accountValue = accountValue
+    }
+}
+
+
 @MainActor
 class AccountOverviewFormViewModel: ObservableObject {
     private static var logger: Logger {
         LoggerKey.defaultValue
     }
 
-    private let account: Account // we just access this for static data
+    /// We categorize ``AccountValueKey`` by ``AccountValueCategory``. This is completely static and precomputed.
+    ///
+    /// Instead of iterating over the ``AccountDetails`` and show whatever values are present, we rely on the statically
+    /// defined ``AccountValueRequirement``s defined by the user. Using those classifications we can easily allow to model
+    /// "shadow" account values that are present but never shown to the user to allow to manage additional state.
+    private let categorizedAccountKeys: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
 
+
+    // We are not updating the view based on the properties here. We just need to track these states for processing.
+    // As we are using a reference type, state is persisted across views.
+    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
+    let validationClosures = ValidationClosures<String>()
 
     @Published var presentingCancellationDialog = false
     @Published var presentingLogoutAlert = false
@@ -28,35 +51,29 @@ class AccountOverviewFormViewModel: ObservableObject {
     @Published var addedAccountValues = CategorizedAccountValues()
     @Published var removedAccountValues = CategorizedAccountValues()
 
-    // We are not updating the view based on the properties here. We just need to track these states for processing.
-    // As we are using a reference type, state is persisted across views.
-    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
-    let validationClosures = DataEntryValidationClosures()
-
     var hasUnsavedChanges: Bool {
         !modifiedDetailsBuilder.isEmpty
     }
 
-
-    init(account: Account) {
-        self.account = account
+    var defaultErrorDescription: LocalizedStringResource {
+        .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module))
     }
 
 
-    func accountValuesBySections(details accountDetails: AccountDetails) -> OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
-        // We could also just iterate over the `AccountDetails` and show whatever is present.
-        // However, we deliberately don't do that. We have the `.supported` requirement option for such cases.
-        // And not doing this allows for modelling "shadow" account values that are present but never shown to the user
-        // to manage additional state.
-
-        let results = account.configuration.reduce(into: OrderedDictionary()) { result, requirement in
-            guard requirement.anyKey.category != AccountValueCategory.credentials
-                      && requirement.anyKey.id != PersonNameKey.id else {
-                // credentials and name categories are handled differently
-                return
-            }
-
+    init(account: Account) {
+        self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, requirement in
             result[requirement.anyKey.category, default: []] += [requirement.anyKey]
+        }
+    }
+
+    func accountKeys(by category: AccountValueCategory, using details: AccountDetails) -> [any AccountValueKey.Type] {
+        categorizedAccountKeys[category, default: []]
+            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountValues: addedAccountValues))
+    }
+
+    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
+        let results = categorizedAccountKeys.filter { category, _ in
+            category != .credentials && category != .name
         }
 
         // We want to establish the following order:
@@ -83,8 +100,6 @@ class AccountOverviewFormViewModel: ObservableObject {
         } else {
             addedAccountValues.append(value)
         }
-
-        // TODO focusedDataEntry = value.focusState (seems to break everything?)
     }
 
     func deleteAccountValue(at indexSet: IndexSet, in accountValues: [any AccountValueKey.Type]) {
@@ -123,10 +138,10 @@ class AccountOverviewFormViewModel: ObservableObject {
     func discardChangesAction(editMode: Binding<EditMode>?) {
         Self.logger.debug("Exiting edit mode and discarding changes.")
 
-        resetEditState(editMode: editMode)
+        resetModelState(editMode: editMode)
     }
 
-    func updateAccountDetails(service: any AccountService, details: AccountDetails, editMode: Binding<EditMode>?) async throws {
+    func updateAccountDetails(details: AccountDetails, editMode: Binding<EditMode>? = nil) async throws {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
 
         for removedKey in removedAccountValues.values {
@@ -138,13 +153,13 @@ class AccountOverviewFormViewModel: ObservableObject {
             removedAccountDetails: removedDetailsBuilder.build()
         )
 
-        try await service.updateAccountDetails(modifications)
+        try await details.accountService.updateAccountDetails(modifications)
         Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
 
-        resetEditState(editMode: editMode) // this reset the edit mode as well
+        resetModelState(editMode: editMode) // this reset the edit mode as well
     }
 
-    private func resetEditState(editMode: Binding<EditMode>?) {
+    func resetModelState(editMode: Binding<EditMode>? = nil) {
         addedAccountValues = CategorizedAccountValues()
         removedAccountValues = CategorizedAccountValues()
 
@@ -153,6 +168,18 @@ class AccountOverviewFormViewModel: ObservableObject {
         validationClosures.clear()
 
         editMode?.wrappedValue = .inactive
+    }
+
+    func accountSecurityLabel(_ configuration: AccountValueConfiguration) -> Text {
+        let security = Text("SECURITY", bundle: .module)
+
+        if configuration[PasswordKey.self] != nil {
+            return Text("UP_PASSWORD", bundle: .module)
+                + Text(" & ")
+                + security
+        }
+
+        return security
     }
 }
 
