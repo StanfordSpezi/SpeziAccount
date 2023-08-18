@@ -13,7 +13,6 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
     private let inputValue: String
     private let fieldIdentifier: FieldIdentifier?
 
-    // TODO this is a requirement!
     @EnvironmentObject private var closures: ValidationClosures<FieldIdentifier>
 
     @StateObject private var validation: ValidationEngine
@@ -31,6 +30,9 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
 
         content
             .environmentObject(validation)
+            .onDisappear {
+                closures.remove(engine: validation)
+            }
     }
 
     func onDataSubmission() -> ValidationResult {

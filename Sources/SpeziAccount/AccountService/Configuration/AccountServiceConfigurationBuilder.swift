@@ -41,7 +41,7 @@ public enum AccountServiceConfigurationBuilder {
         component
     }
 
-    /// Build an array of ``AccountServiceConfigurationKey``s.
+    /// Build an array of ``AccountServiceConfigurationKey`` components.
     public static func buildArray(_ components: [[any AccountServiceConfigurationKey]]) -> [any AccountServiceConfigurationKey] {
         components.reduce(into: []) { result, components in
             result.append(contentsOf: components)

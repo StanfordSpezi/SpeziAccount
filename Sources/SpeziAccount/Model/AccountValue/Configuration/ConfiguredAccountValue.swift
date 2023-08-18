@@ -18,8 +18,7 @@ public struct ConfiguredAccountValue {
     }
 
 
-    // TODO do we need non-keyPath equivalents?
-    public static func requires<Key: RequiredAccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> ConfiguredAccountValue {
+    public static func requires<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> ConfiguredAccountValue {
         .init(configuration: AccountValueConfigurationEntry(Key.self, type: .required))
     }
 

@@ -48,7 +48,7 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
 
 #if DEBUG
 struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
-    static let accountService = MockUsernamePasswordAccountService()
+    static let accountService = MockUserIdPasswordAccountService()
 
 
     static var previews: some View {

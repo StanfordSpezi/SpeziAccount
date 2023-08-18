@@ -10,7 +10,8 @@ import SpeziAccount
 
 
 actor TestUsernamePasswordAccountService: UserIdPasswordAccountService {
-    nonisolated let configuration = AccountServiceConfiguration(name: "TestUsernamePasswordAccountService") {
+    // TODO review configuration
+    nonisolated let configuration = AccountServiceConfiguration(name: "TestUsernamePasswordAccountService", supportedValues: .arbitrary) {
         UserIdConfiguration(type: .username)
     }
 

@@ -179,7 +179,7 @@ class AccountOverviewFormViewModel: ObservableObject {
     func accountIdentifierLabel(details accountDetails: AccountDetails) -> Text {
         let userId = Text(accountDetails.userIdType.localizedStringResource)
 
-        if accountDetails.storage.get(PersonNameKey.self) != nil {
+        if accountDetails.name != nil {
             return Text(PersonNameKey.name)
                 + Text(", ")
                 + userId

@@ -12,7 +12,7 @@ import SpeziAccount
 
 struct UserStorage {
     var userId: String
-    var name = PersonNameComponents()
+    var name: PersonNameComponents?
     var gender: GenderIdentity?
     var dateOfBirth: Date?
 
@@ -22,7 +22,7 @@ struct UserStorage {
     
     init(
         userId: String = "lelandstanford",
-        name: PersonNameComponents = PersonNameComponents(givenName: "Leland", familyName: "Stanford"),
+        name: PersonNameComponents? = PersonNameComponents(givenName: "Leland", familyName: "Stanford"),
         gender: GenderIdentity? = .male,
         dateOfBirth: Date? = Date() // TODO 9. März 1824
     ) {

@@ -12,7 +12,7 @@ import SwiftUI
 
 
 /// The name of a user.
-public struct PersonNameKey: RequiredAccountValueKey {
+public struct PersonNameKey: AccountValueKey {
     public typealias Value = PersonNameComponents
 
     public static let name = LocalizedStringResource("NAME", bundle: .atURL(from: .module))
@@ -31,7 +31,7 @@ extension AccountValueKeys {
 
 extension AccountValueStorageContainer {
     /// Access the name of a user.
-    public var name: PersonNameComponents {
+    public var name: PersonNameComponents? {
         storage[PersonNameKey.self]
     }
 }

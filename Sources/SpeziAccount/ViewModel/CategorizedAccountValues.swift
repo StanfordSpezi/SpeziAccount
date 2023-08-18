@@ -38,7 +38,7 @@ struct CategorizedAccountValues {
     }
 
     @discardableResult
-    mutating func remove(at index: Int, for category: AccountValueCategory) -> (any AccountValueKey.Type) {
+    mutating func remove(at index: Int, for category: AccountValueCategory) -> any AccountValueKey.Type {
         let result = addedAccountValues[category, default: []]
             .remove(at: index)
 

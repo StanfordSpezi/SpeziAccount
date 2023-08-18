@@ -10,10 +10,10 @@ import SwiftUI
 
 
 // TODO docs!
-public actor MockSimpleAccountService: AccountService {
+public actor MockSimpleAccountService: AccountService { // TODO maybe make this internal, as it is only used for Button previwing!
     @AccountReference private var account: Account
-
-    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService")
+    
+    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedValues: .arbitrary)
 
 
     public nonisolated var viewStyle: some AccountSetupViewStyle {

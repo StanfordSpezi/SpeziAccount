@@ -17,10 +17,6 @@ public struct AccountValueConfiguration { // TODO model it as a OptionSet?
 
 
     init(_ configuration: [ConfiguredAccountValue]) {
-        // TODO we have configurations that must always be supplied
-        //   => e.g. we assume userId??
-        //   => based on the account service (e.g. userId + password!)
-
         self.configuration = configuration
             .map { $0.configuration }
             .reduce(into: [:]) { result, configuration in
@@ -49,8 +45,7 @@ extension Array where Element == ConfiguredAccountValue {
         .requires(\.password),
         .requires(\.name),
         .collects(\.dateOfBirth),
-        .collects(\.genderIdentity),
-        .collects(\.email) // TODO remove
+        .collects(\.genderIdentity)
     ]
 }
 

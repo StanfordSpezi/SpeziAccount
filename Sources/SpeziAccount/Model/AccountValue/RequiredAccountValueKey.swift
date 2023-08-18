@@ -9,6 +9,8 @@
 import Spezi
 
 
+// TODO communicate the nunace, if it is used it is set to be required! But it doesn't need to be used!
+
 /// A typed storage key extending ``AccountValueKey`` for values that are required for every user account.
 ///
 /// A `RequiredAccountValueKey` can be used to provide the guarantee on a type-level that a given account value

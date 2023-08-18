@@ -38,7 +38,7 @@ struct AccountOverviewSections: View {
     }
 
     var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, focusedField: _focusedDataEntry)
     }
 
 
@@ -122,8 +122,8 @@ struct AccountOverviewSections: View {
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
-                    .environmentObject(model.validationClosures) // TODO error prone
                     .environmentObject(dataEntryConfiguration)
+                    .environmentObject(model.validationClosures) // TODO error prone
                     .environmentObject(model.modifiedDetailsBuilder)
             } label: {
                 model.accountIdentifierLabel(details: accountDetails)

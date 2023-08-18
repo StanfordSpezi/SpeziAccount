@@ -51,7 +51,7 @@ struct AccountOverView_Previews: PreviewProvider {
         NavigationStack {
             AccountOverview()
         }
-            .environmentObject(Account(building: details, active: MockUsernamePasswordAccountService()))
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

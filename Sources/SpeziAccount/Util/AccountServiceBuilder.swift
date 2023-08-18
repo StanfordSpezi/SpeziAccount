@@ -40,7 +40,7 @@ public enum AccountServiceBuilder {
         component
     }
 
-    /// Build an array of ``AccountService``s.
+    /// Build an array of ``AccountService`` components.
     public static func buildArray(_ components: [[any AccountService]]) -> [any AccountService] {
         components.reduce(into: []) { result, services in
             result.append(contentsOf: services)

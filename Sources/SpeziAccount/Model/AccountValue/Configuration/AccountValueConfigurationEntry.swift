@@ -7,7 +7,7 @@
 //
 
 
-public protocol AnyAccountValueConfigurationEntry: CustomStringConvertible {
+public protocol AnyAccountValueConfigurationEntry: CustomStringConvertible, CustomDebugStringConvertible {
     var anyKey: any AccountValueKey.Type { get }
     var requirement: AccountValueRequirement { get }
 
@@ -29,7 +29,7 @@ struct AccountValueConfigurationEntry<Key: AccountValueKey>: AnyAccountValueConf
 }
 
 
-extension AccountValueConfigurationEntry {
+extension AccountValueConfigurationEntry: CustomDebugStringConvertible {
     public var id: ObjectIdentifier {
         key.id
     }
@@ -42,6 +42,23 @@ extension AccountValueConfigurationEntry {
         "\(Key.self)"
     }
 
+    public var debugDescription: String {
+        var name = Key.name
+        name.locale = .init(identifier: "en_US")
+        // TODO it is not a requirement that userId matches the property name (or not documented)!
+        //   => also it must be lower-cased!
+
+        // TODO => use the description of the KeyPath implementation!
+        //   see https://github.com/apple/swift-evolution/blob/main/proposals/0369-add-customdebugdescription-conformance-to-anykeypath.md
+        switch requirement {
+        case .required:
+            return ".requires(\\.\(name))"
+        case .collected:
+            return ".collects(\\.\(name))"
+        case .supported:
+            return ".supports(\\.\(name))"
+        }
+    }
 
     public func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
         Key.isContained(in: container)

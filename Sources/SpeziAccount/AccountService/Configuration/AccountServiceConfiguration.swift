@@ -36,31 +36,40 @@ public struct AccountServiceConfiguration: Sendable {
     
 
     /// Initialize a new configuration by just providing the required ones.
-    /// - Parameter name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
-    public init(name: LocalizedStringResource) {
-        self.storage = Self.createStorage(name: name)
+    /// - Parameters:
+    ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
+    ///   - supportedValues: The set of ``SupportedAccountValues`` the ``AccountService`` is capable of storing itself.
+    ///     If ``SupportedAccountValues/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///     that is capable of handling all non-supported ``AccountValueKey``s.
+    public init(name: LocalizedStringResource, supportedValues: SupportedAccountValues) {
+        self.storage = Self.createStorage(name: name, supportedValues: supportedValues)
     }
 
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
+    ///   - supportedValues: The set of ``SupportedAccountValues`` the ``AccountService`` is capable of storing itself.
+    ///     If ``SupportedAccountValues/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///     that is capable of handling all non-supported ``AccountValueKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
         name: LocalizedStringResource,
+        supportedValues: SupportedAccountValues,
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
+        // TODO support a configuration option to impose keys that have to be configured as required? (UserId + Password?)
     ) {
-        self.storage = Self.createStorage(name: name, configuration: configuration())
+        self.storage = Self.createStorage(name: name, supportedValues: supportedValues, configuration: configuration())
     }
 
-    // TODO annotate supported signup requirements, to check if anything is unsupported?
-    //      (might be that an account service supports everything) => required ting to specify!
-    //    => enum .all, supported(requirements)
+
     private static func createStorage(
-        name: LocalizedStringResource, // TODO second required parameter: supported account values?
+        name: LocalizedStringResource,
+        supportedValues: SupportedAccountValues,
         configuration: [any AccountServiceConfigurationKey] = []
     ) -> AccountServiceConfigurationStorage {
         var storage = AccountServiceConfigurationStorage()
         storage[AccountServiceName.self] = AccountServiceName(name)
+        storage[SupportedAccountValues.self] = supportedValues
 
         for configuration in configuration {
             configuration.store(into: &storage)

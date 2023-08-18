@@ -30,7 +30,7 @@ struct PasswordChangeSheet: View {
 
     // TODO duplicate! (reconstruct?) just forward?
     private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry)
     }
 
     var body: some View {

@@ -144,6 +144,9 @@ struct ValidationClosure<FieldIdentifier> {
 ///         VerifiableTextField(text: $text)
 ///             .environmentObject(validation)
 ///             .focused($myFocusedField, equals: myFieldIdentifier)
+///             .onDisappear { // this is important if your view may be removed from the parent view
+///                 closures.remove(engine: validation)
+///             }
 ///     }
 ///
 ///     init(_ focusState: FocusState<String?>) {
@@ -201,6 +204,12 @@ public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
     public func register(running engine: ValidationEngine, validation: @escaping () -> ValidationResult) -> EmptyView
         where FieldIdentifier == Never {
         register(validation: ValidationClosure(id: engine.id, for: nil, closure: validation))
+    }
+
+    /// Removes the registered validation closure of the ``ValidationEngine``.
+    /// - Parameter engine: The ``ValidationEngine`` which previously a validation closure was registered for.
+    public func remove(engine: ValidationEngine) {
+        storage[engine.id] = nil
     }
 
     /// Clear any registered closures from the storage.

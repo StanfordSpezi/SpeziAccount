@@ -112,7 +112,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
 #if DEBUG
 struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
-    static let accountService = MockUsernamePasswordAccountService()
+    static let accountService = MockUserIdPasswordAccountService()
 
 
     static var previews: some View {

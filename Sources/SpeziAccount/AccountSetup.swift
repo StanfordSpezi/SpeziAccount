@@ -245,14 +245,14 @@ extension AccountSetupViewStyle {
 struct AccountView_Previews: PreviewProvider {
     static var accountServicePermutations: [[any AccountService]] = {
        [
-           [MockUsernamePasswordAccountService()],
+           [MockUserIdPasswordAccountService()],
            [MockSimpleAccountService()],
-           [MockUsernamePasswordAccountService(), MockSimpleAccountService()],
+           [MockUserIdPasswordAccountService(), MockSimpleAccountService()],
            [
                 // TODO this isn't properly displayed in the preview! (double primary view?)
-               MockUsernamePasswordAccountService(),
+               MockUserIdPasswordAccountService(),
                MockSimpleAccountService(),
-               MockUsernamePasswordAccountService()
+               MockUserIdPasswordAccountService()
            ],
            []
        ]
@@ -273,7 +273,7 @@ struct AccountView_Previews: PreviewProvider {
         NavigationStack {
             AccountSetup()
         }
-        .environmentObject(Account(building: detailsBuilder, active: MockUsernamePasswordAccountService()))
+        .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

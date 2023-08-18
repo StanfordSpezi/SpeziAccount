@@ -22,7 +22,7 @@ struct UITestsApp: App {
         WindowGroup {
             NavigationStack {
                 AccountOverview()
-                    .environmentObject(Account(building: Self.details, active: MockUsernamePasswordAccountService()))
+                    .environmentObject(Account(building: Self.details, active: MockUserIdPasswordAccountService()))
                 // TODO present AccountOverview for tests cases!
                 // AccountTestsView()
                 //    .spezi(appDelegate)

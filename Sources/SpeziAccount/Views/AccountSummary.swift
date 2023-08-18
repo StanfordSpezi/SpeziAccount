@@ -16,8 +16,11 @@ public struct AccountSummary: View {
 
     public var body: some View {
         VStack {
-            // TODO don't assume name existence!(?) and userId?
-            UserInformation(name: account.name, caption: account.userId)
+            if let name = account.name {
+                // TODO have a fallback for non-name existence!
+                UserInformation(name: name, caption: account.userId)
+            }
+
 
             AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
                 try await account.accountService.logout()
@@ -37,7 +40,7 @@ struct AccountSummary_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUsernamePasswordAccountService())
+        .build(owner: MockUserIdPasswordAccountService())
 
     static var previews: some View {
         AccountSummary(account: details)

@@ -37,16 +37,13 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {
                 Wrapped($value)
-                    .focused(dataEntryConfiguration.focusedField.projectedValue, equals: Wrapped.Key.focusState)
                     .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
             } else {
                 Wrapped($value)
-                    // TODO display red text if "empty"
             }
         }
+            .focused(dataEntryConfiguration.focusedField.projectedValue, equals: Wrapped.Key.focusState)
             .onChange(of: value) { newValue in
-                // TODO shall we remove empty strings (aka empty values?) => will need to fix validation rules
-
                 // ensure parent view has access to the latest value
                 detailsBuilder.set(Wrapped.Key.self, value: newValue)
             }

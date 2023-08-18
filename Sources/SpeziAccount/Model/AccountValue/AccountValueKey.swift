@@ -75,6 +75,10 @@ extension AccountValueKey {
         "\(Self.self)"
     }
 
+    static var isRequired: Bool {
+        self is any RequiredAccountValueKey.Type
+    }
+
     public static func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
         container.contains(Self.self)
     }

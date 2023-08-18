@@ -137,7 +137,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
 #if DEBUG
 struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
-    static let accountService = MockUsernamePasswordAccountService()
+    static let accountService = MockUserIdPasswordAccountService()
 
     static var previews: some View {
         NavigationStack {

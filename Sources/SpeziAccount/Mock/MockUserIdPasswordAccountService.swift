@@ -8,8 +8,8 @@
 
 import Foundation
 
-// TODO docs! rename UserId => make userid type controllable!
-public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
+// TODO docs! make userid type controllable!
+public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     private struct AccountValueUpdater: AccountValueVisitor {
         var detailsBuilder: AccountDetails.Builder
 
@@ -47,7 +47,12 @@ public actor MockUsernamePasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
 
-    public let configuration = AccountServiceConfiguration(name: "Mock AccountService")
+    public let configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedValues: .arbitrary) {
+        RequiredAccountValues {
+            \.userId
+            \.password
+        }
+    }
 
     public init() {}
 

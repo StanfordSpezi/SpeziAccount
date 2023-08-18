@@ -24,7 +24,7 @@ struct NameOverview: View {
 
     // TODO duplicate! (reconstruct?) just forward? noo
     var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, focusedField: _focusedDataEntry, viewState: $viewState)
+        .init(configuration: service.configuration, focusedField: _focusedDataEntry)
     }
 
     var body: some View {
@@ -39,7 +39,7 @@ struct NameOverview: View {
                 }
             }
 
-            if accountDetails.storage.get(PersonNameKey.self) != nil {
+            if accountDetails.name != nil {
                 Section {
                     NavigationLink {
                         SingleEditView<PersonNameKey>(model: model, details: accountDetails)

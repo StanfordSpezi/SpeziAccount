@@ -16,7 +16,7 @@ struct AccountOverviewHeader: View {
 
     var accountHeadline: String {
         // we gracefully check if the account details have a name, bypassing the subscript overloads
-        if let name = details.storage.get(PersonNameKey.self) {
+        if let name = details.name {
             return name.formatted(.name(style: .long))
         } else {
             // otherwise we display the userId
@@ -25,7 +25,7 @@ struct AccountOverviewHeader: View {
     }
 
     var accountSubheadline: String? {
-        if details.storage.get(PersonNameKey.self) != nil {
+        if details.name != nil {
             // If the accountHeadline uses the name, we display the userId as the subheadline
             return details.userId
         } else if details.userIdType != .emailAddress,
@@ -41,7 +41,7 @@ struct AccountOverviewHeader: View {
     var body: some View {
         VStack {
             // we gracefully check if the account details have a name, bypassing the subscript overloads
-            if let name = details.storage.get(PersonNameKey.self) {
+            if let name = details.name {
                 UserProfileView(name: name)
                     .frame(height: 90)
             }
@@ -73,7 +73,7 @@ struct AccountOverviewHeader_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", middleName: "Michael", familyName: "Bauer"))
-        .build(owner: MockUsernamePasswordAccountService())
+        .build(owner: MockUserIdPasswordAccountService())
 
     static var previews: some View {
         AccountOverviewHeader(details: details)

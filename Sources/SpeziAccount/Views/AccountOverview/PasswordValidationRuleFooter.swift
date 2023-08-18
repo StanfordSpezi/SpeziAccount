@@ -36,7 +36,7 @@ struct PasswordValidationRuleFooter: View {
 #if DEBUG
 struct PasswordValidationRuleFooter_Previews: PreviewProvider {
     static var previews: some View {
-        PasswordValidationRuleFooter(configuration: AccountServiceConfiguration(name: "Preview Service") {
+        PasswordValidationRuleFooter(configuration: AccountServiceConfiguration(name: "Preview Service", supportedValues: .arbitrary) {
             FieldValidationRules(for: \.password, rules: .minimalPassword, .strongPassword) // doesn't make sense, but useful for preview
         })
     }
