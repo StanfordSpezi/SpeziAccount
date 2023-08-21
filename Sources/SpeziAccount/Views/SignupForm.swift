@@ -27,13 +27,13 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
 
     private var signupValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
-        account.configuration.reduce(into: [:]) { result, requirement in
-            guard requirement.requirement != .supported else {
+        account.configuration.reduce(into: [:]) { result, configuration in
+            guard configuration.requirement != .supported else {
                 // we only show required and collected values in signup
                 return
             }
 
-            result[requirement.anyKey.category, default: []] += [requirement.anyKey]
+            result[configuration.key.category, default: []] += [configuration.key]
         }
     }
 
@@ -113,7 +113,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
         focusedDataEntry = nil
 
-        // TODO verify against which requirements we are checking!
         let request: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 
         try await service.signUp(signupDetails: request)

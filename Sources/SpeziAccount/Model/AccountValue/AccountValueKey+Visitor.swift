@@ -8,11 +8,11 @@
 
 import Spezi
 
+// MARK: - Container
 
 extension AccountValueStorageBaseContainer {
-    public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: Visitor) -> Visitor.FinalResult {
+    public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: Visitor) -> Visitor.Final {
         for entry in storage {
-            print("Visiting entry \(entry)!")
             // not all knowledge sources are `AccountValueKey`
             guard let accountKey = entry.anySource as? any AccountValueKey.Type else {
                 continue
@@ -21,10 +21,14 @@ extension AccountValueStorageBaseContainer {
             accountKey.anyAccept(visitor, entry.anyValue)
         }
 
-        return visitor.buildFinal()
+        return visitor.final()
     }
 }
 
+
+extension Array: AcceptingAccountKeyVisitor where Element == any AccountValueKey.Type {}
+
+// MARK: - Account Key
 
 extension AccountValueKey {
     public static func accept<Visitor: AccountValueVisitor>(_ visitor: Visitor, _ value: Value) {
@@ -35,7 +39,16 @@ extension AccountValueKey {
         }
     }
 
-    static func anyAccept<Visitor: AccountValueVisitor>(_ visitor: Visitor, _ value: Any) {
+    public static func accept<Visitor: AccountKeyVisitor>(_ visitor: Visitor) {
+        if let requiredKey = self as? any RequiredAccountValueKey.Type {
+            requiredKey.acceptRequired(visitor)
+        } else {
+            visitor.visit(Self.self)
+        }
+    }
+
+    // use by acceptAll
+    fileprivate static func anyAccept<Visitor: AccountValueVisitor>(_ visitor: Visitor, _ value: Any) {
         guard let value = value as? Value else {
             preconditionFailure("Tried to visit \(Self.self) with value \(value) which is not of type \(Value.self)")
         }
@@ -50,5 +63,9 @@ extension RequiredAccountValueKey {
             preconditionFailure("Tried to visit \(Self.self) with value \(value) which is not of type \(Value.self)")
         }
         visitor.visit(Self.self, value)
+    }
+
+    fileprivate static func acceptRequired<Visitor: AccountKeyVisitor>(_ visitor: Visitor) {
+        visitor.visit(Self.self)
     }
 }

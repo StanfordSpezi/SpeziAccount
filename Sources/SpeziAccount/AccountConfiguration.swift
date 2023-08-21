@@ -76,34 +76,43 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
 
     public func configure() {
         // assemble the final array of account services
-        let accountServices = providedAccountServices + self.accountServices
-
-        for accountService in accountServices {
+        let accountServices = (providedAccountServices + self.accountServices).map { service in
             // verify that the configuration matches what is expected by the account service
-            verifyAccountServiceRequirements(of: accountService)
+            verifyAccountServiceRequirements(of: service)
 
-            // verify account service can store all configured account values
-            verifyConfigurationRequirements(against: accountService)
+            // Verify account service can store all configured account values.
+            // If applicable, wraps the service into an StandardBackedAccountService
+            return verifyConfigurationRequirements(against: service)
         }
 
-        self.account = Account(services: accountServices, configuration: configuredAccountValues)
+        self.account = Account(
+            services: accountServices,
+            configuration: configuredAccountValues
+        )
+
+        if let accountStandard = standard as? any AccountStorageStandard {
+            self.account?.injectWeakAccount(into: accountStandard)
+        }
     }
 
     private func verifyAccountServiceRequirements(of service: any AccountService) {
-        let requiredValues = service.configuration.requiredAccountValues
+        let requiredValues = service.configuration.requiredAccountKeys
 
-        // a collection of AccountKey.Type which aren't configured at all or not configured to be required
-        let mismatchedKeys = requiredValues.filter { key in
+        // A collection of AccountKey.Type which aren't configured by the user or not configured to be required
+        // but the Account Service requires them.
+        let mismatchedKeys: [any AccountKeyWithDescription] = requiredValues.filter { keyWithDescription in
+            let key = keyWithDescription.key
+            let configuration = configuredAccountValues[key]
             // TODO is there a use case to force collection, no right?
-            configuredAccountValues[key] == nil
-                || (key.isRequired && configuredAccountValues[key]?.requirement != .required) // TODO second is always true currently!
+            return configuration == nil
+                || (key.isRequired && configuration?.requirement != .required) // TODO second is always true currently!
         }
 
         guard !mismatchedKeys.isEmpty else {
             return
         }
 
-        // TODO the array.description doesn't work here right? how to we access the KeyPath thingy?
+        // Note: AccountKeyWithDescription has a nice `debugDescription` that pretty prints the KeyPath property name
         preconditionFailure(
             """
             You configured the AccountService \(service) which requires the following account values to be configured: \
@@ -114,34 +123,33 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         )
     }
 
-    private func verifyConfigurationRequirements(against service: any AccountService) {
-        let supportedValues = service.configuration.supportedAccountValues
-
+    private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {
         logger.debug("Checking \(service.description) against the configured account values.")
 
         // collect all values that cannot be handled by the account service
-        let unmappedAccountValues = configuredAccountValues.filter { configuredValue in
-            !supportedValues.canStore(configuredValue)
+        let unmappedAccountKeys: [any AnyAccountValueConfigurationEntry] = service.configuration
+            .unsupportedAccountKeys(basedOn: configuredAccountValues)
+
+        guard !unmappedAccountKeys.isEmpty else {
+            return service // we are fine, nothing unsupported
         }
 
-        guard !unmappedAccountValues.isEmpty else {
-            return // we are fine, nothing unsupported
-        }
 
-        if let accountStorageStandard = standard as? any AccountStorageStandard {
+        if let accountStandard = standard as? any AccountStorageStandard {
             // we are also fine, we have a standard that can store any unsupported account values
             logger.debug("""
-                         The standard \(accountStorageStandard.description) is used to store the following account values that \
-                         are unsupported by the Account Service \(service.description): \(unmappedAccountValues.debugDescription)
+                         The standard \(accountStandard.description) is used to store the following account values that \
+                         are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
 
                          """)
-            return
+            return service.backedBy(standard: accountStandard)
         }
 
-        // when we reach here, we have no way to store the configured account value
+        // When we reach here, we have no way to store the configured account value
+        // Note: AnyAccountValueConfigurationEntry has a nice `debugDescription` that pretty prints the KeyPath property name
         preconditionFailure(
             """
-            Your `AccountConfiguration` lists the following account values "\(unmappedAccountValues.debugDescription)" which are
+            Your `AccountConfiguration` lists the following account values "\(unmappedAccountKeys.debugDescription)" which are
             not supported by the Account Service \(service.description)!
 
             The Account Service \(service.description) indicated that it cannot store the above-listed account values.

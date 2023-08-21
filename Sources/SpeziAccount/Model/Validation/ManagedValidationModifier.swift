@@ -44,9 +44,6 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
 
 
 extension View {
-    // TODO name is not entirely good. It just registers a closure called from externally ? "validateOn???"
-    // TODO varidadic arguments?
-
     public func managedValidation<FieldIdentifier: Hashable>(
         input value: String,
         for fieldIdentifier: FieldIdentifier,

@@ -13,23 +13,13 @@ import Spezi
 public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>: ObservableObject, AccountValueStorageBaseContainer {
     @Published public var storage: AccountValueStorage // TODO make some protocol such that this can stay internal!
 
-    /// The count of elements stored in the builder.
-    public var count: Int {
-        storage.count
-    }
-
-    /// Indicates if the builder is empty.
-    public var isEmpty: Bool {
-        storage.isEmpty
-    }
-
-
-    public init() {
-        self.storage = .init()
-    }
 
     init(from storage: AccountValueStorage) {
         self.storage = storage
+    }
+
+    public convenience init() {
+        self.init(from: .init())
     }
 
     public convenience init<Source: AccountValueStorageContainer>(from storage: Source) {
@@ -58,6 +48,17 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
         set(Key.self, value: value)
     }
 
+    public func merging<Container: AccountValueStorageContainer>(_ container: Container) {
+        container.acceptAll(CopyVisitor(builder: self))
+    }
+
+    public func merging<Container: AccountValueStorageContainer, Keys: AcceptingAccountKeyVisitor>(
+        with keys: Keys,
+        from container: Container
+    ) {
+        keys.acceptAll(CopyKeyVisitor(destination: self, source: container))
+    }
+
     @discardableResult
     public func remove<Key: AccountValueKey>(_ key: Key.Type) -> Self {
         storage[key] = nil
@@ -68,17 +69,20 @@ public class AccountValueStorageBuilder<Container: AccountValueStorageContainer>
     public func remove<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> Self {
         remove(Key.self)
     }
-}
 
-// MARK: - AccountOverview Extensions
-
-extension AccountValueStorageBuilder {
     @discardableResult
-    func remove(any accountValue: any AccountValueKey.Type) -> Self {
-        accountValue.remove(from: self)
+    public func remove(any accountValue: any AccountValueKey.Type) -> Self {
+        accountValue.accept(RemoveVisitor(builder: self))
         return self
     }
 
+    public func build() -> Container {
+        Container(from: storage)
+    }
+}
+
+
+extension AccountValueStorageBuilder {
     @discardableResult
     func setEmptyValue(for accountValue: any AccountValueKey.Type) -> Self {
         accountValue.setEmpty(in: self)
@@ -86,12 +90,36 @@ extension AccountValueStorageBuilder {
     }
 }
 
-extension AccountValueKey {
-    fileprivate static func remove<Container: AccountValueStorageContainer>(from builder: AccountValueStorageBuilder<Container>) {
-        builder.remove(Self.self)
-    }
 
+extension AccountValueKey {
     fileprivate static func setEmpty<Container: AccountValueStorageContainer>(in builder: AccountValueStorageBuilder<Container>) {
         builder.set(Self.self, value: emptyValue)
+    }
+}
+
+private struct RemoveVisitor<Container: AccountValueStorageContainer>: AccountKeyVisitor {
+    let builder: AccountValueStorageBuilder<Container>
+
+    func visit<Key: AccountValueKey>(_ key: Key.Type) {
+        builder.remove(key)
+    }
+}
+
+private struct CopyVisitor<Container: AccountValueStorageContainer>: AccountValueVisitor {
+    let builder: AccountValueStorageBuilder<Container>
+
+    func visit<Key: AccountValueKey>(_ key: Key.Type, _ value: Key.Value) {
+        builder.set(key, value: value)
+    }
+}
+
+private struct CopyKeyVisitor<Destination: AccountValueStorageContainer, Source: AccountValueStorageContainer>: AccountKeyVisitor {
+    let destination: AccountValueStorageBuilder<Destination>
+    let source: Source
+
+    func visit<Key: AccountValueKey>(_ key: Key.Type) {
+        if let value = source.storage.get(key) {
+            destination.set(key, value: value)
+        }
     }
 }

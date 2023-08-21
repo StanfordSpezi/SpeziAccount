@@ -7,16 +7,16 @@
 //
 
 
-public enum SupportedAccountValues: AccountServiceConfigurationKey {
+public enum SupportedAccountKeys: AccountServiceConfigurationKey {
     case arbitrary
     case exactly(ofKeys: AccountKeyCollection)
 
-    func canStore(_ configuredValue: AnyAccountValueConfigurationEntry) -> Bool {
+    fileprivate func canStore(_ configuredValue: any AnyAccountValueConfigurationEntry) -> Bool {
         switch self {
         case .arbitrary:
             return true
         case let .exactly(keys):
-            guard let key = keys.first(where: { $0 == configuredValue.anyKey }) else {
+            guard let key = keys.first(where: { $0.key == configuredValue.key })?.key else {
                 return false // we didn't find the key in the collection of supported keys
             }
 
@@ -31,12 +31,21 @@ public enum SupportedAccountValues: AccountServiceConfigurationKey {
 
 extension AccountServiceConfiguration {
     /// Access the supported account values of an ``AccountService``.
-    public var supportedAccountValues: SupportedAccountValues {
+    public var supportedAccountKeys: SupportedAccountKeys {
         // TODO do that with all of the others? more compact for code coverage?
-        guard let value = storage[SupportedAccountValues.self] else {
+        guard let value = storage[SupportedAccountKeys.self] else {
             preconditionFailure("Reached illegal state where SupportedAccountValues configuration was never supplied!")
         }
 
         return value
+    }
+
+    public func unsupportedAccountKeys(basedOn configuration: AccountValueConfiguration) -> [any AnyAccountValueConfigurationEntry] {
+        let supportedValues = supportedAccountKeys
+
+        return configuration
+            .filter { configuredValue in
+                !supportedValues.canStore(configuredValue)
+            }
     }
 }

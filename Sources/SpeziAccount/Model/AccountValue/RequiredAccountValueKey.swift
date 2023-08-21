@@ -31,8 +31,8 @@ extension RequiredAccountValueKey {
     ///     return a non-optional `Value`.
     public static var defaultValue: Value {
         preconditionFailure("""
-                            A required AccountValue wasn't provided by the respective AccountService! \
-                            Something went wrong with checking the requirements.
+                            The required account value \(Self.self) was tried to be accessed but wasn't provided! \
+                            Please verify your `AccountConfiguration` or the implementation of your `AccountService`.
                             """)
     }
 }

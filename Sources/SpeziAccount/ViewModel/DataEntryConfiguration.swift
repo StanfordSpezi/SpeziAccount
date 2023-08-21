@@ -34,8 +34,6 @@ public class DataEntryConfiguration: ObservableObject { // TODO we could strive 
     /// Access to this property is useful when defining a ``DataEntryView`` that exposes more than one field.
     public let focusedField: FocusState<String?> // see `AccountValueKey.Type/focusState`
 
-    // TODO make it possible for the view to detect in which kind of subview it is placed: signup vs overview!
-
 
     /// Initializes a new DataEntryConfiguration object.
     /// - Parameters:
@@ -43,11 +41,9 @@ public class DataEntryConfiguration: ObservableObject { // TODO we could strive 
     ///   - focusedField: The `FocusState` of the data entry view.
     init(
         configuration: AccountServiceConfiguration,
-        // TODO closures: DataEntryValidationClosures,
         focusedField: FocusState<String?>
     ) {
         self.serviceConfiguration = configuration
-        // TODO self.validationClosures = closures
         self.focusedField = focusedField
     }
 }

@@ -53,8 +53,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                         .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                         .padding(.bottom, 0.5)
 
-                    // TODO .padding([.leading, .bottom], 8) for the red texts?
-
                     VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure) {
                         NavigationLink(value: "as") {
                             EmptyView()
@@ -96,7 +94,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                 } label: {
                     Text("UP_SIGNUP".localized(.module))
                 }
-                // TODO .padding(.horizontal, 0)
             }
                 .font(.footnote)
         }

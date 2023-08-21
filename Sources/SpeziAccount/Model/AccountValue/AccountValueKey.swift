@@ -79,6 +79,7 @@ extension AccountValueKey {
         self is any RequiredAccountValueKey.Type
     }
 
+    // TODO remove that if possible!
     public static func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
         container.contains(Self.self)
     }

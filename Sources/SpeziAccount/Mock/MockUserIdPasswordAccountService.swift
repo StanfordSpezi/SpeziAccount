@@ -22,7 +22,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             detailsBuilder.set(key, value: value)
         }
 
-        func buildFinal() -> AccountDetails.Builder {
+        func final() -> AccountDetails.Builder {
             detailsBuilder
         }
     }
@@ -39,7 +39,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             detailsBuilder.remove(key)
         }
 
-        func buildFinal() -> AccountDetails.Builder {
+        func final() -> AccountDetails.Builder {
             detailsBuilder
         }
     }
@@ -48,7 +48,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
 
 
     public let configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedValues: .arbitrary) {
-        RequiredAccountValues {
+        RequiredAccountKeys {
             \.userId
             \.password
         }
@@ -58,39 +58,39 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
 
     public func login(userId: String, password: String) async throws {
         print("Mock Login: \(userId) \(password)")
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
 
         let details = AccountDetails.Builder()
             .set(\.userId, value: userId)
             .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build(owner: self)
-        await account.supplyUserDetails(details)
+        try await account.supplyUserDetails(details)
     }
 
     public func signUp(signupDetails: SignupDetails) async throws {
         print("Mock Signup: \(signupDetails)")
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
 
         let details = AccountDetails.Builder(from: signupDetails)
             .remove(\.password)
             .build(owner: self)
-        await account.supplyUserDetails(details)
+        try await account.supplyUserDetails(details)
     }
 
     public func resetPassword(userId: String) async throws {
         print("Mock ResetPassword: \(userId)")
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
     }
 
     public func logout() async throws {
         print("Mock Logout")
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
         await account.removeUserDetails()
     }
 
     public func delete() async throws {
         print("Mock Remove Account")
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
         await account.removeUserDetails()
     }
 
@@ -99,7 +99,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             return
         }
 
-        try? await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(1))
 
         // TODO can this API surface be more elegant?
         let builder = modifications.modifiedDetails
@@ -107,6 +107,6 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
         let finalBuilder = modifications.removedAccountDetails
             .acceptAll(AccountValueRemover(builder: builder))
 
-        await account.supplyUserDetails(finalBuilder.build(owner: self))
+        try await account.supplyUserDetails(finalBuilder.build(owner: self))
     }
 }

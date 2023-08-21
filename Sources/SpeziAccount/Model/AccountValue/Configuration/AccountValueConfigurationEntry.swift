@@ -7,60 +7,62 @@
 //
 
 
-public protocol AnyAccountValueConfigurationEntry: CustomStringConvertible, CustomDebugStringConvertible {
-    var anyKey: any AccountValueKey.Type { get }
-    var requirement: AccountValueRequirement { get }
+// TODO double the any word!
+public protocol AnyAccountValueConfigurationEntry: CustomStringConvertible, CustomDebugStringConvertible, Identifiable, Hashable
+    where ID == ObjectIdentifier {
+    associatedtype Key: AccountValueKey
 
-    var id: ObjectIdentifier { get }
+    var key: Key.Type { get }
+    var requirement: AccountValueRequirement { get }
 
     func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool
 }
 
 
 struct AccountValueConfigurationEntry<Key: AccountValueKey>: AnyAccountValueConfigurationEntry {
-    public let key: Key.Type
-    public let requirement: AccountValueRequirement
+    let key: Key.Type
+    let requirement: AccountValueRequirement
 
+    let keyPathDescription: String
 
-    init(_ key: Key.Type, type: AccountValueRequirement) {
-        self.key = key
+    init(_ keyPath: KeyPath<AccountValueKeys, Key.Type>, type: AccountValueRequirement) {
+        self.key = Key.self
         self.requirement = type
+        self.keyPathDescription = keyPath.shortDescription
     }
 }
 
 
-extension AccountValueConfigurationEntry: CustomDebugStringConvertible {
-    public var id: ObjectIdentifier {
+extension AccountValueConfigurationEntry {
+    var id: ObjectIdentifier {
         key.id
     }
 
-    public var anyKey: any AccountValueKey.Type {
-        key
-    }
-
-    public var description: String {
-        "\(Key.self)"
-    }
-
-    public var debugDescription: String {
-        var name = Key.name
-        name.locale = .init(identifier: "en_US")
-        // TODO it is not a requirement that userId matches the property name (or not documented)!
-        //   => also it must be lower-cased!
-
-        // TODO => use the description of the KeyPath implementation!
-        //   see https://github.com/apple/swift-evolution/blob/main/proposals/0369-add-customdebugdescription-conformance-to-anykeypath.md
+    var description: String {
         switch requirement {
         case .required:
-            return ".requires(\\.\(name))"
+            return ".requires(\(keyPathDescription))"
         case .collected:
-            return ".collects(\\.\(name))"
+            return ".collects(\(keyPathDescription))"
         case .supported:
-            return ".supports(\\.\(name))"
+            return ".supports(\(keyPathDescription))"
         }
     }
 
-    public func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
+    var debugDescription: String {
+        description
+    }
+
+    static func == (lhs: AccountValueConfigurationEntry<Key>, rhs: AccountValueConfigurationEntry<Key>) -> Bool {
+        lhs.id == rhs.id
+    }
+
+
+    func isContained<Storage: AccountValueStorageContainer>(in container: Storage) -> Bool {
         Key.isContained(in: container)
+    }
+
+    func hash(into hasher: inout Hasher) {
+        id.hash(into: &hasher)
     }
 }

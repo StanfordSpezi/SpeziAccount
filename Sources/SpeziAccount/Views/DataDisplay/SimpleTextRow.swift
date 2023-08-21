@@ -15,7 +15,6 @@ struct SimpleTextRow<Value: View>: View {
 
     var body: some View {
         Text(name)
-        // TODO font weight?
         Spacer()
         value
             .foregroundColor(.secondary)

@@ -47,8 +47,8 @@ class AccountOverviewFormViewModel: ObservableObject {
     @Published var presentingLogoutAlert = false
     @Published var presentingRemovalAlert = false
 
-    @Published var addedAccountValues = CategorizedAccountValues()
-    @Published var removedAccountValues = CategorizedAccountValues()
+    @Published var addedAccountKeys = CategorizedAccountKeys()
+    @Published var removedAccountKeys = CategorizedAccountKeys()
 
     var hasUnsavedChanges: Bool {
         !modifiedDetailsBuilder.isEmpty
@@ -58,11 +58,11 @@ class AccountOverviewFormViewModel: ObservableObject {
         .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module))
     }
 
-    private var anyCancellable: AnyCancellable? = nil
+    private var anyCancellable: AnyCancellable?
 
     init(account: Account) {
-        self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, requirement in
-            result[requirement.anyKey.category, default: []] += [requirement.anyKey]
+        self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, configuration in
+            result[configuration.key.category, default: []] += [configuration.key]
         }
 
         // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
@@ -74,7 +74,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
     func accountKeys(by category: AccountValueCategory, using details: AccountDetails) -> [any AccountValueKey.Type] {
         categorizedAccountKeys[category, default: []]
-            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountValues: addedAccountValues))
+            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountValues: addedAccountKeys))
     }
 
     func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
@@ -88,23 +88,23 @@ class AccountOverviewFormViewModel: ObservableObject {
         // - account values for which the user doesn't have a value (to display a add button at the bottom of a section)
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
-            value.sorted(using: AccountOverviewValuesComparator(accountDetails: accountDetails, addedAccountValues: addedAccountValues))
+            value.sorted(using: AccountOverviewValuesComparator(accountDetails: accountDetails, addedAccountValues: addedAccountKeys))
         }
     }
 
     func addAccountDetail(for value: any AccountValueKey.Type) {
-        guard !addedAccountValues.contains(value) else {
+        guard !addedAccountKeys.contains(value) else {
             return
         }
 
         Self.logger.debug("Adding new account value \(value) to the edit view!")
 
-        if let index = removedAccountValues.index(of: value) {
+        if let index = removedAccountKeys.index(of: value) {
             // This is a account value for which the user has a value set, but which he marked as removed in this session
             // and is now adding back a value for.
-            removedAccountValues.remove(at: index, for: value.category)
+            removedAccountKeys.remove(at: index, for: value.category)
         } else {
-            addedAccountValues.append(value)
+            addedAccountKeys.append(value)
         }
     }
 
@@ -112,14 +112,15 @@ class AccountOverviewFormViewModel: ObservableObject {
         for index in indexSet {
             let value = accountValues[index]
 
-            if let addedValueIndex = addedAccountValues.index(of: value) {
+            if let addedValueIndex = addedAccountKeys.index(of: value) {
                 // remove an account value which was just added in the current edit session
-                addedAccountValues.remove(at: addedValueIndex, for: value.category)
+                addedAccountKeys.remove(at: addedValueIndex, for: value.category)
 
                 // make sure we discard potential changes
                 modifiedDetailsBuilder.remove(any: value)
             } else {
-                removedAccountValues.append(value)
+                // a removed account key that is still present in the current account details
+                removedAccountKeys.append(value)
 
                 // set a empty value to:
                 // - have an empty value if it gets added again
@@ -149,10 +150,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
     func updateAccountDetails(details: AccountDetails, editMode: Binding<EditMode>? = nil) async throws {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
-
-        for removedKey in removedAccountValues.values {
-            removedKey.addValue(to: removedDetailsBuilder, from: details)
-        }
+        removedDetailsBuilder.merging(with: removedAccountKeys.values, from: details)
 
         let modifications = AccountModifications(
             modifiedDetails: modifiedDetailsBuilder.build(),
@@ -166,8 +164,8 @@ class AccountOverviewFormViewModel: ObservableObject {
     }
 
     func resetModelState(editMode: Binding<EditMode>? = nil) {
-        addedAccountValues = CategorizedAccountValues()
-        removedAccountValues = CategorizedAccountValues()
+        addedAccountKeys = CategorizedAccountKeys()
+        removedAccountKeys = CategorizedAccountKeys()
 
         // clearing the builder before switching the edit mode
         modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
@@ -198,19 +196,5 @@ class AccountOverviewFormViewModel: ObservableObject {
         }
 
         return security
-    }
-}
-
-
-extension AccountValueKey {
-    fileprivate static func addValue<Container: AccountValueStorageContainer>(
-        to builder: AccountValueStorageBuilder<Container>,
-        from details: AccountDetails
-    ) {
-        guard let value = details.storage.get(Self.self) else {
-            return
-        }
-
-        builder.set(Self.self, value: value)
     }
 }

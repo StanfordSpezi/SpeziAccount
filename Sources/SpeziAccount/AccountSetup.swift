@@ -182,8 +182,8 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
                 Divider()
             }
         }
-            .padding(.horizontal, 36) // TODO depends on the global padding?
-            .padding(.vertical, 16) // TODO use 16 if we expect to place two dividers!
+            .padding(.horizontal, 36)
+            .padding(.vertical, 16)
     }
 
     /// Buttons provided by the identity providers

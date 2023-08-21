@@ -9,8 +9,8 @@
 import Spezi
 
 
-public struct RequiredAccountValues: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
-    public static let defaultValue = RequiredAccountValues(ofKeys: [])
+public struct RequiredAccountKeys: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
+    public static let defaultValue = RequiredAccountKeys(ofKeys: .init()) // TODO UserId + Password is always required for the UserId account service
 
     fileprivate let keys: AccountKeyCollection
 
@@ -18,7 +18,7 @@ public struct RequiredAccountValues: AccountServiceConfigurationKey, DefaultProv
         self.keys = keys
     }
 
-    public init(@AccountKeyCollectionBuilder _ keys: () -> [any AccountValueKey.Type]) {
+    public init(@AccountKeyCollectionBuilder _ keys: () -> [any AccountKeyWithDescription]) {
         self.init(ofKeys: AccountKeyCollection(keys))
     }
 }
@@ -26,7 +26,7 @@ public struct RequiredAccountValues: AccountServiceConfigurationKey, DefaultProv
 
 extension AccountServiceConfiguration {
     /// Access the required account values of an ``AccountService``.
-    public var requiredAccountValues: AccountKeyCollection {
-        storage[RequiredAccountValues.self].keys
+    public var requiredAccountKeys: AccountKeyCollection {
+        storage[RequiredAccountKeys.self].keys
     }
 }

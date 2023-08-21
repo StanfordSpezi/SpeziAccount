@@ -1,5 +1,5 @@
 //
-// This source file is part of the Spezi open-source project
+// This source file is part of the Stanford Spezi open-source project
 //
 // SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
@@ -8,8 +8,9 @@
 
 
 // just another wrapper though which specific meaning!
-public struct ModifiedAccountDetails: Sendable, AccountValueStorageContainer {
+public struct PartialAccountDetails: Sendable, AccountValueStorageContainer {
     public let storage: AccountValueStorage
+
 
     public init(from storage: AccountValueStorage) {
         self.storage = storage

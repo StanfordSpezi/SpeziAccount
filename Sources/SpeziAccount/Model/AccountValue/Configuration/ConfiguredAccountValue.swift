@@ -8,7 +8,7 @@
 
 
 public struct ConfiguredAccountValue {
-    let configuration: AnyAccountValueConfigurationEntry
+    let configuration: any AnyAccountValueConfigurationEntry
 
 
     // once Parameter Packs are available, we can replace this type with just `AccountValueConfigurationEntry` (by renaming it)
@@ -19,17 +19,17 @@ public struct ConfiguredAccountValue {
 
 
     public static func requires<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> ConfiguredAccountValue {
-        .init(configuration: AccountValueConfigurationEntry(Key.self, type: .required))
+        .init(configuration: AccountValueConfigurationEntry(keyPath, type: .required))
     }
 
     @_disfavoredOverload
     public static func collects<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> ConfiguredAccountValue {
-        .init(configuration: AccountValueConfigurationEntry(Key.self, type: .collected))
+        .init(configuration: AccountValueConfigurationEntry(keyPath, type: .collected))
     }
 
     @_disfavoredOverload
     public static func supports<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> ConfiguredAccountValue {
-        .init(configuration: AccountValueConfigurationEntry(Key.self, type: .supported))
+        .init(configuration: AccountValueConfigurationEntry(keyPath, type: .supported))
     }
 
     // sadly we can't make this a compiler error. using `unavailable` makes it unavailable as an overload completely.

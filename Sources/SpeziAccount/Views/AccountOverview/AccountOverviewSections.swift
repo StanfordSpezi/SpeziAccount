@@ -171,7 +171,7 @@ struct AccountOverviewSections: View {
                         ForEachAccountKeyWrapper(accountValue: $0)
                     }
 
-                    // TODO seems like the order isn't updated/respected anymore?
+                    // TODO seems like the order isn't updated/respected anymore? (case by the loop above?)
                     ForEach(forEachWrappers, id: \.id) { wrapper in
                         buildRow(for: wrapper.accountValue)
                     }
@@ -202,13 +202,13 @@ struct AccountOverviewSections: View {
         if editMode?.wrappedValue.isEditing == true {
             // we place everything in the same HStack, such that animations are smooth
             let hStack = HStack {
-                if accountValue.isContained(in: accountDetails) && !model.removedAccountValues.contains(accountValue) {
+                if accountValue.isContained(in: accountDetails) && !model.removedAccountKeys.contains(accountValue) {
                     if let view = accountValue.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
                         view
                     } else if let view = accountValue.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
                         view
                     }
-                } else if model.addedAccountValues.contains(accountValue) { // no need to repeat the removedAccountValues condition
+                } else if model.addedAccountKeys.contains(accountValue) { // no need to repeat the removedAccountValues condition
                     accountValue.emptyDataEntryView(for: ModifiedAccountDetails.self)
                         .deleteDisabled(false)
                 } else {
@@ -277,11 +277,11 @@ struct AccountOverviewSections: View {
     }
 
     func isDeleteDisabled(for value: any AccountValueKey.Type) -> Bool {
-        if value.isContained(in: accountDetails) && !model.removedAccountValues.contains(value) {
+        if value.isContained(in: accountDetails) && !model.removedAccountKeys.contains(value) {
             return account.configuration[value]?.requirement == .required
         }
 
         // if not in the addedAccountValues, it's a "add" button
-        return !model.addedAccountValues.contains(value)
+        return !model.addedAccountKeys.contains(value)
     }
 }

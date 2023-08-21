@@ -9,15 +9,45 @@
 import Foundation
 
 
-public struct AccountKeyCollection: Sendable {
-    private let elements: [any AccountValueKey.Type]
+public protocol AccountKeyWithDescription: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
+    associatedtype Key: AccountValueKey
 
-    public init() {
-        elements = []
+    var key: Key.Type { get }
+}
+
+
+struct AccountKeyWithKeyPathDescription<Key: AccountValueKey>: AccountKeyWithDescription {
+    let key: Key.Type
+    let description: String
+
+    var debugDescription: String {
+        description
     }
 
-    public init(@AccountKeyCollectionBuilder _ keys: () -> [any AccountValueKey.Type]) {
+    init(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) {
+        self.key = Key.self
+        self.description = keyPath.shortDescription
+    }
+}
+
+
+public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
+    private let elements: [any AccountKeyWithDescription]
+
+
+    public init() {
+        self.elements = []
+    }
+
+    public init(@AccountKeyCollectionBuilder _ keys: () -> [any AccountKeyWithDescription]) {
         self.elements = keys()
+    }
+
+
+    public func acceptAll<Visitor: AccountKeyVisitor>(_ visitor: Visitor) -> Visitor.Final {
+        self
+            .map { $0.key }
+            .acceptAll(visitor)
     }
 }
 
@@ -36,14 +66,7 @@ extension AccountKeyCollection: Collection {
     }
 
 
-    public subscript(position: Int) -> any AccountValueKey.Type {
+    public subscript(position: Int) -> any AccountKeyWithDescription {
         elements[position]
-    }
-}
-
-
-extension AccountKeyCollection: ExpressibleByArrayLiteral {
-    public init(arrayLiteral elements: any AccountValueKey.Type...) {
-        self.elements = elements
     }
 }

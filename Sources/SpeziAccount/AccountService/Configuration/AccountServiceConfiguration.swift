@@ -38,25 +38,24 @@ public struct AccountServiceConfiguration: Sendable {
     /// Initialize a new configuration by just providing the required ones.
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
-    ///   - supportedValues: The set of ``SupportedAccountValues`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountValues/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///   - supportedValues: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
     ///     that is capable of handling all non-supported ``AccountValueKey``s.
-    public init(name: LocalizedStringResource, supportedValues: SupportedAccountValues) {
+    public init(name: LocalizedStringResource, supportedValues: SupportedAccountKeys) {
         self.storage = Self.createStorage(name: name, supportedValues: supportedValues)
     }
 
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
-    ///   - supportedValues: The set of ``SupportedAccountValues`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountValues/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///   - supportedValues: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
     ///     that is capable of handling all non-supported ``AccountValueKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
         name: LocalizedStringResource,
-        supportedValues: SupportedAccountValues,
+        supportedValues: SupportedAccountKeys,
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
-        // TODO support a configuration option to impose keys that have to be configured as required? (UserId + Password?)
     ) {
         self.storage = Self.createStorage(name: name, supportedValues: supportedValues, configuration: configuration())
     }
@@ -64,12 +63,12 @@ public struct AccountServiceConfiguration: Sendable {
 
     private static func createStorage(
         name: LocalizedStringResource,
-        supportedValues: SupportedAccountValues,
+        supportedValues: SupportedAccountKeys,
         configuration: [any AccountServiceConfigurationKey] = []
     ) -> AccountServiceConfigurationStorage {
         var storage = AccountServiceConfigurationStorage()
         storage[AccountServiceName.self] = AccountServiceName(name)
-        storage[SupportedAccountValues.self] = supportedValues
+        storage[SupportedAccountKeys.self] = supportedValues
 
         for configuration in configuration {
             configuration.store(into: &storage)

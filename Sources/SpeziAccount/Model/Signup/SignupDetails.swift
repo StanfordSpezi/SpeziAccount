@@ -11,7 +11,7 @@ public struct SignupDetails: Sendable, AccountValueStorageContainer {
     public let storage: AccountValueStorage
 
 
-    fileprivate init(storage: AccountValueStorage) {
+    public init(from storage: AccountValueStorage) {
         self.storage = storage
     }
 
@@ -27,13 +27,11 @@ public struct SignupDetails: Sendable, AccountValueStorageContainer {
 
 extension AccountValueStorageBuilder where Container == SignupDetails {
     public func build(
-        checking configuration: AccountValueConfiguration? = nil
+        checking configuration: AccountValueConfiguration
     ) throws -> Container {
-        let details = SignupDetails(storage: self.storage)
+        let details = self.build()
 
-        if let configuration {
-            try details.validateRequirements(checking: configuration)
-        }
+        try details.validateRequirements(checking: configuration)
 
         return details
     }

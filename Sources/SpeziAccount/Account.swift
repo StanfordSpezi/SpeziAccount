@@ -6,13 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import os
 import Spezi
 import SwiftUI
-
-// TODO some generic todos:
-//  - iterable account details!
-//  - allow account services to specify their supported account values (arbitrary, exactly(_:)) and use Standard constraint for storage of additional
-//  - also allow account services to specify which account values are required (e.g. userId and password (or a which level?)!); minimal set; extension set!
 
 
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
@@ -64,6 +60,8 @@ import SwiftUI
 /// - ``init(building:active:requirements:)``
 @MainActor
 public class Account: ObservableObject, Sendable {
+    private let logger: Logger
+
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
     ///
     /// You might use the projected value `$signedIn` to get access to the corresponding publisher.
@@ -83,7 +81,7 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
-    // TODO make this configuration avaialble from the AccountDetails? its about the details itself is it?
+    // TODO make this configuration available from the AccountDetails? its about the details itself is it?
     public let configuration: AccountValueConfiguration // TODO document use, once finalized!
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
@@ -99,10 +97,22 @@ public class Account: ObservableObject, Sendable {
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
+        self.logger = LoggerKey.defaultValue
+
         self._signedIn = Published(wrappedValue: details != nil)
         self._details = Published(wrappedValue: details)
         self.configuration = supportedConfiguration
         self.registeredAccountServices = services
+
+        if supportedConfiguration[UserIdKey.self] == nil {
+            logger.warning(
+                """
+                Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
+                A primary and unique user identifier is expected with most SpeziAccount components and \
+                will result in those components breaking.
+                """
+            )
+        }
 
         for service in registeredAccountServices {
             injectWeakAccount(into: service)
@@ -115,7 +125,10 @@ public class Account: ObservableObject, Sendable {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    public nonisolated convenience init(services: [any AccountService] = [], configuration: AccountValueConfiguration = .default) {
+    public nonisolated convenience init(
+        services: [any AccountService] = [],
+        configuration: AccountValueConfiguration = .default
+    ) {
         self.init(services: services, supportedConfiguration: configuration)
     }
 
@@ -125,7 +138,10 @@ public class Account: ObservableObject, Sendable {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    public nonisolated convenience init(_ services: any AccountService..., configuration: AccountValueConfiguration = .default) {
+    public nonisolated convenience init(
+        _ services: any AccountService...,
+        configuration: AccountValueConfiguration = .default
+    ) {
         self.init(services: services, supportedConfiguration: configuration)
     }
 
@@ -145,12 +161,15 @@ public class Account: ObservableObject, Sendable {
     }
 
 
-    nonisolated func injectWeakAccount<V: AccountService>(into value: V) {
+    nonisolated func injectWeakAccount(into value: Any) {
         let mirror = Mirror(reflecting: value)
 
         for (_, value) in mirror.children {
-            if let weakReference = value as? V.AccountReference {
+            if let weakReference = value as? WeakInjectable<Account> { // see AccountService.AccountReference
                 weakReference.inject(self)
+            } else if let accountService = value as? any AccountService {
+                // allow for nested injection like in the case of `StandardBackedAccountService`
+                injectWeakAccount(into: accountService)
             }
         }
     }
@@ -161,7 +180,7 @@ public class Account: ObservableObject, Sendable {
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
     /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
-    public func supplyUserDetails(_ details: AccountDetails) {
+    public func supplyUserDetails(_ details: AccountDetails) async throws {
         if let existingDetails = self.details {
             precondition(
                 existingDetails.accountService.id == details.accountService.id,
@@ -169,7 +188,20 @@ public class Account: ObservableObject, Sendable {
             )
         }
 
-        self.details = details
+        if let standardBacked = details.accountService as? any StandardBacked {
+            let recordId = AdditionalRecordId(serviceId: details.accountService.id, userId: details.userId)
+
+            let unsupportedKeys = details.accountService.configuration
+                .unsupportedAccountKeys(basedOn: configuration)
+                .map { $0.key }
+
+            let partialDetails = try await standardBacked.standard.load(recordId, unsupportedKeys)
+
+            self.details = details.merge(with: partialDetails) // TODO they should not have the power to override!
+        } else {
+            self.details = details
+        }
+
         if !signedIn {
             signedIn = true
         }
@@ -179,7 +211,12 @@ public class Account: ObservableObject, Sendable {
     ///
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
-    public func removeUserDetails() {
+    public func removeUserDetails() async { // TODO async requirement now?
+        if let details,
+           let standardBacked = details.accountService as? any StandardBacked {
+            await standardBacked.standard.clear()
+        }
+
         if signedIn {
             signedIn = false
         }

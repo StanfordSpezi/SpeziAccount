@@ -10,7 +10,7 @@ import Spezi
 import SwiftUI
 
 
-public protocol DataDisplayView<Key>: View { // TODO rename to row!(?)
+public protocol DataDisplayView<Key>: View {
     associatedtype Key: AccountValueKey
 
     init(_ value: Key.Value)

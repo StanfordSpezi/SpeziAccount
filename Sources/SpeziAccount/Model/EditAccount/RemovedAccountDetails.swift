@@ -8,18 +8,11 @@
 
 
 // just another wrapper though which specific meaning!
-public struct RemovedAccountDetails: Sendable, AccountValueStorageContainer { // TODO support iterating over all keys and values!
+public struct RemovedAccountDetails: Sendable, AccountValueStorageContainer {
     public let storage: AccountValueStorage
 
 
-    fileprivate init(storage: AccountValueStorage) {
+    public init(from storage: AccountValueStorage) {
         self.storage = storage
-    }
-}
-
-
-extension AccountValueStorageBuilder where Container == RemovedAccountDetails {
-    public func build() -> Container {
-        RemovedAccountDetails(storage: self.storage) // TODO allow password and userid to be modified?
     }
 }

@@ -27,7 +27,7 @@ extension AccountValueKeys {
     ///
     /// - Note: This account value is only present in the ``SignupDetails``.
     public var password: PasswordKey.Type {
-        PasswordKey.self // TODO this is accessible everywhere, make something specific for signupdetails?
+        PasswordKey.self
     }
 }
 
@@ -73,9 +73,10 @@ enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConvertible
     /// Password repeat field
     case `repeat`
 
-    // TODO handle focus state?
 
     static let defaultValue: PasswordFieldType = .password
+
+
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .password:

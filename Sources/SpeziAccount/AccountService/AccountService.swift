@@ -20,12 +20,18 @@ import SwiftUI
 /// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``. TODO do this with topics!
 /// TODO document use of the AccountReference property wrapper => topics!
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringConvertible, Sendable where ID == ObjectIdentifier {
+public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Sendable, Identifiable {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
 
     /// An identifier to uniquely identify an `AccountService`.
-    var id: ID { get }
+    ///
+    /// This identifier is used to uniquely identify an account service that persists across process instances.
+    ///
+    /// - Important: A default implementation is defined that relies on the type name. If you rename the account service
+    ///     type without supplying a manual `id` implementation, components like a ``AccountStorageStandard`` won't
+    ///     be able to associate existing user details with this account service.
+    var id: String { get }
 
     var configuration: AccountServiceConfiguration { get }
 
@@ -59,9 +65,9 @@ public protocol AccountService: AnyObject, Identifiable, Hashable, CustomStringC
 
 
 extension AccountService {
-    /// Default implementation that instantiates an `ObjectIdentifier` using `Self.self`.
-    public var id: ID {
-        ObjectIdentifier(Self.self)
+    /// Default implementation that uses the type name as an unique identifier.
+    public var id: String {
+        description
     }
 
     /// Default `CustomStringConvertible` returning the type name.

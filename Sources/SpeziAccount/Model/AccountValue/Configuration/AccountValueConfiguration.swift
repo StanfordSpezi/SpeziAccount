@@ -9,11 +9,11 @@
 import OrderedCollections
 
 
-public struct AccountValueConfiguration { // TODO model it as a OptionSet?
+public struct AccountValueConfiguration {
     public static let `default` = AccountValueConfiguration(.default)
 
 
-    private var configuration: OrderedDictionary<ObjectIdentifier, AnyAccountValueConfigurationEntry>
+    private var configuration: OrderedDictionary<ObjectIdentifier, any AnyAccountValueConfigurationEntry>
 
 
     init(_ configuration: [ConfiguredAccountValue]) {
@@ -25,15 +25,15 @@ public struct AccountValueConfiguration { // TODO model it as a OptionSet?
     }
 
 
-    public subscript(_ key: any AccountValueKey.Type) -> AnyAccountValueConfigurationEntry? {
+    public subscript(_ key: any AccountValueKey.Type) -> (any AnyAccountValueConfigurationEntry)? {
         configuration[key.id]
     }
 
-    public subscript<Key: AccountValueKey>(_ key: Key.Type) -> AnyAccountValueConfigurationEntry? {
+    public subscript<Key: AccountValueKey>(_ key: Key.Type) -> (any AnyAccountValueConfigurationEntry)? {
         configuration[Key.id]
     }
 
-    public subscript<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> AnyAccountValueConfigurationEntry? {
+    public subscript<Key: AccountValueKey>(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) -> (any AnyAccountValueConfigurationEntry)? {
         self[Key.self]
     }
 }
@@ -51,7 +51,7 @@ extension Array where Element == ConfiguredAccountValue {
 
 
 extension AccountValueConfiguration: Collection {
-    public typealias Index = OrderedDictionary<ObjectIdentifier, AnyAccountValueConfigurationEntry>.Index
+    public typealias Index = OrderedDictionary<ObjectIdentifier, any AnyAccountValueConfigurationEntry>.Index
 
     public var startIndex: Index {
         configuration.values.startIndex
@@ -67,7 +67,7 @@ extension AccountValueConfiguration: Collection {
     }
 
 
-    public subscript(position: Index) -> AnyAccountValueConfigurationEntry {
+    public subscript(position: Index) -> any AnyAccountValueConfigurationEntry {
         configuration.values[position]
     }
 }
