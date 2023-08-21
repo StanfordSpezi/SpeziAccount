@@ -10,36 +10,36 @@ import OrderedCollections
 
 
 struct CategorizedAccountKeys {
-    private var addedAccountValues: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
+    private var accountKeys: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
-    var values: [any AccountValueKey.Type] {
-        addedAccountValues.values.reduce(into: []) { result, keys in
+    var keys: [any AccountKey.Type] {
+        accountKeys.values.reduce(into: []) { result, keys in
             result.append(contentsOf: keys)
         }
     }
 
     init() {
-        addedAccountValues = [:]
+        accountKeys = [:]
     }
 
-    mutating func append(_ value: any AccountValueKey.Type) {
-        addedAccountValues[value.category, default: []]
+    mutating func append(_ value: any AccountKey.Type) {
+        accountKeys[value.category, default: []]
             .append(value)
     }
 
-    func contains(_ value: any AccountValueKey.Type) -> Bool {
-        addedAccountValues[value.category, default: []]
+    func contains(_ value: any AccountKey.Type) -> Bool {
+        accountKeys[value.category, default: []]
             .contains(where: { $0.id == value.id })
     }
 
-    func index(of value: any AccountValueKey.Type) -> Int? {
-        addedAccountValues[value.category, default: []]
+    func index(of value: any AccountKey.Type) -> Int? {
+        accountKeys[value.category, default: []]
             .firstIndex(where: { $0.id == value.id })
     }
 
     @discardableResult
-    mutating func remove(at index: Int, for category: AccountValueCategory) -> any AccountValueKey.Type {
-        let result = addedAccountValues[category, default: []]
+    mutating func remove(at index: Int, for category: AccountKeyCategory) -> any AccountKey.Type {
+        let result = accountKeys[category, default: []]
             .remove(at: index)
 
         return result

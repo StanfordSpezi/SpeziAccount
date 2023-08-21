@@ -11,7 +11,7 @@ import SwiftUI
 
 
 // TODO name
-public struct LocalizableStringConvertibleDataDisplayView<Key: AccountValueKey>: DataDisplayView
+public struct LocalizableStringConvertibleDataDisplayView<Key: AccountKey>: DataDisplayView
     where Key.Value: CustomLocalizedStringResourceConvertible {
     private let value: Key.Value
 

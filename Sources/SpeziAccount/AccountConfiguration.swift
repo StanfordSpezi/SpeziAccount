@@ -25,7 +25,7 @@ import XCTRuntimeAssertions
 public final class AccountConfiguration: Component, ObservableObjectProvider {
     private let logger = LoggerKey.defaultValue
 
-    private let configuredAccountValues: AccountValueConfiguration // TODO docs
+    private let configuredAccountKeys: AccountValueConfiguration // TODO docs
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     private let providedAccountServices: [any AccountService]
 
@@ -51,9 +51,9 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
     ///
     /// - Parameter configuration: TODO docs
-    public init(configuration: [ConfiguredAccountValue] = .default) {
+    public init(configuration: [ConfiguredAccountKey] = .default) {
         // TODO variadic arguments! once we have those we can remove the intermediate accessor!
-        self.configuredAccountValues = AccountValueConfiguration(configuration)
+        self.configuredAccountKeys = AccountValueConfiguration(configuration)
         self.providedAccountServices = []
     }
 
@@ -66,10 +66,10 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     ///   - configuration: TODO docs
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public init(
-        configuration: [ConfiguredAccountValue] = .default,
+        configuration: [ConfiguredAccountKey] = .default,
         @AccountServiceBuilder _ accountServices: () -> [any AccountService]
     ) {  // TODO variadic arguments!
-        self.configuredAccountValues = AccountValueConfiguration(configuration)
+        self.configuredAccountKeys = AccountValueConfiguration(configuration)
         self.providedAccountServices = accountServices()
     }
 
@@ -80,14 +80,14 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
             // verify that the configuration matches what is expected by the account service
             verifyAccountServiceRequirements(of: service)
 
-            // Verify account service can store all configured account values.
+            // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
             return verifyConfigurationRequirements(against: service)
         }
 
         self.account = Account(
             services: accountServices,
-            configuration: configuredAccountValues
+            configuration: configuredAccountKeys
         )
 
         if let accountStandard = standard as? any AccountStorageStandard {
@@ -102,7 +102,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         // but the Account Service requires them.
         let mismatchedKeys: [any AccountKeyWithDescription] = requiredValues.filter { keyWithDescription in
             let key = keyWithDescription.key
-            let configuration = configuredAccountValues[key]
+            let configuration = configuredAccountKeys[key]
             // TODO is there a use case to force collection, no right?
             return configuration == nil
                 || (key.isRequired && configuration?.requirement != .required) // TODO second is always true currently!
@@ -124,11 +124,11 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     }
 
     private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {
-        logger.debug("Checking \(service.description) against the configured account values.")
+        logger.debug("Checking \(service.description) against the configured account keys.")
 
         // collect all values that cannot be handled by the account service
-        let unmappedAccountKeys: [any AnyAccountValueConfigurationEntry] = service.configuration
-            .unsupportedAccountKeys(basedOn: configuredAccountValues)
+        let unmappedAccountKeys: [any AccountKeyConfiguration] = service.configuration
+            .unsupportedAccountKeys(basedOn: configuredAccountKeys)
 
         guard !unmappedAccountKeys.isEmpty else {
             return service // we are fine, nothing unsupported

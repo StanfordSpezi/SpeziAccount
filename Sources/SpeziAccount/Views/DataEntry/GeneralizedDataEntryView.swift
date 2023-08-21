@@ -21,13 +21,13 @@ private protocol GeneralizedStringEntryView {
 /// Every ``DataEntryView`` is wrapped into a `GeneralizedDataEntryView` which is responsible to manage state of its child-view.
 /// Particularly, the following things are taken care of:
 /// - Declare and manage the state of the value and post any changes back up to the parent view.
-/// - Declare a default `onTapeFocus(focusedField:fieldIdentifier:) to automatically manage focus state based on ``AccountValueKey/focusState``.
+/// - Declare a default `onTapeFocus(focusedField:fieldIdentifier:) to automatically manage focus state based on ``AccountKey/focusState``.
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
-public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: AccountValueStorageContainer>: View {
+public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: AccountValues>: View {
     @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
-    @EnvironmentObject private var detailsBuilder: AccountValueStorageBuilder<Container>
+    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Container>
 
     @State private var value: Wrapped.Key.Value
 

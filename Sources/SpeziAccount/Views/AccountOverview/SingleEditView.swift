@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
-struct SingleEditView<Key: AccountValueKey>: View {
+struct SingleEditView<Key: AccountKey>: View {
     private let accountDetails: AccountDetails
 
     @Environment(\.logger) private var logger

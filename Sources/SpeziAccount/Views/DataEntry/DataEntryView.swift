@@ -12,7 +12,7 @@ import SwiftUI
 
 // TODO document which environment keys and objects one can expect to be injected!
 public protocol DataEntryView<Key>: View {
-    associatedtype Key: AccountValueKey
+    associatedtype Key: AccountKey
 
     init(_ value: Binding<Key.Value>)
 }

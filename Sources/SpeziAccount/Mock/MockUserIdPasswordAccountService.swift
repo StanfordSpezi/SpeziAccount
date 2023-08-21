@@ -17,7 +17,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             self.detailsBuilder = .init(from: details)
         }
 
-        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountValueKey {
+        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountKey {
             print("Setting \(Key.self) to \(value)")
             detailsBuilder.set(key, value: value)
         }
@@ -34,7 +34,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             self.detailsBuilder = detailsBuilder
         }
 
-        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountValueKey {
+        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountKey {
             print("Removing \(key) with old value \(value)")
             detailsBuilder.remove(key)
         }

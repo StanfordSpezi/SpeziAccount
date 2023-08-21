@@ -10,13 +10,13 @@ import Foundation
 
 
 public protocol AccountKeyWithDescription: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
-    associatedtype Key: AccountValueKey
+    associatedtype Key: AccountKey
 
     var key: Key.Type { get }
 }
 
 
-struct AccountKeyWithKeyPathDescription<Key: AccountValueKey>: AccountKeyWithDescription {
+struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescription {
     let key: Key.Type
     let description: String
 
@@ -24,7 +24,7 @@ struct AccountKeyWithKeyPathDescription<Key: AccountValueKey>: AccountKeyWithDes
         description
     }
 
-    init(_ keyPath: KeyPath<AccountValueKeys, Key.Type>) {
+    init(_ keyPath: KeyPath<AccountKeys, Key.Type>) {
         self.key = Key.self
         self.description = keyPath.shortDescription
     }

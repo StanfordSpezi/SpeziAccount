@@ -14,16 +14,16 @@ struct AccountOverviewValuesComparator: SortComparator {
 
     private let id = UUID()
     private let accountDetails: AccountDetails
-    private let addedAccountValues: CategorizedAccountKeys
+    private let addedAccountKeys: CategorizedAccountKeys
 
-    init(accountDetails: AccountDetails, addedAccountValues: CategorizedAccountKeys) {
+    init(accountDetails: AccountDetails, addedAccountKeys: CategorizedAccountKeys) {
         self.accountDetails = accountDetails
-        self.addedAccountValues = addedAccountValues
+        self.addedAccountKeys = addedAccountKeys
     }
 
-    func compare(_ lhs: any AccountValueKey.Type, _ rhs: any AccountValueKey.Type) -> ComparisonResult {
-        let lhsContained = lhs.isContained(in: accountDetails)
-        let rhsContained = rhs.isContained(in: accountDetails)
+    func compare(_ lhs: any AccountKey.Type, _ rhs: any AccountKey.Type) -> ComparisonResult {
+        let lhsContained = accountDetails.contains(lhs)
+        let rhsContained = accountDetails.contains(rhs)
 
         guard !lhsContained && !rhsContained else {
             if lhsContained == rhsContained {
@@ -36,8 +36,8 @@ struct AccountOverviewValuesComparator: SortComparator {
         }
 
         // this is basically also the "contains" check
-        let lhsIndex = addedAccountValues.index(of: lhs)
-        let rhsIndex = addedAccountValues.index(of: rhs)
+        let lhsIndex = addedAccountKeys.index(of: lhs)
+        let rhsIndex = addedAccountKeys.index(of: rhs)
 
         if let lhsIndex, let rhsIndex {
             if lhsIndex < rhsIndex {

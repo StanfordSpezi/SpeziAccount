@@ -39,7 +39,7 @@ struct SecurityOverview: View {
             // we place every account key of the `.credentials` section except the userId and password below
             let forEachWrappers = model.accountKeys(by: .credentials, using: accountDetails)
                 .filter { $0 != UserIdKey.self && $0 != PasswordKey.self }
-                .map { ForEachAccountKeyWrapper(accountValue: $0) }
+                .map { ForEachAccountKeyWrapper($0) }
 
             // TODO each section or combined?
             ForEach(forEachWrappers, id: \.id) { wrapper in

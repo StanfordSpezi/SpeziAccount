@@ -25,7 +25,7 @@ public struct RequiredAccountKeys: AccountServiceConfigurationKey, DefaultProvid
 
 
 extension AccountServiceConfiguration {
-    /// Access the required account values of an ``AccountService``.
+    /// Access the required account keys of an ``AccountService``.
     public var requiredAccountKeys: AccountKeyCollection {
         storage[RequiredAccountKeys.self].keys
     }

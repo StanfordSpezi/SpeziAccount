@@ -10,7 +10,7 @@ import Spezi
 import SwiftUI
 
 
-public struct StringDataDisplayView<Key: AccountValueKey>: DataDisplayView where Key.Value: StringProtocol {
+public struct StringDataDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: StringProtocol {
     private let value: Key.Value
 
     public var body: some View {

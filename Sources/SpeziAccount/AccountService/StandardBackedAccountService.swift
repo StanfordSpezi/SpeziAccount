@@ -40,7 +40,7 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
 
     init(service accountService: Service, standard: Standard) {
         guard case let .exactly(keys) = accountService.configuration.supportedAccountKeys else {
-            preconditionFailure("Cannot initialize a \(Self.self) where the underlying service \(Service.self) does support all account values!")
+            preconditionFailure("Cannot initialize a \(Self.self) where the underlying service \(Service.self) does support all account keys!")
         }
 
         self.accountService = accountService
@@ -99,11 +99,11 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         try await accountService.delete()
     }
 
-    private func splitDetails<Container: AccountValueStorageContainer>(
+    private func splitDetails<Container: AccountValues>(
         from details: Container
     ) -> (service: Container, standard: Container) {
-        let serviceBuilder = AccountValueStorageBuilder<Container>()
-        let standardBuilder = AccountValueStorageBuilder<Container>(from: details)
+        let serviceBuilder = AccountValuesBuilder<Container>()
+        let standardBuilder = AccountValuesBuilder<Container>(from: details)
 
 
         for element in serviceSupportedKeys {

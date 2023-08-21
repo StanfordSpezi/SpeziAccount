@@ -13,15 +13,15 @@ import SpeziViews
 import SwiftUI
 
 
-struct ForEachAccountKeyWrapper: Identifiable {
+struct ForEachAccountKeyWrapper: Identifiable { // TODO placement?
     var id: ObjectIdentifier {
-        accountValue.id
+        accountKey.id
     }
 
-    var accountValue: any AccountValueKey.Type
+    var accountKey: any AccountKey.Type
 
-    init(accountValue: any AccountValueKey.Type) {
-        self.accountValue = accountValue
+    init(_ accountKey: any AccountKey.Type) {
+        self.accountKey = accountKey
     }
 }
 
@@ -32,12 +32,12 @@ class AccountOverviewFormViewModel: ObservableObject {
         LoggerKey.defaultValue
     }
 
-    /// We categorize ``AccountValueKey`` by ``AccountValueCategory``. This is completely static and precomputed.
+    /// We categorize ``AccountKey`` by ``AccountKeyCategory``. This is completely static and precomputed.
     ///
     /// Instead of iterating over the ``AccountDetails`` and show whatever values are present, we rely on the statically
-    /// defined ``AccountValueRequirement``s defined by the user. Using those classifications we can easily allow to model
-    /// "shadow" account values that are present but never shown to the user to allow to manage additional state.
-    private let categorizedAccountKeys: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]>
+    /// defined ``AccountKeyRequirement``s defined by the user. Using those classifications we can easily allow to model
+    /// "shadow" account keys that are present but never shown to the user to allow to manage additional state.
+    private let categorizedAccountKeys: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
 
     let modifiedDetailsBuilder = ModifiedAccountDetails.Builder() // nested ObservableObject, see init
@@ -72,27 +72,27 @@ class AccountOverviewFormViewModel: ObservableObject {
         }
     }
 
-    func accountKeys(by category: AccountValueCategory, using details: AccountDetails) -> [any AccountValueKey.Type] {
+    func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
         categorizedAccountKeys[category, default: []]
-            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountValues: addedAccountKeys))
+            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountKeys: addedAccountKeys))
     }
 
-    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
+    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         let results = categorizedAccountKeys.filter { category, _ in
             category != .credentials && category != .name
         }
 
         // We want to establish the following order:
-        // - account values where the user has supplied a value
-        // - account values the user just added a filed for input in the current edit session
-        // - account values for which the user doesn't have a value (to display a add button at the bottom of a section)
+        // - account keys where the user has supplied a value
+        // - account keys the user just added a filed for input in the current edit session
+        // - account keys for which the user doesn't have a value (to display a add button at the bottom of a section)
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
-            value.sorted(using: AccountOverviewValuesComparator(accountDetails: accountDetails, addedAccountValues: addedAccountKeys))
+            value.sorted(using: AccountOverviewValuesComparator(accountDetails: accountDetails, addedAccountKeys: addedAccountKeys))
         }
     }
 
-    func addAccountDetail(for value: any AccountValueKey.Type) {
+    func addAccountDetail(for value: any AccountKey.Type) {
         guard !addedAccountKeys.contains(value) else {
             return
         }
@@ -108,9 +108,9 @@ class AccountOverviewFormViewModel: ObservableObject {
         }
     }
 
-    func deleteAccountValue(at indexSet: IndexSet, in accountValues: [any AccountValueKey.Type]) {
+    func deleteAccountKeys(at indexSet: IndexSet, in accountKeys: [any AccountKey.Type]) {
         for index in indexSet {
-            let value = accountValues[index]
+            let value = accountKeys[index]
 
             if let addedValueIndex = addedAccountKeys.index(of: value) {
                 // remove an account value which was just added in the current edit session
@@ -150,7 +150,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
     func updateAccountDetails(details: AccountDetails, editMode: Binding<EditMode>? = nil) async throws {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
-        removedDetailsBuilder.merging(with: removedAccountKeys.values, from: details)
+        removedDetailsBuilder.merging(with: removedAccountKeys.keys, from: details)
 
         let modifications = AccountModifications(
             modifiedDetails: modifiedDetailsBuilder.build(),

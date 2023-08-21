@@ -7,11 +7,7 @@
 //
 
 import Spezi
-import SwiftUI
 
 
-public protocol DataDisplayView<Key>: View {
-    associatedtype Key: AccountKey
-
-    init(_ value: Key.Value)
-}
+/// A `RepositoryAnchor` for ``AccountStorage``.
+public struct AccountAnchor: RepositoryAnchor, Sendable {}

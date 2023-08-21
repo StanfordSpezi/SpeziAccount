@@ -11,7 +11,7 @@ public enum SupportedAccountKeys: AccountServiceConfigurationKey {
     case arbitrary
     case exactly(ofKeys: AccountKeyCollection)
 
-    fileprivate func canStore(_ configuredValue: any AnyAccountValueConfigurationEntry) -> Bool {
+    fileprivate func canStore(_ configuredValue: any AccountKeyConfiguration) -> Bool {
         switch self {
         case .arbitrary:
             return true
@@ -20,8 +20,8 @@ public enum SupportedAccountKeys: AccountServiceConfigurationKey {
                 return false // we didn't find the key in the collection of supported keys
             }
 
-            // Wither the it is not a `RequiredAccountValueKey` or it is and the requirement specifies `.required`
-            // However, we automatically set a `.required` requirement for `RequiredAccountValueKey` so this is more of
+            // Either it is not a `RequiredAccountKey` or it is and the requirement specifies `.required`
+            // However, we automatically set a `.required` requirement for `RequiredAccountKey` so this is more of
             // a sanity/integrity check.
             return !key.isRequired || configuredValue.requirement == .required
         }
@@ -30,17 +30,17 @@ public enum SupportedAccountKeys: AccountServiceConfigurationKey {
 
 
 extension AccountServiceConfiguration {
-    /// Access the supported account values of an ``AccountService``.
+    /// Access the supported account keys of an ``AccountService``.
     public var supportedAccountKeys: SupportedAccountKeys {
         // TODO do that with all of the others? more compact for code coverage?
         guard let value = storage[SupportedAccountKeys.self] else {
-            preconditionFailure("Reached illegal state where SupportedAccountValues configuration was never supplied!")
+            preconditionFailure("Reached illegal state where SupportedAccountKeys configuration was never supplied!")
         }
 
         return value
     }
 
-    public func unsupportedAccountKeys(basedOn configuration: AccountValueConfiguration) -> [any AnyAccountValueConfigurationEntry] {
+    public func unsupportedAccountKeys(basedOn configuration: AccountValueConfiguration) -> [any AccountKeyConfiguration] {
         let supportedValues = supportedAccountKeys
 
         return configuration

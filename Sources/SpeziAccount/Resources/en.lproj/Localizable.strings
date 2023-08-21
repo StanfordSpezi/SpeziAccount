@@ -59,8 +59,8 @@
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "You are already logged in with the account shown below. Continue or change your account by logging out.";
 
 // MARK: - AccountValues
-"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Value";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "The required Account Value %@ was not supplied.";
+"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Values";
+"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "The following required account values were not supplied: %@";
 "ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Raise an issue with the developer of the Account Service.";
 
 // MARK: - UserId and Password

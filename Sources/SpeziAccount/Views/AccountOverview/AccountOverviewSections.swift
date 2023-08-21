@@ -30,7 +30,7 @@ struct AccountOverviewSections: View {
     @State private var viewState: ViewState = .idle
     // separate view state for any destructive actions like logout or account removal
     @State private var destructiveViewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
+    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
 
 
     var isProcessing: Bool {
@@ -163,20 +163,20 @@ struct AccountOverviewSections: View {
     }
 
     @ViewBuilder private var sectionsView: some View {
-        ForEach(model.editableAccountKeys(details: accountDetails).elements, id: \.key) { category, accountValues in
-            if !sectionIsEmpty(accountValues) {
+        ForEach(model.editableAccountKeys(details: accountDetails).elements, id: \.key) { category, accountKeys in
+            if !sectionIsEmpty(accountKeys) {
                 Section {
-                    // the id property of AccountValueKey.Type is static, so we can't reference it by a KeyPath, therefore the wrapper
-                    let forEachWrappers = accountValues.map {
-                        ForEachAccountKeyWrapper(accountValue: $0)
+                    // the id property of AccountKey.Type is static, so we can't reference it by a KeyPath, therefore the wrapper
+                    let forEachWrappers = accountKeys.map { key in
+                        ForEachAccountKeyWrapper(key)
                     }
 
                     // TODO seems like the order isn't updated/respected anymore? (case by the loop above?)
                     ForEach(forEachWrappers, id: \.id) { wrapper in
-                        buildRow(for: wrapper.accountValue)
+                        buildRow(for: wrapper.accountKey)
                     }
                         .onDelete { indexSet in
-                            model.deleteAccountValue(at: indexSet, in: accountValues)
+                            model.deleteAccountKeys(at: indexSet, in: accountKeys)
                         }
                 } header: {
                     if let title = category.categoryTitle {
@@ -198,37 +198,37 @@ struct AccountOverviewSections: View {
 
 
     @ViewBuilder
-    private func buildRow(for accountValue: any AccountValueKey.Type) -> some View { // TODO move to separate view?
+    private func buildRow(for accountKey: any AccountKey.Type) -> some View { // TODO move to separate view?
         if editMode?.wrappedValue.isEditing == true {
             // we place everything in the same HStack, such that animations are smooth
             let hStack = HStack {
-                if accountValue.isContained(in: accountDetails) && !model.removedAccountKeys.contains(accountValue) {
-                    if let view = accountValue.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
+                if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
+                    if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
                         view
-                    } else if let view = accountValue.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
+                    } else if let view = accountKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
                         view
                     }
-                } else if model.addedAccountKeys.contains(accountValue) { // no need to repeat the removedAccountValues condition
-                    accountValue.emptyDataEntryView(for: ModifiedAccountDetails.self)
+                } else if model.addedAccountKeys.contains(accountKey) { // no need to repeat the removedAccountKeys condition
+                    accountKey.emptyDataEntryView(for: ModifiedAccountDetails.self)
                         .deleteDisabled(false)
                 } else {
                     Button(action: {
-                        model.addAccountDetail(for: accountValue)
+                        model.addAccountDetail(for: accountKey)
                     }) {
-                        Text("VALUE_ADD \(accountValue.name)", bundle: .module)
+                        Text("VALUE_ADD \(accountKey.name)", bundle: .module)
                     }
                 }
             }
 
             // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes in our scenario
-            if isDeleteDisabled(for: accountValue) {
+            if isDeleteDisabled(for: accountKey) {
                 hStack
                     .deleteDisabled(true)
             } else {
                 hStack
             }
         } else {
-            if let view = accountValue.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
+            if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                 HStack {
                     view
                 }
@@ -263,25 +263,25 @@ struct AccountOverviewSections: View {
     }
 
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing
-    /// and the accountDetails don't have values stored for any of the provided ``AccountValueKey``.
-    private func sectionIsEmpty(_ accountValues: [any AccountValueKey.Type]) -> Bool {
+    /// and the accountDetails don't have values stored for any of the provided ``AccountKey``.
+    private func sectionIsEmpty(_ accountKeys: [any AccountKey.Type]) -> Bool {
         guard editMode?.wrappedValue.isEditing == false else {
             // there is always UI presented in EDIT mode
             return false
         }
 
-        // we don't have to check for `addedAccountValues` as these are only relevant in edit mode
-        return accountValues.allSatisfy { element in
-            !element.isContained(in: accountDetails)
+        // we don't have to check for `addedAccountKeys` as these are only relevant in edit mode
+        return accountKeys.allSatisfy { element in
+            !accountDetails.contains(element)
         }
     }
 
-    func isDeleteDisabled(for value: any AccountValueKey.Type) -> Bool {
-        if value.isContained(in: accountDetails) && !model.removedAccountKeys.contains(value) {
-            return account.configuration[value]?.requirement == .required
+    func isDeleteDisabled(for key: any AccountKey.Type) -> Bool {
+        if accountDetails.contains(key) && !model.removedAccountKeys.contains(key) {
+            return account.configuration[key]?.requirement == .required
         }
 
-        // if not in the addedAccountValues, it's a "add" button
-        return !model.addedAccountKeys.contains(value)
+        // if not in the addedAccountKeys, it's a "add" button
+        return !model.addedAccountKeys.contains(key)
     }
 }

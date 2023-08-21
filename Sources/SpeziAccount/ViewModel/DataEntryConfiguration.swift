@@ -30,9 +30,9 @@ public class DataEntryConfiguration: ObservableObject { // TODO we could strive 
     /// The `AccountServiceConfiguration` of the ``AccountService`` for which we currently perform data entry.
     public let serviceConfiguration: AccountServiceConfiguration
     /// The `FocusState` of the parent view.
-    /// Focus state is typically handled automatically using the ``AccountValueKey/focusState`` property.
+    /// Focus state is typically handled automatically using the ``AccountKey/focusState`` property.
     /// Access to this property is useful when defining a ``DataEntryView`` that exposes more than one field.
-    public let focusedField: FocusState<String?> // see `AccountValueKey.Type/focusState`
+    public let focusedField: FocusState<String?> // see `AccountKey.Type/focusState`
 
 
     /// Initializes a new DataEntryConfiguration object.

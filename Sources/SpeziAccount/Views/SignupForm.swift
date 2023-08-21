@@ -23,10 +23,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @StateObject private var validationClosures = ValidationClosures<String>()
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountValueKey.Type/focusState`
+    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
 
 
-    private var signupValuesBySections: OrderedDictionary<AccountValueCategory, [any AccountValueKey.Type]> {
+    private var signupValuesBySections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         account.configuration.reduce(into: [:]) { result, configuration in
             guard configuration.requirement != .supported else {
                 // we only show required and collected values in signup
@@ -74,12 +74,12 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     @ViewBuilder var sectionsView: some View {
         // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
-        ForEach(signupValuesBySections.elements, id: \.key) { category, accountValues in
+        ForEach(signupValuesBySections.elements, id: \.key) { category, accountKeys in
             Section {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
-                ForEach(accountValues.indices, id: \.self) { index in
+                ForEach(accountKeys.indices, id: \.self) { index in
                     VStack {
-                        accountValues[index].emptyDataEntryView(for: SignupDetails.self)
+                        accountKeys[index].emptyDataEntryView(for: SignupDetails.self)
                     }
                 }
             } header: {
