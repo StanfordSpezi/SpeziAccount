@@ -82,7 +82,7 @@ This protocol has two requirements: ``DataEntryView/Key`` defines the associated
 and provides an ``DataEntryView/init(_:)`` to retrieve a `Binding` to the current (or empty) account value
 from the parent view (refer to ``GeneralizedDataEntryView`` for more information).
 
-> Note: Refer to ``DataEntryConfiguration`` on how to access the configuration of the parent view in your ``DataEntryView`` implementation.
+> Note: Refer to ``DataEntryConfiguration`` on how to access the configuration of the parent view in your ``DataEntryView`` implementation. TODO this is old!
 
 Below is a short code example on how one could implement the ``DataEntryView`` for our new biography account value.
 ```swift
@@ -127,7 +127,6 @@ extension BiographyKey {
 
 - ``DataEntryView``
 - ``GeneralizedDataEntryView``
-- ``DataEntryConfiguration``
 - ``DataEntryValidationClosures``
 - ``DataValidationResult``
 

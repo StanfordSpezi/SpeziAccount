@@ -46,7 +46,6 @@ extension PasswordKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PasswordKey
 
-        @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
         @Environment(\.passwordFieldType) private var fieldType
 
         @Binding private var password: Value
@@ -60,43 +59,6 @@ extension PasswordKey {
             VerifiableTextField(fieldType.localizedStringResource, text: $password, type: .secure)
                 .textContentType(.newPassword)
                 .disableFieldAssistants()
-        }
-    }
-}
-
-
-enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConvertible {
-    /// Standard password field
-    case password
-    /// New password field
-    case new
-    /// Password repeat field
-    case `repeat`
-
-
-    static let defaultValue: PasswordFieldType = .password
-
-
-    var localizedStringResource: LocalizedStringResource {
-        switch self {
-        case .password:
-            return PasswordKey.name
-        case .new:
-            return .init("NEW_PASSWORD", bundle: .atURL(from: .module))
-        case .repeat:
-            return .init("REPEAT_PASSWORD", bundle: .atURL(from: .module))
-        }
-    }
-}
-
-
-extension EnvironmentValues {
-    var passwordFieldType: PasswordFieldType {
-        get {
-            self[PasswordFieldType.self]
-        }
-        set {
-            self[PasswordFieldType.self] = newValue
         }
     }
 }

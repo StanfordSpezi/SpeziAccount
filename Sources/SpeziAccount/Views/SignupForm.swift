@@ -36,10 +36,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         }
     }
 
-    private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, focusedField: _focusedDataEntry)
-    }
-
 
     public var body: some View {
         form
@@ -54,9 +50,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             header
 
             sectionsView
-                .environmentObject(validationClosures)
-                .environmentObject(dataEntryConfiguration)
+                .environment(\.accountServiceConfiguration, service.configuration)
                 .environmentObject(signupDetailsBuilder)
+                .environmentObject(validationClosures)
+                .environmentObject(FocusStateObject(focusedField: _focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP".localized(.module))

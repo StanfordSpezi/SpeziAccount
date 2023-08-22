@@ -13,19 +13,7 @@ import SwiftUI
 struct NameOverview: View {
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
     @ObservedObject private var model: AccountOverviewFormViewModel
-
-    @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
-
-    // TODO duplicate! (reconstruct?) just forward? noo
-    var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, focusedField: _focusedDataEntry)
-    }
 
     var body: some View {
         Form {
@@ -55,7 +43,6 @@ struct NameOverview: View {
                 }
             }
         }
-            .viewStateAlert(state: $viewState)
             .navigationTitle(model.accountIdentifierLabel(details: accountDetails))
     }
 

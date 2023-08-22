@@ -49,10 +49,10 @@ extension UserIdKey {
 
         private let value: String
 
-        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
+        @Environment(\.accountServiceConfiguration) private var configuration
 
         public var body: some View {
-            SimpleTextRow(name: dataEntryConfiguration.serviceConfiguration.userIdConfiguration.idType.localizedStringResource) {
+            SimpleTextRow(name: configuration.userIdConfiguration.idType.localizedStringResource) {
                 Text(verbatim: value)
             }
         }
@@ -65,14 +65,9 @@ extension UserIdKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = UserIdKey
 
-        @EnvironmentObject var dataEntryConfiguration: DataEntryConfiguration
+        @Environment(\.accountServiceConfiguration) private var configuration
 
         @Binding var userId: Value
-
-
-        private var userIdConfiguration: UserIdConfiguration {
-            dataEntryConfiguration.serviceConfiguration.userIdConfiguration
-        }
 
 
         public init(_ value: Binding<Value>) {
@@ -80,9 +75,9 @@ extension UserIdKey {
         }
 
         public var body: some View {
-            VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                .textContentType(userIdConfiguration.textContentType)
-                .keyboardType(userIdConfiguration.keyboardType)
+            VerifiableTextField(configuration.userIdConfiguration.idType.localizedStringResource, text: $userId)
+                .textContentType(configuration.userIdConfiguration.textContentType)
+                .keyboardType(configuration.userIdConfiguration.keyboardType)
                 .disableFieldAssistants()
         }
     }

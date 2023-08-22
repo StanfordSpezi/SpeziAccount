@@ -56,7 +56,6 @@ extension View {
         input value: String,
         rules: [ValidationRule]
     ) -> some View {
-        // TODO this crashes for some reason still?
         modifier(InputValidationModifier<Never>(input: value, for: nil, rules: rules))
     }
 

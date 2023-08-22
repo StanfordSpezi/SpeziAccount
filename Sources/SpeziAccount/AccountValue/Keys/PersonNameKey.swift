@@ -76,7 +76,7 @@ extension PersonNameKey {
 
 
         @EnvironmentObject private var account: Account
-        @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
+        @EnvironmentObject private var focusState: FocusStateObject
         @EnvironmentObject private var closures: ValidationClosures<String>
 
         @StateObject private var validationGivenName = ValidationEngine(rules: givenNameRule)
@@ -116,7 +116,7 @@ extension PersonNameKey {
                     bundle: .module
                 ),
                 familyNameFieldIdentifier: familyNameField,
-                focusedState: dataEntryConfiguration.focusedField
+                focusedState: focusState.focusedField
             )
                 .onChange(of: name.familyName) { newValue in
                     submit(value: newValue, to: \.validationGivenName)

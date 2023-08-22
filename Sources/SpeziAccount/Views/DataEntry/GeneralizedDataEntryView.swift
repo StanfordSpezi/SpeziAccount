@@ -28,8 +28,10 @@ private protocol GeneralizedStringEntryView {
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
     @EnvironmentObject private var account: Account
 
-    @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
+    @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+
+    @Environment(\.accountServiceConfiguration) private var configuration
 
     @State private var value: Wrapped.Key.Value
 
@@ -45,7 +47,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 Wrapped($value)
             }
         }
-            .focused(dataEntryConfiguration.focusedField.projectedValue, equals: Wrapped.Key.focusState)
+            .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
                 detailsBuilder.set(Wrapped.Key.self, value: newValue)
@@ -63,7 +65,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
 extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
     func validationRules() -> [ValidationRule]? { // swiftlint:disable:this discouraged_optional_collection
-        if let rules = dataEntryConfiguration.serviceConfiguration.fieldValidationRules(for: Wrapped.Key.self) {
+        if let rules = configuration.fieldValidationRules(for: Wrapped.Key.self) {
             return rules
         }
 

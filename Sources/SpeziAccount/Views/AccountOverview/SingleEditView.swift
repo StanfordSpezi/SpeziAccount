@@ -13,6 +13,11 @@ import SwiftUI
 struct SingleEditView<Key: AccountKey>: View {
     private let accountDetails: AccountDetails
 
+    private var service: any AccountService {
+        accountDetails.accountService
+    }
+
+
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
@@ -21,11 +26,6 @@ struct SingleEditView<Key: AccountKey>: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
 
-    // TODO duplicate! (reconstruct?) just forward?
-    private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry)
-    }
-
     var body: some View {
         Form {
             VStack {
@@ -33,14 +33,14 @@ struct SingleEditView<Key: AccountKey>: View {
             }
         }
             .navigationTitle(Text(Key.name))
-            .environmentObject(dataEntryConfiguration)
-            .environmentObject(model.modifiedDetailsBuilder)
-            .environmentObject(model.validationClosures) // TODO easily fails?
+            .viewStateAlert(state: $viewState)
+            .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
                 }
                     .disabled(!model.hasUnsavedChanges || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self))
+                    .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
             .onDisappear {
                 model.resetModelState()
@@ -54,7 +54,7 @@ struct SingleEditView<Key: AccountKey>: View {
     }
 
 
-    private func submitChange() async throws  {
+    private func submitChange() async throws {
         guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
             return // TODO does this work here?
         }

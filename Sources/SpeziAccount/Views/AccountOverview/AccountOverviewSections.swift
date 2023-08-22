@@ -37,10 +37,6 @@ struct AccountOverviewSections: View {
         viewState == .processing || destructiveViewState == .processing
     }
 
-    var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: service.configuration, focusedField: _focusedDataEntry)
-    }
-
 
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
@@ -122,9 +118,7 @@ struct AccountOverviewSections: View {
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
-                    .environmentObject(dataEntryConfiguration)
-                    .environmentObject(model.validationClosures) // TODO error prone
-                    .environmentObject(model.modifiedDetailsBuilder)
+                    .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             } label: {
                 model.accountIdentifierLabel(details: accountDetails)
             }
@@ -136,9 +130,7 @@ struct AccountOverviewSections: View {
         }
 
         sectionsView
-            .environmentObject(dataEntryConfiguration)
-            .environmentObject(model.validationClosures)
-            .environmentObject(model.modifiedDetailsBuilder)
+            .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
 
         // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?

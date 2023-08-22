@@ -13,6 +13,11 @@ import SwiftUI
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
 
+    private var service: any AccountService {
+        accountDetails.accountService
+    }
+
+
     @EnvironmentObject private var account: Account
     @ObservedObject private var model: AccountOverviewFormViewModel
 
@@ -20,11 +25,6 @@ struct SecurityOverview: View {
     @FocusState private var focusedDataEntry: String?
 
     @State private var presentingPasswordChangeSheet = false
-
-    // TODO duplicate! (reconstruct?) just forward?
-    private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry)
-    }
 
 
     var body: some View {
@@ -47,9 +47,7 @@ struct SecurityOverview: View {
                     // TODO build row reuse!
                 }
             } // TODO onDelete modifier?
-                .environmentObject(dataEntryConfiguration)
-                .environmentObject(model.validationClosures)
-                .environmentObject(model.modifiedDetailsBuilder)
+                .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)

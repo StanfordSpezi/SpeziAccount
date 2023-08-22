@@ -13,6 +13,11 @@ import SwiftUI
 struct PasswordChangeSheet: View {
     private let accountDetails: AccountDetails
 
+    private var service: any AccountService {
+        accountDetails.accountService
+    }
+
+
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
@@ -28,11 +33,6 @@ struct PasswordChangeSheet: View {
         accountDetails.accountServiceConfiguration.fieldValidationRules(for: \.password) ?? []
     }
 
-    // TODO duplicate! (reconstruct?) just forward?
-    private var dataEntryConfiguration: DataEntryConfiguration {
-        .init(configuration: accountDetails.accountServiceConfiguration, focusedField: _focusedDataEntry)
-    }
-
     var body: some View {
         NavigationStack {
             Form {
@@ -46,14 +46,12 @@ struct PasswordChangeSheet: View {
                         .focused($focusedDataEntry, equals: "$-newPassword")
                         .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
                 } footer: {
-                    PasswordValidationRuleFooter(configuration: accountDetails.accountServiceConfiguration)
+                    PasswordValidationRuleFooter(configuration: service.configuration)
                 }
-                    .environmentObject(dataEntryConfiguration)
-                    .environmentObject(model.validationClosures)
-                    .environmentObject(model.modifiedDetailsBuilder)
+                    .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             }
                 .viewStateAlert(state: $viewState)
-                .environment(\.defaultErrorDescription, model.defaultErrorDescription) // TODO more password specific default error?
+                .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
