@@ -9,6 +9,8 @@
 import SpeziViews
 import SwiftUI
 
+
+/// A primary view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
 
@@ -24,14 +26,14 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                     VStack {
                         UserIdPasswordEmbeddedView(using: service)
                     }
-                        .padding(.horizontal, Constants.innerHorizontalPadding)
-                        .frame(maxWidth: Constants.maxFrameWidth)
+                        .padding(.horizontal, MagicValue.innerHorizontalPadding)
+                        .frame(maxWidth: MagicValue.maxFrameWidth)
 
                     Spacer()
                     Spacer()
                     Spacer()
                 }
-                    .padding(.horizontal, Constants.outerHorizontalPadding)
+                    .padding(.horizontal, MagicValue.outerHorizontalPadding)
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
         }

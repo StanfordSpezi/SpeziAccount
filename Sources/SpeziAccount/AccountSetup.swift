@@ -9,20 +9,42 @@
 import SwiftUI
 
 
-enum Constants { // TODO rename and move!
-    static let outerHorizontalPadding: CGFloat = 16
-    static let innerHorizontalPadding: CGFloat = 16
-    static let maxFrameWidth: CGFloat = 450
-}
-
-
-/// The central ``SpeziAccount`` view to login into or signup for a user account.
+/// The essential ``SpeziAccount`` view to login into or signup for a user account.
 ///
-/// - Note: This view assumes to have a ``Account`` object in its environment. An ``Account`` object is
-///     automatically injected into your view hierarchy by using the ``AccountConfiguration``.
+/// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
+/// ``IdentityProvider`` instances to setup an active user account. They might create a new account with a given
+/// ``AccountService`` or log into an existing one.
 ///
-/// TODO docs: drop ``AccountService`` and ``IdentityProvider`` and other stuff
-public struct AccountSetup<Header: View, Continue: View>: View { // TODO docs!
+/// This view relies on an ``Account`` object in its environment. This is done automatically by providing a
+/// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
+///
+/// - Note: In SwiftUI previews you can easily instantiate your own ``Account``. Use initializers like
+///     ``Account/init(services:configuration:)`` or ``Account/init(building:active:configuration:)``.
+///
+///
+/// Below is a short code example on how to use the `AccountSetup` view.
+///
+/// ```swift
+/// struct MyView: View {
+///     @EnvironmentObject var account: Account
+///
+///     var body: some View {
+///         // You may use `account.signedIn` to conditionally render another view if there is already a signed in account
+///         // or use the `continue` closure as shown below to render a Continue button.
+///         // The continue button is especially useful in cases like Onboarding Flows such that the user has the chance
+///         // to review the currently signed in account.
+///
+///         AccountSetup {
+///            NavigationLink {
+///                // ... next view
+///            } label: {
+///                Text("Continue")
+///            }
+///         }
+///     }
+/// }
+/// ```
+public struct AccountSetup<Header: View, Continue: View>: View {
     private let header: Header
     private let continueButton: Continue
 
@@ -30,35 +52,39 @@ public struct AccountSetup<Header: View, Continue: View>: View { // TODO docs!
 
     private var services: [any AccountService] {
         account.registeredAccountServices
+            .filter { !($0 is any IdentityProvider) }
     }
 
     private var identityProviders: [any IdentityProvider] {
-        account.registeredIdentityProviders
+        account.registeredAccountServices
+            .compactMap { $0 as? any IdentityProvider }
     }
 
     public var body: some View {
-        GeometryReader { proxy in
-            ScrollView(.vertical) {
-                VStack {
-                    header
+        NavigationStack {
+            GeometryReader { proxy in
+                ScrollView(.vertical) {
+                    VStack {
+                        header
 
-                    Spacer()
+                        Spacer()
 
-                    if let details = account.details {
-                        ExistingAccountView(details: details) {
-                            continueButton
+                        if let details = account.details {
+                            ExistingAccountView(details: details) {
+                                continueButton
+                            }
+                        } else {
+                            accountSetupView
                         }
-                    } else {
-                        accountSetupView
-                    }
 
-                    Spacer()
-                    Spacer()
-                    Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                    }
+                        .padding(.horizontal, MagicValue.outerHorizontalPadding)
+                        .frame(minHeight: proxy.size.height)
+                        .frame(maxWidth: .infinity)
                 }
-                    .padding(.horizontal, Constants.outerHorizontalPadding)
-                    .frame(minHeight: proxy.size.height)
-                    .frame(maxWidth: .infinity)
             }
         }
     }
@@ -76,8 +102,8 @@ public struct AccountSetup<Header: View, Continue: View>: View { // TODO docs!
 
                 IdentityProviderSection(providers: identityProviders)
             }
-                .padding(.horizontal, Constants.innerHorizontalPadding)
-                .frame(maxWidth: Constants.maxFrameWidth) // landscape optimizations
+                .padding(.horizontal, MagicValue.innerHorizontalPadding)
+                .frame(maxWidth: MagicValue.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
         }
     }
@@ -121,27 +147,21 @@ struct AccountView_Previews: PreviewProvider {
 
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
-            NavigationStack {
-                AccountSetup()
-            }
+            AccountSetup()
                 .environmentObject(Account(services: accountServicePermutations[index], identityProviders: [MockSignInWithAppleProvider()]))
         }
 
-        NavigationStack {
-            AccountSetup()
-        }
+        AccountSetup()
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        NavigationStack {
-            AccountSetup {
-                Button(action: {
-                    print("Continue")
-                }, label: {
-                    Text("Continue")
-                        .frame(maxWidth: .infinity, minHeight: 38)
-                })
-                    .buttonStyle(.borderedProminent)
-            }
+        AccountSetup {
+            Button(action: {
+                print("Continue")
+            }, label: {
+                Text("Continue")
+                    .frame(maxWidth: .infinity, minHeight: 38)
+            })
+                .buttonStyle(.borderedProminent)
         }
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }

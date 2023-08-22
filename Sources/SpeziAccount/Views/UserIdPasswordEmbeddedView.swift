@@ -17,6 +17,11 @@ private enum LoginFocusState {
 }
 
 
+/// A default implementation for the embedded view of a ``UserIdPasswordAccountService``.
+///
+/// Every ``EmbeddableAccountService`` might provide a view that is directly integrated into the ``AccountSetup``
+/// view for more easy navigation. This view implements such a view for ``UserIdPasswordAccountService``-based
+/// account service implementations.
 public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
     private let service: Service
     private var userIdConfiguration: UserIdConfiguration {
@@ -43,39 +48,13 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
     }
 
-    @MainActor public var body: some View {
+    public var body: some View {
         VStack {
-            VStack {
-                Group {
-                    VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                        .environmentObject(userIdValidation)
-                        .textContentType(userIdConfiguration.textContentType)
-                        .keyboardType(userIdConfiguration.keyboardType)
-                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
-                        .padding(.bottom, 0.5)
-
-                    VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure) {
-                        Button(action: {
-                            presentingPasswordForgetSheet = true
-                        }) {
-                            Text("UP_FORGOT_PASSWORD".localized(.module))
-                                .font(.caption)
-                                .bold()
-                                .foregroundColor(Color(uiColor: .systemGray))
-                        }
-                    }
-                        .environmentObject(passwordValidation)
-                        .textContentType(.password)
-                        .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
-                }
-                    .disableFieldAssistants()
-                    .textFieldStyle(.roundedBorder)
-                    .font(.title3)
-            }
+            fields
                 .padding(.vertical, 0)
 
             AsyncButton(state: $state, action: loginButtonAction) {
-                Text("UP_LOGIN".localized(.module))
+                Text("UP_LOGIN", bundle: .module)
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
@@ -86,11 +65,11 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
 
             HStack {
-                Text("UP_NO_ACCOUNT_YET".localized(.module))
+                Text("UP_NO_ACCOUNT_YET", bundle: .module)
                 NavigationLink {
                     service.viewStyle.makeSignupView()
                 } label: {
-                    Text("UP_SIGNUP".localized(.module))
+                    Text("UP_SIGNUP", bundle: .module)
                 }
             }
                 .font(.footnote)
@@ -108,9 +87,44 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             }
     }
 
+
+    @ViewBuilder private var fields: some View {
+        VStack {
+            Group {
+                VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
+                    .environmentObject(userIdValidation)
+                    .textContentType(userIdConfiguration.textContentType)
+                    .keyboardType(userIdConfiguration.keyboardType)
+                    .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
+                    .padding(.bottom, 0.5)
+
+                VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
+                    Button(action: {
+                        presentingPasswordForgetSheet = true
+                    }) {
+                        Text("UP_FORGOT_PASSWORD", bundle: .module)
+                            .font(.caption)
+                            .bold()
+                            .foregroundColor(Color(uiColor: .systemGray))
+                    }
+                }
+                    .environmentObject(passwordValidation)
+                    .textContentType(.password)
+                    .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
+            }
+                .disableFieldAssistants()
+                .textFieldStyle(.roundedBorder)
+                .font(.title3)
+        }
+    }
+
+
+    /// Create a new embedded view.
+    /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
     public init(using service: Service) {
         self.service = service
     }
+
 
     private func loginButtonAction() async throws {
         userIdValidation.runValidation(input: userId)
@@ -131,6 +145,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         try await service.login(userId: userId, password: password)
     }
 }
+
 
 #if DEBUG
 struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {

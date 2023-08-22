@@ -85,19 +85,18 @@ public class Account: ObservableObject, Sendable {
     public let configuration: AccountValueConfiguration
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
+    ///
+    /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
+    ///     ``AccountSetupViewStyle`` implementions (see ``IdentityProviderViewStyle``).
     let registeredAccountServices: [any AccountService]
-
-    let registeredIdentityProviders: [any IdentityProvider]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - identityProviders: List of configured ``IdentityProvider``s.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
     private nonisolated init(
         services: [any AccountService],
-        identityProviders: [any IdentityProvider] = [],
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
@@ -107,7 +106,6 @@ public class Account: ObservableObject, Sendable {
         self._details = Published(wrappedValue: details)
         self.configuration = supportedConfiguration
         self.registeredAccountServices = services
-        self.registeredIdentityProviders = identityProviders
 
         if supportedConfiguration[UserIdKey.self] == nil {
             logger.warning(
@@ -122,10 +120,6 @@ public class Account: ObservableObject, Sendable {
         for service in registeredAccountServices {
             injectWeakAccount(into: service)
         }
-
-        for provider in registeredIdentityProviders {
-            injectWeakAccount(into: provider)
-        }
     }
 
     /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
@@ -133,14 +127,12 @@ public class Account: ObservableObject, Sendable {
     /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - identityProviders: List of configured ``IdentityProvider``s.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
     public nonisolated convenience init(
         services: [any AccountService],
-        identityProviders: [any IdentityProvider] = [],
         configuration: AccountValueConfiguration = .default
     ) {
-        self.init(services: services, identityProviders: identityProviders, supportedConfiguration: configuration)
+        self.init(services: services, supportedConfiguration: configuration)
     }
 
     /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.

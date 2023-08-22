@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct EmptyServicesWarning: View {
+struct MissingAccountDetailsWarning: View {
     private var documentationUrl: URL {
         // we may move to a #URL macro once Swift 5.9 is shipping
         // TODO update docs URL!
@@ -22,7 +22,7 @@ struct EmptyServicesWarning: View {
 
     var body: some View {
         VStack {
-            Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
+            Text("MISSING_ACCOUNT_DETAILS", bundle: .module)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
 
@@ -38,9 +38,9 @@ struct EmptyServicesWarning: View {
 
 
 #if DEBUG
-struct EmptyServicesWarning_Previews: PreviewProvider {
+struct MissingAccountDetailsWarning_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyServicesWarning()
+        MissingAccountDetailsWarning()
     }
 }
 #endif

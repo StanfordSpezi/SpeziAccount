@@ -60,7 +60,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .environmentObject(FocusStateObject(focusedField: _focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
-                Text("UP_SIGNUP".localized(.module))
+                Text("UP_SIGNUP", bundle: .module)
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
@@ -97,7 +97,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     init(using service: Service) where Header == Text {
         self.service = service
-        self.header = Text("UP_SIGNUP_INSTRUCTIONS".localized(.module))
+        self.header = Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
     }
 
     init(service: Service, @ViewBuilder header: () -> Header) {

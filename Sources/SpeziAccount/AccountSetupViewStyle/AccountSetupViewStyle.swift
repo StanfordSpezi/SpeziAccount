@@ -38,3 +38,19 @@ public protocol AccountSetupViewStyle {
     @ViewBuilder
     func makeAccountSummary(details: AccountDetails) -> AccountSummaryView
 }
+
+
+extension AccountSetupViewStyle {
+    public func makeServiceButtonLabel() -> some View {
+        Group {
+            service.configuration.image
+                .font(.title2)
+            Text(service.configuration.name)
+        }
+            .accountServiceButtonBackground()
+    }
+
+    public func makeAccountSummary(details: AccountDetails) -> some View {
+        AccountSummaryBox(details: details)
+    }
+}

@@ -16,6 +16,7 @@ private enum PasswordResetFocusState {
 }
 
 
+/// A password reset view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
     private let service: Service
     private let successView: SuccessView
@@ -79,7 +80,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .font(.title3)
         }
             .padding()
-            .frame(maxWidth: Constants.maxFrameWidth * 1.5) // landscape optimizations
+            .frame(maxWidth: MagicValue.maxFrameWidth * 1.5) // landscape optimizations
             .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
@@ -105,6 +106,10 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
     }
 
 
+    /// Create a new view.
+    /// - Parameters:
+    ///   - service: The ``UserIdPasswordAccountService`` instance.
+    ///   - successViewBuilder: A view to display on successful password reset.
     public init(using service: Service, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
         self.init(using: service, requestSubmitted: false, success: successViewBuilder)
     }

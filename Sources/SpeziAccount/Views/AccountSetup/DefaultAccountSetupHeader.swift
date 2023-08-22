@@ -18,7 +18,7 @@ public struct DefaultAccountSetupHeader: View {
 
     public var body: some View {
         VStack {
-            Text("ACCOUNT_WELCOME".localized(.module))
+            Text("ACCOUNT_WELCOME", bundle: .module)
                 .font(.largeTitle)
                 .bold()
                 .multilineTextAlignment(.center)
@@ -27,9 +27,9 @@ public struct DefaultAccountSetupHeader: View {
 
             Group {
                 if !account.signedIn {
-                    Text("ACCOUNT_WELCOME_SUBTITLE".localized(.module))
+                    Text("ACCOUNT_WELCOME_SUBTITLE", bundle: .module)
                 } else {
-                    Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE".localized(.module))
+                    Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE", bundle: .module)
                 }
             }
                 .multilineTextAlignment(.center)

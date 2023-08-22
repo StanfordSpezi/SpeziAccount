@@ -26,7 +26,7 @@ struct ExistingAccountView<Continue: View>: View {
             VStack {
                 AnyView(service.viewStyle.makeAnyAccountSummary(details: accountDetails))
 
-                AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
+                AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
                     try await service.logout()
                 }
                     .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))

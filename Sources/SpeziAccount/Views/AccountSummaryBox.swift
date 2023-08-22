@@ -43,7 +43,7 @@ public struct AccountSummaryBox: View {
                     .fill(.background)
                     .shadow(color: .gray, radius: 2)
             )
-            .frame(maxWidth: Constants.maxFrameWidth)
+            .frame(maxWidth: MagicValue.maxFrameWidth)
     }
 
     /// Create a new `AccountSummaryBox`
