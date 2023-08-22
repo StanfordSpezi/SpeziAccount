@@ -13,9 +13,14 @@ extension View {
     /// Shorthand modifier for all ``AccountOverview`` related views to inject all the required values and objects into the environment.
     func injectEnvironmentObjects(service: any AccountService, model: AccountOverviewFormViewModel, focusState: FocusState<String?>) -> some View {
         self
+            .injectEnvironmentObjects(service: service, model: model)
+            .environmentObject(FocusStateObject(focusedField: focusState))
+    }
+
+    func injectEnvironmentObjects(service: any AccountService, model: AccountOverviewFormViewModel) -> some View {
+        self
             .environment(\.accountServiceConfiguration, service.configuration)
             .environmentObject(model.modifiedDetailsBuilder)
             .environmentObject(model.validationClosures)
-            .environmentObject(FocusStateObject(focusedField: focusState))
     }
 }

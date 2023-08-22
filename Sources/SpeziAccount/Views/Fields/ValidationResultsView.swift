@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+/// A view that displays the results of a ``ValidationEngine`` (see ``FailedValidationResult``).
 public struct ValidationResultsView: View {
     private let results: [FailedValidationResult]
 
@@ -22,6 +23,8 @@ public struct ValidationResultsView: View {
             .foregroundColor(.red)
     }
 
+    /// Create a new view.
+    /// - Parameter results: The array of ``FailedValidationResult`` coming from the ``ValidationEngine``.
     public init(results: [FailedValidationResult]) {
         self.results = results
     }

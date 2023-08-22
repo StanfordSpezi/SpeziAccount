@@ -9,6 +9,7 @@
 import SwiftUI
 
 
+/// A simple `Picker` implementation for ``GenderIdentity`` entry.
 public struct GenderIdentityPicker: View {
     private let titleLocalization: LocalizedStringResource
 
@@ -28,16 +29,16 @@ public struct GenderIdentityPicker: View {
         )
     }
 
+    /// Initialize a new `GenderIdentityPicker`.
+    /// - Parameters:
+    ///   - genderIdentity: A binding to the ``GenderIdentity`` state.
+    ///   - customTitle: Optionally provide a custom label text.
     public init(
         genderIdentity: Binding<GenderIdentity>,
         title customTitle: LocalizedStringResource? = nil
     ) {
         self._genderIdentity = genderIdentity
         self.titleLocalization = customTitle ?? GenderIdentityKey.name
-    }
-    
-    public init(genderIdentity: Binding<GenderIdentity>, title: String.LocalizationValue) {
-        self.init(genderIdentity: genderIdentity, title: LocalizedStringResource(title))
     }
 }
 

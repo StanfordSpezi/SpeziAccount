@@ -9,6 +9,8 @@
 import SpeziViews
 import SwiftUI
 
+
+/// A simple account summary displayed in the ``AccountSetup`` view when there is already a signed in user account.
 public struct AccountSummaryBox: View {
     private let model: AccountDisplayModel
 
@@ -44,6 +46,8 @@ public struct AccountSummaryBox: View {
             .frame(maxWidth: Constants.maxFrameWidth)
     }
 
+    /// Create a new `AccountSummaryBox`
+    /// - Parameter details: The ``AccountDetails`` to render.
     public init(details: AccountDetails) {
         self.model = AccountDisplayModel(details: details)
     }

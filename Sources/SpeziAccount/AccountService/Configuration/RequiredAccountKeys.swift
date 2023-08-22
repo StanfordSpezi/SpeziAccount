@@ -30,7 +30,9 @@ import Spezi
 ///     }
 /// }
 public struct RequiredAccountKeys: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
-    public static let defaultValue = RequiredAccountKeys(ofKeys: .init()) // TODO UserId + Password is always required for the UserId account service
+    public static let defaultValue = RequiredAccountKeys {
+        \.userId // by default everyone requires the userId
+    }
 
     fileprivate let keys: AccountKeyCollection
 

@@ -8,6 +8,8 @@
 
 import SwiftUI
 
+
+/// A simple success view for a password reset view.
 public struct SuccessfulPasswordResetView: View {
     private let successfulLabelLocalization: LocalizedStringResource
 
@@ -30,13 +32,15 @@ public struct SuccessfulPasswordResetView: View {
         Spacer()
     }
 
-    public init(
-        successfulLabelLocalization: LocalizedStringResource? = nil
-    ) {
-        self.successfulLabelLocalization = successfulLabelLocalization
+
+    /// Create a new success view.
+    /// - Parameter successfulLabel: Optionally a customized label localization.
+    public init(successfulLabel: LocalizedStringResource? = nil) {
+        self.successfulLabelLocalization = successfulLabel
             ?? LocalizedStringResource("UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL", bundle: .atURL(from: .module))
     }
 }
+
 
 #if DEBUG
 struct DefaultSuccessfulPasswordResetView_Previews: PreviewProvider {

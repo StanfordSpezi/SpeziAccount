@@ -117,7 +117,6 @@ struct AccountOverviewSections: View {
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
-                    .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             } label: {
                 model.accountIdentifierLabel(details: accountDetails)
             }
@@ -225,4 +224,19 @@ struct AccountOverviewSections: View {
     }
 }
 
-// TODO preview?
+
+#if DEBUG
+struct AccountOverviewSections_Previews: PreviewProvider {
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.genderIdentity, value: .male)
+
+    static var previews: some View {
+        NavigationStack {
+            AccountOverview()
+        }
+        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+    }
+}
+#endif

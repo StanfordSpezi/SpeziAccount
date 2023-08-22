@@ -9,7 +9,7 @@
 
 extension AccountService {
     /// A property wrapper that can be used within ``AccountService`` instances to request
-    /// access to the ``Account`` instance.
+    /// access to the global ``Account`` instance.
     ///
     /// Below is a short code example on how to use this property wrapper:
     /// ```swift

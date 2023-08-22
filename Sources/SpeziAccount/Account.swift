@@ -81,7 +81,8 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
-    public let configuration: AccountValueConfiguration // TODO document use, once finalized!
+    /// The user-defined configuration of account values that all user accounts need to support.
+    public let configuration: AccountValueConfiguration
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     let registeredAccountServices: [any AccountService]
@@ -161,7 +162,7 @@ public class Account: ObservableObject, Sendable {
     /// - Parameters:
     ///   - builder: A ``AccountDetails/Builder`` with all account details for the logged in user.
     ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support. TODO will we check for exposed account value requirements of the account service here in the init?
+    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
     public nonisolated convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,
@@ -221,7 +222,7 @@ public class Account: ObservableObject, Sendable {
     ///
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
-    public func removeUserDetails() async { // TODO async requirement now?
+    public func removeUserDetails() async {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked {
             await standardBacked.standard.clear()

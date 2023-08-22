@@ -25,7 +25,8 @@ import XCTRuntimeAssertions
 public final class AccountConfiguration: Component, ObservableObjectProvider {
     private let logger = LoggerKey.defaultValue
 
-    private let configuredAccountKeys: AccountValueConfiguration // TODO docs
+    /// The user-defined configuration of account values that all user accounts need to support.
+    private let configuredAccountKeys: AccountValueConfiguration
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     private let providedAccountServices: [any AccountService]
 
@@ -53,9 +54,8 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     ///
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
     ///
-    /// - Parameter configuration: TODO docs
+    /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
     public init(configuration: [ConfiguredAccountKey] = .default) {
-        // TODO variadic arguments! once we have those we can remove the intermediate accessor!
         self.configuredAccountKeys = AccountValueConfiguration(configuration)
         self.providedAccountServices = []
     }
@@ -66,12 +66,12 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// provided by other Spezi `Component`s.
     ///
     /// - Parameters:
-    ///   - configuration: TODO docs
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public init(
         configuration: [ConfiguredAccountKey] = .default,
         @AccountServiceBuilder _ accountServices: () -> [any AccountService]
-    ) {  // TODO variadic arguments!
+    ) {
         self.configuredAccountKeys = AccountValueConfiguration(configuration)
         self.providedAccountServices = accountServices()
     }
@@ -95,7 +95,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         )
 
         if let accountStandard = standard as? any AccountStorageStandard {
-            self.account?.injectWeakAccount(into: accountStandard) // TODO @AccountReference typealias!
+            self.account?.injectWeakAccount(into: accountStandard)
         }
     }
 
@@ -107,9 +107,8 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         let mismatchedKeys: [any AccountKeyWithDescription] = requiredValues.filter { keyWithDescription in
             let key = keyWithDescription.key
             let configuration = configuredAccountKeys[key]
-            // TODO is there a use case to force collection, no right?
             return configuration == nil
-                || (key.isRequired && configuration?.requirement != .required) // TODO second is always true currently!
+                || (key.isRequired && configuration?.requirement != .required)
         }
 
         guard !mismatchedKeys.isEmpty else {

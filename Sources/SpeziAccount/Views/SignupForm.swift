@@ -11,6 +11,10 @@ import SpeziViews
 import SwiftUI
 
 
+/// A generalized signup form used with arbitrary ``AccountService`` implementations.
+///
+/// A `Form` that collects all configured account values (a ``AccountValueConfiguration`` supplied to ``AccountConfiguration``)
+/// split into `Section`s according the their ``AccountKeyCategory`` (see ``AccountKey/category``).
 public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header

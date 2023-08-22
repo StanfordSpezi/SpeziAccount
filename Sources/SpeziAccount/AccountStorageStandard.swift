@@ -8,37 +8,6 @@
 
 import Spezi
 
-public struct AdditionalRecordId: CustomStringConvertible, Hashable, Identifiable { // TODO move
-    public let accountServiceId: String
-    public let userId: String
-
-
-    public var description: String {
-        accountServiceId + "-" + userId
-    }
-
-    public var id: String {
-        description
-    }
-
-
-    public init(serviceId accountServiceId: String, userId: String) {
-        self.accountServiceId = accountServiceId
-        self.userId = userId
-    }
-
-
-    public static func == (lhs: AdditionalRecordId, rhs: AdditionalRecordId) -> Bool {
-        lhs.description == rhs.description
-    }
-
-
-    public func hash(into hasher: inout Hasher) {
-        accountServiceId.hash(into: &hasher)
-        userId.hash(into: &hasher)
-    }
-}
-
 
 /// A `Spezi` Standard that manages data flow of additional account values.
 ///
@@ -48,6 +17,9 @@ public struct AdditionalRecordId: CustomStringConvertible, Hashable, Identifiabl
 /// inorder to handle storage and retrieval of these additional account values.
 public protocol AccountStorageStandard: Standard {
     /// Create new associated account data.
+    ///
+    /// - Note: A call to this method might certanily be immediately followed by a call to ``load(_:_:)``.
+    ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
     ///   - details: The signup details that need to be stored.
@@ -65,13 +37,16 @@ public protocol AccountStorageStandard: Standard {
     ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
-    ///   - keys: The keys to load. TODO how does the standard identify those (stable naming!!!)
+    ///   - keys: The keys to load.
     /// - Parameter userId: The userId to load data for.
     /// - Returns: The assembled ``PartialAccountDetails`` (see ``AccountValuesBuilder``).
     /// - Throws: A `LocalizedError`.
     func load(_ identifier: AdditionalRecordId, _ keys: [any AccountKey.Type]) async throws -> PartialAccountDetails
 
-    /// Modify the associated account data of an existing user account. TODO next load request must return updated data!
+    /// Modify the associated account data of an existing user account.
+    ///
+    /// - Note: A call to this method might certanily be immediately followed by a call to ``load(_:_:)``.
+    ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
     ///   - modifications: The account modifications.
@@ -92,4 +67,18 @@ public protocol AccountStorageStandard: Standard {
     /// - Parameter identifier: The primary identifier for stored record.
     /// - Throws: A `LocalizedError`.
     func delete(_ identifier: AdditionalRecordId) async throws
+}
+
+
+extension AccountStorageStandard {
+    /// A property wrapper that can be used within ``AccountStorageStandard`` instances to request
+    /// access to the global ``Account`` instance.
+    ///
+    /// Below is a short code example on how to use this property wrapper:
+    /// ```swift
+    /// public actor MyStandard: AccountStorageStandard {
+    ///     @AccountReference var account
+    /// }
+    /// ```
+    public typealias AccountReference = WeakInjectable<Account>
 }

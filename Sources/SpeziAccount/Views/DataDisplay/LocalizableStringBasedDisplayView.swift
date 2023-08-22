@@ -10,8 +10,8 @@ import Spezi
 import SwiftUI
 
 
-// TODO name
-public struct LocalizableStringConvertibleDataDisplayView<Key: AccountKey>: DataDisplayView
+/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to `CustomLocalizedStringResourceConvertible`.
+public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayView
     where Key.Value: CustomLocalizedStringResourceConvertible {
     private let value: Key.Value
 
@@ -29,9 +29,9 @@ public struct LocalizableStringConvertibleDataDisplayView<Key: AccountKey>: Data
 
 
 #if DEBUG
-struct LocalizableStringConvertibleDataDisplayView_Previews: PreviewProvider {
+struct LocalizableStringBasedDisplayView_Previews: PreviewProvider {
     static var previews: some View {
-        LocalizableStringConvertibleDataDisplayView<GenderIdentityKey>(.preferNotToState)
+        LocalizableStringBasedDisplayView<GenderIdentityKey>(.preferNotToState)
     }
 }
 #endif

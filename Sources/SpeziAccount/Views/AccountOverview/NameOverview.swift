@@ -44,6 +44,8 @@ struct NameOverview: View {
             }
         }
             .navigationTitle(model.accountIdentifierLabel(details: accountDetails))
+            .navigationBarTitleDisplayMode(.inline)
+            .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
     }
 
 
@@ -56,8 +58,23 @@ struct NameOverview: View {
 
 #if DEBUG
 struct NameOverview_Previews: PreviewProvider {
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.genderIdentity, value: .male)
+
+    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
+
+    // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
+    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+
     static var previews: some View {
-        Text("Hello") // TODO can we provide a preview?
+        NavigationStack {
+            if let details = account.details {
+                NameOverview(model: model, details: details)
+            }
+        }
+            .environmentObject(account)
     }
 }
 #endif

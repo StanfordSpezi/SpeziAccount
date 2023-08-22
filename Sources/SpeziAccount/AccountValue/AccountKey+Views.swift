@@ -11,11 +11,11 @@ import SwiftUI
 
 
 extension AccountKey where Value: StringProtocol {
-    public typealias DataDisplay = StringDataDisplayView<Self>
+    public typealias DataDisplay = StringBasedDisplayView<Self>
 }
 
 extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
-    public typealias DataDisplay = LocalizableStringConvertibleDataDisplayView<Self>
+    public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
 }
 
 

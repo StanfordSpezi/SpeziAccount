@@ -10,7 +10,8 @@ import Spezi
 import SwiftUI
 
 
-public struct StringDataDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: StringProtocol {
+/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to `StringProtocol`.
+public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: StringProtocol {
     private let value: Key.Value
 
     public var body: some View {
@@ -28,7 +29,7 @@ public struct StringDataDisplayView<Key: AccountKey>: DataDisplayView where Key.
 #if DEBUG
 struct StringDataDisplayView_Previews: PreviewProvider {
     static var previews: some View {
-        StringDataDisplayView<UserIdKey>("andreas.bauer")
+        StringBasedDisplayView<UserIdKey>("andreas.bauer")
     }
 }
 #endif

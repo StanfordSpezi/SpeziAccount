@@ -9,6 +9,7 @@
 import SwiftUI
 
 
+/// A simple `DatePicker` implementation tailored towards entry of a date of birth.
 public struct DateOfBirthPicker: View {
     private let titleLocalization: LocalizedStringResource
 
@@ -37,16 +38,16 @@ public struct DateOfBirthPicker: View {
             .zIndex(100)
     }
 
+    /// Initialize a new `DateOfBirthPicker`.
+    /// - Parameters:
+    ///   - date: A binding to the `Date` state.
+    ///   - customTitle: Optionally provide a custom label text.
     public init(
         date: Binding<Date>,
         title customTitle: LocalizedStringResource? = nil
     ) {
         self._date = date
         self.titleLocalization = customTitle ?? DateOfBirthKey.name
-    }
-
-    public init(date: Binding<Date>, title: String.LocalizationValue) {
-        self.init(date: date, title: LocalizedStringResource(title))
     }
 }
 

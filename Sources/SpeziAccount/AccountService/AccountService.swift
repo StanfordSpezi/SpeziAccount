@@ -23,7 +23,7 @@ import SwiftUI
 ///     using the ``UserIdConfiguration``.
 ///
 /// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
-public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Sendable, Identifiable {
+public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Sendable {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
 
