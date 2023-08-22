@@ -6,9 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
 import SwiftUI
 
+
+/// A ``UserIdPasswordAccountSetupViewStyle`` that provides default UI components for all views.
 public struct DefaultUserIdPasswordAccountSetupViewStyle<Service: UserIdPasswordAccountService>: UserIdPasswordAccountSetupViewStyle {
     // swiftlint:disable:previous type_name
     public let service: Service

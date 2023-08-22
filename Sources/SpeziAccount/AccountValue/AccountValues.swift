@@ -9,7 +9,7 @@
 import Spezi
 
 
-// TODO protocols in a separate file!
+/// An arbitrary collection of account values.
 public protocol AccountValuesCollection: AcceptingAccountValueVisitor, Collection
     where Index == AccountStorage.Index, Element == AccountStorage.Element {
     /// Checks if the provided ``AccountKey`` is currently stored in the collection.
@@ -21,16 +21,21 @@ public protocol AccountValuesCollection: AcceptingAccountValueVisitor, Collectio
 
 
 /// Storage unit for values of ``AccountKey``s.
-public protocol AccountValues: AccountValuesCollection { // TODO rename to AccountValues?
+public protocol AccountValues: AccountValuesCollection {
     /// Builder pattern to build a container of this type.
     typealias Builder = AccountValuesBuilder<Self>
 
-    /// The underlying storage.
+    /// The underlying storage repository.
     var storage: AccountStorage { get }
 
-    init(from storage: AccountStorage) // TODO protocol requirement?
+    /// Init from storage repository. Don't use this directly, use a instance of ``Builder``.
+    /// - Parameter storage: The storage repository.
+    init(from storage: AccountStorage)
 
-    func merge<Container: AccountValues>(with container: Container) -> Self
+    /// Merge with contents from a different ``AccountValues`` instance creating a new unit.
+    /// - Parameter values: The account values to merge with.
+    /// - Returns: The resulting values containing the combination of both ``AccountValues`` instances.
+    func merge<Values: AccountValues>(with values: Values) -> Self
 }
 
 
@@ -60,14 +65,16 @@ extension AccountValues {
         storage.contains(key)
     }
 
-    public func merge<Container: AccountValues>(with container: Container) -> Self {
+    /// Default merge implementation.
+    public func merge<Values: AccountValues>(with values: Values) -> Self {
         let build = AccountValuesBuilder<Self>(from: storage)
-        build.merging(container)
+        build.merging(values)
         return build.build()
     }
 }
 
 extension AccountValuesCollection {
+    /// Default type-erased implementation.
     public func contains(_ key: any AccountKey.Type) -> Bool {
         key.anyContains(in: self)
     }

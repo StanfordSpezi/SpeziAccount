@@ -42,10 +42,14 @@ public struct AccountKeyCategory {
     /// The localized section title.
     public let categoryTitle: LocalizedStringResource?
 
+    // the only category allowed without a title is the `other` category
+    private init(title categoryTitle: LocalizedStringResource? = nil) {
+        self.categoryTitle = categoryTitle
+    }
 
     /// Instantiate a new ``AccountKeyCategory``.
     /// - Parameter categoryTitle: The localized section title. The key is also used a identifier for the `Identifiable` conformance.
-    public init(title categoryTitle: LocalizedStringResource? = nil) {
+    public init(title categoryTitle: LocalizedStringResource) {
         self.categoryTitle = categoryTitle
     }
 }
@@ -53,6 +57,8 @@ public struct AccountKeyCategory {
 
 extension AccountKeyCategory: Identifiable, Hashable {
     /// A string based identifier relying on the key of the ``categoryTitle``.
+    ///
+    /// The magic constant `#none#` is used for the ``other`` category.
     public var id: String {
         categoryTitle?.key ?? "#none#" // magic constant for the "other" category
     }

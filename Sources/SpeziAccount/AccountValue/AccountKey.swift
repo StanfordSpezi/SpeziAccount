@@ -11,8 +11,6 @@ import SwiftUI
 import XCTRuntimeAssertions
 
 
-// TODO rename everything to AccountDetail, AccountDetailCategory?
-
 /// A typed storage key to store values associated with an user account.
 ///
 /// The `AccountKey` protocol builds upon the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository)
@@ -24,7 +22,9 @@ import XCTRuntimeAssertions
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
 ///     and validate input against a ``ValidationEngine``.
-public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable {
+///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageStandard``s
+///     can easily store arbitrarily defined account values.
+public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable, Value: Codable {
     /// The ``DataDisplayView`` that is used to display a value for this account value.
     ///
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.
@@ -81,24 +81,28 @@ extension AccountKey {
 }
 
 extension AccountKey where Value: DefaultInitializable {
+    /// Default empty value for `DefaultInitializable`.
     public static var emptyValue: Value {
         .init()
     }
 }
 
 extension AccountKey where Value: StringProtocol {
+    /// Default empty value for `String` values.
     public static var emptyValue: Value {
         ""
     }
 }
 
 extension AccountKey where Value == Date {
+    /// Default empty value for `Date` values.
     public static var emptyValue: Value {
         Date()
     }
 }
 
 extension AccountKey where Value: AdditiveArithmetic {
+    /// Default empty value for numeric values.
     public static var emptyValue: Value {
         // this catches all the numeric types
         .zero
@@ -106,12 +110,14 @@ extension AccountKey where Value: AdditiveArithmetic {
 }
 
 extension AccountKey where Value: ExpressibleByArrayLiteral {
+    /// Default empty value for `Array` values.
     public static var emptyValue: Value {
         []
     }
 }
 
 extension AccountKey where Value: ExpressibleByDictionaryLiteral {
+    /// Default empty value for `Dictionary` values.
     public static var emptyValue: Value {
         [:]
     }

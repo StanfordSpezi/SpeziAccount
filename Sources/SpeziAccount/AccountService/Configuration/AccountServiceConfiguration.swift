@@ -38,37 +38,37 @@ public struct AccountServiceConfiguration: Sendable {
     /// Initialize a new configuration by just providing the required ones.
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
-    ///   - supportedValues: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
+    ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
     ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
     ///     that is capable of handling all non-supported ``AccountKey``s.
-    public init(name: LocalizedStringResource, supportedValues: SupportedAccountKeys) {
-        self.storage = Self.createStorage(name: name, supportedValues: supportedValues)
+    public init(name: LocalizedStringResource, supportedKeys: SupportedAccountKeys) {
+        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys)
     }
 
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
-    ///   - supportedValues: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
+    ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
     ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
         name: LocalizedStringResource,
-        supportedValues: SupportedAccountKeys,
+        supportedKeys: SupportedAccountKeys,
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
     ) {
-        self.storage = Self.createStorage(name: name, supportedValues: supportedValues, configuration: configuration())
+        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys, configuration: configuration())
     }
 
 
     private static func createStorage(
         name: LocalizedStringResource,
-        supportedValues: SupportedAccountKeys,
+        supportedKeys: SupportedAccountKeys,
         configuration: [any AccountServiceConfigurationKey] = []
     ) -> AccountServiceConfigurationStorage {
         var storage = AccountServiceConfigurationStorage()
         storage[AccountServiceName.self] = AccountServiceName(name)
-        storage[SupportedAccountKeys.self] = supportedValues
+        storage[SupportedAccountKeys.self] = supportedKeys
 
         for configuration in configuration {
             configuration.store(into: &storage)

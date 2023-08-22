@@ -12,7 +12,7 @@ import SwiftUI
 
 actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
     // TODO review configuration
-    nonisolated let configuration = AccountServiceConfiguration(name: "TestEmailPasswordAccountService", supportedValues: .arbitrary) {
+    nonisolated let configuration = AccountServiceConfiguration(name: "TestEmailPasswordAccountService", supportedKeys: .arbitrary) {
         AccountServiceImage(Image(systemName: "envelope.circle.fill")
             .symbolRenderingMode(.hierarchical))
         UserIdConfiguration(type: .emailAddress, keyboardType: .emailAddress)

@@ -11,7 +11,7 @@ import Spezi
 
 
 /// Describes the self-identified gender identity.
-public enum GenderIdentity: Int, Sendable, CaseIterable, Identifiable, Hashable {
+public enum GenderIdentity: String, Sendable, CaseIterable, Identifiable, Hashable, Codable {
     /// Self-identify as female.
     case female
     /// Self-identify as male.

@@ -47,7 +47,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
 
-    public let configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedValues: .arbitrary) {
+    public let configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedKeys: .arbitrary) {
         RequiredAccountKeys {
             \.userId
             \.password

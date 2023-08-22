@@ -12,7 +12,7 @@ import SwiftUI
 
 /// Helper protocol to easily retrieve Wrapped.Key types with String value
 private protocol GeneralizedStringEntryView {
-    func validationRules() -> [ValidationRule]
+    func validationRules() -> [ValidationRule]?
 }
 
 
@@ -25,9 +25,11 @@ private protocol GeneralizedStringEntryView {
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
-public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: AccountValues>: View {
+public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
+    @EnvironmentObject private var account: Account
+
     @EnvironmentObject private var dataEntryConfiguration: DataEntryConfiguration
-    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Container>
+    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
     @State private var value: Wrapped.Key.Value
 
@@ -35,9 +37,10 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
     public var body: some View {
         Group {
             if let stringValue = value as? String,
-               let stringEntryView = self as? GeneralizedStringEntryView {
+               let stringEntryView = self as? GeneralizedStringEntryView,
+               let validationRules = stringEntryView.validationRules() {
                 Wrapped($value)
-                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
+                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: validationRules)
             } else {
                 Wrapped($value)
             }
@@ -59,7 +62,15 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Container: Accoun
 
 
 extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
-    func validationRules() -> [ValidationRule] {
-        dataEntryConfiguration.serviceConfiguration.fieldValidationRules(for: Wrapped.Key.self)
+    func validationRules() -> [ValidationRule]? { // swiftlint:disable:this discouraged_optional_collection
+        if let rules = dataEntryConfiguration.serviceConfiguration.fieldValidationRules(for: Wrapped.Key.self) {
+            return rules
+        }
+
+        if account.configuration[Wrapped.Key.self]?.requirement == .required {
+            return [.nonEmpty]
+        }
+
+        return nil
     }
 }

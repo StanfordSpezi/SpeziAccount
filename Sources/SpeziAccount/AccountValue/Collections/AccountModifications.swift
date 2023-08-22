@@ -7,8 +7,11 @@
 //
 
 
+/// A container that bundles added or modified ``AccountKey``s and removed ``AccountKey``s.
 public struct AccountModifications: Sendable {
+    /// The set of modified (or added) ``AccountKey``s.
     public let modifiedDetails: ModifiedAccountDetails
+    /// The set of removed ``AccountKey``s.
     public let removedAccountDetails: RemovedAccountDetails
 
     init(modifiedDetails: ModifiedAccountDetails, removedAccountDetails: RemovedAccountDetails) {

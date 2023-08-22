@@ -24,7 +24,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     }
 
     @EnvironmentObject private var account: Account
-    @Environment(\.logger) private var logger
 
     @State private var userId: String = ""
     @State private var password: String = ""
@@ -125,10 +124,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         focusedField = nil
 
         try await service.login(userId: userId, password: password)
-
-        if !account.signedIn {
-            logger.error("Didn't find any AccountDetails provided after the login call to \(Service.self). Please verify your AccountService implementation!")
-        }
     }
 }
 

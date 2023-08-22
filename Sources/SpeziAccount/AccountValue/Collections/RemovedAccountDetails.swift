@@ -9,7 +9,7 @@
 import Spezi
 
 
-// just another wrapper though which specific meaning!
+/// Set of ``AccountValues`` that were removed providing access to the old values.
 public struct RemovedAccountDetails: Sendable, AccountValues {
     public typealias Element = AnyRepositoryValue // compiler is confused otherwise
 

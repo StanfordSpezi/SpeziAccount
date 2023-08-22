@@ -35,7 +35,7 @@ import Spezi
 ///     or if the `Key` is of type ``EmailAddressKey``.
 /// * ``ValidationRule/nonEmpty`` (intercepting) and ``ValidationRule/minimalPassword`` if the `Key` is of type ``PasswordKey``.
 /// * ``ValidationRule/nonEmpty`` otherwise.
-public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfigurationKey, ComputedKnowledgeSource where Key.Value == String {
+public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfigurationKey, OptionalComputedKnowledgeSource where Key.Value == String {
     // We use always compute, as we don't want our computation result to get stored. We don't have a mutable view anyways.
     public typealias StoragePolicy = AlwaysCompute
 
@@ -79,7 +79,7 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     }
 
 
-    public static func compute<Repository: SharedRepository<Anchor>>(from repository: Repository) -> FieldValidationRules<Key> {
+    public static func compute<Repository: SharedRepository<Anchor>>(from repository: Repository) -> FieldValidationRules<Key>? {
         if let value = repository.get(Self.self) {
             return value // either the user configured a value themselves
         }
@@ -91,8 +91,8 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
         } else if Key.self == PasswordKey.self {
             return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty), .minimalPassword)
         } else {
-            // TODO only if the account value is configured to be required!
-            return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty))
+            // we cannot statically determine here if the user may have configured the Key to be required
+            return nil
         }
     }
 }
@@ -102,8 +102,8 @@ extension AccountServiceConfiguration {
     /// Access the validation rules for String-based ``AccountKey`` configured by an ``AccountService``.
     /// - Parameter key: The ``AccountKey`` type.
     /// - Returns: The array of ``ValidationRule``s.
-    public func fieldValidationRules<Key: AccountKey>(for key: Key.Type) -> [ValidationRule] where Key.Value == String {
-        storage[FieldValidationRules<Key>.self].validationRules
+    public func fieldValidationRules<Key: AccountKey>(for key: Key.Type) -> [ValidationRule]? where Key.Value == String {
+        storage[FieldValidationRules<Key>.self]?.validationRules
     }
 
     /// Access the validation rules for String-based ``AccountKey`` configured by an ``AccountService``.
@@ -111,7 +111,7 @@ extension AccountServiceConfiguration {
     /// - Returns: The array of ``ValidationRule``s.
     public func fieldValidationRules<Key: AccountKey>(
         for keyPath: KeyPath<AccountKeys, Key.Type>
-    ) -> [ValidationRule] where Key.Value == String {
+    ) -> [ValidationRule]? where Key.Value == String {
         fieldValidationRules(for: Key.self)
     }
 }

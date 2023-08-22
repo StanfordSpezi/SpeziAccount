@@ -17,7 +17,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     @EnvironmentObject private var account: Account
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.logger) private var logger
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
     @StateObject private var validationClosures = ValidationClosures<String>()
@@ -117,10 +116,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
         try await service.signUp(signupDetails: request)
 
-        if !account.signedIn {
-            logger.error("Didn't find any AccountDetails provided after the signup call to \(Service.self). Please verify your AccountService implementation!")
-        }
-
+        // go back if the view doesn't update anyway
         dismiss()
     }
 }

@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 -->
 
 TODO review all docs! a lot changed
+TODO all the required conformances: where Value: Sendable, Value: Equatable, Value: LosslessStringConvertible
 
 ## Overview
 

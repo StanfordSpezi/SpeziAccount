@@ -10,10 +10,24 @@ import SwiftUI
 
 
 // TODO docs!
+public struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
+    public var service: MockSimpleAccountService
+
+    init(using service: MockSimpleAccountService) {
+        self.service = service
+    }
+
+    public func makePrimaryView() -> some View {
+        Text("Hello World") // TODO something at least?
+    }
+}
+
+
+// TODO docs!
 public actor MockSimpleAccountService: AccountService { // TODO maybe make this internal, as it is only used for Button previwing!
     @AccountReference private var account: Account
     
-    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedValues: .arbitrary)
+    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedKeys: .arbitrary)
 
 
     public nonisolated var viewStyle: some AccountSetupViewStyle {

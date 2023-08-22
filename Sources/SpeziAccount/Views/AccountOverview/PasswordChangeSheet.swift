@@ -25,7 +25,7 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        accountDetails.accountServiceConfiguration.fieldValidationRules(for: \.password)
+        accountDetails.accountServiceConfiguration.fieldValidationRules(for: \.password) ?? []
     }
 
     // TODO duplicate! (reconstruct?) just forward?

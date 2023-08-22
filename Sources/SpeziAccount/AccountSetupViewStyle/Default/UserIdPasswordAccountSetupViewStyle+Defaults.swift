@@ -18,13 +18,13 @@ extension UserIdPasswordAccountSetupViewStyle {
         UserIdPasswordEmbeddedView(using: service)
     }
 
+    public func makeSignupView() -> some View {
+        SignupForm(using: service)
+    }
+
     public func makePasswordResetView() -> some View {
         UserIdPasswordResetView(using: service) {
             SuccessfulPasswordResetView()
         }
-    }
-
-    public func makeAccountSummary(account: AccountDetails) -> some View {
-        AccountSummary(account: account)
     }
 }

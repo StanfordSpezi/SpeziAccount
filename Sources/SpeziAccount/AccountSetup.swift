@@ -227,7 +227,7 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
 
         // TODO someone needs to place the Continue button?
 
-        return AnyView(service.viewStyle.makeAccountSummary(account: details))
+        return AnyView(service.viewStyle.makeAnyAccountSummary(details: details))
     }
 }
 
@@ -236,7 +236,11 @@ extension AccountSetupViewStyle {
     fileprivate func makeAnyAccountServiceButtonLabel() -> AnyView {
         // as the `AccountSetup` only has a type-erased view on the `AccountSetupViewStyle`
         // we can't, because of the default implementation, create the AnyView inline.
-        AnyView(self.makeAccountServiceButtonLabel())
+        AnyView(self.makeServiceButtonLabel())
+    }
+
+    fileprivate func makeAnyAccountSummary(details: AccountDetails) -> AnyView {
+        AnyView(self.makeAccountSummary(details: details))
     }
 }
 

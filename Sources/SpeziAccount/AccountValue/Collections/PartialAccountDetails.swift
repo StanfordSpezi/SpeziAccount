@@ -9,7 +9,8 @@
 import Spezi
 
 
-// just another wrapper though which specific meaning!
+/// Set of ``AccountValues`` that resembled ``AccountDetails`` but may be incomplete in respect to the
+/// ``AccountValueConfiguration`` defined by the user.
 public struct PartialAccountDetails: Sendable, AccountValues {
     public typealias Element = AnyRepositoryValue // compiler is confused otherwise
 

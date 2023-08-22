@@ -84,7 +84,7 @@ extension PersonNameKey {
 
         @Binding private var name: Value
 
-        private var nameIsRequired: Bool { // TODO maybe implement as a static method on the Key (for better visibility)
+        private var nameIsRequired: Bool {
             account.configuration[Key.self]?.requirement == .required
         }
 

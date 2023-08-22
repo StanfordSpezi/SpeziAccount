@@ -47,6 +47,7 @@ extension AccountKeys {
 
 
 extension AccountValues {
+    /// Access the email address of a user.
     public var email: String? {
         storage[EmailAddressKey.self]
     }

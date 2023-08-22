@@ -7,7 +7,7 @@
 //
 
 
-/// Describes the requirement level for an ``AccountKey``.
+/// Describes the user-configured requirement level for an ``AccountKey``.
 public enum AccountKeyRequirement: Sendable {
     /// The associated account value **must** be provided by the user at signup.
     ///

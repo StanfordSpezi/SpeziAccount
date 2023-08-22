@@ -20,30 +20,30 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 
 
 extension AccountKey {
-    static func emptyDataEntryView<Storage: AccountValues>(for container: Storage.Type) -> AnyView {
-        AnyView(GeneralizedDataEntryView<DataEntry, Storage>(initialValue: emptyValue))
+    static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
+        AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: emptyValue))
     }
 
-    static func dataEntryViewWithCurrentStoredValue<Storage: AccountValues>(
+    static func dataEntryViewWithCurrentStoredValue<Values: AccountValues>(
         details: AccountDetails,
-        for container: Storage.Type
+        for values: Values.Type
     ) -> AnyView? {
         guard let value = details.storage.get(Self.self) else {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<DataEntry, Storage>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
     }
 
-    static func dataEntryViewFromBuilder<Storage: AccountValues>(
+    static func dataEntryViewFromBuilder<Values: AccountValues>(
         builder: ModifiedAccountDetails.Builder,
-        for container: Storage.Type
+        for values: Values.Type
     ) -> AnyView? {
         guard let value = builder.get(Self.self) else {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<DataEntry, Storage>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {

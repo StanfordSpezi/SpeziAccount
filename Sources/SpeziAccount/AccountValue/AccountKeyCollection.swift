@@ -9,9 +9,15 @@
 import Foundation
 
 
+/// A ``AccountKey`` refined with a KeyPath-based description.
+///
+/// A custom description is derived from the KeyPath name. E.g., for the ``UserIdKey`` we derive a description
+/// like `"\.userId"` (as it's extension defined on ``AccountValues``) for a more user friendly description.
 public protocol AccountKeyWithDescription: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
+    /// The associated `Key` type.
     associatedtype Key: AccountKey
 
+    /// Access to the ``AccountKey`` metatype.
     var key: Key.Type { get }
 }
 
@@ -31,14 +37,21 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 }
 
 
+/// A collection of ``AccountKey``s that is built using `KeyPath` specification.
+///
+/// Using the `KeyPath`-based result builder ``AccountKeyCollectionBuilder`` we can preserve user-friendly
+/// naming in debug messages (see ``AccountKeyWithDescription``).
 public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
     private let elements: [any AccountKeyWithDescription]
 
 
+    /// Initialize a empty collection.
     public init() {
         self.elements = []
     }
 
+    /// Initialize a new collection with elements.
+    /// - Parameter keys: The result builder to build the collection.
     public init(@AccountKeyCollectionBuilder _ keys: () -> [any AccountKeyWithDescription]) {
         self.elements = keys()
     }

@@ -7,13 +7,18 @@
 //
 
 
+/// A configured of an ``AccountKey``.
 public protocol AccountKeyConfiguration: CustomStringConvertible, CustomDebugStringConvertible, Identifiable, Hashable
     where ID == ObjectIdentifier {
+    /// The associated ``AccountKey``.
     associatedtype Key: AccountKey
 
+    /// Access the ``AccountKey`` meta-type.
     var key: Key.Type { get }
+    /// The requirement level that was defined for the ``AccountKey``.
     var requirement: AccountKeyRequirement { get }
 
+    /// A user-friendly, human-readable string description that resembles the `KeyPath` description.
     var keyPathDescription: String { get }
 }
 

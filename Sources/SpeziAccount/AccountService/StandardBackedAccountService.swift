@@ -15,6 +15,8 @@ protocol StandardBacked {
 }
 
 
+/// An ``AccountService`` implementation for account services with ``SupportedAccountKeys/exactly(_:)`` configuration
+/// to forward unsupported account values to a ``AccountStorageStandard`` implementation.
 public actor StandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
     @AccountReference private var account
 
@@ -99,11 +101,11 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         try await accountService.delete()
     }
 
-    private func splitDetails<Container: AccountValues>(
-        from details: Container
-    ) -> (service: Container, standard: Container) {
-        let serviceBuilder = AccountValuesBuilder<Container>()
-        let standardBuilder = AccountValuesBuilder<Container>(from: details)
+    private func splitDetails<Values: AccountValues>(
+        from details: Values
+    ) -> (service: Values, standard: Values) {
+        let serviceBuilder = AccountValuesBuilder<Values>()
+        let standardBuilder = AccountValuesBuilder<Values>(from: details)
 
 
         for element in serviceSupportedKeys {

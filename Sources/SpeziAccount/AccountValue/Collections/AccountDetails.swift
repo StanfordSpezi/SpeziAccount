@@ -8,12 +8,10 @@
 
 import Spezi
 
-// TODO move all storage units into the same folder!
 
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
-/// TODO docs on how to build?
 public struct AccountDetails: Sendable, AccountValues {
     public typealias Element = AnyRepositoryValue // compiler is confused otherwise
 
@@ -37,8 +35,8 @@ public struct AccountDetails: Sendable, AccountValues {
 }
 
 
-extension AccountValuesBuilder where Container == AccountDetails {
-    public func build<Service: AccountService>(owner accountService: Service) -> Container {
+extension AccountValuesBuilder where Values == AccountDetails {
+    public func build<Service: AccountService>(owner accountService: Service) -> Values {
         AccountDetails(from: self.storage, owner: accountService)
     }
 }

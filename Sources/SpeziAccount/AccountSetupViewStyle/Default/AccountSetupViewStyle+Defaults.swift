@@ -10,16 +10,16 @@ import SwiftUI
 
 
 extension AccountSetupViewStyle {
-    public func makeSignupView() -> some View {
-        SignupForm(using: service)
-    }
-
-    public func makeAccountServiceButtonLabel() -> some View {
+    public func makeServiceButtonLabel() -> some View {
         Group {
             service.configuration.image
                 .font(.title2)
             Text(service.configuration.name)
         }
             .accountServiceButtonBackground()
+    }
+
+    public func makeAccountSummary(details: AccountDetails) -> some View {
+        AccountSummary(account: details)
     }
 }

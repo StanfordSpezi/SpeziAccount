@@ -9,18 +9,18 @@
 import Spezi
 
 
-// TODO communicate the nunace, if it is used it is set to be required! But it doesn't need to be used!
-
-/// A typed storage key extending ``AccountKey`` for values that are required for every user account.
+/// A typed storage key extending ``AccountKey`` for values that are required for every user account if used.
 ///
 /// A `RequiredAccountKey` can be used to provide the guarantee on a type-level that a given account key
 /// will be present in every case.
 ///
-/// - Important: Use this protocol with care. Accessing the value of a `RequiredAccountKey` when it isn't
-///     present, will result in a runtime crash.
-///     When you introduce a new required account key after user accounts have already been created without it,
-///     make sure to use optional bindings by directly accessing ``AccountValues/storage`` to safely
-///     unwrap the value.
+/// - Important: When using a ``RequiredAccountKey`` the user is forced to configure it as ``AccountKeyRequirement/required``.
+///     But a user might still choose to not configure it at all.
+///
+/// Use this protocol with care. Accessing the value of a `RequiredAccountKey` when it isn't present,
+/// will result in a runtime crash. When you introduce a new required account key after user accounts
+/// have already been created without it, make sure to use optional bindings by directly accessing ``AccountValues/storage``
+/// to safely unwrap the value.
 public protocol RequiredAccountKey: AccountKey, DefaultProvidingKnowledgeSource {}
 
 extension RequiredAccountKey {
