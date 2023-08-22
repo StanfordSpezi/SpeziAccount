@@ -6,48 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-// MARK: - Username Password
-
-// Login
-"UAP_LOGIN_BUTTON_TITLE" = "Username and Password";
-"UAP_LOGIN_NAVIGATION_TITLE" = "Login";
-"UAP_LOGIN_USERNAME_TITLE" = "Username";
-"UAP_LOGIN_USERNAME_PLACEHOLDER" = "Enter your username ...";
-"UAP_LOGIN_PASSWORD_TITLE" = "Password";
-"UAP_LOGIN_PASSWORD_PLACEHOLDER" = "Enter your password ...";
-"UAP_LOGIN_ACTION_BUTTON_TITLE" = "Login";
-"UAP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login!";
-
-// SignUp
-"UAP_SIGNUP_BUTTON_TITLE" = "Username and Password";
-"UAP_SIGNUP_NAVIGATION_TITLE" = "Sign Up";
-"UAP_SIGNUP_USERNAME_TITLE" = "Username";
-"UAP_SIGNUP_USERNAME_PLACEHOLDER" = "Enter your username ...";
-"UAP_SIGNUP_PASSWORD_TITLE" = "Password";
-"UAP_SIGNUP_PASSWORD_PLACEHOLDER" = "Enter your password ...";
-"UAP_SIGNUP_PASSWORD_REPEAT_TITLE" = "Repeat Password";
-"UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER" = "Repeat your password ...";
-"UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR" = "The entered passwords are not equal.";
-"UAP_SIGNUP_ACTION_BUTTON_TITLE" = "Sign Up";
-"UAP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
-
-
-// Reset
-"UAP_RESET_PASSWORD_BUTTON_TITLE" = "Forgot Password?";
-"UAP_RESET_PASSWORD_NAVIGATION_TITLE" = "Forgot Password";
-"UAP_RESET_PASSWORD_USERNAME_TITLE" = "Username";
-"UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER" = "Enter your username ...";
-"UAP_RESET_PASSWORD_ACTION_BUTTON_TITLE" = "Reset Password";
-
-
-// MARK: - Email and Password
-"EAP_LOGIN_BUTTON_TITLE" = "Email and Password";
-"EAP_SIGNUP_BUTTON_TITLE" = "Email and Password";
-"EAP_LOGIN_USERNAME_TITLE" = "Email";
-"EAP_LOGIN_USERNAME_PLACEHOLDER" = "Enter your email ...";
-
-// TODO here begins the reworked localizable
-
 // MARK: - General
 "OR" = "or";
 "MISSING_ACCOUNT_SERVICES" = "No Account Services set up.\n Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!";
@@ -116,9 +74,7 @@
 "VALIDATION_RULE_UNICODE_LETTERS" = "You must only use letters.";
 "VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
 "VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is invalid.";
-"VALIDATION_RULE_MINIMAL_PASSWORD" = "Your password must be at least 8 characters long.";
-"VALIDATION_RULE_MEDIUM_PASSWORD" = "Your password must be at least 10 characters long.";
-"VALIDATION_RULE_STRONG_PASSWORD" = "Your password must be at least 12 characters long.";
+"VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Your password must be at least %lld characters long.";
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Passwords do not match.";
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "The first name field cannot be empty!";
 "VALIDATION_RULE_FAMILY_NAME_EMPTY" = "The last name field cannot be empty!";

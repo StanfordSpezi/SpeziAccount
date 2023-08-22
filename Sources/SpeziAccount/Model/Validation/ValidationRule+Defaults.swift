@@ -73,7 +73,7 @@ extension ValidationRule {
 
         return ValidationRule(
             regex: regex,
-            message: "VALIDATION_RULE_MINIMAL_PASSWORD",
+            message: "VALIDATION_RULE_PASSWORD_LENGTH \(8)",
             bundle: .module
         )
     }()
@@ -88,7 +88,7 @@ extension ValidationRule {
 
         return ValidationRule(
             regex: regex,
-            message: "VALIDATION_RULE_MEDIUM_PASSWORD",
+            message: "VALIDATION_RULE_PASSWORD_LENGTH \(10)",
             bundle: .module
         )
     }()
@@ -103,7 +103,7 @@ extension ValidationRule {
 
         return ValidationRule(
             regex: regex,
-            message: "VALIDATION_RULE_STRONG_PASSWORD",
+            message: "VALIDATION_RULE_PASSWORD_LENGTH \(12)",
             bundle: .module
         )
     }()

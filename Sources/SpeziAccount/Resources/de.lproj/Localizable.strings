@@ -6,61 +6,97 @@
 // SPDX-License-Identifier: MIT
 //
 
-// MARK: - General Views
-"LOGIN" = "Anmelden";
-"SIGN_UP" = "Benutzerkonto Erstellen";
+// MARK: - General
+"OR" = "oder";
 "MISSING_ACCOUNT_SERVICES" = "Es wurden keine AccountServices konfiguriert.\n Bitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!";
 "OPEN_DOCUMENTATION" = "Dokumentation öffnen";
 
-// MARK: - Username Password
+// MARK: - Account
+"ACCOUNT_WELCOME" = "Dein Benutzerkonto";
+"ACCOUNT_WELCOME_SUBTITLE" = "Melde dich mit deinem Benutzerkonto an oder erstelle ein neues, wenn du noch keins hast.";
+"ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "Du bist bereits mit dem folgenden Benutzerkonto angemeldet. Du kannst dein Benutzerkonto ändern, indem du dich abmeldest.";
 
-// Login
-"UAP_LOGIN_BUTTON_TITLE" = "Benutzername und Passwort";
-"UAP_LOGIN_NAVIGATION_TITLE" = "Anmelden";
-"UAP_LOGIN_USERNAME_TITLE" = "Benutzername";
-"UAP_LOGIN_USERNAME_PLACEHOLDER" = "Benutzername eingeben ...";
-"UAP_LOGIN_PASSWORD_TITLE" = "Passwort";
-"UAP_LOGIN_PASSWORD_PLACEHOLDER" = "Passwort eingeben ...";
-"UAP_LOGIN_ACTION_BUTTON_TITLE" = "Anmelden";
-"UAP_LOGIN_FAILED_DEFAULT_ERROR" = "Anmeldung fehlgeschlagen";
+// MARK: - AccountValues
+"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Fehlende Werte im Benutzerkonto";
+"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "Die folgenden Werte wurden nicht im Benutzerkonto gesetzt: %@";
+"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Melde dieses Problem dem Entwickler des Account Services.";
 
+// MARK: - UserId and Password
+"UP_PASSWORD" = "Passwort";
+"NEW_PASSWORD" = "Neues Passwort";
+"REPEAT_PASSWORD" = "Passwort wiederholen";
+"UP_FORGOT_PASSWORD" = "Password vergessen?";
+"UP_LOGIN" = "Anmelden";
+"UP_SIGNUP" = "Registrieren";
+"UP_LOGOUT" = "Abmelden";
+"UP_NO_ACCOUNT_YET" = "Du hast noch kein Benutzerkonto?";
 
-// SignUp
-"UAP_SIGNUP_BUTTON_TITLE" = "Benutzername und Passwort";
-"UAP_SIGNUP_NAVIGATION_TITLE" = "Benutzerkonto Erstellen";
-"UAP_SIGNUP_USERNAME_TITLE" = "Benutzername";
-"UAP_SIGNUP_USERNAME_PLACEHOLDER" = "Benutzername eingeben ...";
-"UAP_SIGNUP_PASSWORD_TITLE" = "Passwort";
-"UAP_SIGNUP_PASSWORD_PLACEHOLDER" = "Passwort eingeben ...";
-"UAP_SIGNUP_PASSWORD_REPEAT_TITLE" = "Passwort
-Wiederholen";
-"UAP_SIGNUP_PASSWORD_REPEAT_PLACEHOLDER" = "Passwort wiederholen ...";
-"UAP_SIGNUP_PASSWORD_NOT_EQUAL_ERROR" = "Die eingegebenen Passwörter sind nicht gleich.";
+// MARK: - UserId and Password (Login)
+"UP_LOGIN_FAILED_DEFAULT_ERROR" = "Anmeldung fehlgeschlagen!";
+
+// MARK: - UserId and Password (Signup)
+"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_CREDENTIALS" = "Zugangsdaten";
+"UP_NAME" = "Name";
+"UP_CONTACT_DETAILS" = "Kontaktdaten";
+"UP_PERSONAL_DETAILS" = "Persönliche Details";
+"UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Registrierung fehlgeschlagen!";
+
+// MARK: - UserId and Password (Password Reset)
+"UP_RESET_PASSWORD" = "Passwort Zurücksetzten";
+"UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Ein Link zum Zurücksetzen das Passworts wurde versandt.";
+"UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Passwort Zurücksetzen fehlgeschlagen!";
+
+// MARK: - Account Summary
+"UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Abmelden fehlgeschlagen!";
+
+// MARK - Account Overview
+"ACCOUNT_OVERVIEW" = "Benutzerkonto";
+"CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
+"CONFIRMATION_DISCARD_CHANGES" = "Änderungen Verwerfen";
+"CONFIRMATION_KEEP_EDITING"= "Weiter Bearbeiten";
+"CONFIRMATION_LOGOUT" = "Willst du dich wirklich abmelden?";
+"CONFIRMATION_REMOVAL" = "Willst du wirklich dein Benutzerkonto löschen?";
+"CONFIRMATION_REMOVAL_SUGGESTION" = "Dieser Vorgang is endgültig und du kannst dein Konto Informationen nicht wiederherstellen.";
+"DELETE_ACCOUNT" = "Löschen";
+"DONE" = "Fertig";
+"EDIT" = "Bearbeiten";
+"DELETE"= "Löschen";
+"CANCEL" = "Abbrechen";
+"ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Speichern deiner Änderung fehlgeschlagen!";
+"REMOVE_DEFAULT_ERROR"= "Löschen fehlgeschlagen!";
+"SECURITY" = "Sicherheit";
+"VALUE_ADD %@" = "%@ Hinzufügen";
+"CHANGE_PASSWORD" = "Passwort Ändern";
+
+// MARK: - Validation Rules
+"VALIDATION_RULE_NON_EMPTY" = "Diese Feld kann nicht leer sein.";
+"VALIDATION_RULE_UNICODE_LETTERS" = "Du kannst nur Zeichen verwenden.";
+"VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
+"VALIDATION_RULE_MINIMAL_EMAIL" = "Diese E-Mail ist ungültig.";
+"VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Dein Passwort muss mindestens %lld Zeichen lang sein.";
+"VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Die Passwörter stimmen nicht überein.";
+"VALIDATION_RULE_GIVEN_NAME_EMPTY" = "Dein Vorname kann nicht leer sein!";
+"VALIDATION_RULE_FAMILY_NAME_EMPTY" = "Dein Nachname kann nicht leer sein!";
+
+// MARK: - User Id
+"USER_ID" = "Benutzerkennung";
+"USER_ID_EMAIL" = "E-Mail Adresse";
+"USER_ID_USERNAME" = "Benutzername";
+
+// MARK: - General Views
+"LOGIN" = "Anmelden";
+"SIGN_UP" = "Benutzerkonto Erstellen";
+
+// MARK: - Person Name
+"NAME" = "Name";
 "UAP_SIGNUP_GIVEN_NAME_TITLE" = "Vorname";
-"UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "Vorname eingeben ...";
+"UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "Vornamen eingeben ...";
 "UAP_SIGNUP_FAMILY_NAME_TITLE" = "Familienname";
-"UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "Familienname eingeben ...";
+"UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "Familiennamen eingeben ...";
+
+// MARK: - Date Of Birth
 "UAP_SIGNUP_DATE_OF_BIRTH_TITLE" = "Geburtsdatum";
-"UAP_SIGNUP_ACTION_BUTTON_TITLE" = "Benutzerkonto Erstellen";
-"UAP_SIGNUP_FAILED_DEFAULT_ERROR" = "Benutzerkontoerstellung fehlgeschlagen";
-
-
-// Reset
-"UAP_RESET_PASSWORD_BUTTON_TITLE" = "Passwort vergessen?";
-"UAP_RESET_PASSWORD_NAVIGATION_TITLE" = "Passwort Vergessen";
-"UAP_RESET_PASSWORD_USERNAME_TITLE" = "Benutzername";
-"UAP_RESET_PASSWORD_USERNAME_PLACEHOLDER" = "Benutzername eingeben ...";
-"UAP_RESET_PASSWORD_ACTION_BUTTON_TITLE" = "Passwort Zurücksetzen";
-"UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Ein Link zum zurücksetzen das Passworts wurde versandt.";
-"UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Passwort Zurücksetzen fehlgeschlagen";
-
-
-// MARK: - Email and Password
-"EAP_BUTTON_TITLE" = "E-Mail and Passwort";
-"EAP_LOGIN_USERNAME_TITLE" = "E-Mail";
-"EAP_LOGIN_USERNAME_PLACEHOLDER" = "E-Mail eingeben ...";
-"EAP_EMAIL_VERIFICATION_ERROR" = "Die eingegebene E-Mail ist nicht korrekt.";
-
 
 // MARK: - Gender Identity
 "GENDER_IDENTITY_TITLE" = "Geschlechtsidentität";
