@@ -19,12 +19,12 @@ Below is a list of configuration options built into the ``SpeziAccount`` framewo
 - ``name``
 - ``image``
 - ``userIdConfiguration``
-- ``fieldValidationRules(for:)-6dwxc``
-- ``fieldValidationRules(for:)-6w9a4``
+- ``fieldValidationRules(for:)-5n7c0``
+- ``fieldValidationRules(for:)-2nqpi``
 
 ### Providing configurations
 
-Below is a list of built in configuration options a ``AccountService`` might provide with the ``init(name:configuration:)`` initializer.
+Below is a list of built in configuration options a ``AccountService`` might provide with the ``init(name:supportedKeys:configuration:)`` initializer.
 
 - ``AccountServiceImage``
 - ``UserIdConfiguration``

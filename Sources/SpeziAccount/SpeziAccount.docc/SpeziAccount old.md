@@ -9,7 +9,7 @@ SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CO
 SPDX-License-Identifier: MIT
              
 -->
-
+<!--
 Provides account-related functionality including login, sign up, and reset password functionality.
 
 ## The Account Actor
@@ -153,3 +153,5 @@ The ``EmailPasswordAccountService`` is a ``UsernamePasswordAccountService`` subc
 customized view buttons enabling the creation of an email and password-based ``AccountService``.
 
 - ``EmailPasswordAccountService``
+
+-->

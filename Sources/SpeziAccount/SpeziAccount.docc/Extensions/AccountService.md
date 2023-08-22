@@ -29,5 +29,4 @@ SPDX-License-Identifier: MIT
 
 ### Mock Implementations useful for Preview Provider
 
-- ``MockSimpleAccountService``
-- ``MockUsernamePasswordAccountService``
+- ``MockUserIdPasswordAccountService``

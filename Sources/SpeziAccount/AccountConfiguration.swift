@@ -17,7 +17,7 @@ import XCTRuntimeAssertions
 /// either provided directly or provided by other configured `Component`s. The global ``Account`` object will
 /// be injected as an environment object into the view hierarchy of your app.
 ///
-/// ``AccountService`` can either be supplied directly via ``init(_:)-9gza3`` or might be automatically collected from
+/// ``AccountService`` can either be supplied directly via ``init(configuration:_:)`` or might be automatically collected from
 /// other `Component`s that provide ``AccountService`` instances (like the `SpeziFirebase` framework).
 ///
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`

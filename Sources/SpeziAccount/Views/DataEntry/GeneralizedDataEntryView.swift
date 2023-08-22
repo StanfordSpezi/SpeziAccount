@@ -23,7 +23,7 @@ private protocol GeneralizedStringEntryView {
 /// - Declare and manage the state of the value and post any changes back up to the parent view.
 /// - Declare a default `focused(_:equals:)` modifier to String-based fields to automatically manage focus state based on ``AccountKey/focusState``.
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
-///     ``DataEntryView/Key``, a  ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld`` modifier is automatically injected. One can easily override
+///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
     @EnvironmentObject private var account: Account
@@ -45,6 +45,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                     .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: validationRules)
             } else {
                 Wrapped($value)
+                    // TODO manage validation for non-provided account values that are required!
             }
         }
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)

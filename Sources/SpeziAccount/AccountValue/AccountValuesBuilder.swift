@@ -108,7 +108,7 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     ///   - allowOverwrite: Flag controls if the supplied values might overwrite values in the builder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func merging<Values: AccountValues>(_ values: Values, allowOverwrite: Bool) -> Self {
+    public func merging<OtherValues: AccountValues>(_ values: OtherValues, allowOverwrite: Bool) -> Self {
         values.acceptAll(CopyVisitor(builder: self, allowOverwrite: allowOverwrite))
         return self
     }
@@ -119,9 +119,9 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     ///   - values: The container from where to retrieve the values.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func merging<Keys: AcceptingAccountKeyVisitor, Values: AccountValues>(
+    public func merging<Keys: AcceptingAccountKeyVisitor, OtherValues: AccountValues>(
         with keys: Keys,
-        from values: Values
+        from values: OtherValues
     ) -> Self {
         keys.acceptAll(CopyKeyVisitor(destination: self, source: values))
         return self

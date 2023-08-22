@@ -35,7 +35,7 @@ public class ValidationEngine: ObservableObject, Identifiable {
     /// A list of ``FailedValidationResult`` for the processed input that doesn't display anything if ``inputValid`` is `true`.
     ///
     /// In certain scenarios it might the desirable to not display any validation results if the user erased the whole
-    /// input field. You can achieve this by only displaying ``FieldValidationResult`` provided by this property and
+    /// input field. You can achieve this by only displaying ``FailedValidationResult`` provided by this property and
     /// calling ``submit(input:debounce:)`` for any input changes.
     ///
     /// - Note: When calling ``runValidation(input:)`` (e.g., on the final submit button action) this field delivers

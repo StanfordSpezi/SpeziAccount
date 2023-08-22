@@ -26,8 +26,8 @@ import Spezi
 /// ```
 ///
 /// - Note: When using built-in views like ``SignupForm`` that use the ``GeneralizedDataEntryView``, a ``ValidationEngine``
-///     with the configured validation rules is automatically injected using the ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-566ld``
-///     or ``SwiftUI/View/validate(input:for:using:customFieldIdentifier:)-b5gj`` modifier.
+///     with the configured validation rules is automatically injected using the ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g``
+///     or ``SwiftUI/View/managedValidation(input:for:rules:)-zito``  modifier.
 ///
 /// ### Default Values
 /// The configuration provides the following default validation rules depending on the context:

@@ -90,12 +90,12 @@ extension AccountService {
         "\(Self.self)"
     }
 
-    /// Default `Equatable` implementation by relying on the hashable ``AccountService/id-9icbd`` property.
+    /// Default `Equatable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id
     }
 
-    /// Default `Hashable` implementation by relying on the hashable ``AccountService/id-9icbd`` property.
+    /// Default `Hashable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
     public func hash(into hasher: inout Hasher) {
         id.hash(into: &hasher)
     }

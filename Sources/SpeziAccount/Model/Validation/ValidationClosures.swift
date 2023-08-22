@@ -99,7 +99,7 @@ struct ValidationClosure<FieldIdentifier> {
 /// These two parts are solved by two different components in the below code example:
 /// * We use ``VerifiableTextField`` as a text view that expects a configured ``ValidationEngine`` in the environment
 ///     and uses that to run validation on changes in the text field and renders recovery suggestions below the text field.
-/// * We use the ``SwiftUI/View/managedValidation(input:for:rules:)`` modifier to a) create and manage ``ValidationEngine``
+/// * We use the ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier to a) create and manage ``ValidationEngine``
 ///     and b) register to a ``ValidationClosures`` object in the environment.
 ///
 /// ```swift
@@ -123,7 +123,7 @@ struct ValidationClosure<FieldIdentifier> {
 ///
 /// ### Registering Validation Closures yourself
 /// While the above section described how to easily use ``ValidationClosures`` _without using it_ (by relying on
-/// the ``SwiftUI/View/managedValidation(input:for:rules:)`` modifier, this section provides a short code example how
+/// the ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier, this section provides a short code example how
 /// you would do that yourself. This might be useful if you have to implement validation for a type that consist
 /// of multiple substrings that need to be checked separately (e.g. `PersonNameComponents`).
 ///

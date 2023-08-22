@@ -16,6 +16,7 @@ Account services describe the mechanism for account management components to dis
 // TODO update this document!
 ```
 
+<!--
 ## Create Your Account Service
 
 You can create new account services by conforming to the ``AccountService`` protocol.
@@ -168,3 +169,6 @@ The ``EmailPasswordAccountService`` is a ``UsernamePasswordAccountService`` subc
 customized view buttons enabling the creation of an email and password-based ``AccountService``.
 
 - ``EmailPasswordAccountService``
+
+-->
+

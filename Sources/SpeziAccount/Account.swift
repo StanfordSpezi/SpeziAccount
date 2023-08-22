@@ -55,9 +55,9 @@ import SwiftUI
 ///
 /// ### Initializers for your Preview Provider
 ///
-/// - ``init(services:requirements:)``
-/// - ``init(_:requirements:)``
-/// - ``init(building:active:requirements:)``
+/// - ``init(services:configuration:)``
+/// - ``init(_:configuration:)``
+/// - ``init(building:active:configuration:)``
 @MainActor
 public class Account: ObservableObject, Sendable {
     private let logger: Logger
@@ -152,7 +152,7 @@ public class Account: ObservableObject, Sendable {
     ///
     /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
     /// - Parameters:
-    ///   - builder: A ``AccountDetails/Builder`` with all account details for the logged in user.
+    ///   - builder: A  ``AccountValuesBuilder`` for ``AccountDetails`` with all account details for the logged in user.
     ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
     public nonisolated convenience init<Service: AccountService>(
