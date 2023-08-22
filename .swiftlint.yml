@@ -1,5 +1,5 @@
 #
-# This source file is part of the Spezi open source project
+# This source file is part of the Stanford Spezi open-source project
 #
 # SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 #
@@ -367,16 +367,18 @@ only_rules:
   # The variable should be placed on the left, the constant on the right of a comparison operator.
   - yoda_condition
 
+attributes:
+  attributes_with_arguments_always_on_line_above: false
+
 deployment_target: # Availability checks or attributes shouldn’t be using older versions that are satisfied by the deployment target.
   iOSApplicationExtension_deployment_target: 16.0
   iOS_deployment_target: 16.0
 
-attributes:
-  attributes_with_arguments_always_on_line_above: false
-
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - .build
   - .swiftpm
+  - .derivedData
+  - Tests/UITests/.derivedData
 
 closure_body_length: # Closure bodies should not span too many lines.
   - 35 # warning - default: 20
