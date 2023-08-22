@@ -28,6 +28,7 @@ struct AccountServiceButtonModifier: ViewModifier {
 
 
 extension View {
+    /// Draw the standard background of a ``AccountService`` button (see ``AccountSetupViewStyle/makeServiceButtonLabel()-6ihdh``.
     public func accountServiceButtonBackground() -> some View {
         modifier(AccountServiceButtonModifier())
     }

@@ -9,6 +9,7 @@
 import SwiftUI
 
 extension View {
+    /// Disable any assistants on a field like autocorrect or input autocapitalization.
     public func disableFieldAssistants() -> some View {
         self
             .autocorrectionDisabled(true)

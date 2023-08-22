@@ -41,6 +41,7 @@ public protocol AccountSetupViewStyle {
 
 
 extension AccountSetupViewStyle {
+    /// Default service button label using the ``AccountServiceName`` and ``AccountServiceImage`` configurations.
     public func makeServiceButtonLabel() -> some View {
         Group {
             service.configuration.image
@@ -50,6 +51,7 @@ extension AccountSetupViewStyle {
             .accountServiceButtonBackground()
     }
 
+    /// Default account summary using ``AccountSummaryBox``.
     public func makeAccountSummary(details: AccountDetails) -> some View {
         AccountSummaryBox(details: details)
     }

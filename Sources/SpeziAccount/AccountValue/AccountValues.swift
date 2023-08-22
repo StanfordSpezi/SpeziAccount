@@ -47,19 +47,23 @@ public protocol AccountValues: AccountValuesCollection {
 
 
 extension AccountValues {
+    /// Default `Collection` implementation.
     public var startIndex: Index {
         storage.startIndex
     }
 
+    /// Default `Collection` implementation.
     public var endIndex: Index {
         storage.endIndex
     }
 
+    /// Default `Collection` implementation.
     public func index(after index: Index) -> Index {
         storage.index(after: index)
     }
 
 
+    /// Default `Collection` implementation.
     public subscript(position: Index) -> AnyRepositoryValue {
         storage[position]
     }
@@ -67,6 +71,7 @@ extension AccountValues {
 
 
 extension AccountValues {
+    /// Retrieve all keys stored in this collection.
     public var keys: [any AccountKey.Type] {
         self.compactMap { element in
             element.anySource as? any AccountKey.Type

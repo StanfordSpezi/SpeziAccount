@@ -36,6 +36,16 @@ public struct AccountDetails: Sendable, AccountValues {
 
 
 extension AccountValuesBuilder where Values == AccountDetails {
+    /// ``AccountDetails`` must always be created through the ``build(owner:)`` method.
+    @available(*, deprecated, message: "You must use the build(owner:) method to build AccountDetails. This method will result in a runtime crash!")
+    public func build() -> Values {
+        // swiftlint:disable:previous unavailable_function
+        preconditionFailure("You need to build AccountDetails using build(owner:)")
+    }
+
+    /// Build a new ``AccountDetails`` instance by linking the active ``AccountService`` responsible for managing this instance.
+    /// - Parameter accountService: The account service that created this instance.
+    /// - Returns: The ``AccountDetails`` instance.
     public func build<Service: AccountService>(owner accountService: Service) -> Values {
         AccountDetails(from: self.storage, owner: accountService)
     }

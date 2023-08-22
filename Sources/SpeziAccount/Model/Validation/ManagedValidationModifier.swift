@@ -44,6 +44,17 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
 
 
 extension View {
+    /// Automatically manage a ``ValidationEngine`` object.
+    ///
+    /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
+    ///
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    ///
+    /// - Parameters:
+    ///   - value: The current value to validate.
+    ///   - fieldIdentifier: The field identifier of the field that receives focus if validation fails.
+    ///   - rules: An array of ``ValidationRule``s.
+    /// - Returns: The modified view.
     public func managedValidation<FieldIdentifier: Hashable>(
         input value: String,
         for fieldIdentifier: FieldIdentifier,
@@ -52,6 +63,17 @@ extension View {
         modifier(InputValidationModifier(input: value, for: fieldIdentifier, rules: rules))
     }
 
+    /// Automatically manage a ``ValidationEngine`` object.
+    ///
+    /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
+    ///
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    ///
+    /// - Parameters:
+    ///   - value: The current value to validate.
+    ///   - fieldIdentifier: The field identifier of the field that receives focus if validation fails.
+    ///   - rules: An array of ``ValidationRule``s.
+    /// - Returns: The modified view.
     public func managedValidation(
         input value: String,
         rules: [ValidationRule]
@@ -59,6 +81,17 @@ extension View {
         modifier(InputValidationModifier<Never>(input: value, for: nil, rules: rules))
     }
 
+    /// Automatically manage a ``ValidationEngine`` object.
+    ///
+    /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
+    ///
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    ///
+    /// - Parameters:
+    ///   - value: The current value to validate.
+    ///   - fieldIdentifier: The field identifier of the field that receives focus if validation fails.
+    ///   - rules: An variadic array of ``ValidationRule``s.
+    /// - Returns: The modified view.
     public func managedValidation<FieldIdentifier: Hashable>(
         input value: String,
         for fieldIdentifier: FieldIdentifier,
@@ -67,6 +100,17 @@ extension View {
         managedValidation(input: value, for: fieldIdentifier, rules: rules)
     }
 
+    /// Automatically manage a ``ValidationEngine`` object.
+    ///
+    /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
+    ///
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    ///
+    /// - Parameters:
+    ///   - value: The current value to validate.
+    ///   - fieldIdentifier: The field identifier of the field that receives focus if validation fails.
+    ///   - rules: An variadic array of ``ValidationRule``s.
+    /// - Returns: The modified view.
     public func managedValidation(
         input value: String,
         rules: ValidationRule...

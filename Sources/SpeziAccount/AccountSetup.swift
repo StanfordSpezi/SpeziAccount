@@ -148,7 +148,7 @@ struct AccountView_Previews: PreviewProvider {
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
             AccountSetup()
-                .environmentObject(Account(services: accountServicePermutations[index], identityProviders: [MockSignInWithAppleProvider()]))
+                .environmentObject(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
 
         AccountSetup()

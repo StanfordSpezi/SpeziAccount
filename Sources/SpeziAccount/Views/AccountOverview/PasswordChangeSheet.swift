@@ -36,26 +36,7 @@ struct PasswordChangeSheet: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    PasswordKey.DataEntry($newPassword)
-                        .environment(\.passwordFieldType, .new)
-                        .focused($focusedDataEntry, equals: PasswordKey.focusState)
-                        .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
-                        .onChange(of: newPassword) { newValue in
-                            // A workaround to execute the validation engine of the repeat field if it contains content.
-                            // It works, as we only have two validation closures in this view.
-                            if !newValue.isEmpty && !repeatPassword.isEmpty {
-                                model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
-                            }
-                        }
-
-                    PasswordKey.DataEntry($repeatPassword)
-                        .environment(\.passwordFieldType, .repeat)
-                        .focused($focusedDataEntry, equals: "$-newPassword")
-                        .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
-                } footer: {
-                    PasswordValidationRuleFooter(configuration: service.configuration)
-                }
+                passwordFieldsSection
                     .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             }
                 .viewStateAlert(state: $viewState)
@@ -81,6 +62,30 @@ struct PasswordChangeSheet: View {
                 }
         }
     }
+
+    @ViewBuilder private var passwordFieldsSection: some View {
+        Section {
+            PasswordKey.DataEntry($newPassword)
+                .environment(\.passwordFieldType, .new)
+                .focused($focusedDataEntry, equals: PasswordKey.focusState)
+                .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
+                .onChange(of: newPassword) { newValue in
+                    // A workaround to execute the validation engine of the repeat field if it contains content.
+                    // It works, as we only have two validation closures in this view.
+                    if !newValue.isEmpty && !repeatPassword.isEmpty {
+                        model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
+                    }
+                }
+
+            PasswordKey.DataEntry($repeatPassword)
+                .environment(\.passwordFieldType, .repeat)
+                .focused($focusedDataEntry, equals: "$-newPassword")
+                .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
+        } footer: {
+            PasswordValidationRuleFooter(configuration: service.configuration)
+        }
+    }
+
 
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model

@@ -11,10 +11,12 @@ import SwiftUI
 
 
 extension AccountKey where Value: StringProtocol {
+    /// Default DataDisplay for String-based values using ``StringBasedDisplayView``.
     public typealias DataDisplay = StringBasedDisplayView<Self>
 }
 
 extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
+    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values using ``LocalizableStringBasedDisplayView``.
     public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
 }
 

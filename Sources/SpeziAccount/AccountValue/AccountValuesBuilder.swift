@@ -178,21 +178,26 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
 
 
 extension AccountValuesBuilder {
+    /// Default `Collection` implementation.
     public typealias Index = AccountStorage.Index
 
+    /// Default `Collection` implementation.
     public var startIndex: Index {
         storage.startIndex
     }
 
+    /// Default `Collection` implementation.
     public var endIndex: Index {
         storage.endIndex
     }
 
+    /// Default `Collection` implementation.
     public func index(after index: Index) -> Index {
         storage.index(after: index)
     }
 
 
+    /// Default `Collection` implementation.
     public subscript(position: Index) -> AnyRepositoryValue {
         storage[position]
     }

@@ -10,6 +10,7 @@ import Spezi
 
 
 extension AccountKey {
+    /// Accept a ``AccountValueVisitor`` on a single ``AccountKey`` metatype given an associated value.
     public static func accept<Visitor: AccountValueVisitor>(_ visitor: Visitor, _ value: Value) {
         if let requiredKey = self as? any RequiredAccountKey.Type {
             requiredKey.acceptRequired(visitor, value)
@@ -18,6 +19,7 @@ extension AccountKey {
         }
     }
 
+    /// Accept a ``AccountKeyVisitor`` on a single ``AccountKey`` metatype.
     public static func accept<Visitor: AccountKeyVisitor>(_ visitor: Visitor) {
         if let requiredKey = self as? any RequiredAccountKey.Type {
             requiredKey.acceptRequired(visitor)
