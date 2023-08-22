@@ -55,7 +55,7 @@ Account setup is done through the ``AccountSetup`` view. It presents all configu
 ``AccountService`` to setup their account.
 
 You should make sure to handle the case where there is already an active account setup when showing the ``AccountSetup`` view.
-You can use the ``Account/signedIn`` property to conditionally hide or render another view if there is already a signed in user account. Refer to the example below:
+You can use the ``Account/signedIn`` property to conditionally hide or render another view if there is already a signed in user account (more information in <doc:Using-the-Account-Object>). Refer to the example below:
 
 ```swift
 struct MyView: View {
@@ -101,23 +101,6 @@ struct MyView: View {
 }
 ```
 
-### Accessing Account Information
-
-You can use the ``Account`` object that is injected into your App's view hierachy as an environment object to access ``SpeziAccount``
-state. Particularly useful are the published properties ``Account/signedIn`` and ``Account/details`` to access the current account
-state.
-
-Below is a short code example to access the global ``Account`` instance.
-```swift
-struct MyView: View {
-    @EnvironmentObject var account: Account
-
-    var body: some View {
-        // ... use account
-    }
-}
-```
-
 ### Custom Storage Provider
 
 Some ``AccountService`` implementations might not be able to store arbitrary ``AccountKey``s. In that case you need to provide
@@ -129,16 +112,17 @@ a `Spezi` `Standard` that conforms to ``AccountStorageStandard`` and provide sto
 
 - ``AccountConfiguration``
 - ``ConfiguredAccountKey``
+- ``AccountKeyRequirement``
 - ``AccountValueConfiguration``
+
+### Accessing Account Information
+
+- <doc:Using-the-Account-Object>
 
 ### Views
 
 - ``AccountSetup``
 - ``AccountOverview``
-
-### Accessing Account Information
-
-- ``Account``
 
 ### Providing Storage
 

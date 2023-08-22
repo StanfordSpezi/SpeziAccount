@@ -12,20 +12,9 @@ SPDX-License-Identifier: MIT
 
 ## Topics
 
-### Account Services with additional functionality
-
-- ``EmbeddableAccountService``
-- ``UserIdPasswordAccountService``
-
 ### Account Service Configuration
 
 - ``AccountServiceConfiguration``
-
-### Account Setup View Styles
-
-- ``AccountSetupViewStyle``
-- ``EmbeddableAccountSetupViewStyle``
-- ``UserIdPasswordAccountSetupViewStyle``
 
 ### Mock Implementations useful for Preview Provider
 

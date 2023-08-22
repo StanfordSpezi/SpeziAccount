@@ -30,6 +30,13 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 ///
 /// For more information on how to provide custom configuration options, refer to the documentation of
 /// ``AccountServiceConfigurationKey``.
+///
+/// ## Topics
+///
+/// ### Infrastructure
+///
+/// - ``AccountServiceConfigurationBuilder``
+/// - ``AccountServiceConfigurationKey``
 public struct AccountServiceConfiguration: Sendable {
     /// The underlying storage container you access to implement your own ``AccountServiceConfigurationKey``.
     public let storage: AccountServiceConfigurationStorage
