@@ -20,6 +20,6 @@ extension AccountSetupViewStyle {
     }
 
     public func makeAccountSummary(details: AccountDetails) -> some View {
-        AccountSummary(account: details)
+        AccountSummaryBox(details: details)
     }
 }

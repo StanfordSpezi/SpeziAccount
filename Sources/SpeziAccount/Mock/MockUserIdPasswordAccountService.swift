@@ -47,14 +47,17 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
 
-    public let configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedKeys: .arbitrary) {
-        RequiredAccountKeys {
-            \.userId
-            \.password
+    public let configuration: AccountServiceConfiguration
+
+    public init(_ type: UserIdType = .emailAddress) {
+        self.configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedKeys: .arbitrary) {
+            UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
+            RequiredAccountKeys {
+                \.userId
+                \.password
+            }
         }
     }
-
-    public init() {}
 
     public func login(userId: String, password: String) async throws {
         print("Mock Login: \(userId) \(password)")

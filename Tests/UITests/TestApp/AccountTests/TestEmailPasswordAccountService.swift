@@ -33,7 +33,7 @@ actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
         }
 
         registeredUser.userId = userId
-        await updateUser()
+        try await updateUser()
     }
     
     func signUp(signupDetails: SignupDetails) async throws {
@@ -47,14 +47,14 @@ actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
         registeredUser.name = signupDetails.name
         registeredUser.gender = signupDetails.genderIdentity
         registeredUser.dateOfBirth = signupDetails.dateOfBrith
-        await updateUser()
+        try await updateUser()
     }
 
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
         // TODO implement!
     }
 
-    func updateUser() async {
+    func updateUser() async throws {
         let details = AccountDetails.Builder()
             .set(\.userId, value: registeredUser.userId)
             .set(\.name, value: registeredUser.name)
@@ -62,7 +62,7 @@ actor TestEmailPasswordAccountService: UserIdPasswordAccountService {
             .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
             .build(owner: self)
 
-        await account.supplyUserDetails(details)
+        try await account.supplyUserDetails(details)
     }
     
     func resetPassword(userId: String) async throws {

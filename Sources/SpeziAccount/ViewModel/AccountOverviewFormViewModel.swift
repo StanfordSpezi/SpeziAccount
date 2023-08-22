@@ -13,19 +13,6 @@ import SpeziViews
 import SwiftUI
 
 
-struct ForEachAccountKeyWrapper: Identifiable { // TODO placement?
-    var id: ObjectIdentifier {
-        accountKey.id
-    }
-
-    var accountKey: any AccountKey.Type
-
-    init(_ accountKey: any AccountKey.Type) {
-        self.accountKey = accountKey
-    }
-}
-
-
 @MainActor
 class AccountOverviewFormViewModel: ObservableObject {
     private static var logger: Logger {

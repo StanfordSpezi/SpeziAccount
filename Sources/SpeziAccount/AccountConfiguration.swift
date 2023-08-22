@@ -36,6 +36,9 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// The array of ``AccountService``s provided through other Spezi `Components`.
     @Collect private var accountServices: [any AccountService]
 
+    /// The array of ``IdentityProvider`` provided through other Spezi `Components`.
+    @Collect private var identityProviders: [any IdentityProvider]
+
 
     public var observableObjects: [any ObservableObject] {
         guard let account else {
@@ -87,6 +90,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
 
         self.account = Account(
             services: accountServices,
+            identityProviders: identityProviders,
             configuration: configuredAccountKeys
         )
 

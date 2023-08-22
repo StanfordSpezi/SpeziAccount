@@ -18,7 +18,7 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
             ScrollView(.vertical) {
                 VStack {
                     // TODO this header shouldn't require an injected Account object!
-                    AccountSetupDefaultHeader() // TODO provide ability to replace it!
+                    DefaultAccountSetupHeader() // TODO provide ability to replace it!
 
                     Spacer()
 

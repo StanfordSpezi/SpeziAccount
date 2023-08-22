@@ -21,7 +21,7 @@ struct SecurityOverview: View {
     @EnvironmentObject private var account: Account
     @ObservedObject private var model: AccountOverviewFormViewModel
 
-    @State private var viewState: ViewState = .idle // TODO default error?
+    @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
 
     @State private var presentingPasswordChangeSheet = false

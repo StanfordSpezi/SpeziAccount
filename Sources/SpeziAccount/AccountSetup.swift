@@ -6,9 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import AuthenticationServices
-import os
-import SpeziViews
 import SwiftUI
 
 
@@ -19,79 +16,24 @@ enum Constants { // TODO rename and move!
 }
 
 
-/// A view which provides the default title and subtitle text.
-public struct AccountSetupDefaultHeader: View { // TODO move
-    @EnvironmentObject private var account: Account
-
-    public var body: some View {
-        // TODO provide customizable with AccountViewStyle!
-        Text("ACCOUNT_WELCOME".localized(.module))
-            .font(.largeTitle)
-            .bold()
-            .multilineTextAlignment(.center)
-            .padding(.bottom)
-            .padding(.top, 30)
-
-        Group {
-            if !account.signedIn {
-                Text("ACCOUNT_WELCOME_SUBTITLE".localized(.module))
-            } else {
-                Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE".localized(.module))
-            }
-        }
-        .multilineTextAlignment(.center)
-    }
-
-    public init() {}
-}
-
-// TODO review accessibility!
-
-
 /// The central ``SpeziAccount`` view to login into or signup for a user account.
 ///
 /// - Note: This view assumes to have a ``Account`` object in its environment. An ``Account`` object is
 ///     automatically injected into your view hierarchy by using the ``AccountConfiguration``.
 ///
 /// TODO docs: drop ``AccountService`` and ``IdentityProvider`` and other stuff
-public struct AccountSetup<Header: View>: View { // TODO docs!
+public struct AccountSetup<Header: View, Continue: View>: View { // TODO docs!
     private let header: Header
+    private let continueButton: Continue
 
     @EnvironmentObject var account: Account
-    @Environment(\.colorScheme) var colorScheme
 
     private var services: [any AccountService] {
         account.registeredAccountServices
     }
 
-    private var identityProviders: [String] {
-        ["Apple"] // TODO query from account and model them
-    }
-
-    private var embeddableAccountService: (any EmbeddableAccountService)? {
-        let embeddableServices = services
-            .filter { $0 is any EmbeddableAccountService }
-
-        if embeddableServices.count == 1 {
-            return embeddableServices.first as? any EmbeddableAccountService
-        }
-
-        return nil
-    }
-
-    private var nonEmbeddableAccountServices: [any AccountService] {
-        services
-            .filter { !($0 is any EmbeddableAccountService) }
-    }
-
-    private var documentationUrl: URL {
-        // we may move to a #URL macro once Swift 5.9 is shipping
-        // TODO update docs URL!
-        guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
-            fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
-        }
-
-        return docsUrl
+    private var identityProviders: [any IdentityProvider] {
+        account.registeredIdentityProviders
     }
 
     public var body: some View {
@@ -102,8 +44,10 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
 
                     Spacer()
 
-                    if let account = account.details {
-                        displayAccount(details: account)
+                    if let details = account.details {
+                        ExistingAccountView(details: details) {
+                            continueButton
+                        }
                     } else {
                         accountSetupView
                     }
@@ -121,126 +65,36 @@ public struct AccountSetup<Header: View>: View { // TODO docs!
 
     @ViewBuilder private var accountSetupView: some View {
         if services.isEmpty && identityProviders.isEmpty {
-            emptyServicesView
+            EmptyServicesWarning()
         } else {
             VStack {
-                accountServicesSection
+                AccountServicesSection(services: services)
 
                 if !services.isEmpty && !identityProviders.isEmpty {
-                    servicesDivider
+                    ServicesDivider()
                 }
 
-                identityProviderSection
+                IdentityProviderSection(providers: identityProviders)
             }
                 .padding(.horizontal, Constants.innerHorizontalPadding)
                 .frame(maxWidth: Constants.maxFrameWidth) // landscape optimizations
-            // TODO for large dynamic size it would make sense to scale it though?
+                .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
         }
     }
 
-    @ViewBuilder private var emptyServicesView: some View {
-        Text("MISSING_ACCOUNT_SERVICES".localized(.module))
-            .multilineTextAlignment(.center)
-            .foregroundColor(.secondary)
-
-        Button(action: {
-            UIApplication.shared.open(documentationUrl)
-        }) {
-            Text("OPEN_DOCUMENTATION".localized(.module))
-        }
-            .padding()
-    }
-
-    @ViewBuilder private var accountServicesSection: some View {
-        if let embeddableService = embeddableAccountService {
-            let embeddableViewStyle = embeddableService.viewStyle
-            AnyView(embeddableViewStyle.makeEmbeddedAccountView())
-
-            if !nonEmbeddableAccountServices.isEmpty {
-                servicesDivider
-
-                buildAccountServiceList(nonEmbeddableAccountServices)
-            } else {
-                EmptyView()
-            }
-        } else {
-            buildAccountServiceList(services)
-        }
-    }
-
-    // The "or" divider between primary account services and the third-party identity providers
-    @ViewBuilder private var servicesDivider: some View {
-        HStack {
-            VStack {
-                Divider()
-            }
-            Text("OR", bundle: .module)
-                .padding(.horizontal, 8)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            VStack {
-                Divider()
-            }
-        }
-            .padding(.horizontal, 36)
-            .padding(.vertical, 16)
-    }
-
-    /// Buttons provided by the identity providers
-    @ViewBuilder private var identityProviderSection: some View {
-        VStack {
-            ForEach(identityProviders.indices, id: \.self) { index in
-                SignInWithAppleButton { request in
-                    print("Sign in request!")
-                } onCompletion: { result in
-                    print("sing in completed")
-                }
-                .frame(height: 55)
-                .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
-            }
-        }
+    public init(
+        @ViewBuilder `continue`: () -> Continue = { EmptyView() }
+    ) where Header == DefaultAccountSetupHeader {
+        self.init(continue: `continue`, header: { DefaultAccountSetupHeader() })
     }
 
 
-    public init(@ViewBuilder _ header: () -> Header = { AccountSetupDefaultHeader() }) {
+    public init(
+        @ViewBuilder `continue`: () -> Continue = { EmptyView() },
+        @ViewBuilder header: () -> Header
+    ) {
         self.header = header()
-    }
-
-
-    private func buildAccountServiceList(_ accountServices: [any AccountService]) -> some View {
-        // We use indices here as the preview provider has some issues with ForEach and a `any` existential.
-        // As the array doesn't change this is completely fine and the index is a stable identifier.
-        ForEach(accountServices.indices, id: \.self) { index in
-            let service = accountServices[index]
-            let style = service.viewStyle
-
-            NavigationLink {
-                AnyView(style.makePrimaryView())
-            } label: {
-                style.makeAnyAccountServiceButtonLabel()
-            }
-        }
-    }
-
-    func displayAccount(details: AccountDetails) -> some View {
-        let service = details.accountService
-
-        // TODO someone needs to place the Continue button?
-
-        return AnyView(service.viewStyle.makeAnyAccountSummary(details: details))
-    }
-}
-
-
-extension AccountSetupViewStyle {
-    fileprivate func makeAnyAccountServiceButtonLabel() -> AnyView {
-        // as the `AccountSetup` only has a type-erased view on the `AccountSetupViewStyle`
-        // we can't, because of the default implementation, create the AnyView inline.
-        AnyView(self.makeServiceButtonLabel())
-    }
-
-    fileprivate func makeAnyAccountSummary(details: AccountDetails) -> AnyView {
-        AnyView(self.makeAccountSummary(details: details))
+        self.continueButton = `continue`()
     }
 }
 
@@ -253,7 +107,6 @@ struct AccountView_Previews: PreviewProvider {
            [MockSimpleAccountService()],
            [MockUserIdPasswordAccountService(), MockSimpleAccountService()],
            [
-                // TODO this isn't properly displayed in the preview! (double primary view?)
                MockUserIdPasswordAccountService(),
                MockSimpleAccountService(),
                MockUserIdPasswordAccountService()
@@ -271,13 +124,26 @@ struct AccountView_Previews: PreviewProvider {
             NavigationStack {
                 AccountSetup()
             }
-                .environmentObject(Account(services: accountServicePermutations[index]))
+                .environmentObject(Account(services: accountServicePermutations[index], identityProviders: [MockSignInWithAppleProvider()]))
         }
 
         NavigationStack {
             AccountSetup()
         }
-        .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+
+        NavigationStack {
+            AccountSetup {
+                Button(action: {
+                    print("Continue")
+                }, label: {
+                    Text("Continue")
+                        .frame(maxWidth: .infinity, minHeight: 38)
+                })
+                    .buttonStyle(.borderedProminent)
+            }
+        }
+            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif
