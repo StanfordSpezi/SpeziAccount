@@ -21,9 +21,12 @@ private struct RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
 
 private struct CopyVisitor<Values: AccountValues>: AccountValueVisitor {
     let builder: AccountValuesBuilder<Values>
+    let allowOverwrite: Bool
 
     func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
-        builder.set(key, value: value)
+        if allowOverwrite || !builder.contains(Key.self) {
+            builder.set(key, value: value)
+        }
     }
 }
 
@@ -100,9 +103,11 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     }
 
     /// Merge all values from a ``AccountValues`` instance into this builder.
-    /// - Parameter values: The values.
-    public func merging<Values: AccountValues>(_ values: Values) {
-        values.acceptAll(CopyVisitor(builder: self))
+    /// - Parameters:
+    ///   - values: The values.
+    ///   - allowOverwrite: Flag controls if the supplied values might overwrite values in the builder
+    public func merging<Values: AccountValues>(_ values: Values, allowOverwrite: Bool = false) {
+        values.acceptAll(CopyVisitor(builder: self, allowOverwrite: allowOverwrite))
     }
 
     /// Merge all values specified by a collections of ``AccountKey``s which values are stored in some ``AccountValues`` instance.

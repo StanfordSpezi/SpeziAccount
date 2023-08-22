@@ -44,6 +44,7 @@
 
 // MARK: - UserId and Password (Password Reset)
 "UP_RESET_PASSWORD" = "Reset Password";
+"UAP_PASSWORD_RESET_SUBTITLE %@" = "Please enter your %@ of your Account. A password reset email will be sent to the linked email address.";
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Sent out a link to reset the password.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Could not reset the password!";
 

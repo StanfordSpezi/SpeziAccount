@@ -27,4 +27,14 @@ public struct ValidationResultsView: View {
     }
 }
 
-// TODO preview!
+
+#if DEBUG
+struct ValidationResultsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ValidationResultsView(results: [
+            .init(from: .nonEmpty, message: ValidationRule.nonEmpty.message),
+            .init(from: .mediumPassword, message: ValidationRule.mediumPassword.message)
+        ])
+    }
+}
+#endif

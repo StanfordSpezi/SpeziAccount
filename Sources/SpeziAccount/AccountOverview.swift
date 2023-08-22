@@ -24,8 +24,7 @@ public struct AccountOverview: View {
                         details: details
                     )
                 }
-                    // TODO placement of those?
-                    .submitLabel(.done) // TODO next label?
+                    .submitLabel(.done)
                     .padding(.top, -20)
             } else {
                 Text("No active Account!")

@@ -81,7 +81,6 @@ public class Account: ObservableObject, Sendable {
     ///     using the ``AccountDetails/accountService`` property.
     @Published public private(set) var details: AccountDetails?
 
-    // TODO make this configuration available from the AccountDetails? its about the details itself is it?
     public let configuration: AccountValueConfiguration // TODO document use, once finalized!
 
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
@@ -208,7 +207,7 @@ public class Account: ObservableObject, Sendable {
 
             let partialDetails = try await standardBacked.standard.load(recordId, unsupportedKeys)
 
-            self.details = details.merge(with: partialDetails) // TODO they should not have the power to override!
+            self.details = details.merge(with: partialDetails, allowOverwrite: false)
         } else {
             self.details = details
         }

@@ -11,10 +11,10 @@ import SwiftUI
 
 
 struct SingleEditView<Key: AccountKey>: View {
-    private let accountDetails: AccountDetails
+    private let details: AccountDetails
 
     private var service: any AccountService {
-        accountDetails.accountService
+        details.accountService
     }
 
 
@@ -29,17 +29,17 @@ struct SingleEditView<Key: AccountKey>: View {
     var body: some View {
         Form {
             VStack {
-                Key.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
+                Key.dataEntryViewWithCurrentStoredValue(details: details, for: ModifiedAccountDetails.self)
             }
         }
-            .navigationTitle(Text(Key.name))
+            .navigationTitle(Text(Key.self == UserIdKey.self ? details.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
             .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
                 }
-                    .disabled(!model.hasUnsavedChanges || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self))
+                    .disabled(!model.hasUnsavedChanges || details.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self))
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
             .onDisappear {
@@ -50,7 +50,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model
-        self.accountDetails = accountDetails
+        self.details = accountDetails
     }
 
 
@@ -63,7 +63,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
         logger.debug("Saving updated \(Key.self) value!")
 
-        try await model.updateAccountDetails(details: accountDetails)
+        try await model.updateAccountDetails(details: details)
         dismiss()
     }
 }

@@ -42,25 +42,6 @@ public struct AccountSummaryBox: View {
                     .shadow(color: .gray, radius: 2)
             )
             .frame(maxWidth: Constants.maxFrameWidth)
-
-        /*
-        VStack {
-            if let name = account.name {
-                // TODO have a fallback for non-name existence!
-                UserInformation(name: name, caption: account.userId)
-            }
-
-
-            // TODO move the logout button outwards!
-            /
-            AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
-                try await account.accountService.logout()
-            }
-                .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                .padding()
-
-        }
-             */
     }
 
     public init(details: AccountDetails) {

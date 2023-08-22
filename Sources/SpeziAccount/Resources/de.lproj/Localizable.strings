@@ -44,6 +44,7 @@
 
 // MARK: - UserId and Password (Password Reset)
 "UP_RESET_PASSWORD" = "Passwort Zurücksetzten";
+"UAP_PASSWORD_RESET_SUBTITLE %@" = "Bitte fülle folgendes Feld aus. Du wirst eine E-Mail erhalten mit der du dein Passwort zurücksetzten kannst.";
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Ein Link zum Zurücksetzen das Passworts wurde versandt.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Passwort Zurücksetzen fehlgeschlagen!";
 

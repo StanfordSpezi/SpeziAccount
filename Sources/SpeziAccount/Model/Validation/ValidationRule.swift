@@ -71,8 +71,8 @@ public struct ValidationRule: Identifiable, Sendable {
     ///   - rule: An escaping closure that validates a `String` and returns a boolean result.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
-    public init(rule: @Sendable @escaping (String) -> Bool, message: String, bundle: Bundle) {
-        self.init(ruleClosure: rule, message: message.localized(bundle))
+    public init(rule: @Sendable @escaping (String) -> Bool, message: String.LocalizationValue, bundle: Bundle) {
+        self.init(ruleClosure: rule, message: LocalizedStringResource(message, bundle: .atURL(from: bundle)))
     }
     
     /// Creates a validation rule from a regular expression.
@@ -90,8 +90,8 @@ public struct ValidationRule: Identifiable, Sendable {
     ///   - regex: A `Regex` regular expression to match for validating text. Note, the `wholeMatch` operation is used.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
-    public init(regex: Regex<AnyRegexOutput>, message: String, bundle: Bundle) {
-        self.init(regex: regex, message: message.localized(bundle))
+    public init(regex: Regex<AnyRegexOutput>, message: String.LocalizationValue, bundle: Bundle) {
+        self.init(regex: regex, message: LocalizedStringResource(message, bundle: .atURL(from: bundle)))
     }
 
     /// Creates a validation rule by copying the rule contents from another `ValidationRule`.

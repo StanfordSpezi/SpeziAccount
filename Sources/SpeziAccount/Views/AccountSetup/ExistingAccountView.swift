@@ -39,6 +39,7 @@ struct ExistingAccountView<Continue: View>: View {
                     if Continue.self != EmptyView.self {
                         VStack {
                             continueButton
+                                .padding()
                             Spacer()
                                 .frame(height: 30)
                         }

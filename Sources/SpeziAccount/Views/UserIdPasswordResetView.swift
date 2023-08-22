@@ -18,14 +18,16 @@ private enum PasswordResetFocusState {
 
 public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
     private let service: Service
-    private let successViewBuilder: () -> SuccessView
+    private let successView: SuccessView
 
     private var userIdConfiguration: UserIdConfiguration {
         service.configuration.userIdConfiguration
     }
 
+    @Environment(\.dismiss) private var dismiss
+
     @State private var userId = ""
-    @State private var requestSubmitted = false
+    @State private var requestSubmitted: Bool
 
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: PasswordResetFocusState?
@@ -37,10 +39,9 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
             ScrollView(.vertical) {
                 VStack {
                     if requestSubmitted {
-                        successViewBuilder()
+                        successView
                     } else {
                         resetPasswordForm
-
                         Spacer()
                     }
                 }
@@ -48,6 +49,13 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                     .disableDismissiveActions(isProcessing: state)
                     .viewStateAlert(state: $state)
+                    .toolbar {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Text("DONE", bundle: .module)
+                        }
+                    }
                     .onTapGesture {
                         focusedField = nil
                     }
@@ -57,7 +65,9 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
     @ViewBuilder private var resetPasswordForm: some View {
         VStack {
-            // TODO maybe center this thing in the scroll view (e.g. iPad view?)
+            Text("UAP_PASSWORD_RESET_SUBTITLE \(userIdConfiguration.idType.localizedStringResource)", bundle: .module)
+                .padding()
+                .padding(.bottom, 30)
 
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                 .environmentObject(validationEngine)
@@ -67,25 +77,36 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .keyboardType(userIdConfiguration.keyboardType)
                 .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                 .font(.title3)
-
-
-            AsyncButton(state: $state, action: submitRequestAction) {
-                Text("Reset Password")
-                    .padding(8)
-                    .frame(maxWidth: .infinity)
-            }
-                .buttonStyle(.borderedProminent)
-                .padding(.top, 20)
-                .padding()
         }
             .padding()
+            .frame(maxWidth: Constants.maxFrameWidth * 1.5) // landscape optimizations
             .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+            .toolbar {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    VStack {
+                        AsyncButton(state: $state, action: submitRequestAction) {
+                            Text("Reset Password")
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                        }
+                            .buttonStyle(.borderedProminent)
+                            .padding()
+                        Spacer()
+                            .frame(height: 30)
+                    }
+                }
+            }
+    }
+
+    fileprivate init(using service: Service, requestSubmitted: Bool, @ViewBuilder success successViewBuilder: () -> SuccessView) {
+        self.service = service
+        self.successView = successViewBuilder()
+        self._requestSubmitted = State(wrappedValue: requestSubmitted)
     }
 
 
     public init(using service: Service, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
-        self.service = service
-        self.successViewBuilder = successViewBuilder
+        self.init(using: service, requestSubmitted: false, success: successViewBuilder)
     }
 
 
@@ -118,6 +139,13 @@ struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             UserIdPasswordResetView(using: accountService) {
+                SuccessfulPasswordResetView()
+            }
+                .environmentObject(Account(accountService))
+        }
+
+        NavigationStack {
+            UserIdPasswordResetView(using: accountService, requestSubmitted: true) {
                 SuccessfulPasswordResetView()
             }
                 .environmentObject(Account(accountService))

@@ -16,7 +16,7 @@ public protocol AccountValuesCollection: AcceptingAccountValueVisitor, Collectio
     func contains<Key: AccountKey>(_ key: Key.Type) -> Bool
 
     /// Checks if the provided type-erase ``AccountKey`` is currently stored in the collection.
-    func contains(_ key: any AccountKey.Type) -> Bool
+    func contains(anyKey key: any AccountKey.Type) -> Bool
 }
 
 
@@ -33,9 +33,11 @@ public protocol AccountValues: AccountValuesCollection {
     init(from storage: AccountStorage)
 
     /// Merge with contents from a different ``AccountValues`` instance creating a new unit.
-    /// - Parameter values: The account values to merge with.
+    /// - Parameters:
+    ///   - values: The account values to merge with.
+    ///   - allowOverwrite: Flag indicating the the provided values might overwrite these already contained in here.
     /// - Returns: The resulting values containing the combination of both ``AccountValues`` instances.
-    func merge<Values: AccountValues>(with values: Values) -> Self
+    func merge<Values: AccountValues>(with values: Values, allowOverwrite: Bool) -> Self
 }
 
 
@@ -66,16 +68,16 @@ extension AccountValues {
     }
 
     /// Default merge implementation.
-    public func merge<Values: AccountValues>(with values: Values) -> Self {
+    public func merge<Values: AccountValues>(with values: Values, allowOverwrite: Bool = false) -> Self {
         let build = AccountValuesBuilder<Self>(from: storage)
-        build.merging(values)
+        build.merging(values, allowOverwrite: allowOverwrite)
         return build.build()
     }
 }
 
 extension AccountValuesCollection {
     /// Default type-erased implementation.
-    public func contains(_ key: any AccountKey.Type) -> Bool {
+    public func contains(anyKey key: any AccountKey.Type) -> Bool {
         key.anyContains(in: self)
     }
 }

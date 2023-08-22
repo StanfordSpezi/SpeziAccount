@@ -35,6 +35,8 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty])
     @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty])
 
+    @State private var presentingPasswordForgetSheet = false
+
     @State private var loginTask: Task<Void, Error>? {
         willSet {
             loginTask?.cancel()
@@ -53,12 +55,9 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                         .padding(.bottom, 0.5)
 
                     VerifiableTextField("UP_PASSWORD".localized(.module), text: $password, type: .secure) {
-                        NavigationLink(value: "as") {
-                            EmptyView()
-                        }
-                        NavigationLink {
-                            service.viewStyle.makePasswordResetView()
-                        } label: {
+                        Button(action: {
+                            presentingPasswordForgetSheet = true
+                        }) {
                             Text("UP_FORGOT_PASSWORD".localized(.module))
                                 .font(.caption)
                                 .bold()
@@ -98,6 +97,12 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            .sheet(isPresented: $presentingPasswordForgetSheet) {
+                NavigationStack {
+                    service.viewStyle.makePasswordResetView()
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+            }
             .onTapGesture {
                 focusedField = nil
             }

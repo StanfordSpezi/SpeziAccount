@@ -17,8 +17,7 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    // TODO this header shouldn't require an injected Account object!
-                    DefaultAccountSetupHeader() // TODO provide ability to replace it!
+                    DefaultAccountSetupHeader()
 
                     Spacer()
 
@@ -36,7 +35,6 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
         }
-        // TODO navigation title?
     }
 
 
