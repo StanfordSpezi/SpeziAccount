@@ -9,48 +9,50 @@
 import SwiftUI
 
 
-// TODO docs!
-public struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
-    public var service: MockSimpleAccountService
+/// The view style for the `MockSimpleAccountService` rendering `"Hello World"` text.
+struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
+    var service: MockSimpleAccountService
+
 
     init(using service: MockSimpleAccountService) {
         self.service = service
     }
 
-    public func makePrimaryView() -> some View {
-        Text("Hello World") // TODO something at least?
+
+    func makePrimaryView() -> some View {
+        Text("Hello World")
     }
 }
 
 
-// TODO docs!
-public actor MockSimpleAccountService: AccountService { // TODO maybe make this internal, as it is only used for Button previwing!
+/// A simple mock ``AccountService`` that is barely implemented but useful for SwiftUI previewing purposes.
+actor MockSimpleAccountService: AccountService {
     @AccountReference private var account: Account
     
-    public let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedKeys: .arbitrary)
+    let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedKeys: .arbitrary)
 
 
-    public nonisolated var viewStyle: some AccountSetupViewStyle {
+    nonisolated var viewStyle: some AccountSetupViewStyle {
         MockSimpleAccountSetupViewStyle(using: self)
     }
 
 
-    public init() {}
+    init() {}
 
 
-    public func signUp(signupDetails: SignupDetails) async throws {
+    func signUp(signupDetails: SignupDetails) async throws {
         print("Signup: \(signupDetails)")
     }
 
-    public func logout() async throws {
+    func logout() async throws {
         print("Logout")
     }
 
-    public func delete() async throws {
+    func delete() async throws {
         print("Remove")
     }
 
-    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
+    func updateAccountDetails(_ modifications: AccountModifications) async throws {
         print("Modifications: \(modifications)")
     }
 }

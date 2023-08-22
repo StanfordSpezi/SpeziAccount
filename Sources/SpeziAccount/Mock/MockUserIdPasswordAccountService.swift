@@ -8,47 +8,16 @@
 
 import Foundation
 
-// TODO docs! make userid type controllable!
+
+/// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
 public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
-    private struct AccountValueUpdater: AccountValueVisitor {
-        var detailsBuilder: AccountDetails.Builder
-
-        init(details: AccountDetails) {
-            self.detailsBuilder = .init(from: details)
-        }
-
-        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountKey {
-            print("Setting \(Key.self) to \(value)")
-            detailsBuilder.set(key, value: value)
-        }
-
-        func final() -> AccountDetails.Builder {
-            detailsBuilder
-        }
-    }
-
-    private struct AccountValueRemover: AccountValueVisitor {
-        var detailsBuilder: AccountDetails.Builder
-
-        init(builder detailsBuilder: AccountDetails.Builder) {
-            self.detailsBuilder = detailsBuilder
-        }
-
-        func visit<Key>(_ key: Key.Type, _ value: Key.Value) where Key: AccountKey {
-            print("Removing \(key) with old value \(value)")
-            detailsBuilder.remove(key)
-        }
-
-        func final() -> AccountDetails.Builder {
-            detailsBuilder
-        }
-    }
-
     @AccountReference private var account: Account
-
 
     public let configuration: AccountServiceConfiguration
 
+
+    /// Create a new userId- and password-based account service.
+    /// - Parameter type: The ``UserIdType`` to use for the account service.
     public init(_ type: UserIdType = .emailAddress) {
         self.configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedKeys: .arbitrary) {
             UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
@@ -58,6 +27,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             }
         }
     }
+
 
     public func login(userId: String, password: String) async throws {
         print("Mock Login: \(userId) \(password)")
@@ -102,14 +72,14 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             return
         }
 
+        print("Mock Update: \(modifications)")
+
         try await Task.sleep(for: .seconds(1))
 
-        // TODO can this API surface be more elegant?
-        let builder = modifications.modifiedDetails
-            .acceptAll(AccountValueUpdater(details: details))
-        let finalBuilder = modifications.removedAccountDetails
-            .acceptAll(AccountValueRemover(builder: builder))
+        let builder = AccountDetails.Builder(from: details)
+            .merging(modifications.modifiedDetails, allowOverwrite: true)
+            .remove(all: modifications.removedAccountDetails.keys)
 
-        try await account.supplyUserDetails(finalBuilder.build(owner: self))
+        try await account.supplyUserDetails(builder.build(owner: self))
     }
 }

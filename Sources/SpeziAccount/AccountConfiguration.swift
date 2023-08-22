@@ -95,7 +95,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         )
 
         if let accountStandard = standard as? any AccountStorageStandard {
-            self.account?.injectWeakAccount(into: accountStandard)
+            self.account?.injectWeakAccount(into: accountStandard) // TODO @AccountReference typealias!
         }
     }
 

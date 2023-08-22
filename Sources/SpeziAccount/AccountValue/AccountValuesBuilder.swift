@@ -106,19 +106,25 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     /// - Parameters:
     ///   - values: The values.
     ///   - allowOverwrite: Flag controls if the supplied values might overwrite values in the builder
-    public func merging<Values: AccountValues>(_ values: Values, allowOverwrite: Bool = false) {
+    /// - Returns: The builder reference for method chaining.
+    @discardableResult
+    public func merging<Values: AccountValues>(_ values: Values, allowOverwrite: Bool) -> Self {
         values.acceptAll(CopyVisitor(builder: self, allowOverwrite: allowOverwrite))
+        return self
     }
 
     /// Merge all values specified by a collections of ``AccountKey``s which values are stored in some ``AccountValues`` instance.
     /// - Parameters:
     ///   - keys: The keys for which to copy account values.
     ///   - values: The container from where to retrieve the values.
+    /// - Returns: The builder reference for method chaining.
+    @discardableResult
     public func merging<Keys: AcceptingAccountKeyVisitor, Values: AccountValues>(
         with keys: Keys,
         from values: Values
-    ) {
+    ) -> Self {
         keys.acceptAll(CopyKeyVisitor(destination: self, source: values))
+        return self
     }
 
     /// Remove a value from the builder.
@@ -144,6 +150,15 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     @discardableResult
     public func remove(any accountValue: any AccountKey.Type) -> Self {
         accountValue.accept(RemoveVisitor(builder: self))
+        return self
+    }
+
+    /// Remove a set of values from the builder given an array of ``AccountKey`` metatypes.
+    /// - Parameter keys: The collection of metatypes (e.g., an array or ``AccountKeyCollection``).
+    /// - Returns: The builder reference for method chaining.
+    @discardableResult
+    public func remove<Keys: AcceptingAccountKeyVisitor>(all keys: Keys) -> Self {
+        keys.acceptAll(RemoveVisitor(builder: self))
         return self
     }
 

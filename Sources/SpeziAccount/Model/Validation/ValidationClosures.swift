@@ -243,11 +243,11 @@ public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
         return true
     }
 
-    /// Run the validation closures of all your subviews
+    /// Run the validation closures of all your subviews without setting a focus state.
     /// - Returns: Returns `true` if all subviews reported valid data. Returns `false` if at least one
     ///     subview reported invalid data.
     @discardableResult
-    public func validateSubviews() -> Bool where FieldIdentifier == Never {
+    public func validateSubviews() -> Bool {
         collectFailedResults().isEmpty
     }
 }

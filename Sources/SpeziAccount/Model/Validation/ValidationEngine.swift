@@ -8,7 +8,6 @@
 
 import Foundation
 import os
-// TODO shall we move this infrastructure to SpeziViews?
 
 
 /// A model that is responsible to verify a list of ``ValidationRule``s.

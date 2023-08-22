@@ -10,28 +10,28 @@ import Foundation
 
 
 struct AccountDisplayModel {
-    let details: AccountDetails
+    let accountDetails: AccountDetails
 
     var profileViewName: PersonNameComponents? {
-        details.name
+        accountDetails.name
     }
 
     var accountHeadline: String {
         // we gracefully check if the account details have a name, bypassing the subscript overloads
-        if let name = details.name {
+        if let name = accountDetails.name {
             return name.formatted(.name(style: .long))
         } else {
             // otherwise we display the userId
-            return details.userId
+            return accountDetails.userId
         }
     }
 
     var accountSubheadline: String? {
-        if details.name != nil {
+        if accountDetails.name != nil {
             // If the accountHeadline uses the name, we display the userId as the subheadline
-            return details.userId
-        } else if details.userIdType != .emailAddress,
-                  let email = details.email {
+            return accountDetails.userId
+        } else if accountDetails.userIdType != .emailAddress,
+                  let email = accountDetails.email {
             // Otherwise, headline will be the userId. Therefore, we check if the userId is not already
             // displaying the email address. In this case the subheadline will be the email if available.
             return email
@@ -41,6 +41,6 @@ struct AccountDisplayModel {
     }
 
     init(details: AccountDetails) {
-        self.details = details
+        self.accountDetails = details
     }
 }

@@ -15,15 +15,17 @@ struct AccountOverviewValuesComparator: SortComparator {
     private let id = UUID()
     private let accountDetails: AccountDetails
     private let addedAccountKeys: CategorizedAccountKeys
+    private let removedAccountKeys: CategorizedAccountKeys
 
-    init(accountDetails: AccountDetails, addedAccountKeys: CategorizedAccountKeys) {
-        self.accountDetails = accountDetails
-        self.addedAccountKeys = addedAccountKeys
+    init(details: AccountDetails, added: CategorizedAccountKeys, removed: CategorizedAccountKeys) {
+        self.accountDetails = details
+        self.addedAccountKeys = added
+        self.removedAccountKeys = removed
     }
 
     func compare(_ lhs: any AccountKey.Type, _ rhs: any AccountKey.Type) -> ComparisonResult {
-        let lhsContained = accountDetails.contains(lhs)
-        let rhsContained = accountDetails.contains(rhs)
+        let lhsContained = accountDetails.contains(lhs) && !removedAccountKeys.contains(lhs)
+        let rhsContained = accountDetails.contains(rhs) && !removedAccountKeys.contains(rhs)
 
         guard !lhsContained && !rhsContained else {
             if lhsContained == rhsContained {

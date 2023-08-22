@@ -40,7 +40,6 @@ struct AccountOverviewSections: View {
 
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
-            // TODO move them back to the Form!
             // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
             // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
@@ -133,7 +132,6 @@ struct AccountOverviewSections: View {
             .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
 
-        // TODO think about how the app would react to removed accounts? => app could also allow to skip account setup?
         HStack {
             if editMode?.wrappedValue.isEditing == true {
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
@@ -163,9 +161,8 @@ struct AccountOverviewSections: View {
                         ForEachAccountKeyWrapper(key)
                     }
 
-                    // TODO seems like the order isn't updated/respected anymore? (case by the loop above?)
                     ForEach(forEachWrappers, id: \.id) { wrapper in
-                        buildRow(for: wrapper.accountKey)
+                        AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
                         .onDelete { indexSet in
                             model.deleteAccountKeys(at: indexSet, in: accountKeys)
@@ -189,52 +186,11 @@ struct AccountOverviewSections: View {
     }
 
 
-    @ViewBuilder
-    private func buildRow(for accountKey: any AccountKey.Type) -> some View { // TODO move to separate view?
-        if editMode?.wrappedValue.isEditing == true {
-            // we place everything in the same HStack, such that animations are smooth
-            let hStack = HStack {
-                if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
-                    if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
-                        view
-                    } else if let view = accountKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
-                        view
-                    }
-                } else if model.addedAccountKeys.contains(accountKey) { // no need to repeat the removedAccountKeys condition
-                    accountKey.emptyDataEntryView(for: ModifiedAccountDetails.self)
-                        .deleteDisabled(false)
-                } else {
-                    Button(action: {
-                        model.addAccountDetail(for: accountKey)
-                    }) {
-                        Text("VALUE_ADD \(accountKey.name)", bundle: .module)
-                    }
-                }
-            }
-
-            // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes in our scenario
-            if isDeleteDisabled(for: accountKey) {
-                hStack
-                    .deleteDisabled(true)
-            } else {
-                hStack
-            }
-        } else {
-            if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
-                HStack {
-                    view
-                }
-            }
-        }
-    }
-
     private func editButtonAction() async throws {
         if editMode?.wrappedValue.isEditing == false {
             editMode?.wrappedValue = .active
             return
         }
-
-        // TODO move that back into the model again?
 
         guard !model.modifiedDetailsBuilder.isEmpty else {
             logger.debug("Not saving anything, as there were no changes!")
@@ -267,13 +223,6 @@ struct AccountOverviewSections: View {
             !accountDetails.contains(element)
         }
     }
-
-    func isDeleteDisabled(for key: any AccountKey.Type) -> Bool {
-        if accountDetails.contains(key) && !model.removedAccountKeys.contains(key) {
-            return account.configuration[key]?.requirement == .required
-        }
-
-        // if not in the addedAccountKeys, it's a "add" button
-        return !model.addedAccountKeys.contains(key)
-    }
 }
+
+// TODO preview?

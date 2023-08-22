@@ -11,10 +11,10 @@ import SwiftUI
 
 
 struct ExistingAccountView<Continue: View>: View {
-    private let details: AccountDetails
+    private let accountDetails: AccountDetails
 
     private var service: any AccountService {
-        details.accountService
+        accountDetails.accountService
     }
 
     private let continueButton: Continue
@@ -24,7 +24,7 @@ struct ExistingAccountView<Continue: View>: View {
     var body: some View {
         VStack {
             VStack {
-                AnyView(service.viewStyle.makeAnyAccountSummary(details: details))
+                AnyView(service.viewStyle.makeAnyAccountSummary(details: accountDetails))
 
                 AsyncButton("UP_LOGOUT".localized(.module), role: .destructive, state: $viewState) {
                     try await service.logout()
@@ -58,7 +58,7 @@ struct ExistingAccountView<Continue: View>: View {
     ///   - details: The ``AccountDetails`` to render.
     ///   - continue: An optional `Continue` button.
     init(details: AccountDetails, @ViewBuilder `continue`: () -> Continue = { EmptyView() }) {
-        self.details = details
+        self.accountDetails = details
         self.continueButton = `continue`()
     }
 }

@@ -61,7 +61,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
         categorizedAccountKeys[category, default: []]
-            .sorted(using: AccountOverviewValuesComparator(accountDetails: details, addedAccountKeys: addedAccountKeys))
+            .sorted(using: AccountOverviewValuesComparator(details: details, added: addedAccountKeys, removed: removedAccountKeys))
     }
 
     func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
@@ -75,7 +75,7 @@ class AccountOverviewFormViewModel: ObservableObject {
         // - account keys for which the user doesn't have a value (to display a add button at the bottom of a section)
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
-            value.sorted(using: AccountOverviewValuesComparator(accountDetails: accountDetails, addedAccountKeys: addedAccountKeys))
+            value.sorted(using: AccountOverviewValuesComparator(details: accountDetails, added: addedAccountKeys, removed: removedAccountKeys))
         }
     }
 

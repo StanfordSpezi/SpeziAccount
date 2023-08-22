@@ -39,7 +39,15 @@ struct PasswordChangeSheet: View {
                 Section {
                     PasswordKey.DataEntry($newPassword)
                         .environment(\.passwordFieldType, .new)
+                        .focused($focusedDataEntry, equals: PasswordKey.focusState)
                         .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
+                        .onChange(of: newPassword) { newValue in
+                            // A workaround to execute the validation engine of the repeat field if it contains content.
+                            // It works, as we only have two validation closures in this view.
+                            if !newValue.isEmpty && !repeatPassword.isEmpty {
+                                model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
+                            }
+                        }
 
                     PasswordKey.DataEntry($repeatPassword)
                         .environment(\.passwordFieldType, .repeat)
@@ -81,7 +89,7 @@ struct PasswordChangeSheet: View {
 
     func submitPasswordChange() async throws {
         guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
-            return // TODO setting the focus thing doesn't work!
+            return
         }
 
         focusedDataEntry = nil

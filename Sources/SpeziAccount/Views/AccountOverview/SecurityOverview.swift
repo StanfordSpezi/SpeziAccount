@@ -41,12 +41,15 @@ struct SecurityOverview: View {
                 .filter { $0 != UserIdKey.self && $0 != PasswordKey.self }
                 .map { ForEachAccountKeyWrapper($0) }
 
-            // TODO each section or combined?
+
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
-                    // TODO build row reuse!
+                    // This view currently doesn't implement an EditMode. Current intention is that the
+                    // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
+                    // to manage and change the respective account value.
+                    AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
                 }
-            } // TODO onDelete modifier?
+            }
                 .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }

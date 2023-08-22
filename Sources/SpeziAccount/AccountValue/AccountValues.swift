@@ -28,6 +28,11 @@ public protocol AccountValues: AccountValuesCollection {
     /// The underlying storage repository.
     var storage: AccountStorage { get }
 
+    /// Retrieve the array of stored key of the repository.
+    ///
+    /// - Note: This doesn't contain stored `KnowledgeSources` that don't conform to ``AccountKey``.
+    var keys: [any AccountKey.Type] { get }
+
     /// Init from storage repository. Don't use this directly, use a instance of ``Builder``.
     /// - Parameter storage: The storage repository.
     init(from storage: AccountStorage)
@@ -62,6 +67,12 @@ extension AccountValues {
 
 
 extension AccountValues {
+    public var keys: [any AccountKey.Type] {
+        self.compactMap { element in
+            element.anySource as? any AccountKey.Type
+        }
+    }
+
     /// Default contains implementation forwarding to the Shared Repository.
     public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
         storage.contains(key)
