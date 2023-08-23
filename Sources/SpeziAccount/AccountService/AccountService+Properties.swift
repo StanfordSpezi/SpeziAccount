@@ -17,5 +17,5 @@ extension AccountService {
     ///     @AccountReference var account
     /// }
     /// ```
-    public typealias AccountReference = WeakInjectable<Account>
+    public typealias AccountReference = _WeakInjectable<Account>
 }

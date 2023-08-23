@@ -22,7 +22,12 @@ import SwiftUI
 /// - Note: `SpeziAccount` provides the generalized ``UserIdKey`` unique user identifier that can be customized
 ///     using the ``UserIdConfiguration``.
 ///
-/// You can learn more about creating an account service at: <doc:CreateAnAccountService>.
+/// You can learn more about creating an account service at: <doc:Creating-your-own-Account-Service>.
+///
+/// ## Topics
+///
+/// ### Result Builder
+/// - ``AccountServiceBuilder``
 public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Sendable {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle

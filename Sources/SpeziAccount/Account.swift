@@ -168,7 +168,7 @@ public class Account: ObservableObject, Sendable {
         let mirror = Mirror(reflecting: value)
 
         for (_, value) in mirror.children {
-            if let weakReference = value as? WeakInjectable<Account> { // see AccountService.AccountReference
+            if let weakReference = value as? _WeakInjectable<Account> { // see AccountService.AccountReference
                 weakReference.inject(self)
             } else if let accountService = value as? any AccountService {
                 // allow for nested injection like in the case of `StandardBackedAccountService`

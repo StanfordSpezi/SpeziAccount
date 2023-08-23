@@ -10,6 +10,11 @@ import SwiftUI
 
 
 /// The gender identity of a user.
+///
+/// ## Topics
+///
+/// ### Model
+/// - ``GenderIdentity``
 public struct GenderIdentityKey: AccountKey {
     public typealias Value = GenderIdentity
     public typealias DataEntry = GenderIdentityPicker

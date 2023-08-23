@@ -47,6 +47,9 @@ class YourAppDelegate: SpeziAppDelegate {
 operations. ``AccountService``s can be manually provided via the ``AccountConfiguration/init(configuration:_:)``  initializer.
 Otherwise, ``AccountService``s might be directly provided by other Spezi `Componet`s (like the `FirebaseAccountConfiguration`).
 
+> Note: A given ``AccountService`` implementation might only support storing a fixed set of account values (see ``SupportedAccountKeys``). In those cases you may be required to suply your own ``AccountStorageStandard`` implementation
+    to handle storage of additional account values. Refer to the <doc:Custom-Storage-Provider> article for information.
+
 ### Account Setup
 
 Now that we configured ``SpeziAccount``, let's see how users can setup their account within your app.
@@ -101,29 +104,18 @@ struct MyView: View {
 }
 ```
 
-### Custom Storage Provider
-
-Some ``AccountService`` implementations might not be able to store arbitrary ``AccountKey``s. In that case you need to provide
-a `Spezi` `Standard` that conforms to ``AccountStorageStandard`` and provide storage for additional user records.
-
 ## Topics
 
 ### Configuration
 
 - ``AccountConfiguration``
 - ``ConfiguredAccountKey``
-- ``AccountKeyRequirement``
 - ``AccountValueConfiguration``
-
-### Accessing Account Information
-
-- <doc:Using-the-Account-Object>
+- ``AccountKeyRequirement``
+- ``AccountKeyConfiguration``
+- ``AccountValueConfigurationError``
 
 ### Views
 
 - ``AccountSetup``
 - ``AccountOverview``
-
-### Providing Storage
-
-- ``AccountStorageStandard``

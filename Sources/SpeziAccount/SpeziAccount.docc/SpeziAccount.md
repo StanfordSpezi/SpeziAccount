@@ -38,9 +38,15 @@ A section
 
 - <doc:Initial-Setup>
 - <doc:Using-the-Account-Object>
+- <doc:Custom-Storage-Provider>
+
+### Account Values
+
+- <doc:Adding-new-Account-Values>
+- <doc:Handling-Account-Value-Storage>
+- <doc:Validation>
 
 ### Account Services
 
 - <doc:Creating-your-own-Account-Service>
 - <doc:Customize-your-View-Styles>
-- <doc:Adding-new-Account-Values>

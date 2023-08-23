@@ -21,6 +21,13 @@ public protocol AccountValuesCollection: AcceptingAccountValueVisitor, Collectio
 
 
 /// Storage unit for values of ``AccountKey``s.
+///
+/// ## Topics
+///
+/// ### Shared Repository
+///
+/// - ``AccountAnchor``
+/// - ``AccountStorage``
 public protocol AccountValues: AccountValuesCollection {
     /// Builder pattern to build a container of this type.
     typealias Builder = AccountValuesBuilder<Self>

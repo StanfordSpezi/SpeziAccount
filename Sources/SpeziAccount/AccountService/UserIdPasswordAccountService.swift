@@ -15,6 +15,16 @@
 /// - Note: The type of userId might be configured using ``UserIdConfiguration``. Additionally make sure, if you
 ///     require the ``UserIdKey`` and ``PasswordKey`` to be present, you have to manually specify the ``RequiredAccountKeys``
 ///     configuration.
+///
+/// ## Topics
+///
+/// ### Default View Style
+///
+/// - ``DefaultUserIdPasswordAccountSetupViewStyle``
+///
+/// ### Mock Implementations for SwiftUI Previews
+///
+/// - ``MockUserIdPasswordAccountService``
 public protocol UserIdPasswordAccountService: AccountService, EmbeddableAccountService where ViewStyle: UserIdPasswordAccountSetupViewStyle {
     /// This method implements login functionality using ``UserIdKey`` and ``PasswordKey``-based credentials.
     /// - Parameters:

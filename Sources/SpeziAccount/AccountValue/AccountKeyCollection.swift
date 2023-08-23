@@ -41,6 +41,13 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 ///
 /// Using the `KeyPath`-based result builder ``AccountKeyCollectionBuilder`` we can preserve user-friendly
 /// naming in debug messages (see ``AccountKeyWithDescription``).
+///
+/// ## Topics
+///
+/// ### Result Builder
+///
+/// - ``AccountKeyCollectionBuilder``
+/// - ``AccountKeyWithDescription``
 public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
     private let elements: [any AccountKeyWithDescription]
 

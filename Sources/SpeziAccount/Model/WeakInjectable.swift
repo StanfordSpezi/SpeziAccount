@@ -8,7 +8,10 @@
 
 /// The property wrapper to transparently declare a injectable, weak property for a given class type.
 @propertyWrapper
-public struct WeakInjectable<Type: AnyObject> {
+public struct _WeakInjectable<Type: AnyObject> {
+    // swiftlint:disable:previous type_name
+    // should not appear in documentation nor in autocomplete
+
     // we split that out into it's own type such that we don't need to make the whole `WeakInjectable` unchecked.
     fileprivate final class UncheckedWeakBox<ObjectType: AnyObject> {
         fileprivate weak var reference: ObjectType?
@@ -42,6 +45,6 @@ public struct WeakInjectable<Type: AnyObject> {
     }
 }
 
-extension WeakInjectable: Sendable where Type: Sendable {}
+extension _WeakInjectable: Sendable where Type: Sendable {}
 
-extension WeakInjectable.UncheckedWeakBox: @unchecked Sendable where Type: Sendable {}
+extension _WeakInjectable.UncheckedWeakBox: @unchecked Sendable where Type: Sendable {}

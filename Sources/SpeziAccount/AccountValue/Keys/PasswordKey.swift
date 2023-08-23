@@ -13,6 +13,12 @@ import SwiftUI
 ///
 /// This ``AccountKey`` transports the plain-text password of a user account.
 /// - Note: This account value is only ever present in the ``SignupDetails`` and never present in any of the other ``AccountValues``.
+///
+/// ## Topics
+///
+/// ### Password UI
+///
+/// - ``PasswordFieldType``
 public struct PasswordKey: RequiredAccountKey {
     public typealias Value = String
 

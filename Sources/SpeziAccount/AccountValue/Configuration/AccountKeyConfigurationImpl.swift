@@ -7,7 +7,7 @@
 //
 
 
-/// A configured of an ``AccountKey``.
+/// A user-configured ``AccountKey``.
 public protocol AccountKeyConfiguration: CustomStringConvertible, CustomDebugStringConvertible, Identifiable, Hashable
     where ID == ObjectIdentifier {
     /// The associated ``AccountKey``.

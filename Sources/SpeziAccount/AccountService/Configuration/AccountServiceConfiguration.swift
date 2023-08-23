@@ -33,10 +33,22 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 ///
 /// ## Topics
 ///
-/// ### Infrastructure
+/// ### Retrieving configuration
+/// Below is a list of configuration options built into the ``SpeziAccount`` framework.
 ///
-/// - ``AccountServiceConfigurationBuilder``
+/// - ``name``
+/// - ``image``
+/// - ``userIdConfiguration``
+/// - ``fieldValidationRules(for:)-5n7c0``
+/// - ``fieldValidationRules(for:)-2nqpi``
+///
+/// ### Result Builder
 /// - ``AccountServiceConfigurationKey``
+/// - ``AccountServiceConfigurationBuilder``
+///
+/// ### Shared Repository
+/// - ``AccountServiceConfigurationStorageAnchor``
+/// - ``AccountServiceConfigurationStorage``
 public struct AccountServiceConfiguration: Sendable {
     /// The underlying storage container you access to implement your own ``AccountServiceConfigurationKey``.
     public let storage: AccountServiceConfigurationStorage

@@ -24,6 +24,17 @@ import XCTRuntimeAssertions
 ///     and validate input against a ``ValidationEngine``.
 ///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageStandard``s
 ///     can easily store arbitrarily defined account values.
+///
+/// ## Topics
+///
+/// ### Builtin Account Keys
+/// - ``UserIdKey``
+/// - ``PasswordKey``
+/// - ``PersonNameKey``
+/// - ``EmailAddressKey``
+/// - ``DateOfBirthKey``
+/// - ``GenderIdentityKey``
+/// - ``ActiveAccountServiceKey``
 public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable, Value: Codable {
     /// The ``DataDisplayView`` that is used to display a value for this account value.
     ///

@@ -50,9 +50,10 @@ Below is a list of built-in account details. Other frameworks might extend this 
 - ``AccountDetails/dateOfBrith``
 - ``AccountDetails/genderIdentity``
 
+
 ### Accessing the Account Service
 To access the currently active `AccountService` or its configuration you may want to use the following properties:
 
 - ``AccountDetails/accountService``
-- ``AccountService/configuration``
+- ``AccountDetails/accountServiceConfiguration``
 - ``AccountDetails/userIdType``

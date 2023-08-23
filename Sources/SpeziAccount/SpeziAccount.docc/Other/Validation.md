@@ -1,6 +1,6 @@
 # Validation
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Generalized input validation abstraction.
 
 ## Overview
 
@@ -14,7 +14,7 @@
 - ``ValidationRule``
 - ``FailedValidationResult``
 
-### Built-in Validation Rules
+### Builtin Validation Rules
 
 - ``ValidationRule/nonEmpty``
 - ``ValidationRule/unicodeLettersOnly``
