@@ -123,12 +123,20 @@ extension BiographyKey {
 }
 ```
 
-Note that the input is only collected if at least one write happened to the value `Binding`.
+##### Input Validation
 
-> Important: You must validate the `String` input against validations rules provided by the account service through ``FieldValidationRules``.
-    `SpeziAccount` automatically injects a ``ValidationEngine`` object with the configured ``ValidationRule``s into the environment.
+`SpeziAccount` provides basic validation for most cases where necessary due to ``FieldValidationRules`` or ``AccountKeyRequirement`` configurations.
+Still you are required to evaluate to what extend you have to handle validation in your implementation.
+
+* For all `String` types a ``ValidationEngine`` is automatically injected into the environment. The ``ValidationEngine`` is either populated by
+    the rules provided by the account service through ``FieldValidationRules`` or if the user specified a ``AccountKeyRequirement/required`` level.
     You must execute the ``ValidationEngine/submit(input:debounce:)`` on input changes and display the ``ValidationEngine/displayedValidationResults``
     or use components like the ``VerifiableTextField`` that automatically do that for you.
+* For other types that use ``InitialValue/empty(_:)`` and are specified to be ``AccountKeyRequirement/required``,
+    validation is automatically set up to check if the user provided a value. For example given a `Date`-based account value, we would require that
+    the user modifies the Data at least once.
+* For other types that use ``InitialValue/default(_:)`` we do not perform any validation automatically.
+* If you have diverging needs (e.g., multi field input), you will need to handle validation yourself.
 
 
 ## Topics
@@ -138,6 +146,7 @@ Note that the input is only collected if at least one write happened to the valu
 - ``AccountKey``
 - ``RequiredAccountKey``
 - ``AccountKeyCategory``
+- ``InitialValue``
 - ``AccountKeys``
 - ``AccountValues``
 

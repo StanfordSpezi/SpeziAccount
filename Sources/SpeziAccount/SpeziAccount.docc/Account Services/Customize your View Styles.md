@@ -1,6 +1,6 @@
 # Customize your View Styles
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Customize how your Account Service appears in the ``AccountSetup`` view.
 
 <!--
                   
@@ -14,11 +14,12 @@ SPDX-License-Identifier: MIT
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+``AccountSetupViewStyle``s are used to present your Account Service implementation to the user in the ``AccountSetup`` view.
+For some Views default implementations are provided based on the ``AccountServiceConfiguration`` (e.g. using the ``AccountServiceName`` or ``AccountServiceImage``)
+or based on the type of Account Service used.
 
-### Section header
-
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+For more information refer to the documentation of ``AccountSetupViewStyle``, ``EmbeddableAccountSetupViewStyle``, ``UserIdPasswordAccountSetupViewStyle``,
+or ``IdentityProviderViewStyle``.
 
 ## Topics 
 
@@ -39,9 +40,8 @@ TODO topics on account setup?
 - ``GenderIdentityPicker``
 - ``SuccessfulPasswordResetView``
 
-### UserId- and Password-based UI Components
+### UI Components for an UserIdPasswordAccountService
 
 - ``UserIdPasswordPrimaryView``
 - ``UserIdPasswordEmbeddedView``
 - ``UserIdPasswordResetView``
-// TODO the view style?
