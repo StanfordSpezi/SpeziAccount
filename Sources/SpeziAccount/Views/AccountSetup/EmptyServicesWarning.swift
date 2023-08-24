@@ -12,8 +12,7 @@ import SwiftUI
 struct EmptyServicesWarning: View {
     private var documentationUrl: URL {
         // we may move to a #URL macro once Swift 5.9 is shipping
-        // TODO update docs URL!
-        guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/createanaccountservice") else {
+        guard let docsUrl = URL(string: "https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/initial-setup") else {
             fatalError("Failed to construct SpeziAccount Documentation URL. Please review URL syntax!")
         }
 
