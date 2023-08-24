@@ -59,14 +59,13 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// Use ``AccountKeyCategory/other`` to move the ``DataEntry`` view to a unnamed group at the bottom.
     static var category: AccountKeyCategory { get }
 
-    /// An empty value instance of the account value
+    /// The ``InitialValue`` that is used when supplying a new account value.
     ///
     /// An empty value (e.g., a empty String) is required when the user is asked to supply a new value for the account value
     /// in views like the ``SignupForm``.
     ///
-    /// - Note: For this property there are default implementations for some standard types or for types that conform to the
-    ///     `DefaultInitializable` protocol of the `Spezi` framework.
-    static var emptyValue: Value { get }
+    /// - Note: There are default implementations for some standard types that all provide a ``InitialValue/empty(_:)`` value.
+    static var initialValue: InitialValue<Value> { get }
 
     /// A unique identifier for an account key.
     ///
@@ -91,45 +90,35 @@ extension AccountKey {
     }
 }
 
-extension AccountKey where Value: DefaultInitializable {
-    /// Default empty value for `DefaultInitializable`.
-    public static var emptyValue: Value {
-        .init()
-    }
-}
 
 extension AccountKey where Value: StringProtocol {
-    /// Default empty value for `String` values.
-    public static var emptyValue: Value {
-        ""
+    /// Default initial value for `String` values.
+    public static var initialValue: InitialValue<Value> {
+        .empty("")
     }
 }
 
-extension AccountKey where Value == Date {
-    /// Default empty value for `Date` values.
-    public static var emptyValue: Value {
-        Date()
-    }
-}
 
 extension AccountKey where Value: AdditiveArithmetic {
-    /// Default empty value for numeric values.
-    public static var emptyValue: Value {
+    /// Default initial value for numeric values.
+    public static var initialValue: InitialValue<Value> {
         // this catches all the numeric types
-        .zero
+        .empty(.zero)
     }
 }
+
 
 extension AccountKey where Value: ExpressibleByArrayLiteral {
-    /// Default empty value for `Array` values.
-    public static var emptyValue: Value {
-        []
+    /// Default initial value for `Array` values.
+    public static var initialValue: InitialValue<Value> {
+        .empty([])
     }
 }
 
+
 extension AccountKey where Value: ExpressibleByDictionaryLiteral {
-    /// Default empty value for `Dictionary` values.
-    public static var emptyValue: Value {
-        [:]
+    /// Default initial value for `Dictionary` values.
+    public static var initialValue: InitialValue<Value> {
+        .empty([:])
     }
 }

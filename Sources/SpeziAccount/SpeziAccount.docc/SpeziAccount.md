@@ -1,6 +1,6 @@
 # ``SpeziAccount``
 
-A Spezi framework that provides account-related functionality including login, sign up and reset password functionality.
+A Spezi framework that provides account-related functionality including login, sign up and password reset.
 
 <!--
                   
@@ -12,24 +12,21 @@ SPDX-License-Identifier: MIT
              
 -->
 
-<!-- TODO rephrase? -->
-
-```swift
-// TODO we have the following categories
-//  - creating your own account service (account services types, configuration, view styles, account values?, data entry, signup and validation)
-//  - creating your own view styles
-//  - creating your own AccountValues!
-//  - 1. setting up spezi account (main view: AccountSetup, AccountConfiguration component, Account object and account values!, maybe accessing account service configuration?)
-//  - 2. writing UI that accesses the current user? split out? => AccountValues, AccountServiceConfiguration 
-```
-
 ## Overview
 
-An overview
+The `SpeziAccount` framework fully abstracts setup and management of user account functionality for the
+[Spezi](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi) framework ecosystem.
 
-### Section header
+> Note: The <doc:Initial-Setup> article provides a quick-start guide to setup `SpeziAccount` in your App.
 
-A section
+The ``AccountSetup`` and ``AccountOverview`` views are central to `SpeziAccount`.
+You use the ``AccountDetails`` abstraction within your views to visualize account information of the associated user account.
+
+An ``AccountService`` provides an abstraction layer for managing different types of account management services
+(e.g. email address and password based service combined with a identity provider like Sign in With Apple).
+
+> Note: The [SpeziFirebase](https://swiftpackageindex.com/StanfordSpezi/SpeziFirebase/documentation/spezifirebaseaccount)
+    framework provides the `FirebaseAccountConfiguration` you can use to configure an Account Service base on the Google Firebase service.
 
 
 ## Topics

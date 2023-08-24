@@ -37,7 +37,7 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 }
 
 
-/// A collection of ``AccountKey``s that is built using `KeyPath` specification.
+/// A collection of ``AccountKey``s that is built using `KeyPath`-based specification.
 ///
 /// Using the `KeyPath`-based result builder ``AccountKeyCollectionBuilder`` we can preserve user-friendly
 /// naming in debug messages (see ``AccountKeyWithDescription``).
@@ -64,10 +64,10 @@ public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
     }
 
 
-    public func acceptAll<Visitor: AccountKeyVisitor>(_ visitor: Visitor) -> Visitor.Final {
+    public func acceptAll<Visitor: AccountKeyVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
         self
             .map { $0.key }
-            .acceptAll(visitor)
+            .acceptAll(&visitor)
     }
 }
 

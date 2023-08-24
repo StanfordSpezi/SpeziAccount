@@ -16,7 +16,7 @@ Account services describe the mechanism for account management components to dis
 // TODO update this document!
 ```
 
-<!--
+
 ## Create Your Account Service
 
 You can create new account services by conforming to the ``AccountService`` protocol.

@@ -15,10 +15,12 @@ import Spezi
 /// (see ``SupportedAccountKeys/exactly(_:)``. If you nonetheless want to use ``AccountKey``s that are unsupported
 /// by your ``AccountService``, you may add an implementation of the `AccountStorageStandard` protocol to your App's `Standard`,
 /// inorder to handle storage and retrieval of these additional account values.
+///
+/// - Note: You can use the ``AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
 public protocol AccountStorageStandard: Standard {
     /// Create new associated account data.
     ///
-    /// - Note: A call to this method might certanily be immediately followed by a call to ``load(_:_:)``.
+    /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
@@ -45,7 +47,7 @@ public protocol AccountStorageStandard: Standard {
 
     /// Modify the associated account data of an existing user account.
     ///
-    /// - Note: A call to this method might certanily be immediately followed by a call to ``load(_:_:)``.
+    /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.

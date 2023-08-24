@@ -22,6 +22,8 @@ public struct GenderIdentityKey: AccountKey {
     public static let name = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
 
     public static let category: AccountKeyCategory = .personalDetails
+
+    public static let initialValue: InitialValue<Value> = .default(.preferNotToState)
 }
 
 

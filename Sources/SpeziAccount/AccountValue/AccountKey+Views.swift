@@ -23,7 +23,7 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 
 extension AccountKey {
     static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
-        AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: emptyValue))
+        AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: initialValue.value))
     }
 
     static func dataEntryViewWithCurrentStoredValue<Values: AccountValues>(

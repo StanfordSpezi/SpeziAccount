@@ -10,8 +10,12 @@ import Foundation
 import Spezi
 
 
-private struct RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
+private class RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
     let builder: AccountValuesBuilder<Values>
+
+    init(builder: AccountValuesBuilder<Values>) {
+        self.builder = builder
+    }
 
     func visit<Key: AccountKey>(_ key: Key.Type) {
         builder.remove(key)
@@ -19,9 +23,14 @@ private struct RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
 }
 
 
-private struct CopyVisitor<Values: AccountValues>: AccountValueVisitor {
+private class CopyVisitor<Values: AccountValues>: AccountValueVisitor {
     let builder: AccountValuesBuilder<Values>
     let allowOverwrite: Bool
+
+    init(builder: AccountValuesBuilder<Values>, allowOverwrite: Bool) {
+        self.builder = builder
+        self.allowOverwrite = allowOverwrite
+    }
 
     func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
         if allowOverwrite || !builder.contains(Key.self) {
@@ -31,9 +40,14 @@ private struct CopyVisitor<Values: AccountValues>: AccountValueVisitor {
 }
 
 
-private struct CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>: AccountKeyVisitor {
+private class CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>: AccountKeyVisitor {
     let destination: AccountValuesBuilder<Destination>
     let source: Source
+
+    init(destination: AccountValuesBuilder<Destination>, source: Source) {
+        self.destination = destination
+        self.source = source
+    }
 
     func visit<Key: AccountKey>(_ key: Key.Type) {
         if let value = source.storage.get(key) {
@@ -47,6 +61,31 @@ private struct CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>
 ///
 /// This type allows to easily build and modify an instance of ``AccountValues``.
 /// Use the ``AccountValues/Builder`` typealias to instantiate a builder for any given ``AccountValues`` implementation.
+///
+/// ## Topics
+///
+/// ### Creating a new builder
+/// - ``AccountValuesBuilder/init()``
+/// - ``AccountValuesBuilder/init(from:)``
+///
+/// ### Setting a Account Value
+/// - ``AccountValuesBuilder/set(_:value:)-6s8dc``
+/// - ``AccountValuesBuilder/set(_:value:)-1qcx7``
+///
+/// ### Merging
+/// - ``AccountValuesBuilder/merging(_:allowOverwrite:)``
+/// - ``AccountValuesBuilder/merging(with:from:)``
+///
+/// ### Removal
+/// - ``AccountValuesBuilder/remove(_:)-99d1h``
+/// - ``AccountValuesBuilder/remove(_:)-5m271``
+/// - ``AccountValuesBuilder/remove(any:)``
+/// - ``AccountValuesBuilder/remove(all:)``
+///
+/// ### Building
+/// - ``AccountValuesBuilder/build()-pqt5``
+/// - ``AccountValuesBuilder/build(owner:)``
+/// - ``AccountValuesBuilder/build(checking:)``
 public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, AccountValuesCollection {
     @Published var storage: AccountStorage
 
@@ -145,11 +184,11 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     }
 
     /// Remove a value from the builder using a type-erased ``AccountKey`` metatype.
-    /// - Parameter accountValue: The type-erased ``AccountKey``.
+    /// - Parameter accountKey: The type-erased ``AccountKey``.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func remove(any accountValue: any AccountKey.Type) -> Self {
-        accountValue.accept(RemoveVisitor(builder: self))
+    public func remove(any accountKey: any AccountKey.Type) -> Self {
+        accountKey.accept(RemoveVisitor(builder: self))
         return self
     }
 
@@ -214,6 +253,6 @@ extension AccountValuesBuilder {
 
 extension AccountKey {
     fileprivate static func setEmpty<Values: AccountValues>(in builder: AccountValuesBuilder<Values>) {
-        builder.set(Self.self, value: emptyValue)
+        builder.set(Self.self, value: initialValue.value)
     }
 }

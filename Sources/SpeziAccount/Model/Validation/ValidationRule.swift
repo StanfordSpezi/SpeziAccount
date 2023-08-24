@@ -111,7 +111,7 @@ public struct ValidationRule: Identifiable, Sendable {
             return nil
         }
         
-        return FailedValidationResult(from: self, message: message)
+        return FailedValidationResult(from: self)
     }
 }
 

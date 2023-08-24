@@ -160,8 +160,12 @@ struct ValidationClosure<FieldIdentifier> {
 /// }
 /// ```
 public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
-    // deliberately now @Published, registered methods should not trigger a UI update
+    // deliberately not @Published, registered methods should not trigger a UI update
     private var storage: OrderedDictionary<UUID, ValidationClosure<FieldIdentifier>>
+
+    var count: Int {
+        storage.count
+    }
 
     /// Create a new `ValidationClosures` instance by specifying the type `FieldIdentifier` used with the `FocusState` instance.
     /// - Parameter focusStateOf: The underlying type of the `FocusState`.
@@ -172,6 +176,10 @@ public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
     /// Creates a new `ValidationClosures` instance without using the `FocusState` functionality.
     public convenience init() where FieldIdentifier == Never {
         self.init(focusStateOf: Never.self)
+    }
+
+    func has(_ validation: ValidationEngine) -> Bool {
+        storage[validation.id] != nil
     }
 
     func register(validation: ValidationClosure<FieldIdentifier>) -> EmptyView {
@@ -201,15 +209,17 @@ public class ValidationClosures<FieldIdentifier: Hashable>: ObservableObject {
     ///   - validation: The validation closure returning a ``ValidationResult``.
     /// - Returns: A `EmptyView` such that you can easily call this method in your view body.
     @discardableResult
-    public func register(running engine: ValidationEngine, validation: @escaping () -> ValidationResult) -> EmptyView
-        where FieldIdentifier == Never {
+    public func register(running engine: ValidationEngine, validation: @escaping () -> ValidationResult) -> EmptyView {
         register(validation: ValidationClosure(id: engine.id, for: nil, closure: validation))
     }
 
     /// Removes the registered validation closure of the ``ValidationEngine``.
     /// - Parameter engine: The ``ValidationEngine`` which previously a validation closure was registered for.
-    public func remove(engine: ValidationEngine) {
+    /// - Returns: A `EmptyView` such that you can easily call this method in your view body.
+    @discardableResult
+    public func remove(engine: ValidationEngine) -> EmptyView {
         storage[engine.id] = nil
+        return EmptyView()
     }
 
     /// Clear any registered closures from the storage.

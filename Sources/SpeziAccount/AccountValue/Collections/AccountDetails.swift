@@ -38,7 +38,7 @@ public struct AccountDetails: Sendable, AccountValues {
 extension AccountValuesBuilder where Values == AccountDetails {
     /// ``AccountDetails`` must always be created through the ``build(owner:)`` method.
     @available(*, deprecated, message: "You must use the build(owner:) method to build AccountDetails. This method will result in a runtime crash!")
-    public func build() -> Values {
+    public func build() -> AccountDetails {
         // swiftlint:disable:previous unavailable_function
         preconditionFailure("You need to build AccountDetails using build(owner:)")
     }

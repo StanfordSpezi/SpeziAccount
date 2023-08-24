@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import SpeziViews
 import SwiftUI
 
@@ -18,6 +17,8 @@ public struct PersonNameKey: AccountKey {
     public static let name = LocalizedStringResource("NAME", bundle: .atURL(from: .module))
 
     public static let category: AccountKeyCategory = .name
+
+    public static let initialValue: InitialValue<Value> = .empty(PersonNameComponents())
 }
 
 
@@ -155,6 +156,3 @@ extension PersonNameKey {
         }
     }
 }
-
-
-extension PersonNameComponents: DefaultInitializable {}

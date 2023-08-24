@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Spezi
 
 
 /// Describes the self-identified gender identity.
@@ -26,13 +25,6 @@ public enum GenderIdentity: String, Sendable, CaseIterable, Identifiable, Hashab
     
     public var id: RawValue {
         rawValue
-    }
-}
-
-
-extension GenderIdentity: DefaultInitializable {
-    public init() {
-        self = .preferNotToState
     }
 }
 

@@ -47,7 +47,8 @@ class YourAppDelegate: SpeziAppDelegate {
 operations. ``AccountService``s can be manually provided via the ``AccountConfiguration/init(configuration:_:)``  initializer.
 Otherwise, ``AccountService``s might be directly provided by other Spezi `Componet`s (like the `FirebaseAccountConfiguration`).
 
-> Note: A given ``AccountService`` implementation might only support storing a fixed set of account values (see ``SupportedAccountKeys``). In those cases you may be required to suply your own ``AccountStorageStandard`` implementation
+> Note: A given ``AccountService`` implementation might only support storing a fixed set of account values (see ``SupportedAccountKeys``).
+    In those cases you may be required to suply your own ``AccountStorageStandard`` implementation
     to handle storage of additional account values. Refer to the <doc:Custom-Storage-Provider> article for information.
 
 ### Account Setup
@@ -58,7 +59,8 @@ Account setup is done through the ``AccountSetup`` view. It presents all configu
 ``AccountService`` to setup their account.
 
 You should make sure to handle the case where there is already an active account setup when showing the ``AccountSetup`` view.
-You can use the ``Account/signedIn`` property to conditionally hide or render another view if there is already a signed in user account (more information in <doc:Using-the-Account-Object>). Refer to the example below:
+You can use the ``Account/signedIn`` property to conditionally hide or render another view if there is already a signed in user account
+(more information in <doc:Using-the-Account-Object>). Refer to the example below:
 
 ```swift
 struct MyView: View {

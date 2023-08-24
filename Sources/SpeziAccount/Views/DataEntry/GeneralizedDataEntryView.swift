@@ -12,7 +12,7 @@ import SwiftUI
 
 /// Helper protocol to easily retrieve Wrapped.Key types with String value
 private protocol GeneralizedStringEntryView {
-    func validationRules() -> [ValidationRule]?
+    func validationRules() -> [ValidationRule]
 }
 
 
@@ -39,16 +39,29 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
     public var body: some View {
         Group {
             if let stringValue = value as? String,
-               let stringEntryView = self as? GeneralizedStringEntryView,
-               let validationRules = stringEntryView.validationRules() {
+               let stringEntryView = self as? GeneralizedStringEntryView {
+                // if we have a string value, we have to check if FieldValidationRules is configured and
+                // inject a ValidationEngine into the environment
                 Wrapped($value)
-                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: validationRules)
+                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
+            } else if case .empty = Wrapped.Key.initialValue,
+                      account.configuration[Wrapped.Key.self]?.requirement == .required {
+                // If the field provides an empty value and is required, we inject a `nonEmpty` validation rule
+                // if there isn't a validation engine already in the subview!
+                Wrapped($value)
+                    // checks that non-string values are supplied if configured to be `.required`
+                    .requiredValidation(for: Wrapped.Key.self, storage: Values.self, $value)
             } else {
                 Wrapped($value)
-                    // TODO manage validation for non-provided account values that are required!
             }
         }
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
+            .onAppear {
+                // values like `GenderIdentity` provide a default value
+                if case let .default(value) = Wrapped.Key.initialValue {
+                    detailsBuilder.set(Wrapped.Key.self, value: value)
+                }
+            }
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
                 detailsBuilder.set(Wrapped.Key.self, value: newValue)
@@ -65,7 +78,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
 
 extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
-    func validationRules() -> [ValidationRule]? { // swiftlint:disable:this discouraged_optional_collection
+    func validationRules() -> [ValidationRule] {
         if let rules = configuration.fieldValidationRules(for: Wrapped.Key.self) {
             return rules
         }
@@ -74,6 +87,8 @@ extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key
             return [.nonEmpty]
         }
 
-        return nil
+        // we always want to inject a validation engine. Otherwise, account key would need to check the existence
+        // of an environment object.
+        return []
     }
 }

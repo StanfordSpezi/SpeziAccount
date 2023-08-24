@@ -27,9 +27,9 @@ The first step is to create a new type that adopts the ``AccountKey`` protocol.
 > Note: Refer to the ``RequiredAccountKey`` protocol if you require a account value that is always required to be supplied if configured.
 
 When adopting the protocol, you have to provide the associated [Value](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/knowledgesource/value)
-type, a ``AccountKey/category`` and an ``AccountKey/emptyValue-10l6x``.
+type, a ``AccountKey/category`` and an ``AccountKey/initialValue-6h1oo``.
 The `Value` defines the type of the account value while the `category` is used to group the account values in UI components (see ``AccountKeyCategory`` for more information).
-The `emptyValue` is used as the initial value on signup and might be default implemented (see the `Value Conformances` section below).
+The `initialValue` defines the initial value on signup and how it is used. For some types like String a default ``InitialValue/empty(_:)`` implementation is provided.
 
 > Note: The associated type for the value is coming from the underlying 
     [KnowledgeSource](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/knowledgesource) protocol from the Spezi framework. 
@@ -48,14 +48,10 @@ public struct BiographyKey: AccountKey {
 
 Your `Value` type requires several protocol conformances.
 
-* The `Value` type must conform to `Sendable` to be safely passed accross actor boundaries.
+* The `Value` type must conform to `Sendable` to be safely passed across actor boundaries.
 * The `Value` type must conform to `Equatable` to be easily notified about changes at data entry.
 * The `Value` type must conform to `Codable` such that ``AccountService``s or a ``AccountStorageStandard`` can easily store and retrieve
     arbitrary `Value` types.
-
-> Important: If your `Value` can be default initialized, either by using a supported standard type or by additionally conforming to the `Spezi`
-    `DefaultInitializable` protcol, a default implementation for ``AccountKey/emptyValue-10l6x`` is automatically provided.
-    Otherwise, you need to manually add a `emptyValue` property to your implementation.
 
 ### Accessors
 
@@ -123,15 +119,16 @@ extension BiographyKey {
             VerifiableTextField("A short biography", text: $biography, axis: .vertical)
                 .lineLimit(3...6)
         }
-        
-        // TODO you have to handle validation of data given the thing is required (if it's not a string)!
-        
     }
 }
 ```
 
-> Important: You must handle validation of the entered account value. `SpeziAccount` automatically injects a ``ValidationEngine`` object
-    into the environment if you use a `String` value. A ``VerifiableTextField`` automatically uses that.
+Note that the input is only collected if at least one write happened to the value `Binding`.
+
+> Important: You must validate the `String` input against validations rules provided by the account service through ``FieldValidationRules``.
+    `SpeziAccount` automatically injects a ``ValidationEngine`` object with the configured ``ValidationRule``s into the environment.
+    You must execute the ``ValidationEngine/submit(input:debounce:)`` on input changes and display the ``ValidationEngine/displayedValidationResults``
+    or use components like the ``VerifiableTextField`` that automatically do that for you.
 
 
 ## Topics

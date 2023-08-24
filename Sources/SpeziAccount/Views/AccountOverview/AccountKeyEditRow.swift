@@ -21,7 +21,7 @@ struct AccountKeyEditRow: View {
     var body: some View {
         if editMode?.wrappedValue.isEditing == true {
             // we place everything in the same HStack, such that animations are smooth
-            let hStack = HStack {
+            let hStack = VStack {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
                     if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
                         view

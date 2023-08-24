@@ -21,8 +21,8 @@ public struct FailedValidationResult: Identifiable, CustomLocalizedStringResourc
         message
     }
 
-    init(from rule: ValidationRule, message: LocalizedStringResource) {
+    init(from rule: ValidationRule) {
         self.id = rule.id
-        self.message = message
+        self.message = rule.message
     }
 }

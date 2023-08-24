@@ -17,6 +17,8 @@ public struct DateOfBirthKey: AccountKey {
     public static let name = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
 
     public static let category: AccountKeyCategory = .personalDetails
+    
+    public static let initialValue: InitialValue<Value> = .empty(Date())
 }
 
 extension AccountKeys {

@@ -19,3 +19,29 @@ SPDX-License-Identifier: MIT
 ### Section header
 
 <!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+
+## Topics 
+
+### Designing Account Setup Views
+
+- ``AccountSetupViewStyle``
+- ``EmbeddableAccountSetupViewStyle``
+- ``UserIdPasswordAccountSetupViewStyle``
+- ``IdentityProviderViewStyle``
+
+### Reusable UI Components
+
+TODO topics on account setup?
+- ``DefaultAccountSetupHeader``
+- ``AccountSummaryBox``
+- ``SignupForm``
+- ``DateOfBirthPicker``
+- ``GenderIdentityPicker``
+- ``SuccessfulPasswordResetView``
+
+### UserId- and Password-based UI Components
+
+- ``UserIdPasswordPrimaryView``
+- ``UserIdPasswordEmbeddedView``
+- ``UserIdPasswordResetView``
+// TODO the view style?

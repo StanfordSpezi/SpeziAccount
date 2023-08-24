@@ -35,8 +35,8 @@ public struct ValidationResultsView: View {
 struct ValidationResultsView_Previews: PreviewProvider {
     static var previews: some View {
         ValidationResultsView(results: [
-            .init(from: .nonEmpty, message: ValidationRule.nonEmpty.message),
-            .init(from: .mediumPassword, message: ValidationRule.mediumPassword.message)
+            .init(from: .nonEmpty),
+            .init(from: .mediumPassword)
         ])
     }
 }
