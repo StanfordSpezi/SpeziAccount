@@ -26,7 +26,7 @@ extension AccountKey {
         AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: initialValue.value))
     }
 
-    static func dataEntryViewWithCurrentStoredValue<Values: AccountValues>(
+    static func dataEntryViewWithStoredValue<Values: AccountValues>(
         details: AccountDetails,
         for values: Values.Type
     ) -> AnyView? {

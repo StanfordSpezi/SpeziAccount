@@ -23,14 +23,18 @@ struct AccountKeyEditRow: View {
             // we place everything in the same HStack, such that animations are smooth
             let hStack = VStack {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
-                    if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
-                        view
-                    } else if let view = accountKey.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
-                        view
+                    Group {
+                        if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
+                            view
+                        } else if let view = accountKey.dataEntryViewWithStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
+                            view
+                        }
                     }
+                        .environment(\.accountViewType, .overview(mode: .existing))
                 } else if model.addedAccountKeys.contains(accountKey) { // no need to repeat the removedAccountKeys condition
                     accountKey.emptyDataEntryView(for: ModifiedAccountDetails.self)
                         .deleteDisabled(false)
+                        .environment(\.accountViewType, .overview(mode: .new))
                 } else {
                     Button(action: {
                         model.addAccountDetail(for: accountKey)
@@ -52,6 +56,7 @@ struct AccountKeyEditRow: View {
                 HStack {
                     view
                 }
+                    .environment(\.accountViewType, .overview(mode: .display))
             }
         }
     }

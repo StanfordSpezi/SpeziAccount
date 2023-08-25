@@ -88,3 +88,10 @@ extension AccountValueConfiguration: Collection {
         configuration.values[position]
     }
 }
+
+
+extension AccountValueConfiguration: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: ConfiguredAccountKey...) {
+        self.init(elements)
+    }
+}

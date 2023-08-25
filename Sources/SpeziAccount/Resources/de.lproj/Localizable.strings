@@ -99,6 +99,7 @@
 
 // MARK: - Date Of Birth
 "UAP_SIGNUP_DATE_OF_BIRTH_TITLE" = "Geburtsdatum";
+"ADD_DATE" = "Hinzufügen";
 
 // MARK: - Gender Identity
 "GENDER_IDENTITY_TITLE" = "Geschlechtsidentität";

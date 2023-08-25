@@ -32,6 +32,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
     @Environment(\.accountServiceConfiguration) private var configuration
+    @Environment(\.accountViewType) private var viewType
 
     @State private var value: Wrapped.Key.Value
 
@@ -57,8 +58,9 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
         }
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
             .onAppear {
-                // values like `GenderIdentity` provide a default value
-                if case let .default(value) = Wrapped.Key.initialValue {
+                // values like `GenderIdentity` provide a default value a user might not want to change
+                if viewType?.enteringNewData == true,
+                   case let .default(value) = Wrapped.Key.initialValue {
                     detailsBuilder.set(Wrapped.Key.self, value: value)
                 }
             }

@@ -18,7 +18,9 @@ public struct DateOfBirthKey: AccountKey {
 
     public static let category: AccountKeyCategory = .personalDetails
     
-    public static let initialValue: InitialValue<Value> = .empty(Date())
+    public static var initialValue: InitialValue<Value> {
+        .empty(Date())
+    }
 }
 
 extension AccountKeys {
@@ -66,13 +68,5 @@ extension DateOfBirthKey {
         public init(_ value: Date) {
             self.value = value
         }
-    }
-}
-
-extension DateOfBirthPicker: DataEntryView {
-    public typealias Key = DateOfBirthKey
-
-    public init(_ value: Binding<Key.Value>) {
-        self.init(date: value)
     }
 }

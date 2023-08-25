@@ -29,12 +29,13 @@ struct SingleEditView<Key: AccountKey>: View {
     var body: some View {
         Form {
             VStack {
-                Key.dataEntryViewWithCurrentStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
+                Key.dataEntryViewWithStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
             }
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
             .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
+            .environment(\.accountViewType, .overview(mode: .existing))
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)

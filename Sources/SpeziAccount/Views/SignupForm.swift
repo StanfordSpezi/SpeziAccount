@@ -55,6 +55,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
             sectionsView
                 .environment(\.accountServiceConfiguration, service.configuration)
+                .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
                 .environmentObject(validationClosures)
                 .environmentObject(FocusStateObject(focusedField: _focusedDataEntry))

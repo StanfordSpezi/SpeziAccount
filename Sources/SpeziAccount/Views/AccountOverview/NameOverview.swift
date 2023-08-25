@@ -46,6 +46,7 @@ struct NameOverview: View {
             .navigationTitle(model.accountIdentifierLabel(details: accountDetails))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
+            .environment(\.accountViewType, .overview(mode: .display))
     }
 
 
