@@ -49,6 +49,10 @@ public protocol AccountStorageStandard: Standard {
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
+    /// TODO forward userId update to here as well! + docs
+    ///
+    /// TODO grammar checks for articles!
+    ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
     ///   - modifications: The account modifications.

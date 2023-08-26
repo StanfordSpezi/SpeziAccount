@@ -13,64 +13,86 @@ import SwiftUI
 
 
 struct AccountTestsView: View {
-    // @EnvironmentObject var account: Account
-    // @EnvironmentObject var userNo: User // TODO removed
-    // @State var showLogin = false
-    // @State var showSignUp = false
-    // TODO show different configurations (e.g. multiple account services vs ??)
+    @Environment(\.features)
+    var features
+
+    @EnvironmentObject var account: Account
+
+    @State var showSetup = false
+    @State var showOverview = false
+    @State var isEditing = false
+
     
     var body: some View {
-        AccountSetup()
-            // TODO .navigationTitle("Spezi Account")
-        /*
-        List {
-            if account.signedIn {
-                HStack {
-                    UserProfileView(name: user.name)
-                        .frame(height: 30)
-                    Text(user.username ?? user.name.formatted())
+        NavigationStack {
+            List {
+                Button("Account Setup") {
+                    showSetup = true
+                }
+                Button("Account Overview") {
+                    showOverview = true
                 }
             }
-            Button("Login") {
-                showLogin.toggle()
-            }
-            Button("SignUp") {
-                showSignUp.toggle()
-            }
+                .navigationTitle("Spezi Account")
+                .sheet(isPresented: $showSetup) {
+                    NavigationStack {
+                        AccountSetup {
+                            Button(action: {
+                                showSetup = false
+                            }, label: {
+                                Text("Finish")
+                                    .frame(maxWidth: .infinity, minHeight: 38)
+                            })
+                                .buttonStyle(.borderedProminent)
+                        }
+                            .toolbar {
+                                ToolbarItemGroup(placement: .cancellationAction) {
+                                    Button("Close") {
+                                        showSetup = false
+                                    }
+                                }
+                            }
+                    }
+                }
+                .sheet(isPresented: $showOverview) {
+                    NavigationStack {
+                        AccountOverview(isEditing: $isEditing)
+                            .toolbar {
+                                if !isEditing {
+                                    ToolbarItemGroup(placement: .cancellationAction) {
+                                        Button("Close") {
+                                            showOverview = false
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                }
+                .onChange(of: account.signedIn) { newValue in
+                    if newValue {
+                        showSetup = false
+                    }
+                }
         }
-            .sheet(isPresented: $showLogin) {
-                NavigationStack {
-                    Login()
-                }
-            }
-            .sheet(isPresented: $showSignUp) {
-                NavigationStack {
-                    SignUp()
-                }
-            }
-            .onChange(of: account.signedIn) { signedIn in
-                if signedIn {
-                    showLogin = false
-                    showSignUp = false
-                }
-            }
-         */
     }
 }
 
 
 #if DEBUG
 struct AccountTestsView_Previews: PreviewProvider {
-    // TODO some problems with (4, 34) Main actor-isolated static property '_previews' cannot be used to satisfy nonisolated protocol requirement?
-    static var previews: some View {
-        NavigationStack {
-            AccountTestsView()
-        }
-            .environmentObject(Account(TestUsernamePasswordAccountService()))
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.genderIdentity, value: .male)
 
-        NavigationStack {
-            AccountTestsView()
-        }
+    static var previews: some View {
+        AccountTestsView()
+            .environmentObject(Account(TestAccountService(.emailAddress)))
+
+        AccountTestsView()
+            .environmentObject(Account(building: details, active: TestAccountService(.emailAddress)))
+
+        AccountTestsView()
             .environmentObject(Account())
     }
 }

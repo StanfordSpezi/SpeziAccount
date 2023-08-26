@@ -8,8 +8,8 @@
 
 // MARK: - General
 "OR" = "oder";
-"MISSING_ACCOUNT_SERVICES" = "Es wurden keine AccountServices konfiguriert.\nBitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!";
-"MISSING_ACCOUNT_DETAILS" = "**Kein Benutzerkonto gefunden.**\n\nDiese Oberfläche erfordert ein aktives Benutzerkonto.\nBitte kontaktiere die Dokumentation für die `AccountSetup` Oberfläche, um ein Benutzerkonto einzurichten.";
+"MISSING_ACCOUNT_SERVICES" = "**Es wurden keine Account Services konfiguriert.**\n\nBitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!";
+"MISSING_ACCOUNT_DETAILS" = "**Kein Benutzerkonto gefunden.**\n\nDiese Oberfläche erfordert ein aktives Benutzerkonto.\nBitte kontaktiere die Dokumentation für die AccountSetup Oberfläche, um ein Benutzerkonto einzurichten.";
 "OPEN_DOCUMENTATION" = "Dokumentation öffnen";
 
 // MARK: - Account

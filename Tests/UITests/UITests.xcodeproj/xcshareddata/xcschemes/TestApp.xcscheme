@@ -49,6 +49,12 @@
             ReferencedContainer = "container:UITests.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "--service-type empty"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <LocationScenarioReference
          identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
          referenceType = "1">

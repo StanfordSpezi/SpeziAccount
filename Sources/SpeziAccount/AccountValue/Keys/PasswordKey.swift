@@ -12,7 +12,8 @@ import SwiftUI
 /// The password of a user account.
 ///
 /// This ``AccountKey`` transports the plain-text password of a user account.
-/// - Note: This account value is only ever present in the ``SignupDetails`` and never present in any of the other ``AccountValues``.
+/// - Note: This account value is only ever present in the ``SignupDetails`` and ``ModifiedAccountDetails`` and
+///     never present in any of the other ``AccountValues``.
 ///
 /// ## Topics
 ///
@@ -40,7 +41,14 @@ extension AccountKeys {
 
 extension SignupDetails {
     /// Access the password of a user in the ``SignupDetails``.
-    public var password: PasswordKey.Value {
+    public var password: String {
+        storage[PasswordKey.self]
+    }
+}
+
+extension ModifiedAccountDetails {
+    /// Access the changed password of a user in the ``ModifiedAccountDetails``.
+    public var password: String? {
         storage[PasswordKey.self]
     }
 }
@@ -52,7 +60,8 @@ extension PasswordKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PasswordKey
 
-        @Environment(\.passwordFieldType) private var fieldType
+        @Environment(\.passwordFieldType)
+        private var fieldType
 
         @Binding private var password: Value
 

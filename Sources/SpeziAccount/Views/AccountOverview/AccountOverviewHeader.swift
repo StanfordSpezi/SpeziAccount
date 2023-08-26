@@ -53,7 +53,7 @@ struct AccountOverviewHeader: View {
 struct AccountOverviewHeader_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", middleName: "Michael", familyName: "Bauer"))
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .build(owner: MockUserIdPasswordAccountService())
 
     static var previews: some View {

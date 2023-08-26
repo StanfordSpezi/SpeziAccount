@@ -21,11 +21,15 @@ struct AccountOverviewSections: View {
 
     @EnvironmentObject private var account: Account
 
-    @Environment(\.logger) private var logger
-    @Environment(\.editMode) private var editMode
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.logger) private
+    var logger
+    @Environment(\.editMode) private
+    var editMode
+    @Environment(\.dismiss) private
+    var dismiss
 
     @StateObject private var model: AccountOverviewFormViewModel
+    @Binding private var isEditing: Bool
 
     @State private var viewState: ViewState = .idle
     // separate view state for any destructive actions like logout or account removal
@@ -113,6 +117,10 @@ struct AccountOverviewSections: View {
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
+            .onChange(of: editMode?.wrappedValue.isEditing ?? false) { newValue in
+                // sync the edit mode with the outer view
+                isEditing = newValue
+            }
 
         Section {
             NavigationLink {
@@ -178,10 +186,12 @@ struct AccountOverviewSections: View {
 
     init(
         account: Account,
-        details accountDetails: AccountDetails
+        details accountDetails: AccountDetails,
+        isEditing: Binding<Bool>
     ) {
         self.accountDetails = accountDetails
         self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(account: account))
+        self._isEditing = isEditing
     }
 
 

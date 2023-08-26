@@ -13,12 +13,25 @@ import SpeziAccount
 
 
 final class TestAccountConfiguration: Component {
-    @Provide var usernameAccountService: any AccountService
-    @Provide var emailAccountService: any AccountService
+    @Provide var accountServices: [any AccountService]
 
-    init() {
-        // TODO we need to somehow tests the different views right?
-        self.usernameAccountService = TestUsernamePasswordAccountService()
-        self.emailAccountService = TestEmailPasswordAccountService()
+    init(features: Features) {
+        switch features.serviceType {
+        case .mail:
+            accountServices = [TestAccountService(.emailAddress)]
+        case .both:
+            accountServices = [
+                TestAccountService(.emailAddress),
+                TestAccountService(.username)
+            ]
+        case .bothWithIdentityProvider:
+            accountServices = [
+                TestAccountService(.emailAddress),
+                TestAccountService(.username)
+                // TODO how to access mock sign in with apple?
+            ]
+        case .empty:
+            accountServices = []
+        }
     }
 }

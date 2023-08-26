@@ -52,8 +52,8 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
     ///
     /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
-    public init(configuration: [ConfiguredAccountKey] = .default) {
-        self.configuredAccountKeys = AccountValueConfiguration(configuration)
+    public init(configuration: AccountValueConfiguration = .default) {
+        self.configuredAccountKeys = configuration
         self.providedAccountServices = []
     }
 
@@ -66,10 +66,10 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public init(
-        configuration: [ConfiguredAccountKey] = .default,
+        configuration: AccountValueConfiguration = .default,
         @AccountServiceBuilder _ accountServices: () -> [any AccountService]
     ) {
-        self.configuredAccountKeys = AccountValueConfiguration(configuration)
+        self.configuredAccountKeys = configuration
         self.providedAccountServices = accountServices()
     }
 

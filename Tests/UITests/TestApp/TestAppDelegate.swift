@@ -10,13 +10,29 @@ import Spezi
 import SpeziAccount
 
 class TestAppDelegate: SpeziAppDelegate {
+    let features: Features = {
+        do {
+            let features = try Features.parse()
+            print("Parsed command line arguments successfuly")
+            return features
+        } catch {
+            print("Error: \(error)")
+            print("Verify the supplied command line arguments: " + CommandLine.arguments.dropFirst().joined(separator: " "))
+            print(Features.helpMessage())
+            return Features()
+        }
+    }()
+
     override var configuration: Configuration {
         Configuration {
-            AccountConfiguration {
-                // TODO FeatureFlags.emptyAccountServices
-                // TODO test supplying account services!
-            }
-            TestAccountConfiguration()
+            AccountConfiguration(configuration: [
+                .requires(\.userId),
+                .requires(\.password),
+                .collects(\.name),
+                .collects(\.genderIdentity),
+                .collects(\.dateOfBirth)
+            ])
+            TestAccountConfiguration(features: features)
         }
     }
 }

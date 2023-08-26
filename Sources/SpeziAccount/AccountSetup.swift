@@ -65,7 +65,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             GeometryReader { proxy in
                 ScrollView(.vertical) {
                     VStack {
-                        header
+                        if !services.isEmpty {
+                            header
+                        }
 
                         Spacer()
 

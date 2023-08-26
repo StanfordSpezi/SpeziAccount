@@ -11,22 +11,14 @@ import SwiftUI
 
 @main
 struct UITestsApp: App {
-    @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
-
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", middleName: "Michael", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+    @UIApplicationDelegateAdaptor(TestAppDelegate.self)
+    var appDelegate
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                AccountOverview()
-                    .environmentObject(Account(building: Self.details, active: MockUserIdPasswordAccountService()))
-                // TODO present AccountOverview for tests cases!
-                // AccountTestsView()
-                //    .spezi(appDelegate)
-            }
+            AccountTestsView()
+                .spezi(appDelegate)
+                .environment(\.features, appDelegate.features)
         }
     }
 }
