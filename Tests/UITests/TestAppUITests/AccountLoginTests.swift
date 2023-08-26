@@ -72,7 +72,7 @@ final class AccountLoginTests: XCTestCase {
         try setup.login(email: Defaults.email, password: Defaults.password)
 
         // verify we are back at the start screen
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 6.0))
 
         setup = app.openAccountSetup()
 

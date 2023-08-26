@@ -68,7 +68,14 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
             }
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
-                detailsBuilder.set(Wrapped.Key.self, value: newValue)
+                if viewType?.enteringNewData == true,
+                   case let .empty(emptyValue) = Wrapped.Key.initialValue,
+                   newValue == emptyValue {
+                    // e.g. make sure we don't save an empty value (e.g. an empty PersonNameComponents)
+                    detailsBuilder.remove(Wrapped.Key.self)
+                } else {
+                    detailsBuilder.set(Wrapped.Key.self, value: newValue)
+                }
             }
     }
 

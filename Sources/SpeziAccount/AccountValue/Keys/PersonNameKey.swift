@@ -120,9 +120,21 @@ extension PersonNameKey {
                 focusedState: focusState.focusedField
             )
                 .onChange(of: name.familyName) { newValue in
+                    // patch value, such that the empty check in the GeneralizedDataEntry works
+                    if newValue?.isEmpty == true {
+                        name.familyName = nil
+                        return
+                    }
+
                     submit(value: newValue, to: \.validationGivenName)
                 }
                 .onChange(of: name.givenName) { newValue in
+                    // patch value, such that the empty check in the GeneralizedDataEntry works
+                    if newValue?.isEmpty == true {
+                        name.givenName = nil
+                        return
+                    }
+
                     submit(value: newValue, to: \.validationFamilyName)
                 }
 
