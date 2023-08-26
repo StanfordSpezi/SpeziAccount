@@ -11,6 +11,25 @@ import XCTestExtensions
 
 
 final class AccountResetPasswordTests: XCTestCase {
+    func testRestPassword() throws {
+        let app = TestApp.launch(serviceType: "mail")
+        let setup = app.openAccountSetup()
+
+        setup.tap(button: "Forgot Password?")
+
+        XCTAssertTrue(setup.staticTexts["Reset Password"].waitForExistence(timeout: 2.0))
+
+        try setup.enter(email: Defaults.email)
+        setup.tap(button: "Reset Password")
+
+        // TODO the error?
+
+        XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 6.0))
+
+        setup.tap(button: "Done")
+        app.verify(timeout: 6.0)
+    }
+
     func testResetPasswordUsernameComponents() throws {
         throw XCTSkip() // TODO rewrite
         let app = XCUIApplication()

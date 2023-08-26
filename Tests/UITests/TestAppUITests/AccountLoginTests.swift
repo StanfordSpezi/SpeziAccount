@@ -45,7 +45,7 @@ final class AccountLoginTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
     }
 
-    func testLoginWithEmail() throws { // TODO throws?
+    func testLoginWithEmail() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
 

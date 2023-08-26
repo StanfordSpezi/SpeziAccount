@@ -36,18 +36,22 @@ extension TestableView {
     }
 
     func enter<Input: StringProtocol>(field: String, text: Input) throws {
+        XCTAssertTrue(app.textFields[field].waitForExistence(timeout: 1.0))
         try app.textFields[field].enter(value: String(text))
     }
 
     func enter<Input: StringProtocol>(secureField: String, text: Input) throws {
+        XCTAssertTrue(app.secureTextFields[secureField].waitForExistence(timeout: 1.0))
         try app.secureTextFields[secureField].enter(value: String(text))
     }
 
     func delete(field: String, count: Int) throws {
+        XCTAssertTrue(app.textFields[field].waitForExistence(timeout: 1.0))
         try app.textFields[field].delete(count: count)
     }
 
     func delete(secureField: String, count: Int) throws {
+        XCTAssertTrue(app.secureTextFields[secureField].waitForExistence(timeout: 1.0))
         try app.secureTextFields[secureField].delete(count: count)
     }
 }
