@@ -79,25 +79,19 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .keyboardType(userIdConfiguration.keyboardType)
                 .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
                 .font(.title3)
+
+            Spacer()
+            AsyncButton(state: $state, action: submitRequestAction) {
+                Text("Reset Password")
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+            }
+                .buttonStyle(.borderedProminent)
+                .padding()
         }
             .padding()
             .frame(maxWidth: MagicValue.maxFrameWidth * 1.5) // landscape optimizations
             .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-            .toolbar {
-                ToolbarItemGroup(placement: .bottomBar) {
-                    VStack {
-                        AsyncButton(state: $state, action: submitRequestAction) {
-                            Text("Reset Password")
-                                .padding(8)
-                                .frame(maxWidth: .infinity)
-                        }
-                            .buttonStyle(.borderedProminent)
-                            .padding()
-                        Spacer()
-                            .frame(height: 30)
-                    }
-                }
-            }
     }
 
     fileprivate init(using service: Service, requestSubmitted: Bool, @ViewBuilder success successViewBuilder: () -> SuccessView) {
@@ -131,8 +125,12 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
             requestSubmitted = true
         }
 
-        try await Task.sleep(for: .milliseconds(515))
-        state = .idle
+        Task {
+            // we are creating a detached task, as otherwise this one might be cancelled
+            // as the view update above results in our current ask getting freed
+            try await Task.sleep(for: .milliseconds(515))
+            state = .idle
+        }
     }
 }
 

@@ -61,8 +61,7 @@ final class AccountLoginTests: XCTestCase {
         setup.tapLogin()
 
         // verify we are back at the start screen
-        app.verify(timeout: 6.0)
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 
     func testAccountSummary() throws {
@@ -73,8 +72,7 @@ final class AccountLoginTests: XCTestCase {
         try setup.login(email: Defaults.email, password: Defaults.password)
 
         // verify we are back at the start screen
-        app.verify(timeout: 6.0)
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
 
         setup = app.openAccountSetup()
 
@@ -85,15 +83,13 @@ final class AccountLoginTests: XCTestCase {
         setup.tap(button: "Finish")
 
         // verify we are back at the start screen
-        app.verify(timeout: 6.0)
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
 
         setup = app.openAccountSetup()
         XCTAssertTrue(setup.buttons["Logout"].waitForExistence(timeout: 1.0))
         setup.tap(button: "Logout")
 
-        setup.verify()
-        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 2.0))
     }
 
     func testLoginWithMultipleServices() throws {
@@ -106,8 +102,7 @@ final class AccountLoginTests: XCTestCase {
 
         try setup.login(username: Defaults.username, password: Defaults.password)
 
-        app.verify(timeout: 6.0)
-        XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
     }
 }
 

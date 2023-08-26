@@ -59,7 +59,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "empty"
+            argument = "mail"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

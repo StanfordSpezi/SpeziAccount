@@ -19,79 +19,28 @@ final class AccountResetPasswordTests: XCTestCase {
 
         XCTAssertTrue(setup.staticTexts["Reset Password"].waitForExistence(timeout: 2.0))
 
-        try setup.enter(email: Defaults.email)
         setup.tap(button: "Reset Password")
+        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
 
-        // TODO the error?
+
+        // The regular `enter(value:) will hit our "Done" button https://github.com/StanfordBDHG/XCTestExtensions/issues/16
+        let keyboard = app.keyboards.firstMatch
+        var offset = 0.99
+        repeat {
+            app.app.coordinate(withNormalizedOffset: CGVector(dx: offset, dy: 0.5)).tap()
+            offset -= 0.05
+        } while !keyboard.waitForExistence(timeout: 2.0) && offset > 0
+        app.app.typeText(Defaults.email)
+
+        setup.tap(button: "Reset Password")
 
         XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 6.0))
 
         setup.tap(button: "Done")
-        app.verify(timeout: 6.0)
-    }
+        XCTAssertFalse(setup.staticTexts["Reset Password"].waitForExistence(timeout: 0.5))
 
-    func testResetPasswordUsernameComponents() throws {
-        throw XCTSkip() // TODO rewrite
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
-        app.buttons["Login"].tap()
-        
-        XCTAssert(app.buttons["Username and Password"].waitForExistence(timeout: 2))
-        app.buttons["Username and Password"].tap()
-        
-        XCTAssert(app.buttons["Forgot Password?"].waitForExistence(timeout: 2))
-        app.buttons["Forgot Password?"].tap()
-        
-        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
-        
-        let usernameField = "Enter your username ..."
-        let username = "lelandstanford"
-        let buttonTitle = "Reset Password"
-        let navigationBarButtonTitle = "Login"
-        
-        app.testPrimaryButton(enabled: false, title: buttonTitle, navigationBarButtonTitle: navigationBarButtonTitle)
-        
-        try app.textFields[usernameField].enter(value: username)
-        
-        app.testPrimaryButton(enabled: true, title: buttonTitle, navigationBarButtonTitle: navigationBarButtonTitle)
-        
-        XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 6.0))
-    }
-    
-    func testResetPasswordEmailComponents() throws {
-        throw XCTSkip() // TODO rewrite
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
-        app.buttons["Login"].tap()
-        
-        XCTAssert(app.buttons["Email and Password"].waitForExistence(timeout: 2))
-        app.buttons["Email and Password"].tap()
-        
-        XCTAssert(app.buttons["Forgot Password?"].waitForExistence(timeout: 2))
-        app.buttons["Forgot Password?"].tap()
-        
-        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
-        
-        let usernameField = "Enter your email ..."
-        let username = "lelandstanford@stanford.edu"
-        let buttonTitle = "Reset Password"
-        let navigationBarButtonTitle = "Login"
-        
-        app.testPrimaryButton(enabled: false, title: buttonTitle, navigationBarButtonTitle: navigationBarButtonTitle)
-        
-        try app.textFields[usernameField].enter(value: String(username.dropLast(4)))
-        
-        XCTAssertTrue(app.staticTexts["The entered email is not correct."].waitForExistence(timeout: 1.0))
-        
-        try app.textFields[usernameField].delete(count: username.count)
-        try app.textFields[usernameField].enter(value: username)
-        
-        app.testPrimaryButton(enabled: true, title: buttonTitle, navigationBarButtonTitle: navigationBarButtonTitle)
-        
-        XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 6.0))
+        setup.tap(button: "Close")
+
+        XCTAssertFalse(setup.staticTexts["Your Account"].waitForExistence(timeout: 0.5))
     }
 }
