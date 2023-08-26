@@ -49,7 +49,7 @@ final class AccountLoginTests: XCTestCase {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
 
-        try setup.login(email: Defaults.email, password: Defaults.password)
+        try setup.login(email: Defaults.email, password: Defaults.password.dropLast(3))
 
         XCTAssertTrue(XCUIApplication().alerts["Credentials do not match"].waitForExistence(timeout: 6.0))
         XCUIApplication().alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()

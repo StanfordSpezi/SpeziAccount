@@ -25,6 +25,10 @@ For more information, please refer to the [API documentation](https://swiftpacka
 
 The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the Spezi Account module.
 
+```swift
+// TODO screenshots and general readme document?
+//  see https://github.com/StanfordSpezi/.github/pull/26/files?short_path=550e684#diff-550e684ad136b887df3a3afe23a9925cc048e668022aaf0c274aff83050ce187
+```
 
 ## Contributing
 
