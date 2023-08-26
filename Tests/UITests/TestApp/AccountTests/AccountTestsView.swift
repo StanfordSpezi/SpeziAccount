@@ -26,6 +26,11 @@ struct AccountTestsView: View {
     var body: some View {
         NavigationStack {
             List {
+                if let details = account.details {
+                    Section("Account Details") {
+                        Text(details.userId)
+                    }
+                }
                 Button("Account Setup") {
                     showSetup = true
                 }
@@ -37,20 +42,10 @@ struct AccountTestsView: View {
                 .sheet(isPresented: $showSetup) {
                     NavigationStack {
                         AccountSetup {
-                            Button(action: {
-                                showSetup = false
-                            }, label: {
-                                Text("Finish")
-                                    .frame(maxWidth: .infinity, minHeight: 38)
-                            })
-                                .buttonStyle(.borderedProminent)
+                            finishButton
                         }
                             .toolbar {
-                                ToolbarItemGroup(placement: .cancellationAction) {
-                                    Button("Close") {
-                                        showSetup = false
-                                    }
-                                }
+                                toolbar(closing: $showSetup)
                             }
                     }
                 }
@@ -58,13 +53,7 @@ struct AccountTestsView: View {
                     NavigationStack {
                         AccountOverview(isEditing: $isEditing)
                             .toolbar {
-                                if !isEditing {
-                                    ToolbarItemGroup(placement: .cancellationAction) {
-                                        Button("Close") {
-                                            showOverview = false
-                                        }
-                                    }
-                                }
+                                toolbar(closing: $showOverview)
                             }
                     }
                 }
@@ -73,6 +62,29 @@ struct AccountTestsView: View {
                         showSetup = false
                     }
                 }
+        }
+    }
+
+
+    @ViewBuilder var finishButton: some View {
+        Button(action: {
+            showSetup = false
+        }, label: {
+            Text("Finish")
+                .frame(maxWidth: .infinity, minHeight: 38)
+        })
+            .buttonStyle(.borderedProminent)
+    }
+
+
+    @ToolbarContentBuilder
+    func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
+        if !isEditing {
+            ToolbarItemGroup(placement: .cancellationAction) {
+                Button("Close") {
+                    flag.wrappedValue = false
+                }
+            }
         }
     }
 }

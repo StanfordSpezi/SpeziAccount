@@ -11,10 +11,9 @@ import XCTestExtensions
 
 
 final class DocumentationHintsTests: XCTestCase {
-    func testDocumentationHint(type: String, button: String, hint: String) throws {
-        let app = XCUIApplication()
-        app.launchArguments = ["--service-type", type]
-        app.launch()
+    func testDocumentationHint(type: String, button: String, hint: String) {
+        let testApp = TestApp.launch(serviceType: type)
+        let app = testApp.app
 
         app.buttons[button].tap()
 
@@ -31,16 +30,19 @@ final class DocumentationHintsTests: XCTestCase {
         app.activate()
     }
 
-    func testEmptyAccountServices() throws {
-        try testDocumentationHint(
+    func testEmptyAccountServices() {
+        testDocumentationHint(
             type: "empty",
             button: "Account Setup",
-            hint: "**No Account Services set up.**\\n\\nPlease refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
+            hint: """
+                  **No Account Services set up.**\\n\\n\
+                  Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!
+                  """
         )
     }
 
-    func testMissingAccount() throws {
-        try testDocumentationHint(
+    func testMissingAccount() {
+        testDocumentationHint(
             type: "mail",
             button: "Account Overview",
             hint: """

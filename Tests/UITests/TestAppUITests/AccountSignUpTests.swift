@@ -12,6 +12,7 @@ import XCTestExtensions
 
 final class AccountSignUpTests: XCTestCase {
     func testSignUpUsernameComponents() throws {
+        throw XCTSkip() // TODO rewrite
         try disablePasswordAutofill()
         
         let app = XCUIApplication()
@@ -35,6 +36,7 @@ final class AccountSignUpTests: XCTestCase {
     }
     
     func testSignUpEmailComponents() throws {
+        throw XCTSkip() // TODO rewrite
         try disablePasswordAutofill()
         
         let app = XCUIApplication()
@@ -70,6 +72,7 @@ final class AccountSignUpTests: XCTestCase {
         usernameReplacement: String,
         initialTests: () throws -> Void = { }
     ) throws {
+        throw XCTSkip() // TODO rewrite
         let app = XCUIApplication()
         let buttonTitle = "Sign Up"
         

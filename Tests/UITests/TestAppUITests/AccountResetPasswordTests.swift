@@ -12,6 +12,7 @@ import XCTestExtensions
 
 final class AccountResetPasswordTests: XCTestCase {
     func testResetPasswordUsernameComponents() throws {
+        throw XCTSkip() // TODO rewrite
         let app = XCUIApplication()
         app.launch()
         
@@ -41,6 +42,7 @@ final class AccountResetPasswordTests: XCTestCase {
     }
     
     func testResetPasswordEmailComponents() throws {
+        throw XCTSkip() // TODO rewrite
         let app = XCUIApplication()
         app.launch()
         

@@ -20,7 +20,8 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     private let header: Header
 
     @EnvironmentObject private var account: Account
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
     @StateObject private var validationClosures = ValidationClosures<String>()

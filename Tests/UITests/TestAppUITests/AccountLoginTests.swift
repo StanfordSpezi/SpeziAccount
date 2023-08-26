@@ -9,93 +9,105 @@
 import XCTest
 import XCTestExtensions
 
+enum Defaults {
+    static let username = "lelandstanford"
+    static let email = "lelandstanford@stanford.edu"
+    static let password = "StanfordRocks123!"
+
+    static let firstname = "Leland"
+    static let lastname = "Stanford"
+    static let name = "\(firstname) \(lastname)"
+}
 
 final class AccountLoginTests: XCTestCase {
-    func testLoginUsernameComponents() throws {
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
-        app.buttons["Login"].tap()
-        
-        XCTAssert(app.buttons["Username and Password"].waitForExistence(timeout: 2))
-        app.buttons["Username and Password"].tap()
-        
-        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
-        
-        let usernameField = "Enter your username ..."
-        let passwordField = "Enter your password ..."
-        let username = "lelandstanford"
-        let password = "StanfordRocks123!"
-        
-        try app.enterCredentials(
-            username: (usernameField, username),
-            password: (passwordField, String(password.dropLast(2)))
-        )
-        
-        XCTAssertTrue(app.alerts["Credentials do not match"].waitForExistence(timeout: 10.0))
-        app.alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()
-        
-        try app.delete(
-            username: (usernameField, username.count),
-            password: (passwordField, password.count)
-        )
-        
-        try app.enterCredentials(
-            username: (usernameField, username),
-            password: (passwordField, password)
-        )
-        
-        XCTAssertTrue(app.collectionViews.staticTexts[username].waitForExistence(timeout: 10.0))
+    func testEmbeddedViewValidation() throws {
+        let app = TestApp.launch(serviceType: "mail")
+        let setup = app.openAccountSetup()
+
+        // check nonEmpty validation
+        setup.tapLogin()
+        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
+
+        try setup.enter(email: "aa")
+        try setup.enter(password: "bb")
+
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
+
+        // doing it in reverse order speeds up the input
+        try setup.deletePassword(count: 2)
+        try setup.deleteEmail(count: 2)
+
+        // validation should not appear if we remove all content via keyboard
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
+
+        // check nonEmpty validation appears again
+        setup.tapLogin()
+        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
     }
-    
-    func testLoginEmailComponents() throws {
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["Login"].waitForExistence(timeout: 2))
-        app.buttons["Login"].tap()
-        
-        XCTAssert(app.buttons["Email and Password"].waitForExistence(timeout: 2))
-        app.buttons["Email and Password"].tap()
-        
-        XCTAssert(app.navigationBars.buttons["Login"].waitForExistence(timeout: 2))
-        
-        let usernameField = "Enter your email ..."
-        let passwordField = "Enter your password ..."
-        let username = "lelandstanford@stanford.edu"
-        let password = "StanfordRocks123!"
-        
-        try app.textFields[usernameField].enter(value: String(username.dropLast(4)))
-        try app.secureTextFields[passwordField].enter(value: password)
-        
-        XCTAssertTrue(app.staticTexts["The entered email is not correct."].waitForExistence(timeout: 1.0))
-        XCTAssertFalse(app.scrollViews.otherElements.buttons["Login, In progress"].waitForExistence(timeout: 0.5))
-        
-        try app.delete(
-            username: (usernameField, username.dropLast(4).count),
-            password: (passwordField, password.count)
-        )
-        
-        try app.enterCredentials(
-            username: (usernameField, username),
-            password: (passwordField, String(password.dropLast(2)))
-        )
-        
+
+    func testLoginWithEmail() throws { // TODO throws?
+        let app = TestApp.launch(serviceType: "mail")
+        let setup = app.openAccountSetup()
+
+        try setup.login(email: Defaults.email, password: Defaults.password)
+
         XCTAssertTrue(XCUIApplication().alerts["Credentials do not match"].waitForExistence(timeout: 6.0))
         XCUIApplication().alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()
-        
-        try app.delete(
-            username: (usernameField, username.count),
-            password: (passwordField, password.count)
-        )
-        
-        try app.enterCredentials(
-            username: (usernameField, username),
-            password: (passwordField, password)
-        )
-        
-        XCTAssertTrue(app.collectionViews.staticTexts[username].waitForExistence(timeout: 6.0))
+
+        // retype password
+        try setup.deletePassword(count: Defaults.password.dropLast(3).count)
+        try setup.enter(password: Defaults.password)
+
+        setup.tapLogin()
+
+        // verify we are back at the start screen
+        app.verify(timeout: 6.0)
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+    }
+
+    func testAccountSummary() throws {
+        let app = TestApp.launch(serviceType: "mail")
+        var setup = app.openAccountSetup()
+
+        // Optimize away this step
+        try setup.login(email: Defaults.email, password: Defaults.password)
+
+        // verify we are back at the start screen
+        app.verify(timeout: 6.0)
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+
+        setup = app.openAccountSetup()
+
+        XCTAssertTrue(setup.staticTexts[Defaults.name].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(setup.staticTexts[Defaults.email].exists)
+        XCTAssertTrue(setup.buttons["Logout"].exists)
+
+        setup.tap(button: "Finish")
+
+        // verify we are back at the start screen
+        app.verify(timeout: 6.0)
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 1.0))
+
+        setup = app.openAccountSetup()
+        XCTAssertTrue(setup.buttons["Logout"].waitForExistence(timeout: 1.0))
+        setup.tap(button: "Logout")
+
+        setup.verify()
+        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 1.0))
+    }
+
+    func testLoginWithMultipleServices() throws {
+        let app = TestApp.launch(serviceType: "both")
+        let setup = app.openAccountSetup()
+
+        setup.tap(button: "Username and Password")
+
+        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 1.0))
+
+        try setup.login(username: Defaults.username, password: Defaults.password)
+
+        app.verify(timeout: 6.0)
+        XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 1.0))
     }
 }
 

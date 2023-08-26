@@ -25,7 +25,8 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
         service.configuration.userIdConfiguration
     }
 
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.dismiss)
+    private var dismiss
 
     @State private var userId = ""
     @State private var requestSubmitted: Bool

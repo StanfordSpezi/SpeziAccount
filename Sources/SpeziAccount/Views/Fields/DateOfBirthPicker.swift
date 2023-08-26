@@ -16,7 +16,8 @@ public struct DateOfBirthPicker: DataEntryView {
     private let titleLocalization: LocalizedStringResource
 
     @EnvironmentObject private var account: Account
-    @Environment(\.accountViewType) private var viewType
+    @Environment(\.accountViewType)
+    private var viewType
 
     @Binding private var date: Date
     @State private var dateAdded = false

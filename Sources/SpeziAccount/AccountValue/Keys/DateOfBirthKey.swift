@@ -47,7 +47,8 @@ extension DateOfBirthKey {
 
         private let value: Date
 
-        @Environment(\.locale) private var locale
+        @Environment(\.locale)
+        private var locale
 
         private var formatStyle: Date.FormatStyle {
             .init()

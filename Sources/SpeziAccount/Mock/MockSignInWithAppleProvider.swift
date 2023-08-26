@@ -11,7 +11,8 @@ import SwiftUI
 
 
 private struct MockButton: View {
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme)
+    var colorScheme
 
     var body: some View {
         SignInWithAppleButton { _ in
