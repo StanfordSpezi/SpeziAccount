@@ -132,10 +132,13 @@ struct TestableAccountSetup: CredentialsContainable {
         tapLogin(sleep: sleepMillis)
     }
 
-    func openSignup() -> SignupView {
+    func openSignup(sleep sleepMillis: UInt32 = 0) -> SignupView {
         tap(button: "Signup")
         let view = SignupView(app: app)
         view.verify()
+        if sleepMillis > 0 {
+            sleep(sleepMillis)
+        }
         return view
     }
 }

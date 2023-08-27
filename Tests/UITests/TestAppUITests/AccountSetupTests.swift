@@ -149,7 +149,8 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // enter email with validation
-        try signupView.enter(email: email.dropLast(13))
+        // TODO we already have focus!
+        signupView.app.typeText(String(email.dropLast(13)))
         XCTAssertTrue(signupView.staticTexts["The entered email is invalid."].waitForExistence(timeout: 2.0))
         signupView.app.typeText(String(email.dropFirst(13)))
 
@@ -175,11 +176,11 @@ final class AccountSetupTests: XCTestCase {
 
         let signupView = app
             .openAccountSetup()
-            .openSignup()
+            .openSignup(sleep: 3)
 
         try signupView.fillForm(email: Defaults.email, password: Defaults.password)
 
-        signupView.signup(sleep: 1)
+        signupView.signup(sleep: 2)
 
         XCTAssertTrue(app.alerts["User Identifier is already taken"].waitForExistence(timeout: 10.0))
         app.alerts["User Identifier is already taken"].scrollViews.otherElements.buttons["OK"].tap()
@@ -189,7 +190,7 @@ final class AccountSetupTests: XCTestCase {
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app
             .openAccountSetup()
-            .openSignup()
+            .openSignup(sleep: 3)
 
         try signupView.fillForm(
             email: "lelandstanford2@stanford.edu",
@@ -218,7 +219,7 @@ final class AccountSetupTests: XCTestCase {
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app
             .openAccountSetup()
-            .openSignup()
+            .openSignup(sleep: 2)
 
         signupView.verifyExistence(textField: "E-Mail Address")
         signupView.verifyExistence(secureField: "Password")
