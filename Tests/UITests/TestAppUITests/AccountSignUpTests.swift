@@ -11,121 +11,98 @@ import XCTestExtensions
 
 
 final class AccountSignUpTests: XCTestCase {
-    func testSignUpUsernameComponents() throws {
-        throw XCTSkip() // TODO rewrite
-        try disablePasswordAutofill()
-        
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["SignUp"].waitForExistence(timeout: 2))
-        app.buttons["SignUp"].tap()
-        
-        XCTAssert(app.buttons["Username and Password"].waitForExistence(timeout: 2))
-        app.buttons["Username and Password"].tap()
-        
-        let usernameField = "Enter your username ..."
-        let username = "lelandstanford"
-        let usernameReplacement = "lelandstanford2"
-        
-        try signUpUsername(
-            usernameField: usernameField,
-            username: username,
-            usernameReplacement: usernameReplacement
-        )
-    }
-    
-    func testSignUpEmailComponents() throws {
-        throw XCTSkip() // TODO rewrite
-        try disablePasswordAutofill()
-        
-        let app = XCUIApplication()
-        app.launch()
-        
-        XCTAssert(app.buttons["SignUp"].waitForExistence(timeout: 2))
-        app.buttons["SignUp"].tap()
-        
-        XCTAssert(app.buttons["Email and Password"].waitForExistence(timeout: 2))
-        app.buttons["Email and Password"].tap()
-        
-        let usernameField = "Enter your email ..."
-        let username = "lelandstanford@stanford.edu"
-        let usernameReplacement = "lelandstanford2@stanford.edu"
-        
-        try signUpUsername(
-            usernameField: usernameField,
-            username: username,
-            usernameReplacement: usernameReplacement
-        ) {
-            try app.textFields[usernameField].enter(value: String(username.dropLast(4)))
-            app.testPrimaryButton(enabled: false, title: "Sign Up")
-            
-            XCTAssertTrue(app.staticTexts["The entered email is not correct."].waitForExistence(timeout: 5.0))
-            
-            try app.textFields[usernameField].delete(count: username.count)
+    var firstSetup = true
+
+    override func setUpWithError() throws {
+        guard firstSetup else {
+            return
         }
+        try super.setUpWithError()
+
+        try disablePasswordAutofill()
+        firstSetup = true
     }
-    
-    func signUpUsername(
-        usernameField: String,
-        username: String,
-        usernameReplacement: String,
-        initialTests: () throws -> Void = { }
-    ) throws {
-        throw XCTSkip() // TODO rewrite
-        let app = XCUIApplication()
-        let buttonTitle = "Sign Up"
-        
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        try initialTests()
-        
-        try app.textFields[usernameField].enter(value: username)
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        let passwordField = "Enter your password ..."
-        let password = "StanfordRocks123!"
-        try app.secureTextFields[passwordField].enter(value: password)
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        let passwordRepeatField = "Repeat your password ..."
-        var passwordRepeat = "StanfordRocks123"
-        try app.secureTextFields[passwordRepeatField].enter(value: passwordRepeat)
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        XCTAssertTrue(app.staticTexts["The entered passwords are not equal."].waitForExistence(timeout: 1.0))
-        
-        try app.secureTextFields[passwordRepeatField].delete(count: passwordRepeat.count)
-        passwordRepeat = password
-        try app.secureTextFields[passwordRepeatField].enter(value: passwordRepeat)
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        app.datePickers.firstMatch.tap()
-        app.staticTexts["Date of Birth"].tap()
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        app.staticTexts["Choose not to answer"].tap()
-        app.buttons["Male"].tap()
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        let givenNameField = "Enter your first name ..."
-        let givenName = "Leland"
-        try app.textFields[givenNameField].enter(value: givenName)
-        app.testPrimaryButton(enabled: false, title: buttonTitle)
-        
-        let familyNameField = "Enter your last name ..."
-        let familyName = "Stanford"
-        try app.textFields[familyNameField].enter(value: familyName)
-        app.testPrimaryButton(enabled: true, title: buttonTitle)
-        
-        XCTAssertTrue(app.alerts["Username is already taken"].waitForExistence(timeout: 10.0))
-        app.alerts["Username is already taken"].scrollViews.otherElements.buttons["OK"].tap()
-        
-        app.swipeDown()
-        try app.textFields[usernameField].delete(count: username.count)
-        try app.textFields[usernameField].enter(value: usernameReplacement)
-        app.testPrimaryButton(enabled: true, title: buttonTitle)
-        
-        XCTAssertTrue(app.collectionViews.staticTexts[usernameReplacement].waitForExistence(timeout: 10.0))
+
+    func testSignupBasicRequirementsAndVerification() throws {
+        let app = TestApp.launch(serviceType: "mail")
+        let setup = app.openAccountSetup()
+
+        let email = "new-adventure@stanford.edu"
+        let password = "123456789"
+
+        XCTAssertTrue(setup.staticTexts["Don't have an Account yet?"].waitForExistence(timeout: 2.0))
+
+        let signupView = setup.openSignup()
+
+        // verify basic validation
+        signupView.signup()
+        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
+
+        // enter email with validation
+        try signupView.enter(email: email.dropLast(13))
+        XCTAssertTrue(signupView.staticTexts["The entered email is invalid."].waitForExistence(timeout: 2.0))
+        signupView.app.typeText(String(email.dropFirst(13)))
+
+        // enter password with validation
+        try signupView.enter(password: password.dropLast(5))
+        XCTAssertTrue(signupView.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
+        signupView.app.typeText(String(password.dropFirst(4)))
+
+        signupView.signup(sleep: 3) // we will be back at the start page now
+
+        // Now verify what we entered
+        let overview = app.openAccountOverview(timeout: 6.0)
+
+        // basic verification of all information recorded
+        XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
     }
+
+    func testInvalidCredentials() throws {
+        let app = TestApp.launch(serviceType: "mail")
+
+        let signupView = app
+            .openAccountSetup()
+            .openSignup()
+
+        try signupView.fillForm(email: Defaults.email, password: Defaults.password)
+
+        signupView.signup(sleep: 1)
+
+        XCTAssertTrue(app.alerts["User Identifier is already taken"].waitForExistence(timeout: 10.0))
+        app.alerts["User Identifier is already taken"].scrollViews.otherElements.buttons["OK"].tap()
+    }
+
+    func testFullSignup() throws {
+        let app = TestApp.launch(serviceType: "mail")
+        let signupView = app
+            .openAccountSetup()
+            .openSignup()
+
+        try signupView.fillForm(
+            email: "lelandstanford2@stanford.edu",
+            password: Defaults.password,
+            name: .init("Leland Stanford"),
+            genderIdentity: "Male",
+            supplyDateOfBirth: true
+        )
+
+        signupView.signup(sleep: 3)
+
+        // Now verify what we entered
+        let overview = app.openAccountOverview(timeout: 6.0)
+
+        // verify all the details
+        overview.verify(text: "LS")
+        overview.verify(text: "Leland Stanford")
+        overview.verify(text: "lelandstanford2@stanford.edu")
+        overview.verify(text: "Gender Identity")
+        overview.verify(text: "Male")
+        overview.verify(text: "Date of Birth")
+    }
+
+    // TODO test after deleting name that it won't get saved empty!
+
+    // TODO test that required name works! (validation!)
 }

@@ -35,7 +35,7 @@ actor TestAccountService: UserIdPasswordAccountService {
 
 
     func login(userId: String, password: String) async throws {
-        try await Task.sleep(for: .seconds(2))
+        try await Task.sleep(for: .seconds(1))
 
         guard userId == registeredUser.userId && password == registeredUser.password else {
             throw MockAccountServiceError.wrongCredentials
@@ -46,10 +46,10 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func signUp(signupDetails: SignupDetails) async throws {
-        try await Task.sleep(for: .seconds(2))
+        try await Task.sleep(for: .seconds(1))
 
         guard signupDetails.userId != registeredUser.userId else {
-            throw MockAccountServiceError.usernameTaken
+            throw MockAccountServiceError.credentialsTaken
         }
 
         registeredUser.userId = signupDetails.userId
@@ -60,6 +60,7 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
+        try await Task.sleep(for: .seconds(1))
         registeredUser.update(modifications)
     }
 

@@ -16,6 +16,8 @@ protocol TestableView {
 
     func tap(button: String)
 
+    func tap(button: String, timeout: TimeInterval)
+
     func enter<Input: StringProtocol>(field: String, text: Input) throws
 
     func enter<Input: StringProtocol>(secureField: String, text: Input) throws
@@ -31,7 +33,11 @@ extension TestableView {
     }
 
     func tap(button: String) {
-        XCTAssertTrue(app.buttons[button].waitForExistence(timeout: 1.0))
+        tap(button: button, timeout: 1.0)
+    }
+
+    func tap(button: String, timeout: TimeInterval) {
+        XCTAssertTrue(app.buttons[button].waitForExistence(timeout: timeout))
         app.buttons[button].tap()
     }
 
@@ -56,21 +62,10 @@ extension TestableView {
     }
 }
 
-struct TestableAccountSetup: TestableView {
-    let app: XCUIApplication
 
-    init(app: XCUIApplication) {
-        self.app = app
-    }
+protocol CredentialsContainable: TestableView {}
 
-    func verify(headerText: String = "Your Account") {
-        XCTAssertTrue(app.staticTexts[headerText].waitForExistence(timeout: 2.0))
-    }
-
-    func tapLogin() {
-        tap(button: "Login")
-    }
-
+extension CredentialsContainable {
     func enter<Input: StringProtocol>(email: Input) throws {
         try enter(field: "E-Mail Address", text: email)
     }
@@ -90,6 +85,23 @@ struct TestableAccountSetup: TestableView {
     func deletePassword(count: Int) throws {
         try delete(secureField: "Password", count: count)
     }
+}
+
+
+struct TestableAccountSetup: CredentialsContainable {
+    let app: XCUIApplication
+
+    init(app: XCUIApplication) {
+        self.app = app
+    }
+
+    func verify(headerText: String = "Your Account") {
+        XCTAssertTrue(app.staticTexts[headerText].waitForExistence(timeout: 2.0))
+    }
+
+    func tapLogin() {
+        tap(button: "Login")
+    }
 
     func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
         try enter(email: email)
@@ -104,6 +116,82 @@ struct TestableAccountSetup: TestableView {
 
         tapLogin()
     }
+
+    func openSignup() -> SignupView {
+        tap(button: "Signup")
+        let view = SignupView(app: app)
+        view.verify()
+        return view
+    }
+}
+
+struct SignupView: CredentialsContainable {
+    let app: XCUIApplication
+
+    init(app: XCUIApplication) {
+        self.app = app
+    }
+
+    func verify() {
+        XCTAssertTrue(app.staticTexts["Please fill out the details below to create a new account."].waitForExistence(timeout: 6.0))
+    }
+
+    func fillForm(
+        email: String,
+        password: String,
+        name: PersonNameComponents? = nil,
+        genderIdentity: String? = nil,
+        supplyDateOfBirth: Bool = false
+    ) throws {
+        try enter(email: email)
+
+        try enter(password: password)
+
+        if let name {
+            if let firstname = name.givenName {
+                try enter(field: "Enter your first name ...", text: firstname)
+            }
+            if let lastname = name.familyName {
+                try enter(field: "Enter your last name ...", text: lastname)
+            }
+        }
+
+
+        // workaround some issues with closing the keyboard
+        sleep(1)
+        let button = app.keyboards.firstMatch.buttons.matching(identifier: "Done").firstMatch
+        if button.exists {
+            button.tap()
+        }
+        sleep(1)
+
+        if let genderIdentity {
+            app.staticTexts["Choose not to answer"].tap()
+            app.buttons[genderIdentity].tap()
+        }
+
+        if supplyDateOfBirth {
+            // add date button is presented if date is not required or doesn't exists yet
+            if app.buttons["Add Date"].exists {
+                app.buttons["Add Date"].tap()
+            }
+            app.datePickers.firstMatch.tap()
+
+            // navigate to previous month and select the first date
+            app.datePickers.buttons["Previous Month"].tap()
+            app.datePickers.collectionViews.buttons.element(boundBy: 0).tap()
+
+            // close the date picker again
+            app.staticTexts["Date of Birth"].tap()
+        }
+    }
+
+    func signup(sleep sleepMillis: UInt32 = 0) {
+        tap(button: "Signup")
+        if sleepMillis > 0 {
+            sleep(sleepMillis)
+        }
+    }
 }
 
 struct TestableAccountOverview: TestableView {
@@ -115,6 +203,11 @@ struct TestableAccountOverview: TestableView {
 
     func verify(headerText: String = "Account Overview") {
         XCTAssertTrue(app.staticTexts[headerText].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 6.0))
+    }
+
+    func verify(text: String) {
+        XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 0.5))
     }
 }
 
@@ -140,16 +233,16 @@ struct TestApp: TestableView {
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: timeout))
     }
 
-    func openAccountSetup() -> TestableAccountSetup {
-        tap(button: "Account Setup")
+    func openAccountSetup(timeout: TimeInterval = 1.0) -> TestableAccountSetup {
+        tap(button: "Account Setup", timeout: timeout)
 
         let setup = TestableAccountSetup(app: app)
         setup.verify()
         return setup
     }
 
-    func openAccountOverview() -> TestableAccountOverview {
-        tap(button: "Account Overview")
+    func openAccountOverview(timeout: TimeInterval = 1.0) -> TestableAccountOverview {
+        tap(button: "Account Overview", timeout: timeout)
 
         let overview = TestableAccountOverview(app: app)
         overview.verify()
