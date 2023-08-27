@@ -14,7 +14,8 @@ SPDX-License-Identifier: MIT
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+This article provides an overview of all the components used to perform input validation.
+They are used across the `SpeziAccount` framework.
 
 ## Topics
 

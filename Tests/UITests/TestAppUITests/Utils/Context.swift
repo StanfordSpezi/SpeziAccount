@@ -60,6 +60,18 @@ extension TestableView {
         XCTAssertTrue(app.secureTextFields[secureField].waitForExistence(timeout: 1.0))
         try app.secureTextFields[secureField].delete(count: count)
     }
+
+    func verifyExistence(text: String, timeout: TimeInterval = 0.5) {
+        XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: timeout))
+    }
+
+    func verifyExistence(textField: String, timeout: TimeInterval = 0.5) {
+        XCTAssertTrue(app.textFields[textField].waitForExistence(timeout: timeout))
+    }
+
+    func verifyExistence(secureField: String, timeout: TimeInterval = 0.5) {
+        XCTAssertTrue(app.secureTextFields[secureField].waitForExistence(timeout: timeout))
+    }
 }
 
 
@@ -195,6 +207,15 @@ struct SignupView: CredentialsContainable {
             sleep(sleepMillis)
         }
     }
+
+    func tapBack(timeout: TimeInterval = 1.0) -> TestableAccountSetup {
+        XCTAssertTrue(app.navigationBars.buttons["Back"].waitForExistence(timeout: timeout))
+        app.navigationBars.buttons["Back"].tap()
+
+        let setup = TestableAccountSetup(app: app)
+        setup.verify()
+        return setup
+    }
 }
 
 struct TestableAccountOverview: TestableView {
@@ -208,10 +229,6 @@ struct TestableAccountOverview: TestableView {
         XCTAssertTrue(app.staticTexts[headerText].waitForExistence(timeout: 6.0))
         XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 6.0))
     }
-
-    func verify(text: String) {
-        XCTAssertTrue(app.staticTexts[text].waitForExistence(timeout: 0.5))
-    }
 }
 
 
@@ -222,9 +239,16 @@ struct TestApp: TestableView {
         self.app = app
     }
 
-    static func launch(serviceType: String = "mail") -> TestApp {
+    static func launch(
+        serviceType: String = "mail",
+        config: String = "default",
+        defaultCredentials: Bool = false,
+        flags: String...
+    ) -> TestApp {
         let app = XCUIApplication()
-        app.launchArguments = ["--service-type", serviceType]
+        app.launchArguments = ["--service-type", serviceType, "--configuration-type", config]
+            + (defaultCredentials ? ["--default-credentials"] : [])
+            + flags
         app.launch()
 
         let testApp = TestApp(app: app)

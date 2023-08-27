@@ -13,6 +13,8 @@ import SwiftUI
 struct NameOverview: View {
     private let accountDetails: AccountDetails
 
+    @EnvironmentObject private var account: Account
+
     @ObservedObject private var model: AccountOverviewFormViewModel
 
     var body: some View {
@@ -27,23 +29,27 @@ struct NameOverview: View {
                 }
             }
 
-            if accountDetails.name != nil {
-                Section {
-                    NavigationLink {
-                        SingleEditView<PersonNameKey>(model: model, details: accountDetails)
-                    } label: {
-                        HStack {
-                            PersonNameKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
+            Section {
+                NavigationLink {
+                    SingleEditView<PersonNameKey>(model: model, details: accountDetails)
+                } label: {
+                    HStack {
+                        if let name = accountDetails.name {
+                            PersonNameKey.DataDisplay(name)
+                        } else {
+                            Text(PersonNameKey.name)
+                            Spacer()
+                            Text("VALUE_ADD \(PersonNameKey.name)", bundle: .module)
                         }
                     }
-                } header: {
-                    if let title = PersonNameKey.category.categoryTitle {
-                        Text(title)
-                    }
+                }
+            } header: {
+                if let title = PersonNameKey.category.categoryTitle {
+                    Text(title)
                 }
             }
         }
-            .navigationTitle(model.accountIdentifierLabel(details: accountDetails))
+            .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
             .environment(\.accountViewType, .overview(mode: .display))

@@ -11,9 +11,6 @@
 		2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */; };
 		2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */; };
 		2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* UserStorage.swift */; };
-		2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */; };
-		2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */; };
-		2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */; };
 		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
 		2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9A29D6C91E00234098 /* XCTestExtensions */; };
 		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
@@ -23,6 +20,11 @@
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
 		A96924112A9A2E7800E2128B /* TestAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96924102A9A2E7800E2128B /* TestAccountService.swift */; };
 		A96924142A9A6BB400E2128B /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96924132A9A6BB400E2128B /* Context.swift */; };
+		A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */; };
+		A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */; };
+		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
+		A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */; };
+		A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */; };
 		A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */; };
 		A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* Features.swift */; };
 /* End PBXBuildFile section */
@@ -42,9 +44,6 @@
 		2F027C7B29D6C29B00234098 /* AccountTestsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTestsView.swift; sourceTree = "<group>"; };
 		2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAccountConfiguration.swift; sourceTree = "<group>"; };
 		2F027C7F29D6C29B00234098 /* UserStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStorage.swift; sourceTree = "<group>"; };
-		2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountLoginTests.swift; sourceTree = "<group>"; };
-		2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountResetPasswordTests.swift; sourceTree = "<group>"; };
-		2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSignUpTests.swift; sourceTree = "<group>"; };
 		2F027C9429D6C63100234098 /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
 		2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestPrimaryButton.swift"; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,6 +54,11 @@
 		2FE750C92A8720CE00723EAE /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 		A96924102A9A2E7800E2128B /* TestAccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccountService.swift; sourceTree = "<group>"; };
 		A96924132A9A6BB400E2128B /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetupTests.swift; sourceTree = "<group>"; };
+		A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountOverviewTests.swift; sourceTree = "<group>"; };
+		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
+		A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiographyKey.swift; sourceTree = "<group>"; };
+		A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStandard.swift; sourceTree = "<group>"; };
 		A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationHintsTests.swift; sourceTree = "<group>"; };
 		A9EE7D292A3359E800C2B9A9 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -88,6 +92,8 @@
 				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
 				2F027C7F29D6C29B00234098 /* UserStorage.swift */,
 				A96924102A9A2E7800E2128B /* TestAccountService.swift */,
+				A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */,
+				A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */,
 			);
 			path = AccountTests;
 			sourceTree = "<group>";
@@ -128,12 +134,11 @@
 		2F6D13AF28F5F386007C25D6 /* TestAppUITests */ = {
 			isa = PBXGroup;
 			children = (
-				A96924122A9A6BA400E2128B /* Context */,
+				A96924122A9A6BA400E2128B /* Utils */,
 				2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */,
-				2F027C8C29D6C2CC00234098 /* AccountLoginTests.swift */,
-				2F027C8D29D6C2CC00234098 /* AccountResetPasswordTests.swift */,
 				A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */,
-				2F027C8E29D6C2CD00234098 /* AccountSignUpTests.swift */,
+				A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */,
+				A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */,
 			);
 			path = TestAppUITests;
 			sourceTree = "<group>";
@@ -145,12 +150,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A96924122A9A6BA400E2128B /* Context */ = {
+		A96924122A9A6BA400E2128B /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				A96924132A9A6BB400E2128B /* Context.swift */,
+				A9B6E3FA2A9B70360008B232 /* Defaults.swift */,
 			);
-			path = Context;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -272,6 +278,8 @@
 				2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */,
 				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
 				A96924112A9A2E7800E2128B /* TestAccountService.swift in Sources */,
+				A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */,
+				A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,12 +287,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */,
+				A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */,
 				A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */,
-				2F027C9029D6C2CD00234098 /* AccountResetPasswordTests.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
+				A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */,
 				A96924142A9A6BB400E2128B /* Context.swift in Sources */,
-				2F027C8F29D6C2CD00234098 /* AccountLoginTests.swift in Sources */,
-				2F027C9129D6C2CD00234098 /* AccountSignUpTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

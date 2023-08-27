@@ -17,7 +17,7 @@ SPDX-License-Identifier: MIT
 ``AccountValues`` implementations are used to store values for a given ``AccountKey`` definition.
 
 There exist several different containers types. While they are identical in the underlying storage mechanism with only very
-few differences in construction operations, they convey entierly different semantics and are used within their respective context only.
+few differences in construction operations, they convey entirely different semantics and are used within their respective context only.
 
 ### Accessing Account Information 
 
@@ -42,7 +42,7 @@ struct Visitor: AccountValueVisitor {
     private var codableStorage: [String: Data] = [:]
 
     mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
-        // in a real world implemention one would need to collect all thrown errors. We ignore them for the sake of the example.
+        // in a real world implementation one would need to collect all thrown errors. We ignore them for the sake of the example.
         codableStorage["\(Key.self)"] = try? encoder.encode(value)
     }
 
@@ -66,14 +66,14 @@ This is provided through the ``AccountKeyVisitor`` protocol and the ``AcceptingA
 `[any AccountKey.Type]` arrays or ``AccountKeyCollection``s. This is useful when you are accessing the ``AccountValues/keys-572sk`` property or
 implement a custom storage provider (see ``AccountStorageStandard/load(_:_:)``).
 
-A implementation is similarly structured to the code example shown in the previous section.
+An implementation is similarly structured to the code example shown in the previous section.
 
 > Note: You can also use the ``AccountKey/accept(_:)-8wakg`` method directly for visiting a single element.
 
 ### Managing Account Values
 
 New ``AccountValues`` instances are created using the ``AccountValuesBuilder`` class. Every container provides access to the respective builder class
-using the ``AccountValues/Builder`` typalias.
+using the ``AccountValues/Builder`` typealias.
 
 Below is a short example on how to create a new ``AccountDetails`` instance using the `Builder` class. For more detailed information refer
 to the documentation page of ``AccountValuesBuilder``.

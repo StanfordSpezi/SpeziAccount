@@ -67,7 +67,7 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
             return
         }
 
-        let modifiedDetails = splitDetails(from: modifications.modifiedDetails)
+        let modifiedDetails = splitDetails(from: modifications.modifiedDetails, copyUserId: true)
         let removedDetails = splitDetails(from: modifications.removedAccountDetails)
 
         let serviceModifications = AccountModifications(
@@ -102,13 +102,20 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
     }
 
     private func splitDetails<Values: AccountValues>(
-        from details: Values
+        from details: Values,
+        copyUserId: Bool = false
     ) -> (service: Values, standard: Values) {
         let serviceBuilder = AccountValuesBuilder<Values>()
         let standardBuilder = AccountValuesBuilder<Values>(from: details)
 
 
         for element in serviceSupportedKeys {
+            if copyUserId && element.key == UserIdKey.self {
+                // ensure that in a `modify` call, the Standard gets notified about the updated userId as the primary
+                // identifier will change.
+                continue
+            }
+
             // remove all service supported keys from the standard builder (which is a copy of `details` currently)
             standardBuilder.remove(element.key)
         }

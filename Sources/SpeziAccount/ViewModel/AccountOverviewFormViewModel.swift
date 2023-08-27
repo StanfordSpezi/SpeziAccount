@@ -161,10 +161,10 @@ class AccountOverviewFormViewModel: ObservableObject {
         editMode?.wrappedValue = .inactive
     }
 
-    func accountIdentifierLabel(details accountDetails: AccountDetails) -> Text {
-        let userId = Text(accountDetails.userIdType.localizedStringResource)
+    func accountIdentifierLabel(configuration: AccountValueConfiguration, userIdType: UserIdType) -> Text {
+        let userId = Text(userIdType.localizedStringResource)
 
-        if accountDetails.name != nil {
+        if configuration[PersonNameKey.self] != nil {
             return Text(PersonNameKey.name)
                 + Text(", ")
                 + userId

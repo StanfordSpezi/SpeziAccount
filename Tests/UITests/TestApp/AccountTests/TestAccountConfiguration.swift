@@ -18,20 +18,26 @@ final class TestAccountConfiguration: Component {
     init(features: Features) {
         switch features.serviceType {
         case .mail:
-            accountServices = [TestAccountService(.emailAddress)]
+            accountServices = [TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials)]
         case .both:
             accountServices = [
-                TestAccountService(.emailAddress),
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
                 TestAccountService(.username)
             ]
         case .bothWithIdentityProvider:
             accountServices = [
-                TestAccountService(.emailAddress),
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
                 TestAccountService(.username)
                 // TODO how to access mock sign in with apple?
             ]
         case .empty:
             accountServices = []
         }
+    }
+
+    func configure() {
+        accountServices
+            .compactMap { $0 as? TestAccountService }
+            .forEach { $0.configure() }
     }
 }

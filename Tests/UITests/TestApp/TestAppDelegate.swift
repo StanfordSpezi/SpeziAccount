@@ -13,7 +13,7 @@ class TestAppDelegate: SpeziAppDelegate {
     let features: Features = {
         do {
             let features = try Features.parse()
-            print("Parsed command line arguments successfuly")
+            print("Parsed command line arguments successfully")
             return features
         } catch {
             print("Error: \(error)")
@@ -23,15 +23,31 @@ class TestAppDelegate: SpeziAppDelegate {
         }
     }()
 
-    override var configuration: Configuration {
-        Configuration {
-            AccountConfiguration(configuration: [
+    var configuredValues: AccountValueConfiguration {
+        switch features.configurationType {
+        case .default:
+            return [
                 .requires(\.userId),
                 .requires(\.password),
                 .collects(\.name),
                 .collects(\.genderIdentity),
-                .collects(\.dateOfBirth)
-            ])
+                .collects(\.dateOfBirth),
+                .supports(\.biography)
+            ]
+        case .allRequired:
+            return [
+                .requires(\.userId),
+                .requires(\.password),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .requires(\.dateOfBirth)
+            ]
+        }
+    }
+
+    override var configuration: Configuration {
+        Configuration(standard: TestStandard()) {
+            AccountConfiguration(configuration: configuredValues)
             TestAccountConfiguration(features: features)
         }
     }

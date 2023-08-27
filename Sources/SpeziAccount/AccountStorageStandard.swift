@@ -47,11 +47,13 @@ public protocol AccountStorageStandard: Standard {
 
     /// Modify the associated account data of an existing user account.
     ///
+    /// This call is used to apply all modifications of the Standard-managed account values.
+    ///
+    /// - Important: The ``ModifiedAccountDetails`` the ``AccountModifications`` structure might
+    ///     contain a change to the ``UserIdKey`` as well. This changes the primary ``AdditionalRecordId`` identifier
+    ///     used in all calls to reference a certain record. You must update the primary identifier!
+    ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
-    ///
-    /// TODO forward userId update to here as well! + docs
-    ///
-    /// TODO grammar checks for articles!
     ///
     /// - Parameters:
     ///   - identifier: The primary identifier for stored record.
@@ -64,7 +66,7 @@ public protocol AccountStorageStandard: Standard {
     /// This method is useful to clear any data of the currently cached user.
     ///
     /// - Parameter identifier: The primary identifier for stored record.
-    func clear()
+    func clear(_ identifier: AdditionalRecordId) async
 
     /// Delete all associated account data.
     ///

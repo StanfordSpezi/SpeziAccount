@@ -12,12 +12,13 @@ import SpeziAccount
 actor TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
     private let defaultUserId: String
+    private let defaultAccountOnConfigure: Bool
 
     @AccountReference var account: Account
     var registeredUser: UserStorage // simulates the backend
 
 
-    init(_ type: UserIdType) {
+    init(_ type: UserIdType, defaultAccount: Bool = false) {
         configuration = AccountServiceConfiguration(
             name: "\(type.localizedStringResource) and Password",
             supportedKeys: .exactly(UserStorage.supportedKeys)
@@ -30,7 +31,20 @@ actor TestAccountService: UserIdPasswordAccountService {
         }
 
         defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
+        self.defaultAccountOnConfigure = defaultAccount
         registeredUser = UserStorage(userId: defaultUserId)
+    }
+
+    nonisolated func configure() {
+        if defaultAccountOnConfigure {
+            Task {
+                do {
+                    try await updateUser()
+                } catch {
+                    print("Failed to set default user: \(error)")
+                }
+            }
+        }
     }
 
 

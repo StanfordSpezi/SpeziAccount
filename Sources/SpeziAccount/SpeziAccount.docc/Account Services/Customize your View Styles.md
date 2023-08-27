@@ -15,8 +15,8 @@ SPDX-License-Identifier: MIT
 ## Overview
 
 ``AccountSetupViewStyle``s are used to present your Account Service implementation to the user in the ``AccountSetup`` view.
-For some Views default implementations are provided based on the ``AccountServiceConfiguration`` (e.g. using the ``AccountServiceName`` or ``AccountServiceImage``)
-or based on the type of Account Service used.
+For some Views default implementations are provided based on the ``AccountServiceConfiguration``
+(e.g., using the ``AccountServiceName`` or ``AccountServiceImage``) or based on the type of Account Service used.
 
 For more information refer to the documentation of ``AccountSetupViewStyle``, ``EmbeddableAccountSetupViewStyle``, ``UserIdPasswordAccountSetupViewStyle``,
 or ``IdentityProviderViewStyle``.
@@ -40,7 +40,7 @@ TODO topics on account setup?
 - ``GenderIdentityPicker``
 - ``SuccessfulPasswordResetView``
 
-### UI Components for an UserIdPasswordAccountService
+### UI Components for the UserIdPasswordAccountService
 
 - ``UserIdPasswordPrimaryView``
 - ``UserIdPasswordEmbeddedView``

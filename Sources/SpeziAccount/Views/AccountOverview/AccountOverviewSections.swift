@@ -126,7 +126,7 @@ struct AccountOverviewSections: View {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
             } label: {
-                model.accountIdentifierLabel(details: accountDetails)
+                model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
             }
             NavigationLink {
                 SecurityOverview(model: model, details: accountDetails)

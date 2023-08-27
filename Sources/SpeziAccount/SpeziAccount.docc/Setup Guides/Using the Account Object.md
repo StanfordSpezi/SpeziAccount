@@ -16,8 +16,9 @@ Use the global `Account` object to access the current account state.
 
 ## Overview
 
-You can use the ``Account`` object that is injected into your App's view hierachy as an environment object to access ``SpeziAccount``
-state. Particularly useful are the published properties ``Account/signedIn`` and ``Account/details`` to access the current account
+You can use the ``Account`` object
+that is injected into your App's view hierarchy as an environment object to access ``SpeziAccount`` state.
+Particularly useful are the published properties ``Account/signedIn`` and ``Account/details`` to access the current account
 state.
 
 Below is a short code example to access the global ``Account`` instance.

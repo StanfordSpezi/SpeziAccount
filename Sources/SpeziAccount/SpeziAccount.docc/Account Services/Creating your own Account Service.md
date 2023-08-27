@@ -22,7 +22,7 @@ This article guides you through the essential steps to implement your own Accoun
 ### Deciding on the type of Account Service
 
 `SpeziAccount` provides several different ``AccountService`` protocols (see ``EmbeddableAccountService``, ``UserIdPasswordAccountService`` and ``IdentityProvider``).
-Refer to their documentation to evaluate which protocol fits your need best. Typically, if your account credentials are made up from an user identifier
+Refer to their documentation to evaluate which protocol fits your need best. Typically, if your account credentials are made up from a user identifier
 and a password you would want to go for the ``UserIdPasswordAccountService`` and benefit from a lot of the UI components already provided.
 
 ### Account Service Configuration
@@ -46,11 +46,12 @@ AccountServiceConfiguration(name: "My Account Service", supportedKeys: .arbitrar
 ### Implementing your Account Service
 
 Apart from implementing the ``AccountService`` protocol, an account service is responsible for notifying the global ``Account`` context
-of any changes of the user state (e.g. user information updated remotely).
+of any changes of the user state (e.g., user information updated remotely).
 
-Do so the you can use the ``AccountService/AccountReference`` property wrapper to get access to the ``Account`` context. You can then use
-the ``Account/supplyUserDetails(_:)`` and ``Account/removeUserDetails()`` methods to update the account state. Below is a short code example
-that implements a basic remote sessione expiration handler.
+To do so, you can use the ``AccountService/AccountReference`` property wrapper to get access to the ``Account`` context.
+You can then use the ``Account/supplyUserDetails(_:)`` and ``Account/removeUserDetails()`` methods
+to update the account state.
+Below is a short code example that implements a basic remote session expiration handler.
 
 > Note: You will always need to call the ``Account/supplyUserDetails(_:)`` and ``Account/removeUserDetails()`` methods manually,
 even if the change in user state is caused by a local operation like ``AccountService/signUp(signupDetails:)`` or ``AccountService/logout()``.

@@ -217,7 +217,9 @@ public class Account: ObservableObject, Sendable {
     public func removeUserDetails() async {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked {
-            await standardBacked.standard.clear()
+            let recordId = AdditionalRecordId(serviceId: details.accountService.id, userId: details.userId)
+
+            await standardBacked.standard.clear(recordId)
         }
 
         if signedIn {

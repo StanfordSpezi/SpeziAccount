@@ -43,7 +43,8 @@ var configuration: Configuration {
 }
 ```
 
-> Note: Your ``AccountStorageStandard`` will be used to handle data flow for all configured ``AccountService``s that do not support a least one
+> Note: Your ``AccountStorageStandard`` will be used
+    to handle data flow for all configured ``AccountService``s that do not support at least one
     ``ConfiguredAccountKey``.
 
 ## Topics
@@ -53,6 +54,6 @@ var configuration: Configuration {
 - ``AccountStorageStandard``
 - ``StandardBackedAccountService``
 
-### Identifiyng Additional Storage Records
+### Identifying Additional Storage Records
 
 - ``AdditionalRecordId``
