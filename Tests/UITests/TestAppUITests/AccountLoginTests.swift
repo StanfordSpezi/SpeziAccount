@@ -58,7 +58,7 @@ final class AccountLoginTests: XCTestCase {
         try setup.deletePassword(count: Defaults.password.dropLast(3).count)
         try setup.enter(password: Defaults.password)
 
-        setup.tapLogin()
+        setup.tapLogin(sleep: 3) // this takes us back to the home screen
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
@@ -69,7 +69,7 @@ final class AccountLoginTests: XCTestCase {
         var setup = app.openAccountSetup()
 
         // Optimize away this step
-        try setup.login(email: Defaults.email, password: Defaults.password)
+        try setup.login(email: Defaults.email, password: Defaults.password, sleep: 3)
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 6.0))
@@ -100,7 +100,7 @@ final class AccountLoginTests: XCTestCase {
 
         XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 1.0))
 
-        try setup.login(username: Defaults.username, password: Defaults.password)
+        try setup.login(username: Defaults.username, password: Defaults.password, sleep: 3)
 
         XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
     }

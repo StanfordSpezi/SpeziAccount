@@ -99,22 +99,25 @@ struct TestableAccountSetup: CredentialsContainable {
         XCTAssertTrue(app.staticTexts[headerText].waitForExistence(timeout: 2.0))
     }
 
-    func tapLogin() {
+    func tapLogin(sleep sleepMillis: UInt32 = 0) {
         tap(button: "Login")
+        if sleepMillis > 0 {
+            sleep(sleepMillis)
+        }
     }
 
-    func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
+    func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password, sleep sleepMillis: UInt32 = 0) throws {
         try enter(email: email)
         try enter(password: password)
 
-        tapLogin()
+        tapLogin(sleep: sleepMillis)
     }
 
-    func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password) throws {
+    func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password, sleep sleepMillis: UInt32 = 0) throws {
         try enter(username: username)
         try enter(password: password)
 
-        tapLogin()
+        tapLogin(sleep: sleepMillis)
     }
 
     func openSignup() -> SignupView {

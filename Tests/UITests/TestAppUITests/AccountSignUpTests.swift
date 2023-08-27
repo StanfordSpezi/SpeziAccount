@@ -11,19 +11,19 @@ import XCTestExtensions
 
 
 final class AccountSignUpTests: XCTestCase {
-    var firstSetup = true
+    static var firstSetup = true
 
     override func setUpWithError() throws {
-        guard firstSetup else {
+        guard Self.firstSetup else {
             return
         }
         try super.setUpWithError()
 
         try disablePasswordAutofill()
-        firstSetup = true
+        Self.firstSetup = true
     }
 
-    func testSignupBasicRequirementsAndVerification() throws {
+    func testSignupCredentialsValidation() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
 
@@ -57,6 +57,7 @@ final class AccountSignUpTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
+        // TODO test image present!
     }
 
     func testInvalidCredentials() throws {
@@ -102,7 +103,16 @@ final class AccountSignUpTests: XCTestCase {
         overview.verify(text: "Date of Birth")
     }
 
-    // TODO test after deleting name that it won't get saved empty!
+    // TODO test after deleting name that it won't get saved empty! => and that the image is shown!
 
     // TODO test that required name works! (validation!)
+
+    // TODO overview tests: test collected vs supports.
+    //  - name change and userId change
+    //  - password change sheet! + password change!
+
+    // TODO merge logijn and signup tests=> AccountSetup tests
+    //  - test with an identity provider
+
+    // TODO test the storage standard thingy!
 }
