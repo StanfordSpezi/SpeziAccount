@@ -32,7 +32,6 @@ or ``IdentityProviderViewStyle``.
 
 ### Reusable UI Components
 
-TODO topics on account setup?
 - ``DefaultAccountSetupHeader``
 - ``AccountSummaryBox``
 - ``SignupForm``

@@ -164,3 +164,10 @@ Still, you are required to evaluate to which extent validation has to be handled
 
 - ``DataEntryView``
 - ``GeneralizedDataEntryView``
+
+### Available Environment Keys
+
+- ``SwiftUI/EnvironmentValues/accountViewType``
+- ``SwiftUI/EnvironmentValues/accountServiceConfiguration``
+- ``AccountViewType``
+- ``OverviewEntryMode``

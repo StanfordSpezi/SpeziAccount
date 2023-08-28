@@ -12,6 +12,10 @@ import Spezi
 protocol StandardBacked {
     associatedtype Standard: AccountStorageStandard
     var standard: Standard { get }
+
+    var backedId: String { get }
+
+    func isBacking(service accountService: any AccountService) -> Bool
 }
 
 
@@ -32,6 +36,10 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         accountService.viewStyle
     }
 
+    public nonisolated var backedId: String {
+        accountService.id
+    }
+
 
     private var currentUserId: String? {
         get async {
@@ -50,6 +58,10 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         self.serviceSupportedKeys = keys
     }
 
+
+    nonisolated func isBacking(service accountService: any AccountService) -> Bool {
+        self.accountService.objId == accountService.objId
+    }
 
     public func signUp(signupDetails: SignupDetails) async throws {
         let details = splitDetails(from: signupDetails)

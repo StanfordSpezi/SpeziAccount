@@ -24,7 +24,7 @@ public struct DateOfBirthPicker: DataEntryView {
 
     private var dateRange: ClosedRange<Date> {
         let calendar = Calendar.current
-        let startDateComponents = DateComponents(year: 1900, month: 1, day: 1)
+        let startDateComponents = DateComponents(year: 1800, month: 1, day: 1)
         let endDate = Date.now
 
         guard let startDate = calendar.date(from: startDateComponents) else {

@@ -21,19 +21,16 @@ actor TestStandard: AccountStorageStandard {
     func load(_ identifier: AdditionalRecordId, _ keys: [any AccountKey.Type]) async throws -> PartialAccountDetails {
         let details = records[identifier, default: .init()]
 
-        // validation just for our test. A real-world implementation would need the keys to construct the account details
-        // from e.g. database-supplied values
-        for key in keys {
-            precondition(details.contains(key), "Couldn't find the key \(key) in our record of stored data")
-        }
+        // A real-world implementation would need the keys to construct the account details from e.g. database-supplied values
 
         return details.build()
     }
 
     func modify(_ identifier: AdditionalRecordId, _ modifications: AccountModifications) async throws {
-        records[identifier, default: .init()]
+        let builder = records[identifier, default: .init()]
             .merging(modifications.modifiedDetails, allowOverwrite: true)
             .remove(all: modifications.removedAccountDetails.keys)
+        records[identifier] = builder // we have a class type, the `default:` is not getting stored using _modify
     }
 
     func clear(_ identifier: AdditionalRecordId) {

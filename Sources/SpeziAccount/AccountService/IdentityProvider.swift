@@ -9,4 +9,8 @@
 import SwiftUI
 
 /// An identity provider that provides account functionality through a one-click third-party account service.
+///
+/// ## Topics
+/// ### Mock Implementations for SwiftUI Previews
+/// - ``MockSignInWithAppleProvider``
 public protocol IdentityProvider: AccountService where ViewStyle: IdentityProviderViewStyle {}

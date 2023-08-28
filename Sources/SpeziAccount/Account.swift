@@ -87,7 +87,7 @@ public class Account: ObservableObject, Sendable {
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
-    ///     ``AccountSetupViewStyle`` implementions (see ``IdentityProviderViewStyle``).
+    ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
     let registeredAccountServices: [any AccountService]
 
     /// Initialize a new `Account` object by providing all properties individually.
@@ -184,6 +184,18 @@ public class Account: ObservableObject, Sendable {
     ///
     /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
     public func supplyUserDetails(_ details: AccountDetails) async throws {
+        var details = details
+
+        // Account details will always get built by the respective Account Service. Therefore, we need to patch it
+        // if they are wrapped into a StandardBacked one such that the `AccountDetails` carray the correct reference.
+        for service in registeredAccountServices {
+            if let standardBacked = service as? any StandardBacked,
+               standardBacked.isBacking(service: details.accountService) {
+                details.patchAccountService(service)
+                break
+            }
+        }
+
         if let existingDetails = self.details {
             precondition(
                 existingDetails.accountService.id == details.accountService.id,
@@ -192,7 +204,7 @@ public class Account: ObservableObject, Sendable {
         }
 
         if let standardBacked = details.accountService as? any StandardBacked {
-            let recordId = AdditionalRecordId(serviceId: details.accountService.id, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
 
             let unsupportedKeys = details.accountService.configuration
                 .unsupportedAccountKeys(basedOn: configuration)
@@ -217,7 +229,7 @@ public class Account: ObservableObject, Sendable {
     public func removeUserDetails() async {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked {
-            let recordId = AdditionalRecordId(serviceId: details.accountService.id, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
 
             await standardBacked.standard.clear(recordId)
         }

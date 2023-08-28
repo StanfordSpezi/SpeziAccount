@@ -93,6 +93,7 @@ struct AccountOverviewSections: View {
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.logout()
+                    dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
                 }
@@ -106,6 +107,7 @@ struct AccountOverviewSections: View {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                     try await service.delete()
+                    dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
                 }

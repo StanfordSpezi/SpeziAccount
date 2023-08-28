@@ -24,7 +24,8 @@ struct AccountTestsView: View {
 
     
     var body: some View {
-        NavigationStack {
+        // of by two
+        NavigationStack { // swiftlint:disable:this closure_body_length
             List {
                 if let details = account.details {
                     Section("Account Details") {

@@ -26,39 +26,51 @@ private struct MockButton: View {
 }
 
 
-struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
-    private(set) var service: MockSignInWithAppleProvider
+/// Mock ``IdentityProviderViewStyle`` view style for the ``MockSignInWithAppleProvider``.
+public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
+    public let service: MockSignInWithAppleProvider
 
-    func makeSignInButton() -> some View {
+    
+    fileprivate init(service: MockSignInWithAppleProvider) {
+        self.service = service
+    }
+
+
+    public func makeSignInButton() -> some View {
         MockButton()
     }
 }
 
 
-actor MockSignInWithAppleProvider: IdentityProvider {
-    let configuration = AccountServiceConfiguration(name: "Mock SignIn with Apple", supportedKeys: .arbitrary)
+/// A mock implementation of a ``IdentityProvider`` that can be used in your SwiftUI Previews.
+///
+/// ## Topics
+/// ### Mock View Style
+/// - ``MockSignInWithAppleProviderStyle``
+public actor MockSignInWithAppleProvider: IdentityProvider {
+    public let configuration = AccountServiceConfiguration(name: "Mock SignIn with Apple", supportedKeys: .arbitrary)
 
-    nonisolated var viewStyle: MockSignInWithAppleProviderStyle {
+    public nonisolated var viewStyle: MockSignInWithAppleProviderStyle {
         MockSignInWithAppleProviderStyle(service: self)
     }
 
 
-    init() {}
+    public init() {}
 
 
-    func signUp(signupDetails: SignupDetails) async throws {
+    public func signUp(signupDetails: SignupDetails) async throws {
         print("Signup: \(signupDetails)")
     }
 
-    func logout() async throws {
+    public func logout() async throws {
         print("Logout")
     }
 
-    func delete() async throws {
+    public func delete() async throws {
         print("Remove")
     }
 
-    func updateAccountDetails(_ modifications: AccountModifications) async throws {
+    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
         print("Modifications: \(modifications)")
     }
 }

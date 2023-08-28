@@ -16,7 +16,9 @@ SPDX-License-Identifier: MIT
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziAccount%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziAccount%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount)
 
-The Account module allows users to incorporate account-related functionality for Spezi-based applications.
+The Account module provides account-related functionality for Spezi-based applications.
+It provides two standardized views with Account Setup, Overview and Edit functionality.
+It allows integrating arbitrary account management services using the Account Service abstraction.
 
 For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount/documentation).
 
@@ -24,11 +26,6 @@ For more information, please refer to the [API documentation](https://swiftpacka
 ## The Spezi Template Application
 
 The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the Spezi Account module.
-
-```swift
-// TODO screenshots and general readme document?
-//  see https://github.com/StanfordSpezi/.github/pull/26/files?short_path=550e684#diff-550e684ad136b887df3a3afe23a9925cc048e668022aaf0c274aff83050ce187
-```
 
 ## Contributing
 

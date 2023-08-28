@@ -40,6 +40,7 @@ struct NameOverview: View {
                             Text(PersonNameKey.name)
                             Spacer()
                             Text("VALUE_ADD \(PersonNameKey.name)", bundle: .module)
+                                .foregroundColor(.secondary)
                         }
                     }
                 }

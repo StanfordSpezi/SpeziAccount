@@ -15,7 +15,7 @@ import Spezi
 public struct AccountDetails: Sendable, AccountValues {
     public typealias Element = AnyRepositoryValue // compiler is confused otherwise
 
-    public let storage: AccountStorage
+    public private(set) var storage: AccountStorage
 
 
     public init(from storage: AccountStorage) {
@@ -31,6 +31,10 @@ public struct AccountDetails: Sendable, AccountValues {
         storage[PasswordKey.self] = nil
         storage[ActiveAccountServiceKey.self] = accountService
         self.init(from: storage)
+    }
+
+    mutating func patchAccountService(_ service: any AccountService) {
+        storage[ActiveAccountServiceKey.self] = service
     }
 }
 

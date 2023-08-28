@@ -24,11 +24,10 @@ final class TestAccountConfiguration: Component {
                 TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
                 TestAccountService(.username)
             ]
-        case .bothWithIdentityProvider:
+        case .withIdentityProvider:
             accountServices = [
                 TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
-                TestAccountService(.username)
-                // TODO how to access mock sign in with apple?
+                MockSignInWithAppleProvider()
             ]
         case .empty:
             accountServices = []

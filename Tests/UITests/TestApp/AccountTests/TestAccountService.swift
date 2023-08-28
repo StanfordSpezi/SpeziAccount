@@ -76,6 +76,8 @@ actor TestAccountService: UserIdPasswordAccountService {
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
         try await Task.sleep(for: .seconds(1))
         registeredUser.update(modifications)
+
+        try await updateUser()
     }
 
     func updateUser() async throws {

@@ -13,7 +13,7 @@ import SwiftUI
 enum AccountServiceType: String, ExpressibleByArgument {
     case mail
     case both
-    case bothWithIdentityProvider
+    case withIdentityProvider
     case empty
 }
 

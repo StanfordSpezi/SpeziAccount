@@ -33,9 +33,6 @@ struct UserStorage {
     var name: PersonNameComponents?
     var genderIdentity: GenderIdentity?
     var dateOfBirth: Date?
-
-    // TODO have account value that is "supported"
-    //  => test signup and edit!
     
     
     init(

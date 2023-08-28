@@ -11,16 +11,10 @@ import XCTestExtensions
 
 
 final class AccountSetupTests: XCTestCase {
-    static var firstSetup = true
-
     override func setUpWithError() throws {
-        guard Self.firstSetup else {
-            return
-        }
         try super.setUpWithError()
 
         try disablePasswordAutofill()
-        Self.firstSetup = true
     }
 
     func testEmbeddedViewValidation() throws {
@@ -100,6 +94,15 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
     }
 
+    func testBasicIdentityProviderLayout() throws {
+        let app = TestApp.launch(serviceType: "withIdentityProvider")
+        let setup = app.openAccountSetup()
+
+        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 0.5))
+        setup.verifyExistence(text: "or") // divider
+        XCTAssertTrue(setup.buttons["Sign in with Apple"].waitForExistence(timeout: 0.5))
+    }
+
     func testRestPassword() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
@@ -128,7 +131,7 @@ final class AccountSetupTests: XCTestCase {
         setup.tap(button: "Done")
         XCTAssertFalse(setup.staticTexts["Reset Password"].waitForExistence(timeout: 0.5))
 
-        setup.tap(button: "Close") // TODO type that?
+        setup.tap(button: "Close")
 
         XCTAssertFalse(setup.staticTexts["Your Account"].waitForExistence(timeout: 0.5))
     }
@@ -149,8 +152,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // enter email with validation
-        // TODO we already have focus!
-        signupView.app.typeText(String(email.dropLast(13)))
+        signupView.app.typeText(String(email.dropLast(13))) // we already have focus
         XCTAssertTrue(signupView.staticTexts["The entered email is invalid."].waitForExistence(timeout: 2.0))
         signupView.app.typeText(String(email.dropFirst(13)))
 
@@ -168,7 +170,25 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
-        // TODO test image present!
+        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5)) // verify the header works well without a name
+    }
+
+    func testSignupAllRequiredValidation() throws {
+        let app = TestApp.launch(config: "allRequired")
+        let signupView = app
+            .openAccountSetup()
+            .openSignup(sleep: 3)
+
+        signupView.signup(sleep: 1)
+
+        // Two name fields
+        XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(signupView.staticTexts["The last name field cannot be empty!"].waitForExistence(timeout: 0.5))
+
+        // userId, password and Date Of Birth validation
+        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 3)
+
+        // gender identity does have a default value. No validation therefore.
     }
 
     func testInvalidCredentials() throws {
@@ -215,7 +235,6 @@ final class AccountSetupTests: XCTestCase {
     }
 
     func testRequirementLevelsSignup() throws {
-        // TODO the same with all required
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app
             .openAccountSetup()
@@ -229,33 +248,39 @@ final class AccountSetupTests: XCTestCase {
         signupView.verifyExistence(text: "Date of Birth")
     }
 
-    func testRequirementLevelsOverview() throws {
-        let app = TestApp.launch(serviceType: "mail", defaultCredentials: true)
-        let overview = app.openAccountOverview()
+    func testNameEmptynessCheck() throws {
+        // if we type in the name in the signup view but then remove all text input then (empty strings in the text fields)
+        // we shouldn't save a empty name but instead save no name at all
+        let app = TestApp.launch()
+        let signupView = app
+            .openAccountSetup()
+            .openSignup(sleep: 2)
 
-        overview.verifyExistence(text: "Leland Stanford")
-        overview.verifyExistence(text: "lelandstanford@stanford.edu")
+        let email = "lelandstanford2@stanford.edu"
 
-        overview.verifyExistence(text: "Name, E-Mail Address")
-        overview.verifyExistence(text: "Password & Security")
+        try signupView.enter(email: email)
+        try signupView.enter(password: "123456789")
 
-        overview.verifyExistence(text: "Gender Identity")
-        overview.verifyExistence(text: "Male")
+        try signupView.enter(field: "Enter your first name ...", text: "Leland")
+        signupView.app.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 6))
 
-        overview.verifyExistence(text: "Date of Birth")
-        overview.verifyExistence(text: "Mar 9, 1824")
+        signupView.signup(sleep: 3)
+
+        // Now verify what we entered
+        let overview = app.openAccountOverview(timeout: 6.0)
+
+        // basic verification of all information recorded
+        XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5))
+
+        overview.tap(button: "Name, E-Mail Address")
+        sleep(2)
+        XCTAssertTrue(overview.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 6.0))
+
+        overview.verifyExistence(text: email)
+        XCTAssertFalse(overview.staticTexts["Leland"].waitForExistence(timeout: 1.0))
+        overview.verifyExistence(text: "Add Name")
     }
-
-    // TODO test after deleting name that it won't get saved empty! => and that the image is shown!
-
-    // TODO test that required name works! (validation!)
-
-    // TODO overview tests: test collected vs supports.
-    //  - name change and userId change
-    //  - password change sheet! + password change!
-
-    // TODO merge logijn and signup tests=> AccountSetup tests
-    //  - test with an identity provider
-
-    // TODO test the storage standard thingy!
 }

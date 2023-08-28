@@ -21,6 +21,15 @@ public enum OverviewEntryMode {
 
 
 /// Defines the type of `SpeziAccount` view a ``DataEntryView`` or ``DataDisplayView`` is placed in.
+///
+/// Access this property inside supporting views using the ``SwiftUI/EnvironmentValues/accountViewType`` environment key.
+///
+/// ```swift
+/// struct MyView: View {
+///     @Environment(\.accountViewType)
+///     var accountViewType
+/// }
+/// ```
 public enum AccountViewType: EnvironmentKey {
     /// The view is part of a ``SignupForm`` view hierarchy.
     case signup

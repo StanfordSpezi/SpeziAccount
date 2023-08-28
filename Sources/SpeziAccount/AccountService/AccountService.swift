@@ -90,6 +90,10 @@ extension AccountService {
         description
     }
 
+    var objId: ObjectIdentifier {
+        ObjectIdentifier(self)
+    }
+
     /// Default `CustomStringConvertible` returning the type name.
     public var description: String {
         "\(Self.self)"
