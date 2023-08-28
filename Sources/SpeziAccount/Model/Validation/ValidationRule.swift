@@ -33,10 +33,10 @@ enum CascadingValidationEffect {
 /// - Important: Never rely on security-relevant validations with `ValidationRule`. These are client-side validations only!
 ///     Security-related validations MUST be checked at the server side (e.g., password length) and are just checked
 ///     on client-side for visualization.
-public struct ValidationRule: Identifiable, Sendable {
+public struct ValidationRule: Identifiable, @unchecked Sendable { // we guarantee that the closure is only executed on the main thread
     /// A unique identifier for the ``ValidationRule``. Can be used to, e.g., match a ``FailedValidationResult`` to the ValidationRule.
     public let id: UUID
-    private let rule: @Sendable (String) -> Bool
+    private let rule: (String) -> Bool
     /// A localized message that describes a recovery suggestion if the validation rule fails.
     public let message: LocalizedStringResource
     let effect: CascadingValidationEffect
@@ -45,7 +45,7 @@ public struct ValidationRule: Identifiable, Sendable {
     // swiftlint:disable:next function_default_parameter_at_end
     init(
         id: UUID = UUID(),
-        ruleClosure: @Sendable @escaping (String) -> Bool,
+        ruleClosure: @escaping (String) -> Bool,
         message: LocalizedStringResource,
         effect: CascadingValidationEffect = .continue
     ) {
@@ -61,7 +61,7 @@ public struct ValidationRule: Identifiable, Sendable {
     /// - Parameters:
     ///   - rule: An escaping closure that validates a `String` and returns a boolean result.
     ///   - message: A `String` message to display if validation fails.
-    public init(rule: @Sendable @escaping (String) -> Bool, message: LocalizedStringResource) {
+    public init(rule: @escaping (String) -> Bool, message: LocalizedStringResource) {
         self.init(ruleClosure: rule, message: message)
     }
 
@@ -71,7 +71,7 @@ public struct ValidationRule: Identifiable, Sendable {
     ///   - rule: An escaping closure that validates a `String` and returns a boolean result.
     ///   - message: A `String` message to display if validation fails.
     ///   - bundle: The Bundle to localize for.
-    public init(rule: @Sendable @escaping (String) -> Bool, message: String.LocalizationValue, bundle: Bundle) {
+    public init(rule: @escaping (String) -> Bool, message: String.LocalizationValue, bundle: Bundle) {
         self.init(ruleClosure: rule, message: LocalizedStringResource(message, bundle: .atURL(from: bundle)))
     }
     
@@ -106,6 +106,7 @@ public struct ValidationRule: Identifiable, Sendable {
     /// Validates the contents of a given `String` input.
     /// - Parameter input: The input to validate.
     /// - Returns: Returns a ``FailedValidationResult`` if validation failed, otherwise `nil`.
+    @MainActor
     public func validate(_ input: String) -> FailedValidationResult? {
         guard !rule(input) else {
             return nil
