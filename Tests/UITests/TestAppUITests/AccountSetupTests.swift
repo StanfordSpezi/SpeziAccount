@@ -248,7 +248,7 @@ final class AccountSetupTests: XCTestCase {
         signupView.verifyExistence(text: "Date of Birth")
     }
 
-    func testNameEmptynessCheck() throws {
+    func testNameEmptinessCheck() throws {
         // if we type in the name in the signup view but then remove all text input then (empty strings in the text fields)
         // we shouldn't save a empty name but instead save no name at all
         let app = TestApp.launch()

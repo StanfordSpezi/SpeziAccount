@@ -28,6 +28,12 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 }
 
 
+extension Bool: CustomLocalizedStringResourceConvertible {
+    public var localizedStringResource: LocalizedStringResource {
+        .init(self ? "YES" : "NO", bundle: .atURL(from: .module))
+    }
+}
+
 #if DEBUG
 struct LocalizableStringBasedDisplayView_Previews: PreviewProvider {
     static var previews: some View {

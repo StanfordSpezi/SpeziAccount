@@ -8,6 +8,8 @@
 
 // MARK: - General
 "OR" = "or";
+"YES" = "Yes";
+"NO" = "No";
 "MISSING_ACCOUNT_SERVICES" = "**No Account Services set up.**\n\nPlease refer to the documentation of the SpeziAccount package on how to set up an AccountService!";
 "MISSING_ACCOUNT_DETAILS" = "**Couldn't find a user account.**\n\nThis view requires an active user account.\nRefer to the documentation of the AccountSetup view on how to setup a user account!";
 "OPEN_DOCUMENTATION" = "Open Documentation";
