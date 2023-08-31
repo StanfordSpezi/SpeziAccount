@@ -61,7 +61,7 @@ public struct ValidationRule: Decodable {
     }
     
     /// Validates the contents of a `String` and returns a `String` error message if validation fails
-    func validate(_ input: String) -> String? {
+    public func validate(_ input: String) -> String? {
         guard !rule(input) else {
             return nil
         }
