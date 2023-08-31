@@ -10,7 +10,8 @@ import SpeziViews
 import SwiftUI
 
 
-struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
+/// A reusable view to enable building verifiable text fields.
+public struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
     private let description: Description
     private let textField: TextField
     private let validationRules: [ValidationRule]
@@ -26,7 +27,7 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
     @State private var validationResults: [String] = []
     
     
-    var body: some View {
+    public var body: some View {
         DescriptionGridRow {
             description
         } content: {
@@ -56,7 +57,13 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
     }
     
     
-    init(
+    /// - Parameters:
+    ///   - text: The text that is displayed in the text field.
+    ///   - valid: If the text is valid in accordance to the validation rules.
+    ///   - validationRules: The validation rules that are applied.
+    ///   - description: The description of the text field.
+    ///   - textField: The text field that is verified.
+    public init(
         text: Binding<String>,
         valid: Binding<Bool>,
         validationRules: [ValidationRule] = [],
@@ -70,9 +77,13 @@ struct VerifiableTextFieldGridRow<Description: View, TextField: View>: View {
         self.textField = textField(text)
     }
     
-    // We want to have the same argument order as found in the main initializer. We do not move the description property up as it constructs a trailing closure in the main initializer.
-    // swiftlint:disable:next function_default_parameter_at_end
-    init(
+    /// - Parameters:
+    ///   - text: The text that is displayed in the text field.
+    ///   - valid: If the text is valid in accordance to the validation rules.
+    ///   - validationRules: The validation rules that are applied.
+    ///   - description: The description of the text field.
+    ///   - textField: The text field that is verified.
+    public init( // swiftlint:disable:this function_default_parameter_at_end
         text: Binding<String>,
         valid: Binding<Bool>,
         validationRules: [ValidationRule] = [],
