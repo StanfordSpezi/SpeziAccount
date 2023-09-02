@@ -13,8 +13,7 @@ import SwiftUI
 
 
 struct AccountTestsView: View {
-    @Environment(\.features)
-    var features
+    @Environment(\.features) var features
 
     @EnvironmentObject var account: Account
 

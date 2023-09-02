@@ -21,12 +21,9 @@ struct AccountOverviewSections: View {
 
     @EnvironmentObject private var account: Account
 
-    @Environment(\.logger) private
-    var logger
-    @Environment(\.editMode) private
-    var editMode
-    @Environment(\.dismiss) private
-    var dismiss
+    @Environment(\.logger) private var logger
+    @Environment(\.editMode) private var editMode
+    @Environment(\.dismiss) private var dismiss
 
     @StateObject private var model: AccountOverviewFormViewModel
     @Binding private var isEditing: Bool

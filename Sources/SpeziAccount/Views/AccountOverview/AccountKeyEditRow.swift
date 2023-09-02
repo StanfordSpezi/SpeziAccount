@@ -14,8 +14,7 @@ struct AccountKeyEditRow: View {
     private let accountKey: any AccountKey.Type
 
     @EnvironmentObject private var account: Account
-    @Environment(\.editMode)
-    private var editMode
+    @Environment(\.editMode) private var editMode
 
     @ObservedObject private var model: AccountOverviewFormViewModel
 

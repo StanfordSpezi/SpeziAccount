@@ -49,8 +49,7 @@ extension UserIdKey {
 
         private let value: String
 
-        @Environment(\.accountServiceConfiguration)
-        private var configuration
+        @Environment(\.accountServiceConfiguration) private var configuration
 
         public var body: some View {
             SimpleTextRow(name: configuration.userIdConfiguration.idType.localizedStringResource) {
@@ -66,8 +65,7 @@ extension UserIdKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = UserIdKey
 
-        @Environment(\.accountServiceConfiguration)
-        private var configuration
+        @Environment(\.accountServiceConfiguration) private var configuration
 
         @Binding var userId: Value
 

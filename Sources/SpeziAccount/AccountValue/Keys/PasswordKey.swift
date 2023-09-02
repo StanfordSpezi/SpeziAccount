@@ -60,8 +60,7 @@ extension PasswordKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PasswordKey
 
-        @Environment(\.passwordFieldType)
-        private var fieldType
+        @Environment(\.passwordFieldType) private var fieldType
 
         @Binding private var password: Value
 

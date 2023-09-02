@@ -28,14 +28,11 @@ enum AccountValueConfigurationType: String, ExpressibleByArgument {
 struct Features: ParsableArguments, EnvironmentKey {
     static let defaultValue = Features()
 
-    @Option(help: "Define which type of account services are used for the tests.")
-    var serviceType: AccountServiceType = .mail
+    @Option(help: "Define which type of account services are used for the tests.") var serviceType: AccountServiceType = .mail
 
-    @Option(help: "Define which type of AccountValueConfiguration is used.")
-    var configurationType: AccountValueConfigurationType = .default
+    @Option(help: "Define which type of AccountValueConfiguration is used.") var configurationType: AccountValueConfigurationType = .default
 
-    @Flag(help: "Control if the app should be populated with default credentials.")
-    var defaultCredentials = false
+    @Flag(help: "Control if the app should be populated with default credentials.") var defaultCredentials = false
 }
 
 

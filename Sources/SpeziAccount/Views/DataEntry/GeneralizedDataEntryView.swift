@@ -31,10 +31,8 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
     @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
-    @Environment(\.accountServiceConfiguration)
-    private var configuration
-    @Environment(\.accountViewType)
-    private var viewType
+    @Environment(\.accountServiceConfiguration) private var configuration
+    @Environment(\.accountViewType) private var viewType
 
     @State private var value: Wrapped.Key.Value
 

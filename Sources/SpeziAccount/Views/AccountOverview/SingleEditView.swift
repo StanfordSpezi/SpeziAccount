@@ -18,10 +18,8 @@ struct SingleEditView<Key: AccountKey>: View {
     }
 
 
-    @Environment(\.logger)
-    private var logger
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.logger) private var logger
+    @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var model: AccountOverviewFormViewModel
 
