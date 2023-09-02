@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct MagicValue {
+struct ViewSizing {
     static let outerHorizontalPadding: CGFloat = 16
     static let innerHorizontalPadding: CGFloat = 16
     static let maxFrameWidth: CGFloat = 450

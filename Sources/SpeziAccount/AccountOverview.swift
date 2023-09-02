@@ -56,7 +56,7 @@ public struct AccountOverview: View {
             } else {
                 Spacer()
                 MissingAccountDetailsWarning()
-                    .padding(.horizontal, MagicValue.outerHorizontalPadding)
+                    .padding(.horizontal, ViewSizing.outerHorizontalPadding)
                 Spacer()
                 Spacer()
                 Spacer()

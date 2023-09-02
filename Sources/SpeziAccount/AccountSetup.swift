@@ -83,7 +83,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                         Spacer()
                         Spacer()
                     }
-                        .padding(.horizontal, MagicValue.outerHorizontalPadding)
+                        .padding(.horizontal, ViewSizing.outerHorizontalPadding)
                         .frame(minHeight: proxy.size.height)
                         .frame(maxWidth: .infinity)
                 }
@@ -104,8 +104,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
                 IdentityProviderSection(providers: identityProviders)
             }
-                .padding(.horizontal, MagicValue.innerHorizontalPadding)
-                .frame(maxWidth: MagicValue.maxFrameWidth) // landscape optimizations
+                .padding(.horizontal, ViewSizing.innerHorizontalPadding)
+                .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
         }
     }

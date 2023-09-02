@@ -89,7 +89,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .padding()
         }
             .padding()
-            .frame(maxWidth: MagicValue.maxFrameWidth * 1.5) // landscape optimizations
+            .frame(maxWidth: ViewSizing.maxFrameWidth * 1.5) // landscape optimizations
             .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 

@@ -21,22 +21,22 @@ protocol StandardBacked {
 
 /// An ``AccountService`` implementation for account services with ``SupportedAccountKeys/exactly(_:)`` configuration
 /// to forward unsupported account values to a ``AccountStorageStandard`` implementation.
-public actor StandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
+actor StandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
     @AccountReference private var account
 
     let accountService: Service
     let standard: Standard
     let serviceSupportedKeys: AccountKeyCollection
 
-    public nonisolated var configuration: AccountServiceConfiguration {
+    nonisolated var configuration: AccountServiceConfiguration {
         accountService.configuration
     }
 
-    public nonisolated var viewStyle: Service.ViewStyle {
+    nonisolated var viewStyle: Service.ViewStyle {
         accountService.viewStyle
     }
 
-    public nonisolated var backedId: String {
+    nonisolated var backedId: String {
         accountService.id
     }
 
@@ -63,7 +63,7 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         self.accountService.objId == accountService.objId
     }
 
-    public func signUp(signupDetails: SignupDetails) async throws {
+    func signUp(signupDetails: SignupDetails) async throws {
         let details = splitDetails(from: signupDetails)
 
         let recordId = AdditionalRecordId(serviceId: accountService.id, userId: signupDetails.userId)
@@ -74,7 +74,7 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         try await accountService.signUp(signupDetails: details.service)
     }
 
-    public func updateAccountDetails(_ modifications: AccountModifications) async throws {
+    func updateAccountDetails(_ modifications: AccountModifications) async throws {
         guard let userId = await currentUserId else {
             return
         }
@@ -100,11 +100,11 @@ public actor StandardBackedAccountService<Service: AccountService, Standard: Acc
         try await accountService.updateAccountDetails(serviceModifications)
     }
 
-    public func logout() async throws {
+    func logout() async throws {
         try await accountService.logout()
     }
 
-    public func delete() async throws {
+    func delete() async throws {
         guard let userId = await currentUserId else {
             return
         }
@@ -144,12 +144,12 @@ extension StandardBackedAccountService: EmbeddableAccountService where Service: 
 
 
 extension StandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {
-    public func login(userId: String, password: String) async throws {
+    func login(userId: String, password: String) async throws {
         // the standard is queried once the account service calls `supplyAccountDetails`
         try await accountService.login(userId: userId, password: password)
     }
 
-    public func resetPassword(userId: String) async throws {
+    func resetPassword(userId: String) async throws {
         try await accountService.resetPassword(userId: userId)
     }
 }

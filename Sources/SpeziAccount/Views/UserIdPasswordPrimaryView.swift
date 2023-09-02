@@ -26,14 +26,14 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
                     VStack {
                         UserIdPasswordEmbeddedView(using: service)
                     }
-                        .padding(.horizontal, MagicValue.innerHorizontalPadding)
-                        .frame(maxWidth: MagicValue.maxFrameWidth)
+                        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
+                        .frame(maxWidth: ViewSizing.maxFrameWidth)
 
                     Spacer()
                     Spacer()
                     Spacer()
                 }
-                    .padding(.horizontal, MagicValue.outerHorizontalPadding)
+                    .padding(.horizontal, ViewSizing.outerHorizontalPadding)
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
         }

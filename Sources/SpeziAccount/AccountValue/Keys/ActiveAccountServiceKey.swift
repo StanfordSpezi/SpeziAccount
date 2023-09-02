@@ -20,7 +20,7 @@ extension AccountDetails {
     /// Access the ``AccountService`` associated with the ``AccountDetails``.
     ///
     /// - Note: You should not assume the type of the active ``AccountService``. Depending on the configuration,
-    ///     the active ``AccountService`` might be wrapped into types like the ``StandardBackedAccountService`` and, therefore,
+    ///     the active ``AccountService`` might be wrapped into other account service types and, therefore,
     ///     type cast will fail unexpectedly.
     ///     An ``AccountService`` might communicate extra functionality using the ``AccountServiceConfiguration``.
     public var accountService: any AccountService {

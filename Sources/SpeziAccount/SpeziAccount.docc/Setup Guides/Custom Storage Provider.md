@@ -52,7 +52,6 @@ var configuration: Configuration {
 ### Providing Storage
 
 - ``AccountStorageStandard``
-- ``StandardBackedAccountService``
 
 ### Identifying Additional Storage Records
 
