@@ -24,7 +24,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.7.2")),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.4.0")),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5")),
-        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMinor(from: "1.0.4"))
+        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.0.4"))
     ],
     targets: [
         .target(

@@ -78,6 +78,8 @@ struct PasswordChangeSheet: View {
                     if !newValue.isEmpty && !repeatPassword.isEmpty {
                         model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
                     }
+
+                    model.modifiedDetailsBuilder.set(\.password, newPassword)
                 }
 
             PasswordKey.DataEntry($repeatPassword)

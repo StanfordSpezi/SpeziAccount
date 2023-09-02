@@ -23,7 +23,8 @@ import SwiftUI
 /// ### Accessing `Account` in your view
 ///
 /// To access the `Account` object from anywhere in your view hierarchy (assuming you have ``AccountConfiguration`` configured),
-/// you may just declare the respective `EnvironmentObject` property wrapper as in the code sample below.
+/// you may just declare the respective [@EnvironmentObject](https://developer.apple.com/documentation/swiftui/environmentobject)
+/// property wrapper as in the code sample below.
 ///
 /// ```swift
 /// struct MyView: View {
