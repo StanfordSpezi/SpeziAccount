@@ -79,7 +79,7 @@ struct PasswordChangeSheet: View {
                         model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
                     }
 
-                    model.modifiedDetailsBuilder.set(\.password, newPassword)
+                    model.modifiedDetailsBuilder.set(\.password, value: newPassword)
                 }
 
             PasswordKey.DataEntry($repeatPassword)
