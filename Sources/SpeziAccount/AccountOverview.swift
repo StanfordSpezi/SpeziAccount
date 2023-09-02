@@ -52,7 +52,6 @@ public struct AccountOverview: View {
                         isEditing: $isEditing
                     )
                 }
-                    .submitLabel(.done)
                     .padding(.top, -20)
             } else {
                 Spacer()
