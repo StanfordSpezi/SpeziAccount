@@ -122,8 +122,8 @@ extension ValidationRule {
     /// processing chain of validation rules, if the current validation rule determines a given input to be invalid.
     /// - Parameter rule: The ``ValidationRule`` to modify.
     /// - Returns: Returns a modified ``ValidationRule``
-    public static func interceptingChain(_ rule: ValidationRule) -> ValidationRule {
-        ValidationRule(id: rule.id, ruleClosure: rule.rule, message: rule.message, effect: .intercept)
+    public var intercepting: ValidationRule {
+        ValidationRule(id: id, ruleClosure: rule, message: message, effect: .intercept)
     }
 }
 

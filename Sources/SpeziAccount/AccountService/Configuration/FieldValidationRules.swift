@@ -87,9 +87,9 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
         // or we return a default based on the Key type and the current configuration environment
         if Key.self == UserIdKey.self && repository[UserIdConfiguration.self].idType == .emailAddress
             || Key.self == EmailAddressKey.self {
-            return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty), .minimalEmail)
+            return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalEmail)
         } else if Key.self == PasswordKey.self {
-            return FieldValidationRules(for: Key.self, rules: .interceptingChain(.nonEmpty), .minimalPassword)
+            return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalPassword)
         } else {
             // we cannot statically determine here if the user may have configured the Key to be required
             return nil
