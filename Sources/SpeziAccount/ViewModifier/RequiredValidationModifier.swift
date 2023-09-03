@@ -10,7 +10,7 @@ import SwiftUI
 
 
 private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
-    @EnvironmentObject private var closures: ValidationClosures<String>
+    @EnvironmentObject private var engines: ValidationEngines<String>
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
     @Binding private var value: Key.Value
@@ -26,13 +26,11 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
     }
 
     func body(content: Content) -> some View {
-        closures.register(running: validation, validation: onSubmission)
-
         VStack {
             content // the wrapped data entry view
                 .onChange(of: value) { _ in
                     // only if we are still registered
-                    if closures.has(validation) {
+                    if engines.contains(validation) {
                         // as soon as the user changed the input once, we will always have a value.
                         validation.submit(input: mockText, debounce: true)
                     }
@@ -43,14 +41,7 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
                 Spacer()
             }
         }
-            .onDisappear {
-                closures.remove(engine: validation)
-            }
-    }
-
-    func onSubmission() -> ValidationResult {
-        validation.runValidation(input: mockText)
-        return validation.inputValid ? .success : .failed
+            .register(engine: validation, with: engines, input: mockText)
     }
 }
 

@@ -40,10 +40,14 @@ They are used across the `SpeziAccount` framework.
 - ``VerifiableTextField``
 - ``ValidationResultsView``
 
+### Collecting Validation Engines
+
+- ``ValidationEngines``
+- ``SwiftUI/View/register(engine:with:for:input:)``
+- ``SwiftUI/View/register(engine:with:input:)``
+
 ### Managed Validation
 
-- ``ValidationClosures``
-- ``ValidationResult``
 - ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g``
 - ``SwiftUI/View/managedValidation(input:for:rules:)-zito``
 - ``SwiftUI/View/managedValidation(input:rules:)-vp6w``

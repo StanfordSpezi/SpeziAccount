@@ -26,6 +26,12 @@ struct SingleEditView<Key: AccountKey>: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
 
+    private var disabledDone: Bool {
+        !model.hasUnsavedChanges // we don't have any changes
+            || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self) // it's the same value
+            || !model.validationEngines.allInputValid // or the input isn't valid // TODO have it valid with preexisting value?
+    }
+
     var body: some View {
         Form {
             VStack {
@@ -40,7 +46,7 @@ struct SingleEditView<Key: AccountKey>: View {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
                 }
-                    .disabled(!model.hasUnsavedChanges || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self))
+                    .disabled(disabledDone)
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
             .onDisappear {
@@ -56,7 +62,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
 
     private func submitChange() async throws {
-        guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
+        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
             return
         }
 

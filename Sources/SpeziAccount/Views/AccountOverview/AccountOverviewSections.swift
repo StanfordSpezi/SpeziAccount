@@ -206,7 +206,7 @@ struct AccountOverviewSections: View {
             return
         }
 
-        guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
+        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
             logger.debug("Some input validation failed. Staying in edit mode!")
             return
         }

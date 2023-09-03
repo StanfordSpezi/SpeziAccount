@@ -28,7 +28,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     let modifiedDetailsBuilder = ModifiedAccountDetails.Builder() // nested ObservableObject, see init
-    let validationClosures = ValidationClosures<String>()
+    let validationEngines = ValidationEngines<String>()
 
     @Published var presentingCancellationDialog = false
     @Published var presentingLogoutAlert = false
@@ -45,7 +45,8 @@ class AccountOverviewFormViewModel: ObservableObject {
         .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module))
     }
 
-    private var anyCancellable: AnyCancellable?
+    private var anyCancellable: [AnyCancellable] = []
+
 
     init(account: Account) {
         self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, configuration in
@@ -54,10 +55,14 @@ class AccountOverviewFormViewModel: ObservableObject {
 
         // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
         // Otherwise, changes to the object wouldn't be important.
-        anyCancellable = modifiedDetailsBuilder.objectWillChange.sink { [weak self] _ in
+        anyCancellable.append(modifiedDetailsBuilder.objectWillChange.sink { [weak self] _ in
             self?.objectWillChange.send()
-        }
+        })
+        anyCancellable.append(validationEngines.objectWillChange.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        })
     }
+
 
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
         categorizedAccountKeys[category, default: []]
@@ -156,7 +161,6 @@ class AccountOverviewFormViewModel: ObservableObject {
 
         // clearing the builder before switching the edit mode
         modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
-        validationClosures.clear()
 
         editMode?.wrappedValue = .inactive
     }
@@ -183,5 +187,10 @@ class AccountOverviewFormViewModel: ObservableObject {
         }
 
         return security
+    }
+
+
+    deinit {
+        anyCancellable.forEach { $0.cancel() }
     }
 }

@@ -13,7 +13,8 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
     private let inputValue: String
     private let fieldIdentifier: FieldIdentifier?
 
-    @EnvironmentObject private var closures: ValidationClosures<FieldIdentifier>
+    @EnvironmentObject private var engines: ValidationEngines<FieldIdentifier>
+    @Environment(\.validationEngineConfiguration) private var configuration
 
     @StateObject private var validation: ValidationEngine
 
@@ -24,21 +25,11 @@ struct InputValidationModifier<FieldIdentifier: Hashable>: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        // we don't retrieve a binding for the `inputValue`. Therefore we refresh the supplied closure everytime
-        // the body gets rebuilt. This also frees the previous view object.
-        closures.register(validation: ValidationClosure(id: validation.id, for: fieldIdentifier, closure: onDataSubmission))
+        let _ = validation.configuration = configuration // swiftlint:disable:this redundant_discardable_let
 
         content
             .environmentObject(validation)
-            .onDisappear {
-                closures.remove(engine: validation)
-            }
-    }
-
-    func onDataSubmission() -> ValidationResult {
-        validation.runValidation(input: inputValue)
-
-        return validation.inputValid ? .success : .failed
+            .register(engine: validation, engines: engines, field: fieldIdentifier, input: inputValue)
     }
 }
 
@@ -48,7 +39,7 @@ extension View {
     ///
     /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
     ///
-    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationEngines`` object is present in the environment.
     ///
     /// - Parameters:
     ///   - value: The current value to validate.
@@ -67,7 +58,7 @@ extension View {
     ///
     /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
     ///
-    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationEngines`` object is present in the environment.
     ///
     /// - Parameters:
     ///   - value: The current value to validate.
@@ -85,7 +76,7 @@ extension View {
     ///
     /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
     ///
-    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationEngines`` object is present in the environment.
     ///
     /// - Parameters:
     ///   - value: The current value to validate.
@@ -104,7 +95,7 @@ extension View {
     ///
     /// This modified creates and manages a ``ValidationEngine`` object and places it into the environment for subviews.
     ///
-    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationClosures`` object is present in the environment.
+    /// The modifier can be used in ``DataEntryView``s or other views where a ``ValidationEngines`` object is present in the environment.
     ///
     /// - Parameters:
     ///   - value: The current value to validate.

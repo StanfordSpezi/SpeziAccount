@@ -59,6 +59,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                     .frame(maxWidth: .infinity)
             }
                 .buttonStyle(.borderedProminent)
+                .disabled(!userIdValidation.inputValid || !passwordValidation.inputValid)
                 .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 .padding(.bottom, 12)
                 .padding(.top)

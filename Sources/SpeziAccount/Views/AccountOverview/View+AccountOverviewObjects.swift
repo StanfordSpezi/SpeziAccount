@@ -21,6 +21,6 @@ extension View {
         self
             .environment(\.accountServiceConfiguration, service.configuration)
             .environmentObject(model.modifiedDetailsBuilder)
-            .environmentObject(model.validationClosures)
+            .environmentObject(model.validationEngines)
     }
 }

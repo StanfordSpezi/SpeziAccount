@@ -59,7 +59,7 @@ struct PasswordChangeSheet: View {
                     }
                 }
                 .onDisappear {
-                    model.resetModelState() // clears modified details, and validation closures
+                    model.resetModelState() // clears modified details
                 }
         }
     }
@@ -72,9 +72,9 @@ struct PasswordChangeSheet: View {
                 .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
                 .onChange(of: newPassword) { newValue in
                     // A workaround to execute the validation engine of the repeat field if it contains content.
-                    // It works, as we only have two validation closures in this view.
+                    // It works, as we only have two validation engines in this view.
                     if !newValue.isEmpty && !repeatPassword.isEmpty {
-                        model.validationClosures.validateSubviews() // don't supply focus state. Must not switch focus here!
+                        model.validationEngines.validateSubviews() // don't supply focus state. Must not switch focus here!
                     }
 
                     model.modifiedDetailsBuilder.set(\.password, value: newPassword)
@@ -84,6 +84,7 @@ struct PasswordChangeSheet: View {
                 .environment(\.passwordFieldType, .repeat)
                 .focused($focusedDataEntry, equals: "$-newPassword")
                 .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
+                .environment(\.validationEngineConfiguration, .hideFailedValidationOnEmptySubmit)
         } footer: {
             PasswordValidationRuleFooter(configuration: service.configuration)
         }
@@ -96,7 +97,7 @@ struct PasswordChangeSheet: View {
     }
 
     func submitPasswordChange() async throws {
-        guard model.validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
+        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
             return
         }
 

@@ -78,7 +78,7 @@ extension PersonNameKey {
 
         @EnvironmentObject private var account: Account
         @EnvironmentObject private var focusState: FocusStateObject
-        @EnvironmentObject private var closures: ValidationClosures<String>
+        @EnvironmentObject private var engines: ValidationEngines<String>
 
         @StateObject private var validationGivenName = ValidationEngine(rules: givenNameRule)
         @StateObject private var validationFamilyName = ValidationEngine(rules: familyNameRule)
@@ -98,12 +98,7 @@ extension PersonNameKey {
         }
 
         public var body: some View {
-            if nameIsRequired {
-                closures.register(running: validationGivenName, for: givenNameField, validation: onGivenNameSubmission)
-                closures.register(running: validationFamilyName, for: familyNameField, validation: onFamilyNameSubmission)
-            }
-
-            NameFields(
+            let fields = NameFields(
                 name: $name,
                 givenNameField: FieldLocalizationResource(
                     title: "UAP_SIGNUP_GIVEN_NAME_TITLE",
@@ -119,24 +114,32 @@ extension PersonNameKey {
                 familyNameFieldIdentifier: familyNameField,
                 focusedState: focusState.focusedField
             )
-                .onChange(of: name.familyName) { newValue in
+                .onChange(of: name.familyName ?? "") { newValue in
                     // patch value, such that the empty check in the GeneralizedDataEntry works
-                    if newValue?.isEmpty == true {
+                    if newValue.isEmpty {
                         name.familyName = nil
                         return
                     }
 
                     submit(value: newValue, to: \.validationGivenName)
                 }
-                .onChange(of: name.givenName) { newValue in
+                .onChange(of: name.givenName ?? "") { newValue in
                     // patch value, such that the empty check in the GeneralizedDataEntry works
-                    if newValue?.isEmpty == true {
+                    if newValue.isEmpty {
                         name.givenName = nil
                         return
                     }
 
                     submit(value: newValue, to: \.validationFamilyName)
                 }
+
+            if nameIsRequired {
+                fields
+                    .register(engine: validationGivenName, with: engines, for: givenNameField, input: name.givenName ?? "")
+                    .register(engine: validationFamilyName, with: engines, for: familyNameField, input: name.familyName ?? "")
+            } else {
+                fields
+            }
 
             HStack {
                 ValidationResultsView(results: validationGivenName.displayedValidationResults + validationFamilyName.displayedValidationResults)
@@ -155,16 +158,6 @@ extension PersonNameKey {
             }
 
             self[keyPath: validationEngine].submit(input: value ?? "", debounce: true)
-        }
-
-        private func onGivenNameSubmission() -> ValidationResult {
-            validationGivenName.runValidation(input: name.givenName ?? "")
-            return validationGivenName.inputValid ? .success : .failed
-        }
-
-        private func onFamilyNameSubmission() -> ValidationResult {
-            validationFamilyName.runValidation(input: name.familyName ?? "")
-            return validationFamilyName.inputValid ? .success : .failed
         }
     }
 }

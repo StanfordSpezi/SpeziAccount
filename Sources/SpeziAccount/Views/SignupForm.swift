@@ -23,7 +23,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
-    @StateObject private var validationClosures = ValidationClosures<String>()
+    @StateObject private var validationEngines = ValidationEngines<String>()
 
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
@@ -56,7 +56,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
-                .environmentObject(validationClosures)
+                .environmentObject(validationEngines)
                 .environmentObject(FocusStateObject(focusedField: _focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
@@ -65,6 +65,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                     .frame(maxWidth: .infinity)
             }
                 .buttonStyle(.borderedProminent)
+                .disabled(!validationEngines.allInputValid)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
@@ -107,7 +108,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
 
     private func signupButtonAction() async throws {
-        guard validationClosures.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
             return
         }
 
