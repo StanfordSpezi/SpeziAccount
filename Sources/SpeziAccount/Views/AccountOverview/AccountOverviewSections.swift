@@ -66,6 +66,7 @@ struct AccountOverviewSections: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
+                            .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
                             .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }

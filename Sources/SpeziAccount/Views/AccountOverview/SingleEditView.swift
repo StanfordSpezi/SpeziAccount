@@ -29,7 +29,7 @@ struct SingleEditView<Key: AccountKey>: View {
     private var disabledDone: Bool {
         !model.hasUnsavedChanges // we don't have any changes
             || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self) // it's the same value
-            || !model.validationEngines.allInputValid // or the input isn't valid // TODO have it valid with preexisting value?
+            || !model.validationEngines.allInputValid // or the input isn't valid
     }
 
     var body: some View {

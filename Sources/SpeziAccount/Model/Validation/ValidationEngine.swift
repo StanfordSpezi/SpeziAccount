@@ -64,15 +64,22 @@ public class ValidationEngine: ObservableObject, Identifiable {
     ///
     /// The value treats no input at all (a validation that was never executed) as being invalid. Meaning, the default value is `false`.
     @MainActor @Published public var inputValid = false
-    /// A property that indicates if the last processed input is considered valid given that the input was not an empty String.
-    ///
-    /// A empty String is considered as no input and therefore considered as valid always. We treat the case where we haven't received input as no input.
-    /// Therefore, the default value is `true`.
-    @MainActor @Published public var inputValidIgnoringEmpty = true
     /// A list of ``FailedValidationResult`` for the processed input, providing, e.g., recovery suggestions.
     @MainActor @Published public var validationResults: [FailedValidationResult] = []
+
     /// Stores the source of the last validation execution. `nil` if validation was never run.
     private var source: Source?
+    /// Input was empty. By default we consider no input as empty input.
+    private var inputWasEmpty = true
+
+    /// Flag that indicates if ``displayedValidationResults`` returns any ``FailedValidationResult``.
+    @MainActor public var isDisplayingValidationErrors: Bool {
+        if configuration.contains(.hideFailedValidationOnEmptySubmit) {
+            return !inputValid && (source == .manual || !inputWasEmpty)
+        }
+
+        return !inputValid
+    }
 
 
     /// A list of ``FailedValidationResult`` for the processed input that should be used by UI components.
@@ -84,11 +91,7 @@ public class ValidationEngine: ObservableObject, Identifiable {
     /// - Note: When calling ``runValidation(input:)`` (e.g., on the button action) this field always delivers
     ///     the same results as the ``validationResults`` property.
     @MainActor public var displayedValidationResults: [FailedValidationResult] {
-        if configuration.contains(.hideFailedValidationOnEmptySubmit) {
-            return (source == .manual && !inputValid || !inputValidIgnoringEmpty) ? validationResults : []
-        }
-
-        return validationResults
+        isDisplayingValidationErrors ? validationResults : []
     }
 
     private let debounceDuration: Duration
@@ -145,10 +148,10 @@ public class ValidationEngine: ObservableObject, Identifiable {
     @MainActor
     private func runValidation0(input: String, source: Source) {
         self.source = source // assign it first, as this isn't published
+        self.inputWasEmpty = input.isEmpty
 
         computeFailedValidations(input: input)
         inputValid = validationResults.isEmpty
-        inputValidIgnoringEmpty = input.isEmpty || inputValid
     }
 
     /// Runs all validations for a given input on text field submission or value change.

@@ -177,6 +177,10 @@ public class ValidationEngines<FieldIdentifier: Hashable>: ObservableObject {
             .allSatisfy { $0.engine.inputValid }
     }
 
+    @MainActor public var isDisplayingValidationErrors: Bool {
+        storage.values.contains(where: { $0.engine.isDisplayingValidationErrors })
+    }
+
 
     /// Create a new `ValidationEngines` collection by specifying the type `FieldIdentifier` used with the `FocusState` instance.
     /// - Parameter focusStateOf: The underlying type of the `FocusState`.

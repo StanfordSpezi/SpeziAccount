@@ -13,7 +13,6 @@ class TestAppDelegate: SpeziAppDelegate {
     let features: Features = {
         do {
             let features = try Features.parse()
-            print("Parsed command line arguments successfully")
             return features
         } catch {
             print("Error: \(error)")

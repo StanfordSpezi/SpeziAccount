@@ -118,7 +118,6 @@ extension PersonNameKey {
                     // patch value, such that the empty check in the GeneralizedDataEntry works
                     if newValue.isEmpty {
                         name.familyName = nil
-                        return
                     }
 
                     submit(value: newValue, to: \.validationGivenName)
@@ -127,7 +126,6 @@ extension PersonNameKey {
                     // patch value, such that the empty check in the GeneralizedDataEntry works
                     if newValue.isEmpty {
                         name.givenName = nil
-                        return
                     }
 
                     submit(value: newValue, to: \.validationFamilyName)
