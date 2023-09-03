@@ -49,7 +49,6 @@ public struct DateOfBirthPicker: DataEntryView {
         HStack {
             Text(titleLocalization)
                 .multilineTextAlignment(.leading)
-                .accessibilityHidden(true)
             Spacer()
 
             if showPicker {

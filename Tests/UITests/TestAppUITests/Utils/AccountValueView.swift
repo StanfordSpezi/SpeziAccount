@@ -41,12 +41,12 @@ extension AccountValueView {
 
     func changeDatePreviousMonthFirstDay() {
         // add date button is presented if date is not required or doesn't exists yet
-        if app.buttons["Add Date"].exists {
-            app.buttons["Add Date"].tap()
+        if app.buttons["Add Date of Birth"].exists { // uses the accessibility label
+            app.buttons["Add Date of Birth"].tap()
         }
 
-        XCTAssertTrue(app.datePickers.firstMatch.waitForExistence(timeout: 2.0))
-        app.datePickers.firstMatch.tap()
+        XCTAssertTrue(app.datePickers["Date of Birth"].waitForExistence(timeout: 2.0))
+        app.datePickers["Date of Birth"].tap()
 
         // navigate to previous month and select the first date
         XCTAssertTrue(app.datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0))
