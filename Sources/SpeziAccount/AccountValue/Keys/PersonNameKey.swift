@@ -114,21 +114,23 @@ extension PersonNameKey {
                 familyNameFieldIdentifier: familyNameField,
                 focusedState: focusState.focusedField
             )
-                .onChange(of: name.familyName ?? "") { newValue in
-                    // patch value, such that the empty check in the GeneralizedDataEntry works
-                    if newValue.isEmpty {
-                        name.familyName = nil
-                    }
-
+                .onChange(of: name.givenName ?? "") { newValue in
                     submit(value: newValue, to: \.validationGivenName)
                 }
-                .onChange(of: name.givenName ?? "") { newValue in
+                .onChange(of: name.familyName ?? "") { newValue in
+                    submit(value: newValue, to: \.validationFamilyName)
+                }
+                .onChange(of: name.givenName) { newValue in
                     // patch value, such that the empty check in the GeneralizedDataEntry works
-                    if newValue.isEmpty {
+                    if newValue?.isEmpty == true {
                         name.givenName = nil
                     }
-
-                    submit(value: newValue, to: \.validationFamilyName)
+                }
+                .onChange(of: name.familyName) { newValue in
+                    // patch value, such that the empty check in the GeneralizedDataEntry works
+                    if newValue?.isEmpty == true {
+                        name.familyName = nil
+                    }
                 }
 
             if nameIsRequired {
@@ -150,12 +152,12 @@ extension PersonNameKey {
             self._name = value
         }
 
-        private func submit(value: String?, to validationEngine: KeyPath<Self, ValidationEngine>) {
+        private func submit(value: String, to validationEngine: KeyPath<Self, ValidationEngine>) {
             guard nameIsRequired else {
                 return
             }
 
-            self[keyPath: validationEngine].submit(input: value ?? "", debounce: true)
+            self[keyPath: validationEngine].submit(input: value, debounce: true)
         }
     }
 }

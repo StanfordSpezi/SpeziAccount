@@ -37,8 +37,8 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     @FocusState private var focusedField: LoginFocusState?
 
     // for login we do all checks server-side. Except that we don't pass empty values.
-    @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty])
-    @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty])
+    @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
+    @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
 
     @State private var presentingPasswordForgetSheet = false
 

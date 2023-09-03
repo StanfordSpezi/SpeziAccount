@@ -70,16 +70,6 @@ extension TestableView {
         XCTAssertTrue(app.secureTextFields[secureField].waitForExistence(timeout: timeout))
     }
 
-    func dismissKeyboardExtended() {
-        sleep(1)
-        app.dismissKeyboard()
-        let button = app.keyboards.firstMatch.buttons.matching(identifier: "Done").firstMatch
-        if button.exists {
-            button.tap()
-        }
-        sleep(1)
-    }
-
 
     subscript<Value>(dynamicMember dynamicMember: KeyPath<XCUIApplication, Value>) -> Value {
         app[keyPath: dynamicMember]

@@ -77,7 +77,7 @@
 "VALIDATION_RULE_NON_EMPTY" = "This field cannot be empty.";
 "VALIDATION_RULE_UNICODE_LETTERS" = "You must only use letters.";
 "VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
-"VALIDATION_RULE_MINIMAL_EMAIL" = "The entered email is invalid.";
+"VALIDATION_RULE_MINIMAL_EMAIL" = "The provided email is invalid.";
 "VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Your password must be at least %lld characters long.";
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Passwords do not match.";
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "The first name field cannot be empty!";

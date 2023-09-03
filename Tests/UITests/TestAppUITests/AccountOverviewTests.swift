@@ -50,9 +50,10 @@ final class AccountOverviewTests: XCTestCase {
         overview.changeDatePreviousMonthFirstDay()
 
         overview.tap(button: "Add Biography")
-        try overview.enter(field: "Biography", text: "Hello Stanford")
 
-        overview.dismissKeyboardExtended()
+        overview.textFields["Biography"].selectTextField()
+        overview.app.typeText("Hello Stanford")
+        overview.app.dismissKeyboardExtended()
         sleep(3)
 
         overview.tap(button: "Done")
@@ -181,8 +182,16 @@ final class AccountOverviewTests: XCTestCase {
         overview.tap(button: "E-Mail Address, lelandstanford@stanford.edu")
         sleep(2)
 
+        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+
         // edit email
         try overview.deleteEmail(count: 12)
+
+        // failed validation
+        XCTAssertTrue(overview.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+
+        overview.textFields["E-Mail Address"].selectTextField() // otherwise we would hit the Done button
         overview.app.typeText("tum.de")
         overview.tap(button: "Done")
         sleep(3)
@@ -192,6 +201,7 @@ final class AccountOverviewTests: XCTestCase {
         // open name
         overview.tap(button: "Name, Leland Stanford")
         sleep(2)
+        XCTAssertFalse(overview.buttons["Done"].isEnabled)
 
         // edit name
         try overview.delete(field: "Enter your last name ...", count: 8)
@@ -199,6 +209,10 @@ final class AccountOverviewTests: XCTestCase {
         sleep(3)
 
         overview.verifyExistence(text: "Leland")
+
+        overview.navigationBars.buttons["Account Overview"].tap()
+        sleep(2)
+        XCTAssertTrue(overview.staticTexts["L"].waitForExistence(timeout: 2.0)) // ensure the "account image" is updated accordingly
     }
 
     func testSecurityOverview() throws {
@@ -217,12 +231,14 @@ final class AccountOverviewTests: XCTestCase {
         let warningLength = "Your password must be at least 8 characters long."
         overview.verifyExistence(text: warningLength) // the gray hint below
 
-        try overview.enter(secureField: "New Password", text: "12345")
+        overview.secureTextFields["New Password"].selectTextField()
+        overview.app.typeText("12345")
         sleep(1)
         XCTAssertEqual(overview.staticTexts.matching(identifier: warningLength).count, 2)
         overview.app.typeText("6789")
 
-        try overview.enter(secureField: "Repeat Password", text: "12345")
+        overview.secureTextFields["Repeat Password"].selectTextField()
+        overview.app.typeText("12345")
         overview.verifyExistence(text: "Passwords do not match.", timeout: 2.0)
         overview.app.typeText("6789")
 

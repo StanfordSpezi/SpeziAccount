@@ -48,6 +48,7 @@ extension AccountValueView {
 
         // navigate to previous month and select the first date
         app.datePickers.buttons["Previous Month"].tap()
+        usleep(500_000)
         app.datePickers.collectionViews.buttons.element(boundBy: 0).tap()
 
         // close the date picker again

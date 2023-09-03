@@ -42,7 +42,7 @@ struct SignupView: AccountValueView {
 
 
         // workaround some issues with closing the keyboard
-        dismissKeyboardExtended()
+        app.dismissKeyboardExtended()
 
         if let genderIdentity {
             self.updateGenderIdentity(from: "Choose not to answer", to: genderIdentity)

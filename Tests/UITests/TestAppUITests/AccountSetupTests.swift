@@ -21,25 +21,27 @@ final class AccountSetupTests: XCTestCase {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
 
-        // check nonEmpty validation
-        setup.tapLogin()
-        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
+        // check fields are not valid
+        XCTAssertTrue(setup.buttons["Login"].exists)
+        XCTAssertTrue(!setup.buttons["Login"].isEnabled)
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
 
         try setup.enter(email: "aa")
         try setup.enter(password: "bb")
 
-        XCTAssertFalse(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
+
+        usleep(500_000)
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
 
         // doing it in reverse order speeds up the input
         try setup.deletePassword(count: 2)
         try setup.deleteEmail(count: 2)
 
         // validation should not appear if we remove all content via keyboard
-        XCTAssertFalse(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
-
-        // check nonEmpty validation appears again
-        setup.tapLogin()
-        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
+        usleep(500_000)
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
+        XCTAssertTrue(setup.buttons["Login"].exists)
+        XCTAssertTrue(!setup.buttons["Login"].isEnabled)
     }
 
     func testLoginWithEmail() throws {
@@ -115,13 +117,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
 
 
-        // The regular `enter(value:) will hit our "Done" button https://github.com/StanfordBDHG/XCTestExtensions/issues/16
-        let keyboard = app.keyboards.firstMatch
-        var offset = 0.99
-        repeat {
-            app.app.coordinate(withNormalizedOffset: CGVector(dx: offset, dy: 0.5)).tap()
-            offset -= 0.05
-        } while !keyboard.waitForExistence(timeout: 2.0) && offset > 0
+        setup.textFields["E-Mail Address"].selectTextField()
         app.app.typeText(Defaults.email)
 
         setup.tap(button: "Reset Password")
@@ -148,18 +144,27 @@ final class AccountSetupTests: XCTestCase {
         let signupView = setup.openSignup()
 
         // verify basic validation
-        signupView.signup()
+        XCTAssertTrue(signupView.buttons["Signup"].exists)
+        XCTAssertTrue(!signupView.buttons["Signup"].isEnabled)
+        XCTAssertFalse(signupView.staticTexts["This field cannot be empty."].exists)
+
+        // verify empty validation appearing
+        try signupView.enter(email: "a")
+        try signupView.deleteEmail(count: 1)
+        try signupView.enter(password: "a")
+        try signupView.deletePassword(count: 1)
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // enter email with validation
-        signupView.app.typeText(String(email.dropLast(13))) // we already have focus
-        XCTAssertTrue(signupView.staticTexts["The entered email is invalid."].waitForExistence(timeout: 2.0))
-        signupView.app.typeText(String(email.dropFirst(13)))
+        try signupView.enter(email: email.dropLast(13))
+        XCTAssertTrue(signupView.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
+        try signupView.enter(email: email.dropFirst(13))
 
         // enter password with validation
         try signupView.enter(password: password.dropLast(5))
         XCTAssertTrue(signupView.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
-        signupView.app.typeText(String(password.dropFirst(4)))
+        try signupView.deletePassword(count: 4) // workaround comparison issue of XCTestExtensions
+        try signupView.enter(password: password) // after lost focus, secure fields will erase their content
 
         signupView.signup(sleep: 3) // we will be back at the start page now
 
@@ -173,22 +178,25 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5)) // verify the header works well without a name
     }
 
-    func testSignupAllRequiredValidation() throws {
+    func testNameValidation() throws {
         let app = TestApp.launch(config: "allRequired")
         let signupView = app
             .openAccountSetup()
             .openSignup(sleep: 3)
 
-        signupView.signup(sleep: 1)
+        XCTAssertTrue(signupView.buttons["Signup"].exists)
+        XCTAssertFalse(signupView.buttons["Signup"].isEnabled)
 
-        // Two name fields
+        try signupView.enter(field: "Enter your first name ...", text: "a")
+        try signupView.delete(field: "Enter your first name ...", count: 1)
+
+        XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
+
+        try signupView.enter(field: "Enter your last name ...", text: "a")
+        try signupView.delete(field: "Enter your last name ...", count: 1)
+
         XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(signupView.staticTexts["The last name field cannot be empty!"].waitForExistence(timeout: 0.5))
-
-        // userId, password and Date Of Birth validation
-        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 3)
-
-        // gender identity does have a default value. No validation therefore.
     }
 
     func testInvalidCredentials() throws {
@@ -262,7 +270,7 @@ final class AccountSetupTests: XCTestCase {
         try signupView.enter(password: "123456789")
 
         try signupView.enter(field: "Enter your first name ...", text: "Leland")
-        signupView.app.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 6))
+        try signupView.delete(field: "Enter your first name ...", count: 6)
 
         signupView.signup(sleep: 3)
 
