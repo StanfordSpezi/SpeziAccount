@@ -44,10 +44,14 @@ extension AccountValueView {
         if app.buttons["Add Date"].exists {
             app.buttons["Add Date"].tap()
         }
+
+        XCTAssertTrue(app.datePickers.firstMatch.waitForExistence(timeout: 2.0))
         app.datePickers.firstMatch.tap()
 
         // navigate to previous month and select the first date
+        XCTAssertTrue(app.datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0))
         app.datePickers.buttons["Previous Month"].tap()
+
         usleep(500_000)
         app.datePickers.collectionViews.buttons.element(boundBy: 0).tap()
 
