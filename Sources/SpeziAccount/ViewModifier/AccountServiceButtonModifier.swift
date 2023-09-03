@@ -41,6 +41,7 @@ struct UsernamePasswordLoginServiceButton_Previews: PreviewProvider {
         Group {
             Image(systemName: "ellipsis.rectangle")
                 .font(.title2)
+                .accessibilityHidden(true)
             Text("USER_ID_EMAIL", bundle: .module)
         }
             .accountServiceButtonBackground()

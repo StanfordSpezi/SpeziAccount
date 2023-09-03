@@ -22,6 +22,7 @@ public struct SuccessfulPasswordResetView: View {
                 .resizable()
                 .foregroundColor(.green)
                 .frame(width: 100, height: 100)
+                .accessibilityHidden(true)
             Text(successfulLabelLocalization)
                 .multilineTextAlignment(.center)
                 .lineLimit(nil)

@@ -46,6 +46,7 @@ extension AccountSetupViewStyle {
         Group {
             service.configuration.image
                 .font(.title2)
+                .accessibilityHidden(true)
             Text(service.configuration.name)
         }
             .accountServiceButtonBackground()

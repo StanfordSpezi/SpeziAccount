@@ -25,6 +25,7 @@ public struct AccountSummaryBox: View {
                     .frame(width: 40, height: 40)
                     .symbolRenderingMode(.hierarchical)
                     .foregroundColor(Color(.systemGray))
+                    .accessibilityHidden(true)
             }
 
             VStack(alignment: .leading, spacing: 4) {
