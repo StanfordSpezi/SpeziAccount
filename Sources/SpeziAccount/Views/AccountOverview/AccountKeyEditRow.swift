@@ -53,9 +53,7 @@ struct AccountKeyEditRow: View {
             }
         } else {
             if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
-                HStack {
-                    view
-                }
+                view
                     .environment(\.accountViewType, .overview(mode: .display))
             }
         }

@@ -23,9 +23,7 @@ struct NameOverview: View {
                 NavigationLink {
                     SingleEditView<UserIdKey>(model: model, details: accountDetails)
                 } label: {
-                    HStack {
-                        UserIdKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
-                    }
+                    UserIdKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
                 }
             }
 
@@ -33,15 +31,17 @@ struct NameOverview: View {
                 NavigationLink {
                     SingleEditView<PersonNameKey>(model: model, details: accountDetails)
                 } label: {
-                    HStack {
-                        if let name = accountDetails.name {
-                            PersonNameKey.DataDisplay(name)
-                        } else {
+                    if let name = accountDetails.name {
+                        PersonNameKey.DataDisplay(name)
+                    } else {
+                        HStack {
                             Text(PersonNameKey.name)
+                                .accessibilityHidden(true)
                             Spacer()
                             Text("VALUE_ADD \(PersonNameKey.name)", bundle: .module)
                                 .foregroundColor(.secondary)
                         }
+                            .accessibilityElement(children: .combine)
                     }
                 }
             } header: {
@@ -69,9 +69,12 @@ struct NameOverview_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+
+    static let detailsWithoutName = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
 
     static let account = Account(building: details, active: MockUserIdPasswordAccountService())
+    static let accountWithoutName = Account(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
 
     // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
     @StateObject static var model = AccountOverviewFormViewModel(account: account)
@@ -83,6 +86,13 @@ struct NameOverview_Previews: PreviewProvider {
             }
         }
             .environmentObject(account)
+
+        NavigationStack {
+            if let details = account.details {
+                NameOverview(model: model, details: details)
+            }
+        }
+        .environmentObject(accountWithoutName)
     }
 }
 #endif

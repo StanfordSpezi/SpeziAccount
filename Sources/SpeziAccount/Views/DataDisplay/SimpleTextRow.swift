@@ -14,10 +14,13 @@ struct SimpleTextRow<Value: View>: View {
     private let value: Value
 
     var body: some View {
-        Text(name)
-        Spacer()
-        value
-            .foregroundColor(.secondary)
+        HStack {
+            Text(name)
+            Spacer()
+            value
+                .foregroundColor(.secondary)
+        }
+            .accessibilityElement(children: .combine)
     }
 
     init(name: LocalizedStringResource, @ViewBuilder value: () -> Value) {

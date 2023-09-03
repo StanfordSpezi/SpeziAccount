@@ -58,10 +58,9 @@ extension DateOfBirthKey {
         }
 
         public var body: some View {
-            Text(Key.name)
-            Spacer()
-            Text(value.formatted(formatStyle))
-                .foregroundColor(.secondary)
+            SimpleTextRow(name: Key.name) {
+                Text(value.formatted(formatStyle))
+            }
         }
 
 

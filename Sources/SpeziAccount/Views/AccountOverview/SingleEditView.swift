@@ -74,3 +74,25 @@ struct SingleEditView<Key: AccountKey>: View {
         dismiss()
     }
 }
+
+#if DEBUG
+struct SingleEditView_Previews: PreviewProvider {
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+
+    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
+
+    // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
+    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+
+    static var previews: some View {
+        NavigationStack {
+            if let details = account.details {
+                SingleEditView<PersonNameKey>(model: model, details: details)
+            }
+        }
+            .environmentObject(account)
+    }
+}
+#endif

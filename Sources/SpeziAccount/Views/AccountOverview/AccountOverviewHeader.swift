@@ -16,17 +16,20 @@ struct AccountOverviewHeader: View {
     
     var body: some View {
         VStack {
-            if let profileViewName = model.profileViewName {
-                UserProfileView(name: profileViewName)
-                    .frame(height: 90)
-            } else {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundColor(Color(.systemGray))
-                    .accessibilityHidden(true)
+            Group {
+                if let profileViewName = model.profileViewName {
+                    UserProfileView(name: profileViewName)
+                        .frame(height: 90)
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundColor(Color(.systemGray))
+                        .accessibilityHidden(true)
+                }
             }
+                .accessibilityHidden(true)
 
             Text(model.accountHeadline)
                 .font(.title2)
@@ -38,6 +41,7 @@ struct AccountOverviewHeader: View {
                     .foregroundColor(.secondary)
             }
         }
+            .accessibilityElement(children: .combine)
             .frame(maxWidth: .infinity, alignment: .center)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))

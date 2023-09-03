@@ -105,7 +105,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(setup.buttons["Sign in with Apple"].waitForExistence(timeout: 0.5))
     }
 
-    func testRestPassword() throws {
+    func testResetPassword() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
 
@@ -117,7 +117,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
 
 
-        setup.textFields["E-Mail Address"].selectTextField()
+        setup.textFields["E-Mail Address"].firstMatch.selectTextField()
         app.app.typeText(Defaults.email)
 
         setup.tap(button: "Reset Password")

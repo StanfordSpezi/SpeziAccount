@@ -49,6 +49,7 @@ public struct DateOfBirthPicker: DataEntryView {
         HStack {
             Text(titleLocalization)
                 .multilineTextAlignment(.leading)
+                .accessibilityHidden(true)
             Spacer()
 
             if showPicker {
@@ -69,6 +70,7 @@ public struct DateOfBirthPicker: DataEntryView {
                         .foregroundColor(.primary)
                         .frame(width: 110, height: 34)
                 }
+                    .accessibilityLabel(Text("VALUE_ADD \(titleLocalization)", bundle: .module))
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color(uiColor: .tertiarySystemFill))

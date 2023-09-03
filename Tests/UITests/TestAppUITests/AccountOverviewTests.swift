@@ -237,6 +237,9 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertEqual(overview.staticTexts.matching(identifier: warningLength).count, 2)
         overview.app.typeText("6789")
 
+        overview.app.dismissKeyboard()
+        sleep(1)
+
         overview.secureTextFields["Repeat Password"].selectTextField()
         overview.app.typeText("12345")
         overview.verifyExistence(text: "Passwords do not match.", timeout: 2.0)

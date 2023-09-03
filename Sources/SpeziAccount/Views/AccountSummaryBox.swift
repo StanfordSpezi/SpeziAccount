@@ -16,17 +16,20 @@ public struct AccountSummaryBox: View {
 
     public var body: some View {
         HStack(spacing: 16) {
-            if let profileViewName = model.profileViewName {
-                UserProfileView(name: profileViewName)
-                    .frame(height: 40)
-            } else {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundColor(Color(.systemGray))
-                    .accessibilityHidden(true)
+            Group {
+                if let profileViewName = model.profileViewName {
+                    UserProfileView(name: profileViewName)
+                        .frame(height: 40)
+                } else {
+                    Image(systemName: "person.circle.fill")
+                        .resizable()
+                        .frame(width: 40, height: 40)
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundColor(Color(.systemGray))
+                        .accessibilityHidden(true)
+                }
             }
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(model.accountHeadline)
@@ -45,6 +48,7 @@ public struct AccountSummaryBox: View {
                     .shadow(color: .gray, radius: 2)
             )
             .frame(maxWidth: ViewSizing.maxFrameWidth)
+            .accessibilityElement(children: .combine)
     }
 
     /// Create a new `AccountSummaryBox`
