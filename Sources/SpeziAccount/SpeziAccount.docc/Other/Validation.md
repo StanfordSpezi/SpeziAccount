@@ -17,6 +17,45 @@ SPDX-License-Identifier: MIT
 This article provides an overview of all the components used to perform input validation.
 They are used across the `SpeziAccount` framework.
 
+All validation state is managed through an instance of ``ValidationEngine``. You provide a set of ``ValidationRule``s against a given input is
+validated and the ``ValidationEngine`` provides you with an array of ``FailedValidationResult``s for all ``ValidationRule``s that failed for
+a given input.
+
+There are preexisting UI components, like the ``VerifiableTextField``, that perform and display validation results automatically for you. You just have
+to manage a ``ValidationEngine`` in the `Environment`.
+
+Below is a short code example, that uses a ``ValidationEngine`` in combination with a ``VerifiableTextField`` to perform a simple non-empty validation
+using the preexisting ``ValidationRule/nonEmpty`` rule.
+Note how we use the ``ValidationEngine/inputValid`` property to conditionally disable the button input. Further, we ensure validity of input by calling
+``ValidationEngine/runValidation(input:)`` on the button press. For more information refer to the documentation of ``ValidationEngine``.
+ 
+
+```swift
+struct MyView: View {
+    @StateObject var validation = ValidationEngine(rules: .nonEmpty)
+
+    @State var pet: String = ""
+
+    var body: some View {
+        VerifiableTextField("Your favorite pet?", text: $pet)
+            .environment(validation)
+
+        Button(action: savePet) {
+            Text("Save")
+        }
+            .disabled(!validation.inputValid)
+    }
+
+    func savePet() {
+        validation.runValidation(input: pet)
+        guard validation.inputValid else {
+            return
+        }
+        // ...
+    }
+}
+```
+
 ## Topics
 
 ### Validation
