@@ -61,21 +61,31 @@ public struct DateOfBirthPicker: DataEntryView {
                 }
                     .labelsHidden()
             } else {
-                Button(action: {
-                    dateAdded = true
-                }) {
+                Button(action: addDateAction) {
                     Text("ADD_DATE", bundle: .module)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.primary)
                         .frame(width: 110, height: 34)
                 }
-                    .accessibilityLabel(Text("VALUE_ADD \(titleLocalization)", bundle: .module))
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color(uiColor: .tertiarySystemFill))
                     )
             }
         }
+            .accessibilityRepresentation {
+                // makes sure the accessibility view spans the whole width, including the label.
+                if showPicker {
+                    DatePicker(selection: $date, in: dateRange, displayedComponents: .date) {
+                        Text(titleLocalization)
+                    }
+                } else {
+                    Button(action: addDateAction) {
+                        Text("VALUE_ADD \(titleLocalization)", bundle: .module)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+            }
     }
 
 
@@ -93,6 +103,11 @@ public struct DateOfBirthPicker: DataEntryView {
 
     public init(_ value: Binding<Date>) {
         self.init(date: value)
+    }
+
+
+    private func addDateAction() {
+        dateAdded = true
     }
 }
 

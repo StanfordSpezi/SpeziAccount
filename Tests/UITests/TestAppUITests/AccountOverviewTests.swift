@@ -44,16 +44,12 @@ final class AccountOverviewTests: XCTestCase {
 
         XCTAssertTrue(overview.buttons["Delete Account"].waitForExistence(timeout: 0.5))
 
-        print(overview.buttons.debugDescription)
-
         overview.updateGenderIdentity(from: "Male", to: "Choose not to answer")
         overview.changeDatePreviousMonthFirstDay()
 
         overview.tap(button: "Add Biography")
 
-        overview.textFields["Biography"].selectTextField()
-        overview.app.typeText("Hello Stanford")
-        overview.app.dismissKeyboardExtended()
+        try overview.enter(field: "Biography", text: "Hello Stanford")
         sleep(3)
 
         overview.tap(button: "Done")
@@ -185,14 +181,14 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertFalse(overview.buttons["Done"].isEnabled)
 
         // edit email
-        try overview.deleteEmail(count: 12)
+        try overview.textFields["E-Mail Address"].delete(count: 12, dismissKeyboard: false)
 
         // failed validation
         XCTAssertTrue(overview.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
         XCTAssertFalse(overview.buttons["Done"].isEnabled)
 
-        overview.textFields["E-Mail Address"].selectTextField() // otherwise we would hit the Done button
-        overview.app.typeText("tum.de")
+        overview.app.typeText("tum.de") // we still have keyboard focus
+        overview.app.dismissKeyboard()
         overview.tap(button: "Done")
         sleep(3)
 
@@ -231,8 +227,7 @@ final class AccountOverviewTests: XCTestCase {
         let warningLength = "Your password must be at least 8 characters long."
         overview.verifyExistence(text: warningLength) // the gray hint below
 
-        overview.secureTextFields["enter password"].selectTextField()
-        overview.app.typeText("12345")
+        try overview.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
         sleep(1)
         XCTAssertEqual(overview.staticTexts.matching(identifier: warningLength).count, 2)
         overview.app.typeText("6789")
@@ -240,8 +235,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.app.dismissKeyboard()
         sleep(1)
 
-        overview.secureTextFields["re-enter password"].selectTextField()
-        overview.app.typeText("12345")
+        try overview.secureTextFields["re-enter password"].enter(value: "12345", dismissKeyboard: false)
         overview.verifyExistence(text: "Passwords do not match.", timeout: 2.0)
         overview.app.typeText("6789")
 

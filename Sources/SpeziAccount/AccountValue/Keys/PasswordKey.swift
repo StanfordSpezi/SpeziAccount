@@ -92,7 +92,7 @@ extension PasswordKey {
                             validationEngine.submit(input: password, debounce: true)
                         }
                         .onSubmit {
-                            validationEngine.submit(input: password, debounce: true)
+                            validationEngine.submit(input: password, debounce: false)
                         }
                 }
 

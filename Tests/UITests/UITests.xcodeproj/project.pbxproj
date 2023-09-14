@@ -32,7 +32,6 @@
 		A9B6E40B2A9BB2980008B232 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E40A2A9BB2980008B232 /* TestApp.swift */; };
 		A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */; };
 		A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* Features.swift */; };
-		A9F993772AA4F3ED00AF479D /* Workarounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F993762AA4F3ED00AF479D /* Workarounds.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +71,6 @@
 		A9B6E40A2A9BB2980008B232 /* TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationHintsTests.swift; sourceTree = "<group>"; };
 		A9EE7D292A3359E800C2B9A9 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
-		A9F993762AA4F3ED00AF479D /* Workarounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workarounds.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,7 +170,6 @@
 				A9B6E4062A9BB2830008B232 /* SignupView.swift */,
 				A9B6E4082A9BB28C0008B232 /* TestableAccountOverview.swift */,
 				A9B6E40A2A9BB2980008B232 /* TestApp.swift */,
-				A9F993762AA4F3ED00AF479D /* Workarounds.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -308,7 +305,6 @@
 				A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */,
 				A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */,
 				A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */,
-				A9F993772AA4F3ED00AF479D /* Workarounds.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
 				A9B6E4072A9BB2830008B232 /* SignupView.swift in Sources */,
 				A9B6E40B2A9BB2980008B232 /* TestApp.swift in Sources */,

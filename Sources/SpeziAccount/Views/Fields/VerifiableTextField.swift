@@ -41,7 +41,9 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
                     SecureField(text: $text, label: { label })
                 }
             }
-                .onSubmit(runValidation)
+                .onSubmit {
+                    validationEngine.submit(input: text, debounce: false)
+                }
 
             HStack {
                 ValidationResultsView(results: validationEngine.displayedValidationResults)
@@ -52,7 +54,7 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
             }
         }
             .onChange(of: text) { _ in
-                runValidation()
+                validationEngine.submit(input: text, debounce: true)
             }
     }
 
@@ -88,10 +90,6 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
         self.fieldType = type
         self.label = label()
         self.textFieldFooter = footer()
-    }
-
-    private func runValidation() {
-        validationEngine.submit(input: text, debounce: true)
     }
 }
 

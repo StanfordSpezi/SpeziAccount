@@ -28,15 +28,15 @@ struct TestableAccountSetup: AccountValueView {
     }
 
     func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password, sleep sleepMillis: UInt32 = 0) throws {
-        try enter(email: email)
-        try enter(password: password)
+        try enter(field: "E-Mail Address", text: email)
+        try enter(secureField: "Password", text: password)
 
         tapLogin(sleep: sleepMillis)
     }
 
     func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password, sleep sleepMillis: UInt32 = 0) throws {
-        try enter(username: username)
-        try enter(password: password)
+        try enter(field: "Username", text: username)
+        try enter(secureField: "Password", text: password)
 
         tapLogin(sleep: sleepMillis)
     }

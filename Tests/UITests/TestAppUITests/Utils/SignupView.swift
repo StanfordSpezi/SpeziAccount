@@ -27,9 +27,9 @@ struct SignupView: AccountValueView {
         genderIdentity: String? = nil,
         supplyDateOfBirth: Bool = false
     ) throws {
-        try enter(email: email)
+        try enter(field: "E-Mail Address", text: email)
 
-        try enter(password: password)
+        try enter(secureField: "Password", text: password)
 
         if let name {
             if let firstname = name.givenName {
@@ -39,10 +39,6 @@ struct SignupView: AccountValueView {
                 try enter(field: "enter last name", text: lastname)
             }
         }
-
-
-        // workaround some issues with closing the keyboard
-        app.dismissKeyboardExtended()
 
         if let genderIdentity {
             self.updateGenderIdentity(from: "Choose not to answer", to: genderIdentity)
