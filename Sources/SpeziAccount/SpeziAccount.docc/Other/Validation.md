@@ -17,9 +17,9 @@ SPDX-License-Identifier: MIT
 This article provides an overview of all the components used to perform input validation.
 They are used across the `SpeziAccount` framework.
 
-All validation state is managed through an instance of ``ValidationEngine``. You provide a set of ``ValidationRule``s against a given input is
-validated and the ``ValidationEngine`` provides you with an array of ``FailedValidationResult``s for all ``ValidationRule``s that failed for
-a given input.
+The validation state is managed through an instance of ``ValidationEngine``.
+You provide a set of ``ValidationRule``s against a given input is validated and the ``ValidationEngine`` provides you
+with an array of ``FailedValidationResult``s for all ``ValidationRule``s that failed for a given input.
 
 There are preexisting UI components, like the ``VerifiableTextField``, that perform and display validation results automatically for you. You just have
 to manage a ``ValidationEngine`` in the `Environment`.
