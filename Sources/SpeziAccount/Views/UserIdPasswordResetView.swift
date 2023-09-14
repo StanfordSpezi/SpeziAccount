@@ -76,7 +76,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .disableFieldAssistants()
                 .textContentType(userIdConfiguration.textContentType)
                 .keyboardType(userIdConfiguration.keyboardType)
-                .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
+                .onTapFocus(focusedField: $focusedField, fieldIdentifier: .userId)
                 .font(.title3)
 
             Spacer()

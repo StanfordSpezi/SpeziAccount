@@ -50,7 +50,7 @@ struct SecurityOverview: View {
                     AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
                 }
             }
-                .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
+                .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)

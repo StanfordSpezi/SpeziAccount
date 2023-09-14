@@ -136,7 +136,7 @@ struct AccountOverviewSections: View {
         }
 
         sectionsView
-            .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
+            .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
 
         HStack {

@@ -57,7 +57,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
                 .environmentObject(validationEngines)
-                .environmentObject(FocusStateObject(focusedField: _focusedDataEntry))
+                .environmentObject(FocusStateObject(focusedField: $focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP", bundle: .module)

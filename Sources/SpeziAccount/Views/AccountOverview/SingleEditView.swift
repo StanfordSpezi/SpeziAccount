@@ -40,7 +40,7 @@ struct SingleEditView<Key: AccountKey>: View {
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
-            .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
+            .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
             .environment(\.accountViewType, .overview(mode: .existing))
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {

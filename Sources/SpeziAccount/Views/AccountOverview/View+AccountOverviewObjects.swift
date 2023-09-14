@@ -11,7 +11,11 @@ import SwiftUI
 
 extension View {
     /// Shorthand modifier for all ``AccountOverview`` related views to inject all the required values and objects into the environment.
-    func injectEnvironmentObjects(service: any AccountService, model: AccountOverviewFormViewModel, focusState: FocusState<String?>) -> some View {
+    func injectEnvironmentObjects(
+        service: any AccountService,
+        model: AccountOverviewFormViewModel,
+        focusState: FocusState<String?>.Binding
+    ) -> some View {
         self
             .injectEnvironmentObjects(service: service, model: model)
             .environmentObject(FocusStateObject(focusedField: focusState))

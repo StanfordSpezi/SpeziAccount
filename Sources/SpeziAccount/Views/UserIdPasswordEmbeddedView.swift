@@ -96,7 +96,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                     .environmentObject(userIdValidation)
                     .textContentType(userIdConfiguration.textContentType)
                     .keyboardType(userIdConfiguration.keyboardType)
-                    .onTapFocus(focusedField: _focusedField, fieldIdentifier: .userId)
+                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .userId)
                     .padding(.bottom, 0.5)
 
                 VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
@@ -111,7 +111,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                 }
                     .environmentObject(passwordValidation)
                     .textContentType(.password)
-                    .onTapFocus(focusedField: _focusedField, fieldIdentifier: .password)
+                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .password)
             }
                 .disableFieldAssistants()
                 .textFieldStyle(.roundedBorder)

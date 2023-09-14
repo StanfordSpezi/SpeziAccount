@@ -37,7 +37,7 @@ struct PasswordChangeSheet: View {
         NavigationStack {
             Form {
                 passwordFieldsSection
-                    .injectEnvironmentObjects(service: service, model: model, focusState: _focusedDataEntry)
+                    .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
                     .environment(\.accountViewType, .overview(mode: .new))
             }
                 .viewStateAlert(state: $viewState)
