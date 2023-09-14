@@ -10,14 +10,14 @@ import Foundation
 
 
 enum MockAccountServiceError: LocalizedError {
-    case usernameTaken
+    case credentialsTaken
     case wrongCredentials
     
     
     var errorDescription: String? {
         switch self {
-        case .usernameTaken:
-            return "Username is already taken"
+        case .credentialsTaken:
+            return "User Identifier is already taken"
         case .wrongCredentials:
             return "Credentials do not match"
         }
@@ -29,8 +29,8 @@ enum MockAccountServiceError: LocalizedError {
     
     var recoverySuggestion: String? {
         switch self {
-        case .usernameTaken:
-            return "Please provide a different username."
+        case .credentialsTaken:
+            return "Please provide a different user identifier."
         case .wrongCredentials:
             return "Please ensure that the entered credentials are correct."
         }

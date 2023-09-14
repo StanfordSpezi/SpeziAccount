@@ -13,69 +13,99 @@ import SwiftUI
 
 
 struct AccountTestsView: View {
+    @Environment(\.features) var features
+
     @EnvironmentObject var account: Account
-    @EnvironmentObject var user: User
-    @State var showLogin = false
-    @State var showSignUp = false
-    
+
+    @State var showSetup = false
+    @State var showOverview = false
+    @State var isEditing = false
+
     
     var body: some View {
-        List {
-            if account.signedIn {
-                HStack {
-                    UserProfileView(name: user.name)
-                        .frame(height: 30)
-                    Text(user.username ?? user.name.formatted())
+        // of by two
+        NavigationStack { // swiftlint:disable:this closure_body_length
+            List {
+                if let details = account.details {
+                    Section("Account Details") {
+                        Text(details.userId)
+                    }
+                }
+                Button("Account Setup") {
+                    showSetup = true
+                }
+                Button("Account Overview") {
+                    showOverview = true
                 }
             }
-            Button("Login") {
-                showLogin.toggle()
-            }
-            Button("SignUp") {
-                showSignUp.toggle()
+                .navigationTitle("Spezi Account")
+                .sheet(isPresented: $showSetup) {
+                    NavigationStack {
+                        AccountSetup {
+                            finishButton
+                        }
+                            .toolbar {
+                                toolbar(closing: $showSetup)
+                            }
+                    }
+                }
+                .sheet(isPresented: $showOverview) {
+                    NavigationStack {
+                        AccountOverview(isEditing: $isEditing)
+                            .toolbar {
+                                toolbar(closing: $showOverview)
+                            }
+                    }
+                }
+                .onChange(of: account.signedIn) { newValue in
+                    if newValue {
+                        showSetup = false
+                    }
+                }
+        }
+    }
+
+
+    @ViewBuilder var finishButton: some View {
+        Button(action: {
+            showSetup = false
+        }, label: {
+            Text("Finish")
+                .frame(maxWidth: .infinity, minHeight: 38)
+        })
+            .buttonStyle(.borderedProminent)
+    }
+
+
+    @ToolbarContentBuilder
+    func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
+        if !isEditing {
+            ToolbarItemGroup(placement: .cancellationAction) {
+                Button("Close") {
+                    flag.wrappedValue = false
+                }
             }
         }
-            .sheet(isPresented: $showLogin) {
-                NavigationStack {
-                    Login()
-                }
-            }
-            .sheet(isPresented: $showSignUp) {
-                NavigationStack {
-                    SignUp()
-                }
-            }
-            .onChange(of: account.signedIn) { signedIn in
-                if signedIn {
-                    showLogin = false
-                    showSignUp = false
-                }
-            }
     }
 }
 
 
 #if DEBUG
 struct AccountTestsView_Previews: PreviewProvider {
-    @StateObject private static var account: Account = {
-        let accountServices: [any AccountService] = [
-            UsernamePasswordAccountService(),
-            EmailPasswordAccountService()
-        ]
-        return Account(accountServices: accountServices)
-    }()
-    
-    
-    static var previews: some View {
-        NavigationStack {
-            AccountTestsView()
-        }
-            .environmentObject(account)
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.genderIdentity, value: .male)
 
-        NavigationStack {
-            AccountTestsView()
-        }
-        .environmentObject(Account(accountServices: []))
+    static var previews: some View {
+        AccountTestsView()
+            .environmentObject(Account(TestAccountService(.emailAddress)))
+
+        AccountTestsView()
+            .environmentObject(Account(building: details, active: TestAccountService(.emailAddress)))
+
+        AccountTestsView()
+            .environmentObject(Account())
     }
 }
 #endif

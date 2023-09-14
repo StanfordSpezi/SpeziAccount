@@ -9,19 +9,15 @@
 import SpeziAccount
 import SwiftUI
 
-
 @main
 struct UITestsApp: App {
     @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
     
-    
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                AccountTestsView()
-                    .navigationTitle("Spezi Account")
-                    .spezi(appDelegate)
-            }
+            AccountTestsView()
+                .spezi(appDelegate)
+                .environment(\.features, appDelegate.features)
         }
     }
 }

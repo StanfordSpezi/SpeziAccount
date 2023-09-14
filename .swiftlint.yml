@@ -1,10 +1,10 @@
 #
 # This source file is part of the Stanford Spezi open-source project
 #
-# SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+# SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 #
 # SPDX-License-Identifier: MIT
-# 
+#
 
 # The whitelist_rules configuration also includes rules that are enabled by default to provide a good overview of all rules.
 only_rules:
@@ -198,7 +198,7 @@ only_rules:
   - nimble_operator
   # Prefer not to use extension access modifiers
   - no_extension_access_modifier
-  # Fallthroughs can only be used if the case contains at least one other statement.  
+  # Fallthroughs can only be used if the case contains at least one other statement.
   - no_fallthrough_only
   # Don’t add a space between the method name and the parentheses.
   - no_space_in_method_call
@@ -429,7 +429,7 @@ nesting: # Types should be nested at most 2 level deep, and functions should be 
     warning: 2 # warning - default: 1
   function_level:
     warning: 5 # warning - default: 5
-    
+
 trailing_closure:
   only_single_muted_parameter: true
 
@@ -444,7 +444,7 @@ type_name:
 trailing_whitespace:
   ignores_empty_lines: true # default: false
   ignores_comments: true # default: false
-  
+
 unused_optional_binding:
   ignore_optional_try: true
 
