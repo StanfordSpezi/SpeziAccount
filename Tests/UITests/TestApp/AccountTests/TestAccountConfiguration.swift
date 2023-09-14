@@ -12,27 +12,31 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration: Component, ObservableObjectProvider {
-    private let account: Account
-    private let user: User
-    
-    
-    var observableObjects: [any ObservableObject] {
-        [
-            account,
-            user
-        ]
-    }
-    
-    
-    init(emptyAccountServices: Bool = false) {
-        self.user = User()
-        let accountServices: [any AccountService] = emptyAccountServices
-            ? []
-            : [
-                MockUsernamePasswordAccountService(user: user),
-                MockEmailPasswordAccountService(user: user)
+final class TestAccountConfiguration: Component {
+    @Provide var accountServices: [any AccountService]
+
+    init(features: Features) {
+        switch features.serviceType {
+        case .mail:
+            accountServices = [TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials)]
+        case .both:
+            accountServices = [
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
+                TestAccountService(.username)
             ]
-        self.account = Account(accountServices: accountServices)
+        case .withIdentityProvider:
+            accountServices = [
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
+                MockSignInWithAppleProvider()
+            ]
+        case .empty:
+            accountServices = []
+        }
+    }
+
+    func configure() {
+        accountServices
+            .compactMap { $0 as? TestAccountService }
+            .forEach { $0.configure() }
     }
 }

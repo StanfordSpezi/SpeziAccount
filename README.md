@@ -2,7 +2,7 @@
 
 This source file is part of the Spezi open-source project.
 
-SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
 
 SPDX-License-Identifier: MIT
   
@@ -16,7 +16,9 @@ SPDX-License-Identifier: MIT
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziAccount%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FStanfordSpezi%2FSpeziAccount%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount)
 
-The Account module allows users to incorporate account-related functionality for Spezi-based applications.
+The Account module provides account-related functionality for Spezi-based applications.
+It provides two standardized views with Account Setup, Overview and Edit functionality.
+It allows integrating arbitrary account management services using the Account Service abstraction.
 
 For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount/documentation).
 
@@ -24,7 +26,6 @@ For more information, please refer to the [API documentation](https://swiftpacka
 ## The Spezi Template Application
 
 The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the Spezi Account module.
-
 
 ## Contributing
 

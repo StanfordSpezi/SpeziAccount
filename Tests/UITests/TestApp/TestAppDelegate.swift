@@ -7,12 +7,47 @@
 //
 
 import Spezi
-
+import SpeziAccount
 
 class TestAppDelegate: SpeziAppDelegate {
+    let features: Features = {
+        do {
+            let features = try Features.parse()
+            return features
+        } catch {
+            print("Error: \(error)")
+            print("Verify the supplied command line arguments: " + CommandLine.arguments.dropFirst().joined(separator: " "))
+            print(Features.helpMessage())
+            return Features()
+        }
+    }()
+
+    var configuredValues: AccountValueConfiguration {
+        switch features.configurationType {
+        case .default:
+            return [
+                .requires(\.userId),
+                .requires(\.password),
+                .collects(\.name),
+                .collects(\.genderIdentity),
+                .collects(\.dateOfBirth),
+                .supports(\.biography)
+            ]
+        case .allRequired:
+            return [
+                .requires(\.userId),
+                .requires(\.password),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .requires(\.dateOfBirth)
+            ]
+        }
+    }
+
     override var configuration: Configuration {
-        Configuration {
-            TestAccountConfiguration(emptyAccountServices: FeatureFlags.emptyAccountServices)
+        Configuration(standard: TestStandard()) {
+            AccountConfiguration(configuration: configuredValues)
+            TestAccountConfiguration(features: features)
         }
     }
 }
