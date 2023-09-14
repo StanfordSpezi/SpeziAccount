@@ -66,25 +66,30 @@ struct PasswordChangeSheet: View {
 
     @ViewBuilder private var passwordFieldsSection: some View {
         Section {
-            PasswordKey.DataEntry($newPassword)
-                .environment(\.passwordFieldType, .new)
-                .focused($focusedDataEntry, equals: PasswordKey.focusState)
-                .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
-                .onChange(of: newPassword) { newValue in
-                    // A workaround to execute the validation engine of the repeat field if it contains content.
-                    // It works, as we only have two validation engines in this view.
-                    if !newValue.isEmpty && !repeatPassword.isEmpty {
-                        model.validationEngines.validateSubviews() // don't supply focus state. Must not switch focus here!
+            Grid {
+                PasswordKey.DataEntry($newPassword)
+                    .environment(\.passwordFieldType, .new)
+                    .focused($focusedDataEntry, equals: PasswordKey.focusState)
+                    .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
+                    .onChange(of: newPassword) { newValue in
+                        // A workaround to execute the validation engine of the repeat field if it contains content.
+                        // It works, as we only have two validation engines in this view.
+                        if !newValue.isEmpty && !repeatPassword.isEmpty {
+                            model.validationEngines.validateSubviews() // don't supply focus state. Must not switch focus here!
+                        }
+
+                        model.modifiedDetailsBuilder.set(\.password, value: newPassword)
                     }
 
-                    model.modifiedDetailsBuilder.set(\.password, value: newPassword)
-                }
+                Divider()
+                    .gridCellUnsizedAxes(.horizontal)
 
-            PasswordKey.DataEntry($repeatPassword)
-                .environment(\.passwordFieldType, .repeat)
-                .focused($focusedDataEntry, equals: "$-newPassword")
-                .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
-                .environment(\.validationEngineConfiguration, .hideFailedValidationOnEmptySubmit)
+                PasswordKey.DataEntry($repeatPassword)
+                    .environment(\.passwordFieldType, .repeat)
+                    .focused($focusedDataEntry, equals: "$-newPassword")
+                    .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
+                    .environment(\.validationEngineConfiguration, .hideFailedValidationOnEmptySubmit)
+            }
         } footer: {
             PasswordValidationRuleFooter(configuration: service.configuration)
         }

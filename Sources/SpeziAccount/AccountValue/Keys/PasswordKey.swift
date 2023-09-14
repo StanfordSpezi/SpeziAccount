@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -60,6 +61,7 @@ extension PasswordKey {
     public struct DataEntry: DataEntryView {
         public typealias Key = PasswordKey
 
+        @Environment(\.accountViewType) private var accountViewType
         @Environment(\.passwordFieldType) private var fieldType
 
         @Binding private var password: Value
@@ -70,9 +72,20 @@ extension PasswordKey {
         }
 
         public var body: some View {
-            VerifiableTextField(fieldType.localizedStringResource, text: $password, type: .secure)
-                .textContentType(.newPassword)
-                .disableFieldAssistants()
+            switch accountViewType {
+            case .signup, .none:
+                VerifiableTextField(fieldType.localizedStringResource, text: $password, type: .secure)
+                    .textContentType(.newPassword)
+                    .disableFieldAssistants()
+            case .overview: // display description labels in the PasswordChangeSheet (as we have two password fields)
+                DescriptionGridRow {
+                    Text(fieldType.localizedStringResource)
+                } content: {
+                    VerifiableTextField(fieldType.localizedPrompt, text: $password, type: .secure)
+                        .textContentType(.newPassword)
+                        .disableFieldAssistants()
+                }
+            }
         }
     }
 }

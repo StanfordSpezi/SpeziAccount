@@ -204,7 +204,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertFalse(overview.buttons["Done"].isEnabled)
 
         // edit name
-        try overview.delete(field: "Enter your last name ...", count: 8)
+        try overview.delete(field: "enter last name", count: 8)
         overview.tap(button: "Done")
         sleep(3)
 
@@ -231,7 +231,7 @@ final class AccountOverviewTests: XCTestCase {
         let warningLength = "Your password must be at least 8 characters long."
         overview.verifyExistence(text: warningLength) // the gray hint below
 
-        overview.secureTextFields["New Password"].selectTextField()
+        overview.secureTextFields["enter password"].selectTextField()
         overview.app.typeText("12345")
         sleep(1)
         XCTAssertEqual(overview.staticTexts.matching(identifier: warningLength).count, 2)
@@ -240,7 +240,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.app.dismissKeyboard()
         sleep(1)
 
-        overview.secureTextFields["Repeat Password"].selectTextField()
+        overview.secureTextFields["re-enter password"].selectTextField()
         overview.app.typeText("12345")
         overview.verifyExistence(text: "Passwords do not match.", timeout: 2.0)
         overview.app.typeText("6789")
@@ -248,6 +248,6 @@ final class AccountOverviewTests: XCTestCase {
         overview.tap(button: "Done")
         sleep(2)
 
-        XCTAssertFalse(overview.secureTextFields["New Password"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(overview.secureTextFields["enter password"].waitForExistence(timeout: 2.0))
     }
 }

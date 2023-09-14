@@ -26,8 +26,10 @@
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Password";
-"NEW_PASSWORD" = "New Password";
-"REPEAT_PASSWORD" = "Repeat Password";
+"NEW_PASSWORD" = "New";
+"NEW_PASSWORD_PROMPT" = "enter password";
+"REPEAT_PASSWORD" = "Verify";
+"REPEAT_PASSWORD_PROMPT" = "re-enter password";
 "UP_FORGOT_PASSWORD" = "Forgot Password?";
 "UP_LOGIN" = "Login";
 "UP_SIGNUP" = "Signup";
@@ -90,10 +92,10 @@
 
 // MARK: - Person Name
 "NAME" = "Name";
-"UAP_SIGNUP_GIVEN_NAME_TITLE" = "First Name";
-"UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "Enter your first name ...";
-"UAP_SIGNUP_FAMILY_NAME_TITLE" = "Last Name";
-"UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "Enter your last name ...";
+"UAP_SIGNUP_GIVEN_NAME_TITLE" = "First";
+"UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "enter first name";
+"UAP_SIGNUP_FAMILY_NAME_TITLE" = "Last";
+"UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "enter last name";
 
 // MARK: - Date Of Birth
 "UAP_SIGNUP_DATE_OF_BIRTH_TITLE" = "Date of Birth";

@@ -33,10 +33,10 @@ struct SignupView: AccountValueView {
 
         if let name {
             if let firstname = name.givenName {
-                try enter(field: "Enter your first name ...", text: firstname)
+                try enter(field: "enter first name", text: firstname)
             }
             if let lastname = name.familyName {
-                try enter(field: "Enter your last name ...", text: lastname)
+                try enter(field: "enter last name", text: lastname)
             }
         }
 

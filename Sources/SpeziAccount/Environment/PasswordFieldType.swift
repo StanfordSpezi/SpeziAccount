@@ -32,6 +32,17 @@ public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConv
             return .init("REPEAT_PASSWORD", bundle: .atURL(from: .module))
         }
     }
+
+    public var localizedPrompt: LocalizedStringResource {
+        switch self {
+        case .password:
+            return PasswordKey.name
+        case .new:
+            return .init("NEW_PASSWORD_PROMPT", bundle: .atURL(from: .module))
+        case .repeat:
+            return .init("REPEAT_PASSWORD_PROMPT", bundle: .atURL(from: .module))
+        }
+    }
 }
 
 

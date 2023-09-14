@@ -187,13 +187,13 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(signupView.buttons["Signup"].exists)
         XCTAssertFalse(signupView.buttons["Signup"].isEnabled)
 
-        try signupView.enter(field: "Enter your first name ...", text: "a")
-        try signupView.delete(field: "Enter your first name ...", count: 1)
+        try signupView.enter(field: "enter first name", text: "a")
+        try signupView.delete(field: "enter first name", count: 1)
 
         XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
 
-        try signupView.enter(field: "Enter your last name ...", text: "a")
-        try signupView.delete(field: "Enter your last name ...", count: 1)
+        try signupView.enter(field: "enter last name", text: "a")
+        try signupView.delete(field: "enter last name", count: 1)
 
         XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(signupView.staticTexts["The last name field cannot be empty!"].waitForExistence(timeout: 0.5))
@@ -269,8 +269,8 @@ final class AccountSetupTests: XCTestCase {
         try signupView.enter(email: email)
         try signupView.enter(password: "123456789")
 
-        try signupView.enter(field: "Enter your first name ...", text: "Leland")
-        try signupView.delete(field: "Enter your first name ...", count: 6)
+        try signupView.enter(field: "enter first name", text: "Leland")
+        try signupView.delete(field: "enter first name", count: 6)
 
         signupView.signup(sleep: 3)
 
