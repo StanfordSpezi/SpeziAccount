@@ -64,6 +64,8 @@ extension PasswordKey {
         @Environment(\.accountViewType) private var accountViewType
         @Environment(\.passwordFieldType) private var fieldType
 
+        @EnvironmentObject var validationEngine: ValidationEngine
+
         @Binding private var password: Value
 
 
@@ -81,9 +83,24 @@ extension PasswordKey {
                 DescriptionGridRow {
                     Text(fieldType.localizedStringResource)
                 } content: {
-                    VerifiableTextField(fieldType.localizedPrompt, text: $password, type: .secure)
+                    SecureField(text: $password) {
+                        Text(fieldType.localizedPrompt)
+                    }
                         .textContentType(.newPassword)
                         .disableFieldAssistants()
+                        .onChange(of: password) { _ in
+                            validationEngine.submit(input: password, debounce: true)
+                        }
+                        .onSubmit {
+                            validationEngine.submit(input: password, debounce: true)
+                        }
+                }
+
+                if !validationEngine.displayedValidationResults.isEmpty { // otherwise we have some weird layout issues
+                    HStack {
+                        ValidationResultsView(results: validationEngine.displayedValidationResults)
+                        Spacer()
+                    }
                 }
             }
         }

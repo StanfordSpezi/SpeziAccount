@@ -54,7 +54,6 @@ public struct VerifiableTextField<FieldLabel: View, FieldFooter: View>: View {
             .onChange(of: text) { _ in
                 runValidation()
             }
-            .onTapFocus()
     }
 
 

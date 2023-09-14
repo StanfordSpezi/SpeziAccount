@@ -84,6 +84,7 @@ struct PasswordChangeSheet: View {
                 Divider()
                     .gridCellUnsizedAxes(.horizontal)
 
+
                 PasswordKey.DataEntry($repeatPassword)
                     .environment(\.passwordFieldType, .repeat)
                     .focused($focusedDataEntry, equals: "$-newPassword")
