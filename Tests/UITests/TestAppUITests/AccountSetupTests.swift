@@ -14,7 +14,7 @@ final class AccountSetupTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        try disablePasswordAutofill()
+        // TODO try disablePasswordAutofill()
     }
 
     func testEmbeddedViewValidation() throws {
@@ -262,7 +262,7 @@ final class AccountSetupTests: XCTestCase {
         signupView.verifyExistence(text: "First")
         signupView.verifyExistence(text: "Last")
         signupView.verifyExistence(text: "Gender Identity")
-        signupView.verifyExistence(text: "Date of Birth")
+        XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5))
     }
 
     func testNameEmptinessCheck() throws {
