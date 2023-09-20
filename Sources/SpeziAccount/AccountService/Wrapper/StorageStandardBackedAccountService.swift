@@ -120,14 +120,4 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
 
 extension StorageStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
 
-
-extension StorageStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {
-    func login(userId: String, password: String) async throws {
-        // the standard is queried once the account service calls `supplyAccountDetails`
-        try await accountService.login(userId: userId, password: password)
-    }
-
-    func resetPassword(userId: String) async throws {
-        try await accountService.resetPassword(userId: userId)
-    }
-}
+extension StorageStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}

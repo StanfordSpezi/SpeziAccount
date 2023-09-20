@@ -61,6 +61,17 @@ extension StandardBacked {
 }
 
 
+extension StandardBacked where Self: UserIdPasswordAccountService, Service: UserIdPasswordAccountService {
+    func login(userId: String, password: String) async throws {
+        try await accountService.login(userId: userId, password: password)
+    }
+
+    func resetPassword(userId: String) async throws {
+        try await accountService.resetPassword(userId: userId)
+    }
+}
+
+
 extension AccountService {
     func backedBy(standard: any AccountStorageStandard) -> any AccountService {
         standard.backedService(with: self)

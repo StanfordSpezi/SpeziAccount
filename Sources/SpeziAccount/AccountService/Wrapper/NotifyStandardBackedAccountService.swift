@@ -35,3 +35,8 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
         await standard.deletedAccount()
     }
 }
+
+
+extension NotifyStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
+
+extension NotifyStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}
