@@ -193,32 +193,24 @@ struct AccountView_Previews: PreviewProvider {
 
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
-            NavigationStack {
-                AccountSetup()
-            }
+            AccountSetup()
                 .environmentObject(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
 
-        NavigationStack {
-            AccountSetup()
-        }
+        AccountSetup()
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        NavigationStack {
-            AccountSetup(state: .setupShown)
-        }
+        AccountSetup(state: .setupShown)
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        NavigationStack {
-            AccountSetup {
-                Button(action: {
-                    print("Continue")
-                }, label: {
-                    Text("Continue")
-                        .frame(maxWidth: .infinity, minHeight: 38)
-                })
+        AccountSetup {
+            Button(action: {
+                print("Continue")
+            }, label: {
+                Text("Continue")
+                    .frame(maxWidth: .infinity, minHeight: 38)
+            })
                 .buttonStyle(.borderedProminent)
-            }
         }
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
