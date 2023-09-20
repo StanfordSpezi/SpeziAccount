@@ -16,6 +16,7 @@ struct AccountTestsView: View {
     @Environment(\.features) var features
 
     @EnvironmentObject var account: Account
+    @EnvironmentObject var standard: TestStandard
 
     @State var showSetup = false
     @State var showOverview = false
@@ -23,14 +24,9 @@ struct AccountTestsView: View {
 
     
     var body: some View {
-        // of by two
-        NavigationStack { // swiftlint:disable:this closure_body_length
+        NavigationStack {
             List {
-                if let details = account.details {
-                    Section("Account Details") {
-                        Text(details.userId)
-                    }
-                }
+                header
                 Button("Account Setup") {
                     showSetup = true
                 }
@@ -62,6 +58,19 @@ struct AccountTestsView: View {
                         showSetup = false
                     }
                 }
+        }
+    }
+
+    @ViewBuilder var header: some View {
+        if let details = account.details {
+            Section("Account Details") {
+                Text(details.userId)
+            }
+        }
+        if standard.deleteNotified {
+            Section {
+                Text("Got notified about deletion!")
+            }
         }
     }
 
