@@ -188,7 +188,7 @@ public class Account: ObservableObject, Sendable {
         var details = details
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
-        // if they are wrapped into a StandardBacked one such that the `AccountDetails` carray the correct reference.
+        // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
         for service in registeredAccountServices {
             if let standardBacked = service as? any StandardBacked,
                standardBacked.isBacking(service: details.accountService) {
@@ -204,14 +204,15 @@ public class Account: ObservableObject, Sendable {
             )
         }
 
-        if let standardBacked = details.accountService as? any StandardBacked {
+        if let standardBacked = details.accountService as? any StandardBacked,
+           let storageStandard = standardBacked.standard as? any AccountStorageStandard {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
 
             let unsupportedKeys = details.accountService.configuration
                 .unsupportedAccountKeys(basedOn: configuration)
                 .map { $0.key }
 
-            let partialDetails = try await standardBacked.standard.load(recordId, unsupportedKeys)
+            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys)
 
             self.details = details.merge(with: partialDetails, allowOverwrite: false)
         } else {
@@ -229,10 +230,11 @@ public class Account: ObservableObject, Sendable {
     /// signed in user and notify others that the user logged out (or the account was removed).
     public func removeUserDetails() async {
         if let details,
-           let standardBacked = details.accountService as? any StandardBacked {
+           let standardBacked = details.accountService as? any StandardBacked,
+           let storageStandard = standardBacked.standard as? any AccountStorageStandard {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
 
-            await standardBacked.standard.clear(recordId)
+            await storageStandard.clear(recordId)
         }
 
         if signedIn {

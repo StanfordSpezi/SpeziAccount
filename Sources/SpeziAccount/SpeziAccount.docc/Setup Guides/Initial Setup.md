@@ -122,3 +122,7 @@ struct MyView: View {
 
 - ``AccountSetup``
 - ``AccountOverview``
+
+### Reacting to Events
+
+- ``AccountNotifyStandard``

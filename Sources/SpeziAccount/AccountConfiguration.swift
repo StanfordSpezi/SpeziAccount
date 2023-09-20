@@ -82,7 +82,13 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
 
             // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
-            return verifyConfigurationRequirements(against: service)
+            let service = verifyConfigurationRequirements(against: service)
+
+            if let notifyStandard = standard as? any AccountNotifyStandard {
+                return service.backedBy(standard: notifyStandard)
+            }
+
+            return service
         }
 
         self.account = Account(
