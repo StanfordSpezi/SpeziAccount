@@ -121,3 +121,5 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
 extension StorageStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
 
 extension StorageStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}
+
+extension StorageStandardBackedAccountService: IdentityProvider where Service: IdentityProvider {}

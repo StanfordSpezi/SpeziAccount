@@ -40,3 +40,5 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
 extension NotifyStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
 
 extension NotifyStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}
+
+extension NotifyStandardBackedAccountService: IdentityProvider where Service: IdentityProvider {}
