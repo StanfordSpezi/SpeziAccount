@@ -15,6 +15,9 @@ import SwiftUI
 /// This provides an overview of the current account details. Further, it allows the user to modify their
 /// account values.
 ///
+/// - Important: This view requires to be placed inside a [NavigationStack](https://developer.apple.com/documentation/swiftui/navigationstack/)
+///     to work properly.
+///
 /// This view requires a currently logged in user (see ``Account/details``).
 /// Further, this view relies on an ``Account`` object in its environment. This is done automatically by providing a
 /// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
