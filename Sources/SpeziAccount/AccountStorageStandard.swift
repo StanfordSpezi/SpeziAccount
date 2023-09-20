@@ -78,8 +78,8 @@ public protocol AccountStorageStandard: Standard {
 }
 
 
-extension AccountStorageStandard {
-    /// A property wrapper that can be used within ``AccountStorageStandard`` instances to request
+extension Standard {
+    /// A property wrapper that can be used within `Standard` instances to request
     /// access to the global ``Account`` instance.
     ///
     /// Below is a short code example on how to use this property wrapper:

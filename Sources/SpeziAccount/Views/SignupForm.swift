@@ -15,6 +15,8 @@ import SwiftUI
 ///
 /// A `Form` that collects all configured account values (a ``AccountValueConfiguration`` supplied to ``AccountConfiguration``)
 /// split into `Section`s according the their ``AccountKeyCategory`` (see ``AccountKey/category``).
+///
+/// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
 public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header
@@ -28,6 +30,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
 
+    @State private var presentingCloseConfirmation = false
 
     private var signupValuesBySections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         account.configuration.reduce(into: [:]) { result, configuration in
@@ -46,6 +49,34 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             .navigationTitle(Text("UP_SIGNUP", bundle: .module))
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
+            .interactiveDismissDisabled(!signupDetailsBuilder.isEmpty)
+            .confirmationDialog(
+                Text("CONFIRMATION_DISCARD_INPUT_TITLE", bundle: .module),
+                isPresented: $presentingCloseConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button(role: .destructive, action: {
+                    dismiss()
+                }) {
+                    Text("CONFIRMATION_DISCARD_INPUT", bundle: .module)
+                }
+                Button(role: .cancel, action: {}) {
+                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(action: {
+                        if signupDetailsBuilder.isEmpty {
+                            dismiss()
+                        } else {
+                            presentingCloseConfirmation = true
+                        }
+                    }) {
+                        Text("CLOSE", bundle: .module)
+                    }
+                }
+            }
     }
 
     @ViewBuilder var form: some View {
@@ -129,10 +160,13 @@ struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
     static let accountService = MockUserIdPasswordAccountService()
 
     static var previews: some View {
-        NavigationStack {
-            SignupForm(using: accountService)
-        }
-            .environmentObject(Account(accountService))
+        Text("")
+            .sheet(isPresented: .constant(true)) {
+                NavigationStack {
+                    SignupForm(using: accountService)
+                }
+                    .environmentObject(Account(accountService))
+            }
     }
 }
 #endif

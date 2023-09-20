@@ -88,7 +88,7 @@ struct NameOverview_Previews: PreviewProvider {
             .environmentObject(account)
 
         NavigationStack {
-            if let details = account.details {
+            if let details = accountWithoutName.details {
                 NameOverview(model: model, details: details)
             }
         }

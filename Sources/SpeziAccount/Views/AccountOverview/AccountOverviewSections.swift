@@ -49,7 +49,7 @@ struct AccountOverviewSections: View {
             .viewStateAlert(state: $destructiveViewState)
             .toolbar {
                 if editMode?.wrappedValue.isEditing == true && !isProcessing {
-                    ToolbarItemGroup(placement: .cancellationAction) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(action: {
                             model.cancelEditAction(editMode: editMode)
                         }) {
@@ -58,7 +58,7 @@ struct AccountOverviewSections: View {
                     }
                 }
                 if destructiveViewState == .idle {
-                    ToolbarItemGroup(placement: .primaryAction) {
+                    ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: editButtonAction) {
                             if editMode?.wrappedValue.isEditing == true {
                                 Text("DONE", bundle: .module)
@@ -246,7 +246,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
         NavigationStack {
             AccountOverview()
         }
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

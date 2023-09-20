@@ -27,11 +27,9 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Name, E-Mail Address")
         overview.verifyExistence(text: "Password & Security")
 
-        overview.verifyExistence(text: "Gender Identity")
-        overview.verifyExistence(text: "Male")
+        overview.verifyExistence(text: "Gender Identity, Male")
 
-        overview.verifyExistence(text: "Date of Birth")
-        overview.verifyExistence(text: "Mar 9, 1824")
+        overview.verifyExistence(text: "Date of Birth, Mar 9, 1824")
 
         XCTAssertTrue(overview.buttons["Logout"].waitForExistence(timeout: 0.5))
     }

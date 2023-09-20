@@ -76,3 +76,24 @@ struct AccountKeyEditRow: View {
         return !model.addedAccountKeys.contains(key)
     }
 }
+
+#if DEBUG
+struct AccountKeyEditRow_Previews: PreviewProvider {
+    static let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+        .set(\.genderIdentity, value: .male)
+
+    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
+
+    @StateObject private static var model = AccountOverviewFormViewModel(account: account)
+    @FocusState private static var focusedDataEntry: String?
+
+    static var previews: some View {
+        if let details = account.details {
+            AccountKeyEditRow(details: details, for: GenderIdentityKey.self, model: model)
+                .injectEnvironmentObjects(service: details.accountService, model: model, focusState: $focusedDataEntry)
+        }
+    }
+}
+#endif

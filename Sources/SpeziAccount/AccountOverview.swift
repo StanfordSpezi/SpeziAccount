@@ -15,6 +15,9 @@ import SwiftUI
 /// This provides an overview of the current account details. Further, it allows the user to modify their
 /// account values.
 ///
+/// - Important: This view requires to be placed inside a [NavigationStack](https://developer.apple.com/documentation/swiftui/navigationstack/)
+///     to work properly.
+///
 /// This view requires a currently logged in user (see ``Account/details``).
 /// Further, this view relies on an ``Account`` object in its environment. This is done automatically by providing a
 /// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
@@ -41,7 +44,7 @@ public struct AccountOverview: View {
     @Binding private var isEditing: Bool
 
     public var body: some View {
-        NavigationStack {
+        VStack {
             if let details = account.details {
                 Form {
                     // Splitting everything into a separate subview was actually necessary for the EditMode to work.
@@ -83,10 +86,14 @@ struct AccountOverView_Previews: PreviewProvider {
         .set(\.genderIdentity, value: .male)
 
     static var previews: some View {
-        AccountOverview()
+        NavigationStack {
+            AccountOverview()
+        }
             .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
 
-        AccountOverview()
+        NavigationStack {
+            AccountOverview()
+        }
             .environmentObject(Account())
     }
 }
