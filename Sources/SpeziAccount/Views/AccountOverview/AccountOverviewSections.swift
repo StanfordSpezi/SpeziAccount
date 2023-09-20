@@ -104,6 +104,7 @@ struct AccountOverviewSections: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    print("Deleting at \(service)")
                     try await service.delete()
                     dismiss()
                 }) {

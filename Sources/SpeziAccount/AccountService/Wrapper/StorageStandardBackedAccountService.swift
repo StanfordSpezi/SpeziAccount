@@ -8,20 +8,10 @@
 
 import Spezi
 
-/// Internal marker protocol to determine what ``AccountService`` require assistance by a ``AccountStorageStandard``.
-protocol StandardBacked {
-    associatedtype Standard: AccountStorageStandard
-    var standard: Standard { get }
-
-    var backedId: String { get }
-
-    func isBacking(service accountService: any AccountService) -> Bool
-}
-
 
 /// An ``AccountService`` implementation for account services with ``SupportedAccountKeys/exactly(_:)`` configuration
 /// to forward unsupported account values to a ``AccountStorageStandard`` implementation.
-actor StandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
+actor StorageStandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
     @AccountReference private var account
 
     let accountService: Service
@@ -34,10 +24,6 @@ actor StandardBackedAccountService<Service: AccountService, Standard: AccountSto
 
     nonisolated var viewStyle: Service.ViewStyle {
         accountService.viewStyle
-    }
-
-    nonisolated var backedId: String {
-        accountService.id
     }
 
 
@@ -58,10 +44,6 @@ actor StandardBackedAccountService<Service: AccountService, Standard: AccountSto
         self.serviceSupportedKeys = keys
     }
 
-
-    nonisolated func isBacking(service accountService: any AccountService) -> Bool {
-        self.accountService.objId == accountService.objId
-    }
 
     func signUp(signupDetails: SignupDetails) async throws {
         let details = splitDetails(from: signupDetails)
@@ -100,10 +82,6 @@ actor StandardBackedAccountService<Service: AccountService, Standard: AccountSto
         try await accountService.updateAccountDetails(serviceModifications)
     }
 
-    func logout() async throws {
-        try await accountService.logout()
-    }
-
     func delete() async throws {
         guard let userId = await currentUserId else {
             return
@@ -140,10 +118,10 @@ actor StandardBackedAccountService<Service: AccountService, Standard: AccountSto
 }
 
 
-extension StandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
+extension StorageStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
 
 
-extension StandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {
+extension StorageStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {
     func login(userId: String, password: String) async throws {
         // the standard is queried once the account service calls `supplyAccountDetails`
         try await accountService.login(userId: userId, password: password)
@@ -151,19 +129,5 @@ extension StandardBackedAccountService: UserIdPasswordAccountService where Servi
 
     func resetPassword(userId: String) async throws {
         try await accountService.resetPassword(userId: userId)
-    }
-}
-
-
-extension AccountService {
-    func backedBy(standard: any AccountStorageStandard) -> any AccountService {
-        standard.backedService(with: self)
-    }
-}
-
-
-extension AccountStorageStandard {
-    fileprivate nonisolated func backedService<Service: AccountService>(with service: Service) -> any AccountService {
-        StandardBackedAccountService(service: service, standard: self)
     }
 }

@@ -8,10 +8,13 @@
 
 import Spezi
 import SpeziAccount
+import SwiftUI
 
 
 // mock implementation of the AccountStorageStandard
-actor TestStandard: AccountStorageStandard {
+actor TestStandard: AccountStorageStandard, AccountNotifyStandard, ObservableObject, ObservableObjectProvider {
+    @MainActor @Published var deleteNotified = false
+
     var records: [AdditionalRecordId: PartialAccountDetails.Builder] = [:]
 
     func create(_ identifier: AdditionalRecordId, _ details: SignupDetails) async throws {
@@ -39,5 +42,11 @@ actor TestStandard: AccountStorageStandard {
 
     func delete(_ identifier: AdditionalRecordId) async throws {
         records[identifier] = nil
+    }
+
+    @MainActor
+    func deletedAccount() async {
+        print("GOT NOTIFIED ABOUT DELETE!")
+        deleteNotified = true
     }
 }

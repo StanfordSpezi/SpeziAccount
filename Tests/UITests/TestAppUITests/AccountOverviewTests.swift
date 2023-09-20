@@ -87,7 +87,9 @@ final class AccountOverviewTests: XCTestCase {
 
         sleep(2)
         app.verify()
+
         XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Got notified about deletion!"].waitForExistence(timeout: 2.0))
     }
 
     func testEditDiscard() {
