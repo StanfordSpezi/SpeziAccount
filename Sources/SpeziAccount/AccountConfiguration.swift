@@ -90,9 +90,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
             configuration: configuredAccountKeys
         )
 
-        if let accountStandard = standard as? any AccountStorageStandard {
-            self.account?.injectWeakAccount(into: accountStandard)
-        }
+        self.account?.injectWeakAccount(into: standard)
     }
 
     private func verifyAccountServiceRequirements(of service: any AccountService) {
