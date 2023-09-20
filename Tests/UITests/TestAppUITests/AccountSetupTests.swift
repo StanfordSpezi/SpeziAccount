@@ -143,16 +143,16 @@ final class AccountSetupTests: XCTestCase {
         var signupView = setup.openSignup()
 
         // verify basic validation
-        XCTAssertTrue(signupView.buttons["Signup"].exists)
-        XCTAssertTrue(!signupView.buttons["Signup"].isEnabled)
+        XCTAssertTrue(signupView.collectionViews.buttons["Signup"].exists)
+        XCTAssertTrue(!signupView.collectionViews.buttons["Signup"].isEnabled)
         XCTAssertFalse(signupView.staticTexts["This field cannot be empty."].exists)
 
         // verify empty validation appearing
-        try signupView.textFields["E-Mail Address"].enter(value: "a", dismissKeyboard: false)
+        try signupView.collectionViews.textFields["E-Mail Address"].enter(value: "a", dismissKeyboard: false)
         signupView.app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
         signupView.app.dismissKeyboard()
 
-        try signupView.secureTextFields["Password"].enter(value: "a", dismissKeyboard: false)
+        try signupView.collectionViews.secureTextFields["Password"].enter(value: "a", dismissKeyboard: false)
         signupView.app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
         signupView.app.dismissKeyboard()
 
@@ -160,17 +160,17 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // not sure why, but text-field selection has issues due to the presented validation messages, so we exit a reenter to resolve this
-        setup = signupView.tapBack()
+        setup = signupView.tapClose()
         signupView = setup.openSignup()
 
         // enter email with validation
-        try signupView.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), dismissKeyboard: false)
+        try signupView.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), dismissKeyboard: false)
         XCTAssertTrue(signupView.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
         signupView.app.typeText(String(email.dropFirst(13))) // we stay focused
         signupView.app.dismissKeyboard()
 
         // enter password with validation
-        try signupView.secureTextFields["Password"].enter(value: String(password.dropLast(5)), dismissKeyboard: false)
+        try signupView.collectionViews.secureTextFields["Password"].enter(value: String(password.dropLast(5)), dismissKeyboard: false)
         XCTAssertTrue(signupView.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
         signupView.app.typeText(String(password.dropFirst(4))) // stay focused, such that password field will not reset after regaining focus
         signupView.app.dismissKeyboard()
@@ -193,8 +193,8 @@ final class AccountSetupTests: XCTestCase {
             .openAccountSetup()
             .openSignup(sleep: 3)
 
-        XCTAssertTrue(signupView.buttons["Signup"].exists)
-        XCTAssertFalse(signupView.buttons["Signup"].isEnabled)
+        XCTAssertTrue(signupView.collectionViews.buttons["Signup"].exists)
+        XCTAssertFalse(signupView.collectionViews.buttons["Signup"].isEnabled)
 
         try signupView.enter(field: "enter first name", text: "a")
         try signupView.delete(field: "enter first name", count: 1)
@@ -246,8 +246,7 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: "LS")
         overview.verifyExistence(text: "Leland Stanford")
         overview.verifyExistence(text: "lelandstanford2@stanford.edu")
-        overview.verifyExistence(text: "Gender Identity")
-        overview.verifyExistence(text: "Male")
+        overview.verifyExistence(text: "Gender Identity, Male")
         overview.verifyExistence(text: "Date of Birth")
     }
 
@@ -275,10 +274,8 @@ final class AccountSetupTests: XCTestCase {
 
         let email = "lelandstanford2@stanford.edu"
 
-        try signupView.enter(field: "E-Mail Address", text: email)
-        try signupView.enter(secureField: "Password", text: "123456789")
-
-        try signupView.enter(field: "enter first name", text: "Leland")
+        try signupView.fillForm(email: email, password: "123456789", name: PersonNameComponents(givenName: "Leland"))
+        
         try signupView.delete(field: "enter first name", count: 6)
 
         signupView.signup(sleep: 3)

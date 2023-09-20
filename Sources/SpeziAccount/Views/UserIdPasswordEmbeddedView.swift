@@ -40,6 +40,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
     @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
 
+    @State private var presentingSignupSheet = false
     @State private var presentingPasswordForgetSheet = false
 
     @State private var loginTask: Task<Void, Error>? {
@@ -67,9 +68,9 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
             HStack {
                 Text("UP_NO_ACCOUNT_YET", bundle: .module)
-                NavigationLink {
-                    service.viewStyle.makeSignupView()
-                } label: {
+                Button(action: {
+                    presentingSignupSheet = true
+                }) {
                     Text("UP_SIGNUP", bundle: .module)
                 }
             }
@@ -77,6 +78,11 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            .sheet(isPresented: $presentingSignupSheet) {
+                NavigationStack {
+                    service.viewStyle.makeSignupView()
+                }
+            }
             .sheet(isPresented: $presentingPasswordForgetSheet) {
                 NavigationStack {
                     service.viewStyle.makePasswordResetView()
@@ -155,8 +161,8 @@ struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             UserIdPasswordEmbeddedView(using: accountService)
-                .environmentObject(Account(accountService))
         }
+            .environmentObject(Account(accountService))
     }
 }
 #endif
