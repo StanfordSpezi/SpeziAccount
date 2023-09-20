@@ -14,5 +14,5 @@ public protocol AccountNotifyStandard: Standard {
     /// Notifies the Standard that the associated account was requested to be deleted by the user.
     ///
     /// Use this method to cleanup any account related data that might be associated with the account.
-    func deletedAccount() async
+    func deletedAccount() async throws
 }

@@ -46,7 +46,6 @@ actor TestStandard: AccountStorageStandard, AccountNotifyStandard, ObservableObj
 
     @MainActor
     func deletedAccount() async {
-        print("GOT NOTIFIED ABOUT DELETE!")
         deleteNotified = true
     }
 }

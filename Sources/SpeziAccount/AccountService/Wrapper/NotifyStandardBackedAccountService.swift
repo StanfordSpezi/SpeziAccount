@@ -31,8 +31,8 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
 
 
     func delete() async throws {
+        try await standard.deletedAccount()
         try await accountService.delete()
-        await standard.deletedAccount()
     }
 }
 
