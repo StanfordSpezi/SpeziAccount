@@ -27,9 +27,12 @@ struct SignupView: AccountValueView {
         genderIdentity: String? = nil,
         supplyDateOfBirth: Bool = false
     ) throws {
-        try enter(field: "E-Mail Address", text: email)
+        // we access through collectionViews as there is another E-Mail Address and Password field behind the signup sheet
+        XCTAssertTrue(app.collectionViews.textFields["E-Mail Address"].waitForExistence(timeout: 1.0))
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: email)
 
-        try enter(secureField: "Password", text: password)
+        XCTAssertTrue(app.collectionViews.secureTextFields["Password"].waitForExistence(timeout: 1.0))
+        try app.collectionViews.secureTextFields["Password"].enter(value: password)
 
         if let name {
             if let firstname = name.givenName {
@@ -50,15 +53,22 @@ struct SignupView: AccountValueView {
     }
 
     func signup(sleep sleepMillis: UInt32 = 0) {
-        tap(button: "Signup")
+        // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+
         if sleepMillis > 0 {
             sleep(sleepMillis)
         }
     }
 
-    func tapBack(timeout: TimeInterval = 1.0) -> TestableAccountSetup {
-        XCTAssertTrue(app.navigationBars.buttons["Back"].waitForExistence(timeout: timeout))
-        app.navigationBars.buttons["Back"].tap()
+    func tapClose(timeout: TimeInterval = 1.0, discardChangesIfAsked: Bool = true) -> TestableAccountSetup {
+        XCTAssertTrue(app.navigationBars["Signup"].buttons["Close"].waitForExistence(timeout: timeout))
+        app.navigationBars["Signup"].buttons["Close"].tap()
+
+        if discardChangesIfAsked && app.staticTexts["Are you sure you want to discard your input?"].waitForExistence(timeout: 2.0) {
+            tap(button: "Discard Input")
+        }
 
         let setup = TestableAccountSetup(app: app)
         setup.verify()

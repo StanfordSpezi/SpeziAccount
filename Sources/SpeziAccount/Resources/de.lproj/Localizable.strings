@@ -46,6 +46,7 @@
 "UP_CONTACT_DETAILS" = "Kontaktdaten";
 "UP_PERSONAL_DETAILS" = "Persönliche Details";
 "UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Registrierung fehlgeschlagen!";
+"CLOSE" = "Schließen";
 
 // MARK: - UserId and Password (Password Reset)
 "UP_RESET_PASSWORD" = "Passwort Zurücksetzten";
@@ -58,12 +59,6 @@
 
 // MARK - Account Overview
 "ACCOUNT_OVERVIEW" = "Benutzerkonto";
-"CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
-"CONFIRMATION_DISCARD_CHANGES" = "Änderungen Verwerfen";
-"CONFIRMATION_KEEP_EDITING"= "Weiter Bearbeiten";
-"CONFIRMATION_LOGOUT" = "Willst du dich wirklich abmelden?";
-"CONFIRMATION_REMOVAL" = "Willst du wirklich dein Benutzerkonto löschen?";
-"CONFIRMATION_REMOVAL_SUGGESTION" = "Dieser Vorgang is endgültig und du kannst dein Konto Informationen nicht wiederherstellen.";
 "DELETE_ACCOUNT" = "Löschen";
 "DONE" = "Fertig";
 "EDIT" = "Bearbeiten";
@@ -74,6 +69,16 @@
 "SECURITY" = "Sicherheit";
 "VALUE_ADD %@" = "%@ Hinzufügen";
 "CHANGE_PASSWORD" = "Passwort Ändern";
+
+// MARK - Confirmation Dialogs
+"CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
+"CONFIRMATION_DISCARD_CHANGES" = "Änderungen Verwerfen";
+"CONFIRMATION_DISCARD_INPUT" = "Eingaben Verwerfen";
+"CONFIRMATION_KEEP_EDITING"= "Weiter Bearbeiten";
+"CONFIRMATION_LOGOUT" = "Willst du dich wirklich abmelden?";
+"CONFIRMATION_REMOVAL" = "Willst du wirklich dein Benutzerkonto löschen?";
+"CONFIRMATION_REMOVAL_SUGGESTION" = "Dieser Vorgang is endgültig und du kannst dein Konto Informationen nicht wiederherstellen.";
 
 // MARK: - Validation Rules
 "VALIDATION_RULE_NON_EMPTY" = "Diese Feld kann nicht leer sein.";

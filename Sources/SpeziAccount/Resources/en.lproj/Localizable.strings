@@ -46,6 +46,7 @@
 "UP_CONTACT_DETAILS" = "Contact Details";
 "UP_PERSONAL_DETAILS" = "Personal Details";
 "UP_SIGNUP_FAILED_DEFAULT_ERROR" = "Could not sign up!";
+"CLOSE" = "Close";
 
 // MARK: - UserId and Password (Password Reset)
 "UP_RESET_PASSWORD" = "Reset Password";
@@ -58,12 +59,6 @@
 
 // MARK - Account Overview
 "ACCOUNT_OVERVIEW" = "Account Overview";
-"CONFIRMATION_DISCARD_CHANGES_TITLE" = "Are you sure you want to discard your changes?";
-"CONFIRMATION_DISCARD_CHANGES" = "Discard Changes";
-"CONFIRMATION_KEEP_EDITING"= "Keep Editing";
-"CONFIRMATION_LOGOUT" = "Are you sure you want to logout?";
-"CONFIRMATION_REMOVAL" = "Are you sure you want to delete your account?";
-"CONFIRMATION_REMOVAL_SUGGESTION" = "This change is permanent and you won't be able to recover your account information.";
 "DELETE_ACCOUNT" = "Delete Account";
 "DONE" = "Done";
 "EDIT" = "Edit";
@@ -74,6 +69,16 @@
 "SECURITY" = "Security";
 "VALUE_ADD %@" = "Add %@";
 "CHANGE_PASSWORD" = "Change Password";
+
+// MARK - Confirmation Dialogs
+"CONFIRMATION_DISCARD_CHANGES_TITLE" = "Are you sure you want to discard your changes?";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
+"CONFIRMATION_DISCARD_CHANGES" = "Discard Changes";
+"CONFIRMATION_DISCARD_INPUT" = "Discard Input";
+"CONFIRMATION_KEEP_EDITING"= "Keep Editing";
+"CONFIRMATION_LOGOUT" = "Are you sure you want to logout?";
+"CONFIRMATION_REMOVAL" = "Are you sure you want to delete your account?";
+"CONFIRMATION_REMOVAL_SUGGESTION" = "This change is permanent and you won't be able to recover your account information.";
 
 // MARK: - Validation Rules
 "VALIDATION_RULE_NON_EMPTY" = "This field cannot be empty.";

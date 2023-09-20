@@ -15,6 +15,7 @@ import SwiftUI
 /// present the appropriate subtitle.
 public struct DefaultAccountSetupHeader: View {
     @EnvironmentObject private var account: Account
+    @Environment(\._accountSetupState) private var setupState
 
     public var body: some View {
         VStack {
@@ -26,7 +27,7 @@ public struct DefaultAccountSetupHeader: View {
                 .padding(.top, 30)
 
             Group {
-                if !account.signedIn {
+                if !account.signedIn || setupState == .loadingExistingAccount {
                     Text("ACCOUNT_WELCOME_SUBTITLE", bundle: .module)
                 } else {
                     Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE", bundle: .module)

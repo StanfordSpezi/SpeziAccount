@@ -41,7 +41,7 @@ public struct AccountOverview: View {
     @Binding private var isEditing: Bool
 
     public var body: some View {
-        NavigationStack {
+        VStack {
             if let details = account.details {
                 Form {
                     // Splitting everything into a separate subview was actually necessary for the EditMode to work.
@@ -83,11 +83,15 @@ struct AccountOverView_Previews: PreviewProvider {
         .set(\.genderIdentity, value: .male)
 
     static var previews: some View {
-        AccountOverview()
-            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        NavigationStack {
+            AccountOverview()
+                .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        }
 
-        AccountOverview()
-            .environmentObject(Account())
+        NavigationStack {
+            AccountOverview()
+                .environmentObject(Account())
+        }
     }
 }
 #endif

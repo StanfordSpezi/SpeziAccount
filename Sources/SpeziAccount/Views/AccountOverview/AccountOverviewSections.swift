@@ -246,7 +246,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
         NavigationStack {
             AccountOverview()
         }
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

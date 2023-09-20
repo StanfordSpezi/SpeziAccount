@@ -9,6 +9,14 @@
 import SwiftUI
 
 
+public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_name
+    case generic
+    case setupShown
+    case loadingExistingAccount
+
+    public static var defaultValue: _AccountSetupState = .generic
+}
+
 /// The essential ``SpeziAccount`` view to login into or signup for a user account.
 ///
 /// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
@@ -50,6 +58,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
     @EnvironmentObject var account: Account
 
+    @State private var setupState: _AccountSetupState = .generic
+
     private var services: [any AccountService] {
         account.registeredAccountServices
             .filter { !($0 is any IdentityProvider) }
@@ -61,34 +71,50 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            GeometryReader { proxy in
-                ScrollView(.vertical) {
-                    VStack {
-                        if !services.isEmpty {
-                            header
-                        }
+        GeometryReader { proxy in
+            ScrollView(.vertical) {
+                VStack {
+                    if !services.isEmpty {
+                        header
+                            .environment(\._accountSetupState, setupState)
+                    }
 
-                        Spacer()
+                    Spacer()
 
-                        if let details = account.details {
+                    if let details = account.details {
+                        if case .loadingExistingAccount = setupState {
+                            // We allow the outer view to navigate away upon signup, before we show the existing account view
+                            ProgressView()
+                                .task {
+                                    try? await Task.sleep(for: .seconds(2))
+                                    setupState = .generic
+                                }
+                        } else {
                             ExistingAccountView(details: details) {
                                 continueButton
                             }
-                        } else {
-                            accountSetupView
                         }
-
-                        Spacer()
-                        Spacer()
-                        Spacer()
+                    } else {
+                        accountSetupView
+                            .onAppear {
+                                setupState = .setupShown
+                            }
                     }
-                        .padding(.horizontal, ViewSizing.outerHorizontalPadding)
-                        .frame(minHeight: proxy.size.height)
-                        .frame(maxWidth: .infinity)
+
+                    Spacer()
+                    Spacer()
+                    Spacer()
                 }
+                    .padding(.horizontal, ViewSizing.outerHorizontalPadding)
+                    .frame(minHeight: proxy.size.height)
+                    .frame(maxWidth: .infinity)
             }
         }
+            .onReceive(account.$signedIn) { signedIn in
+                if signedIn, case .setupShown = setupState {
+                    setupState = .loadingExistingAccount
+                }
+            }
     }
 
     @ViewBuilder private var accountSetupView: some View {
@@ -110,6 +136,12 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
     }
 
+    fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
+        self.header = DefaultAccountSetupHeader()
+        self.continueButton = EmptyView()
+        self._setupState = State(initialValue: state)
+    }
+
     public init(
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
     ) where Header == DefaultAccountSetupHeader {
@@ -123,6 +155,18 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     ) {
         self.header = header()
         self.continueButton = `continue`()
+    }
+}
+
+
+extension EnvironmentValues {
+    public var _accountSetupState: _AccountSetupState { // swiftlint:disable:this identifier_name missing_docs
+        get {
+            self[_AccountSetupState.self]
+        }
+        set {
+            self[_AccountSetupState.self] = newValue
+        }
     }
 }
 
@@ -149,21 +193,32 @@ struct AccountView_Previews: PreviewProvider {
 
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
-            AccountSetup()
+            NavigationStack {
+                AccountSetup()
+            }
                 .environmentObject(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
 
-        AccountSetup()
+        NavigationStack {
+            AccountSetup()
+        }
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        AccountSetup {
-            Button(action: {
-                print("Continue")
-            }, label: {
-                Text("Continue")
-                    .frame(maxWidth: .infinity, minHeight: 38)
-            })
+        NavigationStack {
+            AccountSetup(state: .setupShown)
+        }
+            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+
+        NavigationStack {
+            AccountSetup {
+                Button(action: {
+                    print("Continue")
+                }, label: {
+                    Text("Continue")
+                        .frame(maxWidth: .infinity, minHeight: 38)
+                })
                 .buttonStyle(.borderedProminent)
+            }
         }
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
