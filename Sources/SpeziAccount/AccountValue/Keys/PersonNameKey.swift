@@ -47,10 +47,9 @@ extension PersonNameKey {
         private let value: PersonNameComponents
 
         public var body: some View {
-            Text(Key.name)
-            Spacer()
-            Text(value.formatted(.name(style: .long)))
-                .foregroundColor(.secondary)
+            SimpleTextRow(name: Key.name) {
+                Text(value.formatted(.name(style: .long)))
+            }
         }
 
 

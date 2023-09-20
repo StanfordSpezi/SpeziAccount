@@ -35,7 +35,7 @@ struct ExistingAccountView<Continue: View>: View {
         }
             .viewStateAlert(state: $viewState)
             .toolbar {
-                ToolbarItemGroup(placement: .bottomBar) {
+                ToolbarItem(placement: .bottomBar) {
                     if Continue.self != EmptyView.self {
                         VStack {
                             continueButton

@@ -80,7 +80,7 @@ struct AccountTestsView: View {
     @ToolbarContentBuilder
     func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
         if !isEditing {
-            ToolbarItemGroup(placement: .cancellationAction) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button("Close") {
                     flag.wrappedValue = false
                 }

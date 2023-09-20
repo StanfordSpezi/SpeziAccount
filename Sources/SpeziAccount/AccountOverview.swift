@@ -88,13 +88,13 @@ struct AccountOverView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountOverview()
-                .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
         }
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
 
         NavigationStack {
             AccountOverview()
-                .environmentObject(Account())
         }
+            .environmentObject(Account())
     }
 }
 #endif

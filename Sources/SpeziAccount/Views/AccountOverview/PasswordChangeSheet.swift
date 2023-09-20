@@ -45,12 +45,12 @@ struct PasswordChangeSheet: View {
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItemGroup(placement: .primaryAction) {
+                    ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: submitPasswordChange) {
                             Text("DONE", bundle: .module)
                         }
                     }
-                    ToolbarItemGroup(placement: .cancellationAction) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(action: {
                             dismiss()
                         }) {
