@@ -12,7 +12,8 @@ import SwiftUI
 
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
-struct AccountOverviewSections: View {
+struct AccountOverviewSections<Content: View>: View {
+    let additionalContent: Content
     private let accountDetails: AccountDetails
 
     private var service: any AccountService {
@@ -138,7 +139,11 @@ struct AccountOverviewSections: View {
         sectionsView
             .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
-
+        
+        Section {
+            additionalContent
+        }
+        
         HStack {
             if editMode?.wrappedValue.isEditing == true {
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
@@ -183,18 +188,19 @@ struct AccountOverviewSections: View {
         }
     }
 
-
     init(
         account: Account,
         details accountDetails: AccountDetails,
-        isEditing: Binding<Bool>
+        isEditing: Binding<Bool>,
+        @ViewBuilder additionalContent: () -> Content
     ) {
         self.accountDetails = accountDetails
         self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(account: account))
         self._isEditing = isEditing
+        self.additionalContent = additionalContent()
     }
-
-
+    
+    
     private func editButtonAction() async throws {
         if editMode?.wrappedValue.isEditing == false {
             editMode?.wrappedValue = .active
@@ -244,7 +250,14 @@ struct AccountOverviewSections_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationStack {
-            AccountOverview()
+            AccountOverview() {
+                NavigationLink {} label: {
+                    Text("General Settings")
+                }
+                NavigationLink {} label: {
+                    Text("License Information")
+                }
+            }
         }
             .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }

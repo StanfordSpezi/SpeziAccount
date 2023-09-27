@@ -38,11 +38,13 @@ import SwiftUI
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
 /// ```
-public struct AccountOverview: View {
+public struct AccountOverview<Content: View>: View {
     @EnvironmentObject private var account: Account
-
+    
     @Binding private var isEditing: Bool
-
+    
+    let additionalContent: Content
+    
     public var body: some View {
         VStack {
             if let details = account.details {
@@ -53,9 +55,11 @@ public struct AccountOverview: View {
                         account: account,
                         details: details,
                         isEditing: $isEditing
-                    )
+                    ) {
+                        additionalContent
+                    }
                 }
-                    .padding(.top, -20)
+                .padding(.top, -20)
             } else {
                 Spacer()
                 MissingAccountDetailsWarning()
@@ -65,15 +69,24 @@ public struct AccountOverview: View {
                 Spacer()
             }
         }
-            .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-            .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
+        .navigationBarTitleDisplayMode(.inline)
     }
-
-
+    
+    
     /// Display a new Account Overview.
     /// - Parameter isEditing: A Binding that allows you to read the current editing state of the Account Overview view.
-    public init(isEditing: Binding<Bool> = .constant(false)) {
+    public init(isEditing: Binding<Bool> = .constant(false), @ViewBuilder additionalContent: () -> Content) {
         self._isEditing = isEditing
+        self.additionalContent = additionalContent()
+    }
+}
+
+/// Makes passing additionalContent optional
+extension AccountOverview where Content == EmptyView {
+    init(isEditing: Binding<Bool> = .constant(false)) {
+        self._isEditing = isEditing
+        self.additionalContent = EmptyView()
     }
 }
 
@@ -84,17 +97,24 @@ struct AccountOverView_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
-
+    
     static var previews: some View {
         NavigationStack {
-            AccountOverview()
+            AccountOverview() {
+                NavigationLink {} label: {
+                    Text("General Settings")
+                }
+                NavigationLink {} label: {
+                    Text("License Information")
+                }
+            }
         }
-            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
-
+        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        
         NavigationStack {
             AccountOverview()
         }
-            .environmentObject(Account())
+        .environmentObject(Account())
     }
 }
 #endif
