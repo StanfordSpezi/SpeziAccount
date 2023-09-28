@@ -251,10 +251,14 @@ struct AccountOverviewSections_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountOverview() {
-                NavigationLink {} label: {
+                NavigationLink {
+                    Text("")
+                } label: {
                     Text("General Settings")
                 }
-                NavigationLink {} label: {
+                NavigationLink {
+                    Text("")
+                } label: {
                     Text("License Information")
                 }
             }
