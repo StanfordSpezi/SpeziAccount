@@ -100,7 +100,7 @@ struct AccountOverView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationStack {
-            AccountOverview() {
+            AccountOverview {
                 NavigationLink {
                     Text("")
                         .navigationTitle(Text("Settings"))
