@@ -49,9 +49,8 @@ struct AccountTestsView: View {
                 NavigationStack {
                     AccountOverview(isEditing: $isEditing) {
                         NavigationLink {
-                            VStack {}
+                            Text("")
                                 .navigationTitle(Text("Package Dependencies"))
-                                .navigationBarTitleDisplayMode(.inline)
                         } label: {
                             Text("License Information")
                         }

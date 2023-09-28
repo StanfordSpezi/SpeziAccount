@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import SpeziViews
+import SwiftUI
 
 
 public struct AccountHeader: View {
