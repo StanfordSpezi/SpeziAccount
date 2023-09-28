@@ -30,6 +30,8 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Gender Identity, Male")
 
         overview.verifyExistence(text: "Date of Birth, Mar 9, 1824")
+        
+        overview.verifyExistence(text: "License Information")
 
         XCTAssertTrue(overview.buttons["Logout"].waitForExistence(timeout: 0.5))
     }
@@ -243,5 +245,14 @@ final class AccountOverviewTests: XCTestCase {
         sleep(2)
 
         XCTAssertFalse(overview.secureTextFields["enter password"].waitForExistence(timeout: 2.0))
+    }
+    
+    func testLicenseOverview() throws {
+        let app = TestApp.launch(defaultCredentials: true)
+        let overview = app.openAccountOverview()
+
+        overview.tap(button: "License Information")
+        sleep(2)
+        XCTAssertTrue(overview.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 6.0))
     }
 }
