@@ -250,7 +250,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
 
     static var previews: some View {
         NavigationStack {
-            AccountOverview() {
+            AccountOverview {
                 NavigationLink {
                     Text("")
                 } label: {
