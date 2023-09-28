@@ -101,10 +101,18 @@ struct AccountOverView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountOverview() {
-                NavigationLink {} label: {
+                NavigationLink {
+                    VStack {}
+                        .navigationTitle(Text("Settings"))
+                        .navigationBarTitleDisplayMode(.inline)
+                } label: {
                     Text("General Settings")
                 }
-                NavigationLink {} label: {
+                NavigationLink {
+                    VStack {}
+                        .navigationTitle(Text("Package Dependencies"))
+                        .navigationBarTitleDisplayMode(.inline)
+                } label: {
                     Text("License Information")
                 }
             }
