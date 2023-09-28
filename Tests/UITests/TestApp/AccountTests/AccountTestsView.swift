@@ -68,43 +68,42 @@ struct AccountTestsView: View {
             }
         }
     }
-}
-
-@ViewBuilder var header: some View {
-    if let details = account.details {
-        Section("Account Details") {
-            Text(details.userId)
+    
+    @ViewBuilder var header: some View {
+        if let details = account.details {
+            Section("Account Details") {
+                Text(details.userId)
+            }
         }
-    }
-    if standard.deleteNotified {
-        Section {
-            Text("Got notified about deletion!")
-        }
-    }
-}
-
-
-@ViewBuilder var finishButton: some View {
-    Button(action: {
-        showSetup = false
-    }, label: {
-        Text("Finish")
-            .frame(maxWidth: .infinity, minHeight: 38)
-    })
-    .buttonStyle(.borderedProminent)
-}
-
-
-@ToolbarContentBuilder
-func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
-    if !isEditing {
-        ToolbarItem(placement: .cancellationAction) {
-            Button("Close") {
-                flag.wrappedValue = false
+        if standard.deleteNotified {
+            Section {
+                Text("Got notified about deletion!")
             }
         }
     }
-}
+
+
+    @ViewBuilder var finishButton: some View {
+        Button(action: {
+            showSetup = false
+        }, label: {
+            Text("Finish")
+                .frame(maxWidth: .infinity, minHeight: 38)
+        })
+        .buttonStyle(.borderedProminent)
+    }
+
+
+    @ToolbarContentBuilder
+    func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
+        if !isEditing {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Close") {
+                    flag.wrappedValue = false
+                }
+            }
+        }
+    }
 }
 
 
