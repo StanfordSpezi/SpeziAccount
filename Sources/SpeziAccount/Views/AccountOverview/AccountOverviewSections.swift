@@ -15,35 +15,35 @@ import SwiftUI
 struct AccountOverviewSections<Content: View>: View {
     let additionalContent: Content
     private let accountDetails: AccountDetails
-
+    
     private var service: any AccountService {
         accountDetails.accountService
     }
-
+    
     @EnvironmentObject private var account: Account
-
+    
     @Environment(\.logger) private var logger
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
-
+    
     @StateObject private var model: AccountOverviewFormViewModel
     @Binding private var isEditing: Bool
-
+    
     @State private var viewState: ViewState = .idle
     // separate view state for any destructive actions like logout or account removal
     @State private var destructiveViewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
-
-
+    
+    
     var isProcessing: Bool {
         viewState == .processing || destructiveViewState == .processing
     }
-
-
+    
+    
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
-            // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
-            // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
+        // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
+        // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
             .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || isProcessing)
             .viewStateAlert(state: $viewState)
@@ -67,8 +67,8 @@ struct AccountOverviewSections<Content: View>: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                            .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
-                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+                        .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
+                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
             }
@@ -96,8 +96,8 @@ struct AccountOverviewSections<Content: View>: View {
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
                 }
-                    .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
+                .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
@@ -110,8 +110,8 @@ struct AccountOverviewSections<Content: View>: View {
                 }) {
                     Text("DELETE", bundle: .module)
                 }
-                    .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
+                .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
@@ -122,7 +122,7 @@ struct AccountOverviewSections<Content: View>: View {
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
-
+        
         Section {
             NavigationLink {
                 NameOverview(model: model, details: accountDetails)
@@ -135,35 +135,35 @@ struct AccountOverviewSections<Content: View>: View {
                 model.accountSecurityLabel(account.configuration)
             }
         }
-
+        
         sectionsView
             .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
         
-        Section {
-            additionalContent
-        }
+        additionalContent
         
-        HStack {
-            if editMode?.wrappedValue.isEditing == true {
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    // While the action closure itself is not async, we rely on ability to render loading indicator
-                    // of the AsyncButton which based on the externally supplied viewState.
-                    model.presentingRemovalAlert = true
-                }) {
-                    Text("DELETE_ACCOUNT", bundle: .module)
-                }
-            } else {
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    model.presentingLogoutAlert = true
-                }) {
-                    Text("UP_LOGOUT", bundle: .module)
+        Section {
+            HStack {
+                if editMode?.wrappedValue.isEditing == true {
+                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                        // While the action closure itself is not async, we rely on ability to render loading indicator
+                        // of the AsyncButton which based on the externally supplied viewState.
+                        model.presentingRemovalAlert = true
+                    }) {
+                        Text("DELETE_ACCOUNT", bundle: .module)
+                    }
+                } else {
+                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                        model.presentingLogoutAlert = true
+                    }) {
+                        Text("UP_LOGOUT", bundle: .module)
+                    }
                 }
             }
-        }
             .frame(maxWidth: .infinity, alignment: .center)
+        }
     }
-
+    
     @ViewBuilder private var sectionsView: some View {
         ForEach(model.editableAccountKeys(details: accountDetails).elements, id: \.key) { category, accountKeys in
             if !sectionIsEmpty(accountKeys) {
@@ -172,13 +172,13 @@ struct AccountOverviewSections<Content: View>: View {
                     let forEachWrappers = accountKeys.map { key in
                         ForEachAccountKeyWrapper(key)
                     }
-
+                    
                     ForEach(forEachWrappers, id: \.id) { wrapper in
                         AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
-                        .onDelete { indexSet in
-                            model.deleteAccountKeys(at: indexSet, in: accountKeys)
-                        }
+                    .onDelete { indexSet in
+                        model.deleteAccountKeys(at: indexSet, in: accountKeys)
+                    }
                 } header: {
                     if let title = category.categoryTitle {
                         Text(title)
@@ -187,7 +187,7 @@ struct AccountOverviewSections<Content: View>: View {
             }
         }
     }
-
+    
     init(
         account: Account,
         details accountDetails: AccountDetails,
@@ -206,25 +206,25 @@ struct AccountOverviewSections<Content: View>: View {
             editMode?.wrappedValue = .active
             return
         }
-
+        
         guard !model.modifiedDetailsBuilder.isEmpty else {
             logger.debug("Not saving anything, as there were no changes!")
             model.discardChangesAction(editMode: editMode)
             return
         }
-
+        
         guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
             logger.debug("Some input validation failed. Staying in edit mode!")
             return
         }
-
+        
         focusedDataEntry = nil
-
+        
         logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
-
+        
         try await model.updateAccountDetails(details: accountDetails, editMode: editMode)
     }
-
+    
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing
     /// and the accountDetails don't have values stored for any of the provided ``AccountKey``.
     private func sectionIsEmpty(_ accountKeys: [any AccountKey.Type]) -> Bool {
@@ -232,7 +232,7 @@ struct AccountOverviewSections<Content: View>: View {
             // there is always UI presented in EDIT mode
             return false
         }
-
+        
         // we don't have to check for `addedAccountKeys` as these are only relevant in edit mode
         return accountKeys.allSatisfy { element in
             !accountDetails.contains(element)
@@ -247,23 +247,25 @@ struct AccountOverviewSections_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
-
+    
     static var previews: some View {
         NavigationStack {
             AccountOverview {
-                NavigationLink {
-                    Text("")
-                } label: {
-                    Text("General Settings")
-                }
-                NavigationLink {
-                    Text("")
-                } label: {
-                    Text("License Information")
+                Section(header: Text("App")) {
+                    NavigationLink {
+                        Text("")
+                    } label: {
+                        Text("General Settings")
+                    }
+                    NavigationLink {
+                        Text("")
+                    } label: {
+                        Text("License Information")
+                    }
                 }
             }
         }
-            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif
