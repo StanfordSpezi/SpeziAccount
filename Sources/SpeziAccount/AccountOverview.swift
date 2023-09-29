@@ -33,11 +33,30 @@ import SwiftUI
 ///         AccountOverview()
 ///     }
 /// }
+/// ```
+///
+/// Optionally, additional views can be passed to AccountOverview within the trailing closure, providing the opportunity for customization and extension of the view."
+/// Below is a short code example.
+///
+/// ```swift
+/// struct MyView: View {
+///     var body: some View {
+///         AccountOverview {
+///             NavigationLink {
+///                 // ... next view
+///             } label: {
+///                 Text("General Settings")
+///             }
+///         }
+///     }
+/// }
+/// ```
 ///
 /// - Note: The ``init(isEditing:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
-/// ```
+
+
 public struct AccountOverview<Content: View>: View {
     @EnvironmentObject private var account: Account
     

@@ -9,6 +9,28 @@
 import SpeziViews
 import SwiftUI
 
+/// A summary view for ``SpeziAccountOverview`` that can be used as a Button to link to ``SpeziAccountOverview``.
+///
+/// Below is a short code example on how to use the `AccountHeader` view.
+///
+/// ```swift
+/// struct MyView: View {
+///     var body: some View {
+///         NavigationStack {
+///             Form {
+///                 Section {
+///                     NavigationLink {
+///                         AccountOverview()
+///                     } label: {
+///                         AccountHeader(details: details)
+///                     }
+///                 }
+///             }
+///         }
+///     }
+/// }
+/// ```
+
 
 public struct AccountHeader: View {
     private let model: AccountDisplayModel
