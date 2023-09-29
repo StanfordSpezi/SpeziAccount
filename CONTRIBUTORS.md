@@ -13,3 +13,4 @@ Spezi Account Contributors
 
 * [Paul Schmiedmayer](https://github.com/PSchmiedmayer)
 * [Andreas Bauer](https://github.com/Supereg)
+* [Nikolai Madlener](https://github.com/NikolaiMadlener)
