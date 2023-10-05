@@ -70,6 +70,9 @@
 "VALUE_ADD %@" = "%@ Hinzufügen";
 "CHANGE_PASSWORD" = "Passwort Ändern";
 
+// MARK - Account Header
+"ACCOUNT_HEADER_CAPTION" = "Kontoinformationen & Details";
+
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
 "CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
