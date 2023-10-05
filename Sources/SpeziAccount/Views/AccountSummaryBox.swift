@@ -58,6 +58,7 @@ public struct AccountSummaryBox: View {
     }
 }
 
+
 #if DEBUG
 struct AccountSummary_Previews: PreviewProvider {
     static let emailDetails = AccountDetails.Builder()

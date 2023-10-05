@@ -9,6 +9,7 @@
 import SpeziViews
 import SwiftUI
 
+
 /// A summary view for ``SpeziAccountOverview`` that can be used as a Button to link to ``SpeziAccountOverview``.
 ///
 /// Below is a short code example on how to use the `AccountHeader` view.
@@ -30,39 +31,33 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-
-
 public struct AccountHeader: View {
-    private let model: AccountDisplayModel
+    @EnvironmentObject private var account: Account
+    private var caption: LocalizedStringResource
     
     public var body: some View {
+        let accountDetails = account.details
+        
         HStack {
-            Group {
-                if let profileViewName = model.profileViewName {
-                    UserProfileView(name: profileViewName)
-                        .frame(height: 60)
-                } else {
-                    Image(systemName: "person.circle.fill")
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(Color(.systemGray))
-                        .accessibilityHidden(true)
-                }
-            }
-            .accessibilityHidden(true)
+            UserProfileView(name: accountDetails?.name ?? PersonNameComponents(givenName: "Placeholder", familyName: "Placeholder"))
+                .frame(height: 60)
+                .redacted(reason: account.details == nil ? .placeholder : [])
+                .accessibilityHidden(true)
             VStack(alignment: .leading) {
-                Text(model.accountHeadline)
+                Text(accountDetails?.name?.formatted() ?? "Placeholder")
                     .font(.title2)
                     .fontWeight(.semibold)
-                
-                Text("Email, Password, Preferences").font(.caption)
+                    .redacted(reason: account.details == nil ? .placeholder : [])
+                Text(caption)
+                    .font(.caption)
             }
         }
     }
     
-    public init(details: AccountDetails) {
-        self.model = AccountDisplayModel(details: details)
+    /// Display a new Account Header.
+    /// - Parameter caption: A descriptive text displayed under the account name giving the user a brief explanation of what to expect when they interact with the header.
+    public init(caption: LocalizedStringResource? = nil) {
+        self.caption = caption ?? LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
     }
 }
 
@@ -72,16 +67,20 @@ public struct AccountHeader: View {
     let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
     
-    return AccountHeader(details: details)
+    return AccountHeader()
+        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+}
+
+#Preview {
+    AccountHeader(caption: "Email, Password, Preferences")
+        .environmentObject(Account(MockUserIdPasswordAccountService()))
 }
 
 #Preview {
     let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
     
     return NavigationStack {
         Form {
@@ -89,10 +88,11 @@ public struct AccountHeader: View {
                 NavigationLink {
                     AccountOverview()
                 } label: {
-                    AccountHeader(details: details)
+                    AccountHeader()
                 }
             }
         }
-    }.environmentObject(Account(MockUserIdPasswordAccountService()))
+    }
+        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
 }
 #endif

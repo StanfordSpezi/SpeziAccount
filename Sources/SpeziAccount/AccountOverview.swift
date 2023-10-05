@@ -35,7 +35,7 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// Optionally, additional views can be passed to AccountOverview within the trailing closure, providing the opportunity for customization and extension of the view."
+/// Optionally, additional sections can be passed to AccountOverview within the trailing closure, providing the opportunity for customization and extension of the view."
 /// Below is a short code example.
 ///
 /// ```swift
@@ -55,14 +55,12 @@ import SwiftUI
 /// - Note: The ``init(isEditing:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
-
-
-public struct AccountOverview<Content: View>: View {
+public struct AccountOverview<AdditionalSections: View>: View {
     @EnvironmentObject private var account: Account
     
     @Binding private var isEditing: Bool
     
-    let additionalContent: Content
+    let additionalSections: AdditionalSections
     
     public var body: some View {
         VStack {
@@ -75,10 +73,10 @@ public struct AccountOverview<Content: View>: View {
                         details: details,
                         isEditing: $isEditing
                     ) {
-                        additionalContent
+                        additionalSections
                     }
                 }
-                .padding(.top, -20)
+                    .padding(.top, -20)
             } else {
                 Spacer()
                 MissingAccountDetailsWarning()
@@ -88,24 +86,18 @@ public struct AccountOverview<Content: View>: View {
                 Spacer()
             }
         }
-        .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-        .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
+            .navigationBarTitleDisplayMode(.inline)
     }
     
     
     /// Display a new Account Overview.
-    /// - Parameter isEditing: A Binding that allows you to read the current editing state of the Account Overview view.
-    public init(isEditing: Binding<Bool> = .constant(false), @ViewBuilder additionalContent: () -> Content) {
+    /// - Parameters:
+    ///   - isEditing: A Binding that allows you to read the current editing state of the Account Overview view.
+    ///   - additionalSections: Optional additional sections displayed between the other AccountOverview information and the log out button.
+    public init(isEditing: Binding<Bool> = .constant(false), @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }) {
         self._isEditing = isEditing
-        self.additionalContent = additionalContent()
-    }
-}
-
-/// Makes passing additionalContent optional
-extension AccountOverview where Content == EmptyView {
-    init(isEditing: Binding<Bool> = .constant(false)) {
-        self._isEditing = isEditing
-        self.additionalContent = EmptyView()
+        self.additionalSections = additionalSections()
     }
 }
 
@@ -134,12 +126,12 @@ struct AccountOverView_Previews: PreviewProvider {
                 }
             }
         }
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
         
         NavigationStack {
             AccountOverview()
         }
-        .environmentObject(Account())
+            .environmentObject(Account())
     }
 }
 #endif

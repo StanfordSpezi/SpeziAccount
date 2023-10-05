@@ -12,8 +12,8 @@ import SwiftUI
 
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
-struct AccountOverviewSections<Content: View>: View {
-    let additionalContent: Content
+struct AccountOverviewSections<AdditionalSections: View>: View {
+    let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
     
     private var service: any AccountService {
@@ -42,8 +42,8 @@ struct AccountOverviewSections<Content: View>: View {
     
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
-        // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
-        // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
+            // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
+            // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
             .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || isProcessing)
             .viewStateAlert(state: $viewState)
@@ -67,8 +67,8 @@ struct AccountOverviewSections<Content: View>: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                        .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
-                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+                            .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
+                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
             }
@@ -110,7 +110,7 @@ struct AccountOverviewSections<Content: View>: View {
                 }) {
                     Text("DELETE", bundle: .module)
                 }
-                .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                    .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
@@ -140,7 +140,7 @@ struct AccountOverviewSections<Content: View>: View {
             .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
             .animation(nil, value: editMode?.wrappedValue)
         
-        additionalContent
+        additionalSections
         
         Section {
             HStack {
@@ -160,7 +160,7 @@ struct AccountOverviewSections<Content: View>: View {
                     }
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
     
@@ -176,9 +176,9 @@ struct AccountOverviewSections<Content: View>: View {
                     ForEach(forEachWrappers, id: \.id) { wrapper in
                         AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
-                    .onDelete { indexSet in
-                        model.deleteAccountKeys(at: indexSet, in: accountKeys)
-                    }
+                        .onDelete { indexSet in
+                            model.deleteAccountKeys(at: indexSet, in: accountKeys)
+                        }
                 } header: {
                     if let title = category.categoryTitle {
                         Text(title)
@@ -192,12 +192,12 @@ struct AccountOverviewSections<Content: View>: View {
         account: Account,
         details accountDetails: AccountDetails,
         isEditing: Binding<Bool>,
-        @ViewBuilder additionalContent: () -> Content
+        @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
         self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(account: account))
         self._isEditing = isEditing
-        self.additionalContent = additionalContent()
+        self.additionalSections = additionalSections()
     }
     
     
@@ -265,7 +265,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
                 }
             }
         }
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif
