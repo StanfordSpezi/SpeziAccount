@@ -32,6 +32,14 @@ import SwiftUI
 /// }
 /// ```
 public struct AccountHeader: View {
+    /// Default values for the ``AccountHeader`` view.
+    @_documentation(visibility: internal)
+    public enum Defaults {
+        /// Default caption.
+        @_documentation(visibility: internal)
+        public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
+    }
+    
     @EnvironmentObject private var account: Account
     private var caption: LocalizedStringResource
     
@@ -56,8 +64,8 @@ public struct AccountHeader: View {
     
     /// Display a new Account Header.
     /// - Parameter caption: A descriptive text displayed under the account name giving the user a brief explanation of what to expect when they interact with the header.
-    public init(caption: LocalizedStringResource? = nil) {
-        self.caption = caption ?? LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
+    public init(caption: LocalizedStringResource = Defaults.caption) {
+        self.caption = caption
     }
 }
 
