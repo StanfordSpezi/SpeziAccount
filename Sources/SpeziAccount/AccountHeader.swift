@@ -37,7 +37,7 @@ public struct AccountHeader: View {
     public enum Defaults {
         /// Default caption.
         @_documentation(visibility: internal)
-        public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
+        public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module)) // swiftlint:disable:this attributes
     }
     
     @EnvironmentObject private var account: Account
