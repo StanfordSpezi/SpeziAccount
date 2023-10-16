@@ -14,14 +14,14 @@ import SwiftUI
 
 struct AccountTestsView: View {
     @Environment(\.features) var features
-
+    
     @EnvironmentObject var account: Account
     @EnvironmentObject var standard: TestStandard
-
+    
     @State var showSetup = false
     @State var showOverview = false
     @State var isEditing = false
-
+    
     
     var body: some View {
         NavigationStack {
@@ -34,33 +34,40 @@ struct AccountTestsView: View {
                     showOverview = true
                 }
             }
-                .navigationTitle("Spezi Account")
-                .sheet(isPresented: $showSetup) {
-                    NavigationStack {
-                        AccountSetup {
-                            finishButton
+            .navigationTitle("Spezi Account")
+            .sheet(isPresented: $showSetup) {
+                NavigationStack {
+                    AccountSetup {
+                        finishButton
+                    }
+                    .toolbar {
+                        toolbar(closing: $showSetup)
+                    }
+                }
+            }
+            .sheet(isPresented: $showOverview) {
+                NavigationStack {
+                    AccountOverview(isEditing: $isEditing) {
+                        NavigationLink {
+                            Text("")
+                                .navigationTitle(Text("Package Dependencies"))
+                        } label: {
+                            Text("License Information")
                         }
-                            .toolbar {
-                                toolbar(closing: $showSetup)
-                            }
                     }
                 }
-                .sheet(isPresented: $showOverview) {
-                    NavigationStack {
-                        AccountOverview(isEditing: $isEditing)
-                            .toolbar {
-                                toolbar(closing: $showOverview)
-                            }
-                    }
+                .toolbar {
+                    toolbar(closing: $showOverview)
                 }
-                .onChange(of: account.signedIn) { newValue in
-                    if newValue {
-                        showSetup = false
-                    }
-                }
+            }
+        }
+        .onChange(of: account.signedIn) { newValue in
+            if newValue {
+                showSetup = false
+            }
         }
     }
-
+    
     @ViewBuilder var header: some View {
         if let details = account.details {
             Section("Account Details") {
@@ -82,7 +89,7 @@ struct AccountTestsView: View {
             Text("Finish")
                 .frame(maxWidth: .infinity, minHeight: 38)
         })
-            .buttonStyle(.borderedProminent)
+        .buttonStyle(.borderedProminent)
     }
 
 
@@ -105,14 +112,14 @@ struct AccountTestsView_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
-
+    
     static var previews: some View {
         AccountTestsView()
             .environmentObject(Account(TestAccountService(.emailAddress)))
-
+        
         AccountTestsView()
             .environmentObject(Account(building: details, active: TestAccountService(.emailAddress)))
-
+        
         AccountTestsView()
             .environmentObject(Account())
     }

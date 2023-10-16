@@ -70,6 +70,9 @@
 "VALUE_ADD %@" = "Add %@";
 "CHANGE_PASSWORD" = "Change Password";
 
+// MARK - Account Header
+"ACCOUNT_HEADER_CAPTION" = "Account Information & Details";
+
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Are you sure you want to discard your changes?";
 "CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
