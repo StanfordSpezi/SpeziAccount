@@ -29,32 +29,35 @@ struct SecurityOverview: View {
 
     var body: some View {
         Form {
-            Button("Change Password", action: {
-                presentingPasswordChangeSheet = true
-            })
-                .sheet(isPresented: $presentingPasswordChangeSheet) {
-                    PasswordChangeSheet(model: model, details: accountDetails)
-                }
-
-            // we place every account key of the `.credentials` section except the userId and password below
+            // we place every account key of the `.credentials` section except the userId
             let forEachWrappers = model.accountKeys(by: .credentials, using: accountDetails)
-                .filter { $0 != UserIdKey.self && $0 != PasswordKey.self }
+                .filter { $0 != UserIdKey.self }
                 .map { ForEachAccountKeyWrapper($0) }
 
 
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
-                    // This view currently doesn't implement an EditMode. Current intention is that the
-                    // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
-                    // to manage and change the respective account value.
-                    AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
+                    if wrapper.accountKey == PasswordKey.self {
+                        // we have a special case for the PasswordKey, as
+                        Button("Change Password", action: { // TODO can we move that into the PasswordKey somehow?
+                            presentingPasswordChangeSheet = true
+                        })
+                        .sheet(isPresented: $presentingPasswordChangeSheet) {
+                            PasswordChangeSheet(model: model, details: accountDetails)
+                        }
+                    } else {
+                        // This view currently doesn't implement an EditMode. Current intention is that the
+                        // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
+                        // to manage and change the respective account value.
+                        AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
+                    }
                 }
             }
                 .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
-            .navigationTitle(model.accountSecurityLabel(account.configuration))
+            .navigationTitle(model.accountSecurityLabel(account.configuration, service: service))
             .navigationBarTitleDisplayMode(.inline)
             .onDisappear {
                 model.resetModelState()

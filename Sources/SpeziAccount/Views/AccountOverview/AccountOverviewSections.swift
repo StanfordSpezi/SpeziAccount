@@ -129,10 +129,13 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             } label: {
                 model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
             }
+
+            // TODO only show if there is anything present?
             NavigationLink {
                 SecurityOverview(model: model, details: accountDetails)
             } label: {
-                model.accountSecurityLabel(account.configuration)
+                // TODO cal it SignIn and Security?
+                model.accountSecurityLabel(account.configuration, service: service)
             }
         }
         
@@ -174,7 +177,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     }
                     
                     ForEach(forEachWrappers, id: \.id) { wrapper in
-                        AccountKeyEditRow(details: accountDetails, for: wrapper.accountKey, model: model)
+                        AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
                         .onDelete { indexSet in
                             model.deleteAccountKeys(at: indexSet, in: accountKeys)

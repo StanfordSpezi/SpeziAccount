@@ -65,8 +65,15 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
-        categorizedAccountKeys[category, default: []]
+        var result = categorizedAccountKeys[category, default: []]
             .sorted(using: AccountOverviewValuesComparator(details: details, added: addedAccountKeys, removed: removedAccountKeys))
+
+        for describedKey in details.accountService.configuration.requiredAccountKeys
+            where describedKey.key.category == category {
+            result.append(describedKey.key)
+        }
+
+        return result
     }
 
     func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
@@ -177,10 +184,14 @@ class AccountOverviewFormViewModel: ObservableObject {
         return userId
     }
 
-    func accountSecurityLabel(_ configuration: AccountValueConfiguration) -> Text {
+    func accountSecurityLabel(_ configuration: AccountValueConfiguration, service: any AccountService) -> Text {
         let security = Text("SECURITY", bundle: .module)
 
-        if configuration[PasswordKey.self] != nil {
+        // either password key is required by user configuration or by account service configuration
+        let passwordConfigured = configuration[PasswordKey.self] != nil
+            || service.configuration.requiredAccountKeys.contains(PasswordKey.self)
+
+        if passwordConfigured {
             return Text("UP_PASSWORD", bundle: .module)
                 + Text(" & ")
                 + security
