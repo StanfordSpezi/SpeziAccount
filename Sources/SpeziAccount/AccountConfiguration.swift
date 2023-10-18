@@ -77,9 +77,6 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     public func configure() {
         // assemble the final array of account services
         let accountServices = (providedAccountServices + self.accountServices).map { service in
-            // verify that the configuration matches what is expected by the account service
-            verifyAccountServiceRequirements(of: service)
-
             // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
             let service = verifyConfigurationRequirements(against: service)
@@ -97,33 +94,6 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
         )
 
         self.account?.injectWeakAccount(into: standard)
-    }
-
-    private func verifyAccountServiceRequirements(of service: any AccountService) {
-        let requiredValues = service.configuration.requiredAccountKeys
-
-        // A collection of AccountKey.Type which aren't configured by the user or not configured to be required
-        // but the Account Service requires them.
-        let mismatchedKeys: [any AccountKeyWithDescription] = requiredValues.filter { keyWithDescription in
-            let key = keyWithDescription.key
-            let configuration = configuredAccountKeys[key]
-            return configuration == nil
-                || (key.isRequired && configuration?.requirement != .required)
-        }
-
-        guard !mismatchedKeys.isEmpty else {
-            return
-        }
-
-        // Note: AccountKeyWithDescription has a nice `debugDescription` that pretty prints the KeyPath property name
-        preconditionFailure(
-            """
-            You configured the AccountService \(service) which requires the following account values to be configured: \
-            \(mismatchedKeys.description).
-
-            Please modify your `AccountServiceConfiguration` to have these account values configured.
-            """
-        )
     }
 
     private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {

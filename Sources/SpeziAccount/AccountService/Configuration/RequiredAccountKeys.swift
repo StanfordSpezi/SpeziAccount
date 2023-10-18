@@ -9,18 +9,16 @@
 import Spezi
 
 
-/// The collection of ``AccountKey``s that are required to use the associated ``AccountService``.
+/// The collection of ``AccountKey``s that are required when using the associated ``AccountService``.
 ///
 /// A ``AccountService`` may set this configuration to communicate that a certain set of ``AccountKey``s are
-/// required to be configured in the ``AccountValueConfiguration`` provided in the ``AccountConfiguration`` in
-/// order to user the account service.
-///
-/// Upon startup, `SpeziAccount` automatically verifies that the user-configured account values match the expectation
-/// set by the ``AccountService`` through this configuration option.
+/// required to use the given account service. For example, a password-based account service defines the password
+/// to be required using this configuration as the account value is only required in the context of using this specific
+/// account service.
 ///
 /// Access the configuration via the ``AccountServiceConfiguration/requiredAccountKeys``.
 ///
-/// Below is an example on how to provide this option.
+/// Below is an example configuration for a userid-password-based account service.
 ///
 /// ```swift
 /// let configuration = AccountServiceConfiguration(/* ... */) {

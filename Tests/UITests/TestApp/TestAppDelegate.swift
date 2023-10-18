@@ -27,7 +27,6 @@ class TestAppDelegate: SpeziAppDelegate {
         case .default:
             return [
                 .requires(\.userId),
-                .requires(\.password),
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
@@ -36,7 +35,6 @@ class TestAppDelegate: SpeziAppDelegate {
         case .allRequired:
             return [
                 .requires(\.userId),
-                .requires(\.password),
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .requires(\.dateOfBirth)

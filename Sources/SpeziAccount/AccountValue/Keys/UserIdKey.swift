@@ -8,8 +8,9 @@
 
 import SwiftUI
 
+// TODO add something like a AccountIdentifier, or UniqueIdentifierKey?
 
-/// A string-based, unique user identifier.
+/// A string-based, unique user identifier. TODO update docs (primary credential)
 ///
 /// The `userId` is used to uniquely identify a given account. The value might carry
 /// additional semantics. For example, the `userId` might, at the same time, be the primary email address
@@ -17,7 +18,7 @@ import SwiftUI
 /// using the ``UserIdType`` configuration.
 ///
 /// - Note: You may also refer to the ``EmailAddressKey`` to query the email address of an account.
-public struct UserIdKey: RequiredAccountKey {
+public struct UserIdKey: RequiredAccountKey { // TODO remove RequiredAccpuntKeys?
     public typealias Value = String
 
     public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
@@ -37,7 +38,7 @@ extension AccountKeys {
 extension AccountValues {
     /// Access the user id of a user (see ``UserIdKey``).
     public var userId: String {
-        storage[UserIdKey.self]
+        storage[UserIdKey.self] // TODO make a precondition, and assert configuration of the userId in the AccountConfiguration(?) => NO?
     }
 }
 

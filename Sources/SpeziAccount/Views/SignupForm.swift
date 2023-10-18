@@ -33,14 +33,25 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @State private var presentingCloseConfirmation = false
 
     private var signupValuesBySections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        account.configuration.reduce(into: [:]) { result, configuration in
-            guard configuration.requirement != .supported else {
-                // we only show required and collected values in signup
-                return
+        var result: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> = account.configuration
+            .reduce(into: [:]) { result, configuration in
+                guard configuration.requirement != .supported else {
+                    // we only show required and collected values in signup
+                    return
+                }
+
+                result[configuration.key.category, default: []] += [configuration.key]
             }
 
-            result[configuration.key.category, default: []] += [configuration.key]
+        // patch the user configured account values with account values additionally required by
+        for entry in service.configuration.requiredAccountKeys {
+            let key = entry.key
+            if !result[key.category, default: []].contains(where: { $0 == key}) {
+                result[key.category, default: []].append(key)
+            }
         }
+
+        return result
     }
 
 

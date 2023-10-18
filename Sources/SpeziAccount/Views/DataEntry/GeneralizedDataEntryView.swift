@@ -59,9 +59,9 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
             .onAppear {
                 // values like `GenderIdentity` provide a default value a user might not want to change
-                if viewType?.enteringNewData == true,
+                if viewType?.enteringNewData == true, // TODO move that to signup form? or inject a validation closure?
                    case let .default(value) = Wrapped.Key.initialValue {
-                    detailsBuilder.set(Wrapped.Key.self, value: value)
+                    detailsBuilder.set(Wrapped.Key.self, value: value) // TODO this triggers (discard changes?)
                 }
             }
             .onChange(of: value) { newValue in
