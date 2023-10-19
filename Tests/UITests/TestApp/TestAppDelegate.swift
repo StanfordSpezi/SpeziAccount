@@ -6,8 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import Spezi
 import SpeziAccount
+
 
 class TestAppDelegate: SpeziAppDelegate {
     let features: Features = {
@@ -16,7 +18,7 @@ class TestAppDelegate: SpeziAppDelegate {
             return features
         } catch {
             print("Error: \(error)")
-            print("Verify the supplied command line arguments: " + CommandLine.arguments.dropFirst().joined(separator: " "))
+            print("Verify the supplied command line arguments: " + ProcessInfo.processInfo.arguments.dropFirst().joined(separator: " "))
             print(Features.helpMessage())
             return Features()
         }

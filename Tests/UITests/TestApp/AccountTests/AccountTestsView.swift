@@ -37,12 +37,14 @@ struct AccountTestsView: View {
             .navigationTitle("Spezi Account")
             .sheet(isPresented: $showSetup) {
                 NavigationStack {
-                    AccountSetup {
+                    AccountSetup { _ in
+                        showSetup = false
+                    } continue: {
                         finishButton
                     }
-                    .toolbar {
-                        toolbar(closing: $showSetup)
-                    }
+                        .toolbar {
+                            toolbar(closing: $showSetup)
+                        }
                 }
             }
             .sheet(isPresented: $showOverview) {

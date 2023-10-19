@@ -53,6 +53,7 @@ public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_
 /// }
 /// ```
 public struct AccountSetup<Header: View, Continue: View>: View {
+    private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header
     private let continueButton: Continue
 
@@ -110,9 +111,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onReceive(account.$signedIn) { signedIn in
-                if signedIn, case .setupShown = setupState {
+            .onReceive(account.$details) { details in
+                if let details, case .setupShown = setupState {
                     setupState = .loadingExistingAccount
+                    setupCompleteClosure(details)
+                    // TODO query additional data!
                 }
             }
     }
@@ -136,23 +139,20 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
     }
 
+
     fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
+        self.setupCompleteClosure = { _ in }
         self.header = DefaultAccountSetupHeader()
         self.continueButton = EmptyView()
         self._setupState = State(initialValue: state)
     }
 
     public init(
+        setupComplete: @escaping (AccountDetails) -> Void = { _ in },
+        @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
-    ) where Header == DefaultAccountSetupHeader {
-        self.init(continue: `continue`, header: { DefaultAccountSetupHeader() })
-    }
-
-
-    public init(
-        @ViewBuilder `continue`: () -> Continue = { EmptyView() },
-        @ViewBuilder header: () -> Header
     ) {
+        self.setupCompleteClosure = setupComplete
         self.header = header()
         self.continueButton = `continue`()
     }
@@ -203,15 +203,15 @@ struct AccountView_Previews: PreviewProvider {
         AccountSetup(state: .setupShown)
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        AccountSetup {
+        AccountSetup(continue: {
             Button(action: {
                 print("Continue")
             }, label: {
                 Text("Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
             })
-                .buttonStyle(.borderedProminent)
-        }
+            .buttonStyle(.borderedProminent)
+        })
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
 }
