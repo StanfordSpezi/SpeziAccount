@@ -21,11 +21,10 @@ struct AccountOverviewHeader: View {
                     UserProfileView(name: profileViewName)
                         .frame(height: 90)
                 } else {
-                    Image(systemName: "person.circle.fill")
+                    Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-                        .symbolRenderingMode(.hierarchical)
-                        .foregroundColor(Color(.systemGray))
+                        .foregroundColor(Color(.systemGray3))
                         .accessibilityHidden(true)
                 }
             }

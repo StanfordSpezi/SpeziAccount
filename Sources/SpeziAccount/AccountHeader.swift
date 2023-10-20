@@ -37,7 +37,8 @@ public struct AccountHeader: View {
     public enum Defaults {
         /// Default caption.
         @_documentation(visibility: internal)
-        public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module)) // swiftlint:disable:this attributes
+        public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
+        // swiftlint:disable:previous attributes
     }
     
     @EnvironmentObject private var account: Account
@@ -47,13 +48,23 @@ public struct AccountHeader: View {
         let accountDetails = account.details
         
         HStack {
-            // TODO handle the case where name is not present!
-            UserProfileView(name: accountDetails?.name ?? PersonNameComponents(givenName: "Placeholder", familyName: "Placeholder"))
-                .frame(height: 60)
-                .redacted(reason: account.details == nil ? .placeholder : [])
-                .accessibilityHidden(true)
+            if let accountDetails,
+               let name = accountDetails.name {
+                UserProfileView(name: name)
+                    .frame(height: 60)
+                    .accessibilityHidden(true)
+            } else {
+                Image(systemName: "person.crop.circle.fill")
+                    .resizable()
+                    .frame(width: 60, height: 60)
+                    .foregroundColor(Color(.systemGray3))
+                    .accessibilityHidden(true)
+            }
+
             VStack(alignment: .leading) {
-                Text(accountDetails?.name?.formatted() ?? "Placeholder")
+                let nameTitle = accountDetails?.name?.formatted(.name(style: .long)) ?? accountDetails?.userId ?? "Placeholder"
+
+                Text(nameTitle)
                     .font(.title2)
                     .fontWeight(.semibold)
                     .redacted(reason: account.details == nil ? .placeholder : [])
@@ -103,5 +114,38 @@ public struct AccountHeader: View {
         }
     }
         .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+}
+
+#Preview {
+    let details = AccountDetails.Builder()
+        .set(\.userId, value: "andi.bauer@tum.de")
+
+    return NavigationStack {
+        Form {
+            Section {
+                NavigationLink {
+                    AccountOverview()
+                } label: {
+                    AccountHeader()
+                }
+            }
+        }
+    }
+    .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+}
+
+#Preview {
+    NavigationStack {
+        Form {
+            Section {
+                NavigationLink {
+                    AccountOverview()
+                } label: {
+                    AccountHeader()
+                }
+            }
+        }
+    }
+        .environmentObject(Account(MockUserIdPasswordAccountService()))
 }
 #endif
