@@ -58,14 +58,9 @@ struct AccountTestsView: View {
                         }
                     }
                 }
-                .toolbar {
-                    toolbar(closing: $showOverview)
-                }
-            }
-        }
-        .onChange(of: account.signedIn) { newValue in
-            if newValue {
-                showSetup = false
+                    .toolbar {
+                        toolbar(closing: $showOverview)
+                    }
             }
         }
     }
@@ -91,7 +86,7 @@ struct AccountTestsView: View {
             Text("Finish")
                 .frame(maxWidth: .infinity, minHeight: 38)
         })
-        .buttonStyle(.borderedProminent)
+            .buttonStyle(.borderedProminent)
     }
 
 

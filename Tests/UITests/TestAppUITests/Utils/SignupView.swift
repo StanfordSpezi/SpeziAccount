@@ -17,7 +17,7 @@ struct SignupView: AccountValueView {
     }
 
     func verify() {
-        XCTAssertTrue(app.staticTexts["Please fill out the details below to create a new account."].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.staticTexts["Please fill out the details below to create your new account."].waitForExistence(timeout: 6.0))
     }
 
     func fillForm(
@@ -62,9 +62,9 @@ struct SignupView: AccountValueView {
         }
     }
 
-    func tapClose(timeout: TimeInterval = 1.0, discardChangesIfAsked: Bool = true) -> TestableAccountSetup {
-        XCTAssertTrue(app.navigationBars["Signup"].buttons["Close"].waitForExistence(timeout: timeout))
-        app.navigationBars["Signup"].buttons["Close"].tap()
+    func tapClose(timeout: TimeInterval = 1.0, discardChangesIfAsked: Bool = true) throws -> TestableAccountSetup {
+        XCTAssertTrue(app.navigationBars.buttons["Close"].waitForExistence(timeout: timeout))
+        try XCTUnwrap(app.navigationBars.buttons.matching(identifier: "Close").allElementsBoundByIndex.last).tap()
 
         if discardChangesIfAsked && app.staticTexts["Are you sure you want to discard your input?"].waitForExistence(timeout: 2.0) {
             tap(button: "Discard Input")

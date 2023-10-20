@@ -47,6 +47,7 @@ public struct AccountHeader: View {
         let accountDetails = account.details
         
         HStack {
+            // TODO handle the case where name is not present!
             UserProfileView(name: accountDetails?.name ?? PersonNameComponents(givenName: "Placeholder", familyName: "Placeholder"))
                 .frame(height: 60)
                 .redacted(reason: account.details == nil ? .placeholder : [])
@@ -89,7 +90,7 @@ public struct AccountHeader: View {
     let details = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-    
+
     return NavigationStack {
         Form {
             Section {

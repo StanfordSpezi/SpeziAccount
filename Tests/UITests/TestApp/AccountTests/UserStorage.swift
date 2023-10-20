@@ -33,6 +33,7 @@ struct UserStorage {
     var name: PersonNameComponents?
     var genderIdentity: GenderIdentity?
     var dateOfBirth: Date?
+    var biography: String?
     
     
     init(
@@ -59,6 +60,7 @@ struct UserStorage {
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
         self.dateOfBirth = modifiedDetails.dateOfBrith ?? dateOfBirth
+        self.biography = modifiedDetails.biography ?? biography
 
         // user Id cannot be removed!
         if removedKeys.name != nil {
@@ -69,6 +71,9 @@ struct UserStorage {
         }
         if removedKeys.dateOfBrith != nil {
             self.dateOfBirth = nil
+        }
+        if removedKeys.biography != nil {
+            self.biography = nil
         }
     }
 }

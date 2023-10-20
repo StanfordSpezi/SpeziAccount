@@ -38,7 +38,8 @@ struct SecurityOverview: View {
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
                     if wrapper.accountKey == PasswordKey.self {
-                        // we have a special case for the PasswordKey, as
+                        // we have a special case for the PasswordKey, as we currently don't expose the capabilities required to the subviews!
+                        // TODO localize
                         Button("Change Password", action: { // TODO can we move that into the PasswordKey somehow?
                             presentingPasswordChangeSheet = true
                         })

@@ -86,6 +86,7 @@ actor TestAccountService: UserIdPasswordAccountService {
             .set(\.name, value: registeredUser.name)
             .set(\.genderIdentity, value: registeredUser.genderIdentity)
             .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
+            .set(\.biography, value: registeredUser.biography)
             .build(owner: self)
 
         try await account.supplyUserDetails(details)

@@ -40,7 +40,8 @@
 "UP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login!";
 
 // MARK: - UserId and Password (Signup)
-"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_SIGNUP_HEADER" = "Create a new Account";
+"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create your new account.";
 "UP_CREDENTIALS" = "Credentials";
 "UP_NAME" = "Name";
 "UP_CONTACT_DETAILS" = "Contact Details";
@@ -53,6 +54,11 @@
 "UAP_PASSWORD_RESET_SUBTITLE %@" = "Please enter your %@ of your Account. A password reset email will be sent to the linked email address.";
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Sent out a link to reset the password.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Could not reset the password!";
+
+// MARK: - Follow-Up Information
+"FOLLOW_UP_INFORMATION_TITLE" = "Finish Account Setup";
+"FOLLOW_UP_INFORMATION_INSTRUCTIONS" = "Please fill out the details below to complete your account setup.";
+"FOLLOW_UP_INFORMATION_COMPLETE" = "Complete";
 
 // MARK: - Account Summary
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Could not logout!";
@@ -75,9 +81,11 @@
 
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Are you sure you want to discard your changes?";
-"CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
 "CONFIRMATION_DISCARD_CHANGES" = "Discard Changes";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
 "CONFIRMATION_DISCARD_INPUT" = "Discard Input";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" = "This account information is required. If you abort, you will automatically be signed out!";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO" = "Cancel and Logout";
 "CONFIRMATION_KEEP_EDITING"= "Keep Editing";
 "CONFIRMATION_LOGOUT" = "Are you sure you want to logout?";
 "CONFIRMATION_REMOVAL" = "Are you sure you want to delete your account?";

@@ -12,6 +12,7 @@ import SwiftUI
 public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_name
     case generic
     case setupShown
+    case requiringAdditionalInfo
     case loadingExistingAccount
 
     public static var defaultValue: _AccountSetupState = .generic
@@ -60,6 +61,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @EnvironmentObject var account: Account
 
     @State private var setupState: _AccountSetupState = .generic
+    @State private var followUpSheet = false
 
     private var services: [any AccountService] {
         account.registeredAccountServices
@@ -83,14 +85,13 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     Spacer()
 
                     if let details = account.details {
-                        if case .loadingExistingAccount = setupState {
+                        switch setupState {
+                        case let .requiringAdditionalInfo:
+                            followUpInformationSheet(details)
+                        case .loadingExistingAccount:
                             // We allow the outer view to navigate away upon signup, before we show the existing account view
-                            ProgressView()
-                                .task {
-                                    try? await Task.sleep(for: .seconds(2))
-                                    setupState = .generic
-                                }
-                        } else {
+                            existingAccountLoading
+                        default:
                             ExistingAccountView(details: details) {
                                 continueButton
                             }
@@ -113,9 +114,22 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
             .onReceive(account.$details) { details in
                 if let details, case .setupShown = setupState {
-                    setupState = .loadingExistingAccount
-                    setupCompleteClosure(details)
-                    // TODO query additional data!
+                    let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
+
+                    // TODO are we putting them anywhere? => maybe as the item for the sheet?
+                    let missingKeys = account.configuration
+                        .all(filteredBy: [.required])
+                        .filter { $0.category != .credentials } // don't collect credentials!
+                        .filter { key in
+                            !accountKeyIds.contains(ObjectIdentifier(key))
+                        }
+
+                    if missingKeys.isEmpty {
+                        setupState = .loadingExistingAccount
+                        setupCompleteClosure(details)
+                    } else {
+                        setupState = .requiringAdditionalInfo
+                    }
                 }
             }
     }
@@ -139,6 +153,14 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
     }
 
+    @ViewBuilder private var existingAccountLoading: some View {
+        ProgressView()
+            .task {
+                try? await Task.sleep(for: .seconds(2))
+                setupState = .generic
+            }
+    }
+
 
     fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
         self.setupCompleteClosure = { _ in }
@@ -147,7 +169,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         self._setupState = State(initialValue: state)
     }
 
-    public init(
+    public init( // TODo document new behavior and new parameters!
         setupComplete: @escaping (AccountDetails) -> Void = { _ in },
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
@@ -155,6 +177,26 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         self.setupCompleteClosure = setupComplete
         self.header = header()
         self.continueButton = `continue`()
+    }
+
+
+    @ViewBuilder
+    private func followUpInformationSheet(_ details: AccountDetails) -> some View {
+        ProgressView()
+            .sheet(isPresented: $followUpSheet) {
+                NavigationStack {
+                    FollowUpInfoSheet(details: details)
+                }
+            }
+            .onAppear {
+                followUpSheet = true // we want full control through the setupState property
+            }
+            .onChange(of: followUpSheet) { newValue in
+                if !newValue { // follow up information was completed!
+                    setupState = .loadingExistingAccount
+                    setupCompleteClosure(details) // TODO assuming updated?
+                }
+            }
     }
 }
 

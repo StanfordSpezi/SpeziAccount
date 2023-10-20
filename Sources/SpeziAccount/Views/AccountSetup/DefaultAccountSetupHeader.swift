@@ -27,7 +27,7 @@ public struct DefaultAccountSetupHeader: View {
                 .padding(.top, 30)
 
             Group {
-                if !account.signedIn || setupState == .loadingExistingAccount {
+                if !account.signedIn, case .loadingExistingAccount = setupState {
                     Text("ACCOUNT_WELCOME_SUBTITLE", bundle: .module)
                 } else {
                     Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE", bundle: .module)

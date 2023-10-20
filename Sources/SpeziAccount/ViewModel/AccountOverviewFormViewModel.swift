@@ -49,9 +49,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     init(account: Account) {
-        self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, configuration in
-            result[configuration.key.category, default: []] += [configuration.key]
-        }
+        self.categorizedAccountKeys = account.configuration.allCategorized()
 
         // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
         // Otherwise, changes to the object wouldn't be important.

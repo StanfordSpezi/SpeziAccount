@@ -21,6 +21,7 @@ enum AccountServiceType: String, ExpressibleByArgument {
 enum AccountValueConfigurationType: String, ExpressibleByArgument {
     case `default`
     case allRequired
+    case allRequiredWithBio
 }
 
 

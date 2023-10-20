@@ -11,6 +11,31 @@ import SpeziViews
 import SwiftUI
 
 
+struct DefaultSignupFormHeader: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "person.fill.badge.plus")
+                .foregroundColor(.accentColor)
+                .symbolRenderingMode(.multicolor)
+                .font(.custom("XXL", size: 50, relativeTo: .title))
+                .accessibilityHidden(true)
+            Text("UP_SIGNUP_HEADER", bundle: .module)
+                .accessibilityAddTraits(.isHeader)
+                .font(.title)
+                .bold()
+                .padding(.bottom, 4)
+            Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
+                .padding([.leading, .trailing], 25)
+        }
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .listRowBackground(Color.clear)
+            .padding(.top, -3)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+    }
+}
+
+
 /// A generalized signup form used with arbitrary ``AccountService`` implementations.
 ///
 /// A `Form` that collects all configured account values (a ``AccountValueConfiguration`` supplied to ``AccountConfiguration``)
@@ -32,21 +57,13 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     @State private var presentingCloseConfirmation = false
 
-    private var signupValuesBySections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        var result: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> = account.configuration
-            .reduce(into: [:]) { result, configuration in
-                guard configuration.requirement != .supported else {
-                    // we only show required and collected values in signup
-                    return
-                }
-
-                result[configuration.key.category, default: []] += [configuration.key]
-            }
+    private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
 
         // patch the user configured account values with account values additionally required by
         for entry in service.configuration.requiredAccountKeys {
             let key = entry.key
-            if !result[key.category, default: []].contains(where: { $0 == key}) {
+            if !result[key.category, default: []].contains(where: { $0 == key }) {
                 result[key.category, default: []].append(key)
             }
         }
@@ -57,7 +74,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
     public var body: some View {
         form
-            .navigationTitle(Text("UP_SIGNUP", bundle: .module))
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .interactiveDismissDisabled(!signupDetailsBuilder.isEmpty)
@@ -94,7 +110,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
         Form {
             header
 
-            sectionsView
+            SignupSectionsView(for: SignupDetails.self, service: service, sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
@@ -107,40 +123,18 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                     .frame(maxWidth: .infinity)
             }
                 .buttonStyle(.borderedProminent)
-                .disabled(!validationEngines.allInputValid)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
+                .disabled(!validationEngines.allInputValid)
         }
             .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
-    @ViewBuilder var sectionsView: some View {
-        // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
-        ForEach(signupValuesBySections.elements, id: \.key) { category, accountKeys in
-            Section {
-                // the array doesn't change, so its fine to rely on the indices as identifiers
-                ForEach(accountKeys.indices, id: \.self) { index in
-                    VStack {
-                        accountKeys[index].emptyDataEntryView(for: SignupDetails.self)
-                    }
-                }
-            } header: {
-                if let title = category.categoryTitle {
-                    Text(title)
-                }
-            } footer: {
-                if category == .credentials && account.configuration[PasswordKey.self] != nil {
-                    PasswordValidationRuleFooter(configuration: service.configuration)
-                }
-            }
-        }
-    }
 
-
-    init(using service: Service) where Header == Text {
+    init(using service: Service) where Header == DefaultSignupFormHeader {
         self.service = service
-        self.header = Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
+        self.header = DefaultSignupFormHeader()
     }
 
     init(service: Service, @ViewBuilder header: () -> Header) {
@@ -156,9 +150,9 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
         focusedDataEntry = nil
 
-        let request: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
+        let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 
-        try await service.signUp(signupDetails: request)
+        try await service.signUp(signupDetails: details)
 
         // go back if the view doesn't update anyway
         dismiss()
@@ -171,13 +165,10 @@ struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
     static let accountService = MockUserIdPasswordAccountService()
 
     static var previews: some View {
-        Text("")
-            .sheet(isPresented: .constant(true)) {
-                NavigationStack {
-                    SignupForm(using: accountService)
-                }
-                    .environmentObject(Account(accountService))
-            }
+        NavigationStack {
+            SignupForm(using: accountService)
+        }
+            .environmentObject(Account(accountService))
     }
 }
 #endif

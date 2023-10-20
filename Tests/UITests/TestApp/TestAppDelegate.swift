@@ -39,7 +39,16 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.userId),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .requires(\.dateOfBirth)
+                .requires(\.dateOfBirth),
+                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+            ]
+        case .allRequiredWithBio:
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .requires(\.dateOfBirth),
+                .requires(\.biography)
             ]
         }
     }

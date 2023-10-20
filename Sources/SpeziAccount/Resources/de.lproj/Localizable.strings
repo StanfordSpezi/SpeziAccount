@@ -40,7 +40,8 @@
 "UP_LOGIN_FAILED_DEFAULT_ERROR" = "Anmeldung fehlgeschlagen!";
 
 // MARK: - UserId and Password (Signup)
-"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_SIGNUP_HEADER" = "Erstelle dein Benutzerkonto";
+"UP_SIGNUP_INSTRUCTIONS" = "Bitte fülle die folgenden Informationen aus, um ein neues Benutzerkonto zu erstellen.";
 "UP_CREDENTIALS" = "Zugangsdaten";
 "UP_NAME" = "Name";
 "UP_CONTACT_DETAILS" = "Kontaktdaten";
@@ -53,6 +54,11 @@
 "UAP_PASSWORD_RESET_SUBTITLE %@" = "Bitte fülle folgendes Feld aus. Du wirst eine E-Mail erhalten mit der du dein Passwort zurücksetzten kannst.";
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Ein Link zum Zurücksetzen das Passworts wurde versandt.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Passwort Zurücksetzen fehlgeschlagen!";
+
+// MARK: - Follow-Up Information
+"FOLLOW_UP_INFORMATION_TITLE" = "Account Vervollständigen";
+"FOLLOW_UP_INFORMATION_INSTRUCTIONS" = "Bitte fülle die folgenden Informationen aus, um dein Benutzerkonto zu vervollständigen.";
+"FOLLOW_UP_INFORMATION_COMPLETE" = "Fertig";
 
 // MARK: - Account Summary
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Abmelden fehlgeschlagen!";
@@ -75,9 +81,11 @@
 
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
-"CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
 "CONFIRMATION_DISCARD_CHANGES" = "Änderungen Verwerfen";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
 "CONFIRMATION_DISCARD_INPUT" = "Eingaben Verwerfen";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" = "Diese Kontoinformationen sind erfoderlich. Wenn du abbrichst, wirst du automatisch abgemeldet!";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO" = "Abbrechen und Abmelden";
 "CONFIRMATION_KEEP_EDITING"= "Weiter Bearbeiten";
 "CONFIRMATION_LOGOUT" = "Willst du dich wirklich abmelden?";
 "CONFIRMATION_REMOVAL" = "Willst du wirklich dein Benutzerkonto löschen?";
@@ -97,10 +105,6 @@
 "USER_ID" = "Benutzerkennung";
 "USER_ID_EMAIL" = "E-Mail Adresse";
 "USER_ID_USERNAME" = "Benutzername";
-
-// MARK: - General Views
-"LOGIN" = "Anmelden";
-"SIGN_UP" = "Benutzerkonto Erstellen";
 
 // MARK: - Person Name
 "NAME" = "Name";

@@ -212,7 +212,7 @@ public class Account: ObservableObject, Sendable {
                 .unsupportedAccountKeys(basedOn: configuration)
                 .map { $0.key }
 
-            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys)
+            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys) // TODO rewrite to use the other identifier right?
 
             self.details = details.merge(with: partialDetails, allowOverwrite: false)
         } else {
@@ -232,6 +232,7 @@ public class Account: ObservableObject, Sendable {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
+            // TODO same here! maybe just provide complete partial account data?
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
 
             await storageStandard.clear(recordId)

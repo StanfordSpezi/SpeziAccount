@@ -32,6 +32,38 @@ public struct AccountValueConfiguration {
     }
 
 
+    public func all(filteredBy filter: [AccountKeyRequirement]? = nil) -> [any AccountKey.Type] {
+        // swiftlint:disable:previous discouraged_optional_collection
+
+        if let filter {
+            return self
+                .filter { configuration in
+                    filter.contains(configuration.requirement)
+                }
+                .map { $0.key }
+        } else {
+            return configuration.values.map { $0.key }
+        }
+    }
+
+    public func allCategorized(filteredBy filter: [AccountKeyRequirement]? = nil) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        // swiftlint:disable:previous discouraged_optional_collection
+        if let filter {
+            return self.reduce(into: [:]) { result, configuration in
+                guard filter.contains(configuration.requirement) else {
+                    return
+                }
+
+                result[configuration.key.category, default: []] += [configuration.key]
+            }
+        } else {
+            return self.reduce(into: [:]) { result, configuration in
+                result[configuration.key.category, default: []] += [configuration.key]
+            }
+        }
+    }
+
+
     /// Retrieve the configuration for a given type-erased ``AccountKey``.
     /// - Parameter key: The account key to query.
     /// - Returns: The configuration for a given ``AccountKey`` if it exists.

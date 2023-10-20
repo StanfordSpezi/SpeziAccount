@@ -160,7 +160,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // not sure why, but text-field selection has issues due to the presented validation messages, so we exit a reenter to resolve this
-        setup = signupView.tapClose()
+        setup = try signupView.tapClose()
         signupView = setup.openSignup()
 
         // enter email with validation
@@ -296,5 +296,26 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: email)
         XCTAssertFalse(overview.staticTexts["Leland"].waitForExistence(timeout: 1.0))
         overview.verifyExistence(text: "Add Name")
+    }
+
+    func testAdditionalInfoAfterLogin() throws {
+        let app = TestApp.launch(config: "allRequiredWithBio")
+
+        let setup = app.openAccountSetup()
+
+        try setup.login(email: Defaults.email, password: Defaults.password)
+
+        // verify the finish account setup view is popping up
+        XCTAssertTrue(setup.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(setup.staticTexts["Please fill out the details below to complete your account setup."].waitForExistence(timeout: 0.5))
+
+        try setup.enter(field: "Biography", text: "Hello Stanford")
+        sleep(2)
+
+        setup.tap(button: "Complete")
+        sleep(3)
+
+        // verify we are back at the start screen
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 }
