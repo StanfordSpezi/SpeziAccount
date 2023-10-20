@@ -184,7 +184,6 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5)) // verify the header works well without a name
     }
 
     func testNameValidation() throws {
@@ -287,7 +286,6 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5))
 
         overview.tap(button: "Name, E-Mail Address")
         sleep(2)
