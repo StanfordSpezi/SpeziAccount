@@ -33,38 +33,59 @@ struct AccountTestsView: View {
                 Button("Account Overview") {
                     showOverview = true
                 }
-            }
-            .navigationTitle("Spezi Account")
-            .sheet(isPresented: $showSetup) {
-                NavigationStack {
-                    AccountSetup { _ in
-                        showSetup = false
-                    } continue: {
-                        finishButton
-                    }
-                        .toolbar {
-                            toolbar(closing: $showSetup)
-                        }
-                }
-            }
-            .sheet(isPresented: $showOverview) {
-                NavigationStack {
-                    AccountOverview(isEditing: $isEditing) {
-                        NavigationLink {
-                            Text("")
-                                .navigationTitle(Text("Package Dependencies"))
-                        } label: {
-                            Text("License Information")
-                        }
+                Button("Account Logout", role: .destructive) {
+                    Task {
+                        try? await account.details?.accountService.logout()
                     }
                 }
-                    .toolbar {
-                        toolbar(closing: $showOverview)
-                    }
+                    .disabled(!account.signedIn)
             }
+                .navigationTitle("Spezi Account")
+                .sheet(isPresented: $showSetup) {
+                    setupSheet()
+                }
+                .sheet(isPresented: $showOverview) {
+                    overviewSheet
+                }
+        }
+            .accountRequired(features.accountRequiredModifier) {
+                setupSheet(closeable: false)
+            }
+            .verifyRequiredAccountDetails(features.verifyRequiredDetails)
+    }
+
+    @ViewBuilder
+    func setupSheet(closeable: Bool = true) -> some View {
+        NavigationStack {
+            AccountSetup { _ in
+                showSetup = false
+            } continue: {
+                finishButton
+            }
+                .toolbar {
+                    if closeable {
+                        toolbar(closing: $showSetup)
+                    }
+                }
         }
     }
-    
+
+    @ViewBuilder var overviewSheet: some View {
+        NavigationStack {
+            AccountOverview(isEditing: $isEditing) {
+                NavigationLink {
+                    Text("")
+                        .navigationTitle(Text("Package Dependencies"))
+                } label: {
+                    Text("License Information")
+                }
+            }
+        }
+        .toolbar {
+            toolbar(closing: $showOverview)
+        }
+    }
+
     @ViewBuilder var header: some View {
         if let details = account.details {
             Section("Account Details") {

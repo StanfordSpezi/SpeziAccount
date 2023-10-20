@@ -13,6 +13,8 @@ import SwiftUI
 
 struct FollowUpInfoSheet: View {
     private let accountDetails: AccountDetails
+    private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
+
     private var service: any AccountService {
         accountDetails.accountService
     }
@@ -30,21 +32,6 @@ struct FollowUpInfoSheet: View {
 
     @State private var presentingCancellationConfirmation = false
 
-
-    private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        // TODO maybe just re-categorize the list of keys right?
-        account.configuration
-            .allCategorized(filteredBy: [.required])
-            .mapValues { keys in
-                keys.filter { key in
-                    !accountDetails.contains(key)
-                }
-            }
-            .filter { category, values in
-                // we won't ever ask for credentials again (e.g. password is never present again!)
-                category != .credentials && !values.isEmpty
-            }
-    }
 
     var body: some View {
         form
@@ -119,8 +106,11 @@ struct FollowUpInfoSheet: View {
     }
 
 
-    init(details: AccountDetails) {
+    init(details: AccountDetails, requiredKeys: [any AccountKey.Type]) {
         self.accountDetails = details
+        self.accountKeyByCategory = requiredKeys.reduce(into: [:]) { result, key in
+            result[key.category, default: []] += [key]
+        }
     }
 
 
@@ -156,7 +146,7 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             if let details = account.details {
-                FollowUpInfoSheet(details: details)
+                FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
             }
         }
             .environmentObject(account)

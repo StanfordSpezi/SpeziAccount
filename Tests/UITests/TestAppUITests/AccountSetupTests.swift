@@ -14,7 +14,7 @@ final class AccountSetupTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
-        try disablePasswordAutofill()
+        // TODO try disablePasswordAutofill()
     }
 
     func testEmbeddedViewValidation() throws {
@@ -317,5 +317,19 @@ final class AccountSetupTests: XCTestCase {
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+    }
+
+    func testAccountRequiredModifier() throws {
+        let app = TestApp.launch(defaultCredentials: true, accountRequired: true)
+
+        app.tap(button: "Account Logout")
+
+        XCTAssertTrue(app.staticTexts["Your Account"].waitForExistence(timeout: 2.0))
+    }
+
+    func testVerifyRequiredAccountDetailsModifier() throws {
+        let app = TestApp.launch(config: "allRequiredWithBio", defaultCredentials: true, verifyAccountDetails: true)
+
+        XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
     }
 }

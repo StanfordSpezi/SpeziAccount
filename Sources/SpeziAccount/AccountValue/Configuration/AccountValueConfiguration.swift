@@ -32,7 +32,7 @@ public struct AccountValueConfiguration {
     }
 
 
-    public func all(filteredBy filter: [AccountKeyRequirement]? = nil) -> [any AccountKey.Type] {
+    func all(filteredBy filter: [AccountKeyRequirement]? = nil) -> [any AccountKey.Type] {
         // swiftlint:disable:previous discouraged_optional_collection
 
         if let filter {
@@ -46,7 +46,7 @@ public struct AccountValueConfiguration {
         }
     }
 
-    public func allCategorized(filteredBy filter: [AccountKeyRequirement]? = nil) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+    func allCategorized(filteredBy filter: [AccountKeyRequirement]? = nil) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         // swiftlint:disable:previous discouraged_optional_collection
         if let filter {
             return self.reduce(into: [:]) { result, configuration in
@@ -61,6 +61,17 @@ public struct AccountValueConfiguration {
                 result[configuration.key.category, default: []] += [configuration.key]
             }
         }
+    }
+
+    func missingRequiredKeys(for details: AccountDetails) -> [any AccountKey.Type] {
+        let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
+
+        return self
+            .all(filteredBy: [.required])
+            .filter { $0.category != .credentials } // don't collect credentials!
+            .filter { key in
+                !accountKeyIds.contains(ObjectIdentifier(key))
+            }
     }
 
 

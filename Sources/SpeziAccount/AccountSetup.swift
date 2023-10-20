@@ -12,7 +12,7 @@ import SwiftUI
 public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_name
     case generic
     case setupShown
-    case requiringAdditionalInfo
+    case requiringAdditionalInfo(_ keys: [any AccountKey.Type])
     case loadingExistingAccount
 
     public static var defaultValue: _AccountSetupState = .generic
@@ -86,8 +86,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
                     if let details = account.details {
                         switch setupState {
-                        case let .requiringAdditionalInfo:
-                            followUpInformationSheet(details)
+                        case let .requiringAdditionalInfo(keys):
+                            followUpInformationSheet(details, requiredKeys: keys)
                         case .loadingExistingAccount:
                             // We allow the outer view to navigate away upon signup, before we show the existing account view
                             existingAccountLoading
@@ -114,21 +114,13 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
             .onReceive(account.$details) { details in
                 if let details, case .setupShown = setupState {
-                    let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
-
-                    // TODO are we putting them anywhere? => maybe as the item for the sheet?
-                    let missingKeys = account.configuration
-                        .all(filteredBy: [.required])
-                        .filter { $0.category != .credentials } // don't collect credentials!
-                        .filter { key in
-                            !accountKeyIds.contains(ObjectIdentifier(key))
-                        }
+                    let missingKeys = account.configuration.missingRequiredKeys(for: details)
 
                     if missingKeys.isEmpty {
                         setupState = .loadingExistingAccount
                         setupCompleteClosure(details)
                     } else {
-                        setupState = .requiringAdditionalInfo
+                        setupState = .requiringAdditionalInfo(missingKeys)
                     }
                 }
             }
@@ -169,7 +161,15 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         self._setupState = State(initialValue: state)
     }
 
-    public init( // TODo document new behavior and new parameters!
+    /// Create a new AccountSetup view.
+    /// - Parameters:
+    ///   - setupComplete: The closure that is called once the account setup is considered to be completed.
+    ///     Note that it may be the case, that there are global account details associated (see ``Account/details``)
+    ///     but setup is not completed (e.g., after a login where additional info was required from the user).
+    ///   - header: An optional Header view to be displayed.
+    ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
+    ///     displayed with an already associated account.
+    public init(
         setupComplete: @escaping (AccountDetails) -> Void = { _ in },
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
@@ -181,11 +181,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
 
     @ViewBuilder
-    private func followUpInformationSheet(_ details: AccountDetails) -> some View {
+    private func followUpInformationSheet(_ details: AccountDetails, requiredKeys: [any AccountKey.Type]) -> some View {
         ProgressView()
             .sheet(isPresented: $followUpSheet) {
                 NavigationStack {
-                    FollowUpInfoSheet(details: details)
+                    FollowUpInfoSheet(details: details, requiredKeys: requiredKeys)
                 }
             }
             .onAppear {
@@ -194,7 +194,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             .onChange(of: followUpSheet) { newValue in
                 if !newValue { // follow up information was completed!
                     setupState = .loadingExistingAccount
-                    setupCompleteClosure(details) // TODO assuming updated?
+                    setupCompleteClosure(details)
                 }
             }
     }

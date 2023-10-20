@@ -39,13 +39,14 @@ struct SecurityOverview: View {
                 Section {
                     if wrapper.accountKey == PasswordKey.self {
                         // we have a special case for the PasswordKey, as we currently don't expose the capabilities required to the subviews!
-                        // TODO localize
-                        Button("Change Password", action: { // TODO can we move that into the PasswordKey somehow?
+                        Button(action: {
                             presentingPasswordChangeSheet = true
-                        })
-                        .sheet(isPresented: $presentingPasswordChangeSheet) {
-                            PasswordChangeSheet(model: model, details: accountDetails)
+                        }) {
+                            Text("CHANGE_PASSWORD", bundle: .module)
                         }
+                            .sheet(isPresented: $presentingPasswordChangeSheet) {
+                                PasswordChangeSheet(model: model, details: accountDetails)
+                            }
                     } else {
                         // This view currently doesn't implement an EditMode. Current intention is that the
                         // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
