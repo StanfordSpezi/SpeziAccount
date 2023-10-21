@@ -26,8 +26,8 @@ struct AccountKeyOverviewRow: View {
                     Group {
                         if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
                             view
-                        } else if let view = accountKey.dataEntryViewWithStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
-                            view
+                        } else {
+                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
                         }
                     }
                         .environment(\.accountViewType, .overview(mode: .existing))
