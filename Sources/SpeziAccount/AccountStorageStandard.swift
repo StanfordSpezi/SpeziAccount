@@ -16,7 +16,7 @@ import Spezi
 /// by your ``AccountService``, you may add an implementation of the `AccountStorageStandard` protocol to your App's `Standard`,
 /// inorder to handle storage and retrieval of these additional account values.
 ///
-/// - Note: You can use the ``AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
+/// - Note: You can use the ``Spezi/Standard/AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
 public protocol AccountStorageStandard: Standard {
     /// Create new associated account data.
     ///
@@ -48,10 +48,6 @@ public protocol AccountStorageStandard: Standard {
     /// Modify the associated account data of an existing user account.
     ///
     /// This call is used to apply all modifications of the Standard-managed account values.
-    ///
-    /// - Important: The ``ModifiedAccountDetails`` the ``AccountModifications`` structure might
-    ///     contain a change to the ``UserIdKey`` as well. This changes the primary ``AdditionalRecordId`` identifier
-    ///     used in all calls to reference a certain record. You must update the primary identifier!
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///

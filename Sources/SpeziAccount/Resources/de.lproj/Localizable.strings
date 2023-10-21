@@ -20,9 +20,11 @@
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "Du bist bereits mit dem folgenden Benutzerkonto angemeldet. Du kannst dein Benutzerkonto ändern, indem du dich abmeldest.";
 
 // MARK: - AccountValues
-"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Fehlende Werte im Benutzerkonto";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "Die folgenden Werte wurden nicht im Benutzerkonto gesetzt: %@";
-"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Melde dieses Problem dem Entwickler des Account Services.";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" = "Fehlende Werte im Benutzerkonto";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" = "Die folgenden Werte wurden nicht im Benutzerkonto gesetzt: %@.";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" = "Anfrage Fehlgeschlagen";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" = "Deine primäre Benutzerkennung kann nicht geändert werden da diese dauerhaft vergeben wird!";
+"ACCOUNT_ERROR_RECOVERY" = "Melde dieses Problem dem Entwickler des Account Services.";
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Passwort";
@@ -101,8 +103,11 @@
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "Dein Vorname kann nicht leer sein!";
 "VALIDATION_RULE_FAMILY_NAME_EMPTY" = "Dein Nachname kann nicht leer sein!";
 
+// MARK: - Account Id
+"ACCOUNT_ID" = "Benutzerkennung";
+
 // MARK: - User Id
-"USER_ID" = "Benutzerkennung";
+"USER_ID" = "Benutzername";
 "USER_ID_EMAIL" = "E-Mail Adresse";
 "USER_ID_USERNAME" = "Benutzername";
 

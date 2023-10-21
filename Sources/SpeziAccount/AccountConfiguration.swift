@@ -99,6 +99,19 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {
         logger.debug("Checking \(service.description) against the configured account keys.")
 
+        // if account service states exact supported keys, AccountIdKey must be one of them
+        if case let .exactly(keys) = service.configuration.supportedAccountKeys {
+            precondition(
+                keys.contains(AccountIdKey.self),
+                """
+                The account service \(type(of: service)) doesn't have the \\.accountId (aka. AccountIdKey) configured \
+                as an supported key. \
+                A primary, unique and stable user identifier is expected with most SpeziAccount components and \
+                will result in those components breaking.
+                """
+            )
+        }
+
         // collect all values that cannot be handled by the account service
         let unmappedAccountKeys: [any AccountKeyConfiguration] = service.configuration
             .unsupportedAccountKeys(basedOn: configuredAccountKeys)

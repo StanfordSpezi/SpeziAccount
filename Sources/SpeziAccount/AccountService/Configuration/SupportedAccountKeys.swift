@@ -18,7 +18,7 @@
 ///
 /// Access the configuration via the ``AccountServiceConfiguration/supportedAccountKeys``.
 ///
-/// Belo is an example on how to provide a fixed set of supported account keys.
+/// Below is an example on how to provide a fixed set of supported account keys.
 ///
 /// ```swift
 /// let supportedKeys = AccountKeyCollection {

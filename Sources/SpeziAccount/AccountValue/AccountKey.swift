@@ -28,6 +28,7 @@ import XCTRuntimeAssertions
 /// ## Topics
 ///
 /// ### Builtin Account Keys
+/// - ``AccountIdKey``
 /// - ``UserIdKey``
 /// - ``PasswordKey``
 /// - ``PersonNameKey``
@@ -87,6 +88,12 @@ extension AccountKey {
 
     static var isRequired: Bool {
         self is any RequiredAccountKey.Type
+    }
+
+    /// A ``AccountKeyCategory/credentials`` key that is not meant to be modified in
+    /// the `SecurityOverview` section in the ``AccountOverview``.
+    static var isHiddenCredential: Bool {
+        self == AccountIdKey.self || self == UserIdKey.self
     }
 }
 

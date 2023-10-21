@@ -149,8 +149,8 @@ class AccountOverviewFormViewModel: ObservableObject {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
         removedDetailsBuilder.merging(with: removedAccountKeys.keys, from: details)
 
-        let modifications = AccountModifications(
-            modifiedDetails: modifiedDetailsBuilder.build(),
+        let modifications = try AccountModifications(
+            modifiedDetails: modifiedDetailsBuilder.build(validation: true),
             removedAccountDetails: removedDetailsBuilder.build()
         )
 
@@ -184,7 +184,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
     func displaysSignInSecurityDetails(_ details: AccountDetails) -> Bool {
         accountKeys(by: .credentials, using: details)
-            .contains(where: { $0 != UserIdKey.self })
+            .contains(where: { !$0.isHiddenCredential })
     }
 
 

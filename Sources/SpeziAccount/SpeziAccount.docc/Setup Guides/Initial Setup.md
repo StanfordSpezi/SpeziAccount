@@ -92,7 +92,7 @@ struct MyView: View {
 }
 ```
 
-> Note: You can also customize the header text using the ``AccountSetup/init(continue:header:)`` initializer.
+> Note: You can also customize the header text using the ``AccountSetup/init(setupComplete:header:continue:)`` initializer.
 
 ### Account Overview
 
@@ -116,12 +116,13 @@ struct MyView: View {
 - ``AccountValueConfiguration``
 - ``AccountKeyRequirement``
 - ``AccountKeyConfiguration``
-- ``AccountValueConfigurationError``
+- ``AccountOperationError``
 
 ### Views
 
 - ``AccountSetup``
 - ``AccountOverview``
+- ``AccountHeader``
 
 ### Reacting to Events
 

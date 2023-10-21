@@ -20,6 +20,8 @@ protocol StandardBacked: AccountService {
     init(service: Service, standard: AccountStandard)
 
     func isBacking(service accountService: any AccountService) -> Bool
+
+    func preUserDetailsSupply(recordId: AdditionalRecordId) async throws
 }
 
 
@@ -39,6 +41,8 @@ extension StandardBacked {
         }
         return self.accountService.objId == service.objId
     }
+
+    func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {}
 }
 
 

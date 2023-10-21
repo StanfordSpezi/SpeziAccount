@@ -19,10 +19,12 @@
 "ACCOUNT_WELCOME_SUBTITLE" = "Please login to your account. Or create a new one if you don't have one already.";
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "You are already logged in with the account shown below. Continue or change your account by logging out.";
 
-// MARK: - AccountValues
-"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Values";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "The following required account values were not supplied: %@";
-"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Raise an issue with the developer of the Account Service.";
+// MARK: - Account Operation Error
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Values";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" = "The following required account values were not supplied: %@.";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" = "Failed Account Operation";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" = "You primary account identifier cannot be changed as it is required to be stable!";
+"ACCOUNT_ERROR_RECOVERY" = "Raise an issue with the developer of the Account Service.";
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Password";
@@ -100,6 +102,9 @@
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Passwords do not match.";
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "The first name field cannot be empty!";
 "VALIDATION_RULE_FAMILY_NAME_EMPTY" = "The last name field cannot be empty!";
+
+// MARK: - Account Id
+"ACCOUNT_ID" = "Account Identifier";
 
 // MARK: - User Id
 "USER_ID" = "User Identifier";

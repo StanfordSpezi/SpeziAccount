@@ -18,7 +18,7 @@ public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_
     public static var defaultValue: _AccountSetupState = .generic
 }
 
-/// The essential ``SpeziAccount`` view to login into or signup for a user account.
+/// The essential `SpeziAccount` view to login into or signup for a user account.
 ///
 /// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
 /// ``IdentityProvider`` instances to setup an active user account. They might create a new account with a given

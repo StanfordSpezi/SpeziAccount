@@ -51,7 +51,7 @@ import SwiftUI
 /// ### Managing Account state
 /// This section provides an overview on how to manage and manipulate the current user account as an ``AccountService``.
 ///
-/// - ``supplyUserDetails(_:)``
+/// - ``supplyUserDetails(_:isNewUser:)``
 /// - ``removeUserDetails()``
 ///
 /// ### Initializers for your Preview Provider
@@ -112,8 +112,8 @@ public class Account: ObservableObject, Sendable {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
-                A primary and unique user identifier is expected with most SpeziAccount components and \
-                will result in those components breaking.
+                A primary, user-visible identifier is recommended with most SpeziAccount components for \
+                an optimal user experience. Ignore this warning if you know what you are doing.
                 """
             )
         }
@@ -191,11 +191,21 @@ public class Account: ObservableObject, Sendable {
     ///     This is primarily helpful for identity providers. You might not want to set this flag if you using
     ///     the builtin ``SignupForm``!
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
+        precondition(
+            details.contains(AccountIdKey.self),
+            """
+            The provided `AccountDetails` do not have the \\.accountId (aka. AccountIdKey) set. \
+            A primary, unique and stable user identifier is expected with most SpeziAccount components and \
+            will result in those components breaking.
+            """
+        )
+
         var details = details
 
         if isNewUser {
             details.patchIsNewUser(true)
         }
+
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
         // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
@@ -216,13 +226,15 @@ public class Account: ObservableObject, Sendable {
 
         if let standardBacked = details.accountService as? any StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
+
+            try await standardBacked.preUserDetailsSupply(recordId: recordId)
 
             let unsupportedKeys = details.accountService.configuration
                 .unsupportedAccountKeys(basedOn: configuration)
                 .map { $0.key }
 
-            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys) // TODO rewrite to use the other identifier right?
+            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys)
 
             self.details = details.merge(with: partialDetails, allowOverwrite: false)
         } else {
@@ -242,8 +254,7 @@ public class Account: ObservableObject, Sendable {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
-            // TODO same here! maybe just provide complete partial account data?
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
             await storageStandard.clear(recordId)
         }

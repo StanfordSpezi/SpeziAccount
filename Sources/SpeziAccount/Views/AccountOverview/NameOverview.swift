@@ -17,9 +17,10 @@ struct NameOverview: View {
 
     @ObservedObject private var model: AccountOverviewFormViewModel
 
-    var body: some View {
+    var body: some View { // TODO only render this view if any of the two is present!
         Form {
             Section {
+                // TODO check if that is supported?
                 NavigationLink {
                     SingleEditView<UserIdKey>(model: model, details: accountDetails)
                 } label: {
@@ -27,6 +28,7 @@ struct NameOverview: View {
                 }
             }
 
+            // TODO only if person name is supported right?
             Section {
                 NavigationLink {
                     SingleEditView<PersonNameKey>(model: model, details: accountDetails)

@@ -122,7 +122,7 @@ struct FollowUpInfoSheet: View {
 
         focusedDataEntry = nil
 
-        let modifiedDetails = detailsBuilder.build() // TODO required verification!
+        let modifiedDetails = try detailsBuilder.build(validation: true)
         let removedDetails = RemovedAccountDetails.Builder().build()
 
         let modifications = AccountModifications(modifiedDetails: modifiedDetails, removedAccountDetails: removedDetails)

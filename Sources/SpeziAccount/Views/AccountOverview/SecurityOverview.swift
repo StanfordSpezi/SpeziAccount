@@ -31,7 +31,7 @@ struct SecurityOverview: View {
         Form {
             // we place every account key of the `.credentials` section except the userId
             let forEachWrappers = model.accountKeys(by: .credentials, using: accountDetails)
-                .filter { $0 != UserIdKey.self }
+                .filter { !$0.isHiddenCredential }
                 .map { ForEachAccountKeyWrapper($0) }
 
 

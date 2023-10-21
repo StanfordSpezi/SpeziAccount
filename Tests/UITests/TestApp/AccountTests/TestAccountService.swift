@@ -84,6 +84,7 @@ actor TestAccountService: UserIdPasswordAccountService {
 
     func updateUser() async throws {
         let builder = AccountDetails.Builder()
+            .set(\.accountId, value: registeredUser.accountId.uuidString)
             .set(\.userId, value: registeredUser.userId)
             .set(\.genderIdentity, value: registeredUser.genderIdentity)
             .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
