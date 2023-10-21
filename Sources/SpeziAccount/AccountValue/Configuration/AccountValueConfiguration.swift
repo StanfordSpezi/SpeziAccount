@@ -63,11 +63,11 @@ public struct AccountValueConfiguration {
         }
     }
 
-    func missingRequiredKeys(for details: AccountDetails) -> [any AccountKey.Type] {
+    func missingRequiredKeys(for details: AccountDetails, includeCollected: Bool = false) -> [any AccountKey.Type] {
         let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
 
         return self
-            .all(filteredBy: [.required])
+            .all(filteredBy: includeCollected ? [.required, .collected] : [.required])
             .filter { $0.category != .credentials } // don't collect credentials!
             .filter { key in
                 !accountKeyIds.contains(ObjectIdentifier(key))

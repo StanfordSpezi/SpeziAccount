@@ -183,9 +183,19 @@ public class Account: ObservableObject, Sendable {
     /// This method is called by the ``AccountService`` every time the state of the user account changes.
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
-    /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
-    public func supplyUserDetails(_ details: AccountDetails) async throws { // TODO check if we can give a "isNewUser" hint here!
+    /// - Parameters:
+    ///   - details: The ``AccountDetails`` of the currently logged in user account.
+    ///   - isNewUser: An optional flag that indicates if the provided account details are for a new user registration.
+    ///     If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
+    ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
+    ///     This is primarily helpful for identity providers. You might not want to set this flag if you using
+    ///     the builtin ``SignupForm``!
+    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
         var details = details
+
+        if isNewUser {
+            details.patchIsNewUser(true)
+        }
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
         // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
