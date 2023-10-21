@@ -184,7 +184,7 @@ public class Account: ObservableObject, Sendable {
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
     /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
-    public func supplyUserDetails(_ details: AccountDetails) async throws {
+    public func supplyUserDetails(_ details: AccountDetails) async throws { // TODO check if we can give a "isNewUser" hint here!
         var details = details
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it

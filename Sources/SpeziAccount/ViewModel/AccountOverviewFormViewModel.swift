@@ -182,20 +182,12 @@ class AccountOverviewFormViewModel: ObservableObject {
         return userId
     }
 
-    func accountSecurityLabel(_ configuration: AccountValueConfiguration, service: any AccountService) -> Text {
-        let security = Text("SECURITY", bundle: .module)
-
-        // either password key is required by user configuration or by account service configuration
-        let passwordConfigured = configuration[PasswordKey.self] != nil
-            || service.configuration.requiredAccountKeys.contains(PasswordKey.self)
-
-        if passwordConfigured {
-            return Text("UP_PASSWORD", bundle: .module)
-                + Text(" & ")
-                + security
-        }
-
-        return security
+    func hasSignInSecurityDetails(_ details: AccountDetails) -> Bool {
+        !details.keys
+            .filter { key in
+                key.category == .credentials && key != UserIdKey.self
+            }
+            .isEmpty
     }
 
 

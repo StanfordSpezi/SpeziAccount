@@ -25,7 +25,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "lelandstanford@stanford.edu")
 
         overview.verifyExistence(text: "Name, E-Mail Address")
-        overview.verifyExistence(text: "Password & Security")
+        overview.verifyExistence(text: "Sign-In & Security")
 
         overview.verifyExistence(text: "Gender Identity, Male")
 
@@ -217,9 +217,9 @@ final class AccountOverviewTests: XCTestCase {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
 
-        overview.tap(button: "Password & Security")
+        overview.tap(button: "Sign-In & Security")
         sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Password & Security"].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(overview.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 6.0))
 
         XCTAssertTrue(overview.buttons["Change Password"].waitForExistence(timeout: 2.0))
         overview.tap(button: "Change Password")

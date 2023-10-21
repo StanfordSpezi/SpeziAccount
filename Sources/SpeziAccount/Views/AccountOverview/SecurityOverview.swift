@@ -59,7 +59,7 @@ struct SecurityOverview: View {
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
-            .navigationTitle(model.accountSecurityLabel(account.configuration, service: service))
+            .navigationTitle(Text("SIGN_IN_AND_SECURITY", bundle: .module))
             .navigationBarTitleDisplayMode(.inline)
             .onDisappear {
                 model.resetModelState()

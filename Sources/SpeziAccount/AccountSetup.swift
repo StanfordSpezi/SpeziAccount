@@ -114,7 +114,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
             .onReceive(account.$details) { details in
                 if let details, case .setupShown = setupState {
-                    let missingKeys = account.configuration.missingRequiredKeys(for: details)
+                    let missingKeys = account.configuration.missingRequiredKeys(for: details) // TODo filter by collected as well for signup?
 
                     if missingKeys.isEmpty {
                         setupState = .loadingExistingAccount

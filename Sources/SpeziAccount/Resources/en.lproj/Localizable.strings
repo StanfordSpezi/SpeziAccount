@@ -72,7 +72,7 @@
 "CANCEL" = "Cancel";
 "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Could not save account details!";
 "REMOVE_DEFAULT_ERROR"= "Could not remove account!";
-"SECURITY" = "Security";
+"SIGN_IN_AND_SECURITY" = "Sign-In & Security";
 "VALUE_ADD %@" = "Add %@";
 "CHANGE_PASSWORD" = "Change Password";
 

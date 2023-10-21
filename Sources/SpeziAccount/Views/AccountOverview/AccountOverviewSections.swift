@@ -130,12 +130,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
             }
 
-            // TODO only show if there is anything present?
-            NavigationLink {
-                SecurityOverview(model: model, details: accountDetails)
-            } label: {
-                // TODO cal it SignIn and Security?
-                model.accountSecurityLabel(account.configuration, service: service)
+            if model.hasSignInSecurityDetails(accountDetails) {
+                NavigationLink {
+                    SecurityOverview(model: model, details: accountDetails)
+                } label: {
+                    Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                }
             }
         }
         
