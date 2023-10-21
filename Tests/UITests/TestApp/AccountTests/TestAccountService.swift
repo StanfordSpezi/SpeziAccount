@@ -13,12 +13,13 @@ actor TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
     private let defaultUserId: String
     private let defaultAccountOnConfigure: Bool
+    private var excludeName: Bool
 
     @AccountReference var account: Account
     var registeredUser: UserStorage // simulates the backend
 
 
-    init(_ type: UserIdType, defaultAccount: Bool = false) {
+    init(_ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
         configuration = AccountServiceConfiguration(
             name: "\(type.localizedStringResource) and Password",
             supportedKeys: .exactly(UserStorage.supportedKeys)
@@ -32,6 +33,7 @@ actor TestAccountService: UserIdPasswordAccountService {
 
         defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
         self.defaultAccountOnConfigure = defaultAccount
+        self.excludeName = noName
         registeredUser = UserStorage(userId: defaultUserId)
     }
 
@@ -81,12 +83,19 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func updateUser() async throws {
-        let details = AccountDetails.Builder()
+        let builder = AccountDetails.Builder()
             .set(\.userId, value: registeredUser.userId)
-            .set(\.name, value: registeredUser.name)
             .set(\.genderIdentity, value: registeredUser.genderIdentity)
             .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
             .set(\.biography, value: registeredUser.biography)
+
+        if !self.excludeName {
+            builder.set(\.name, value: registeredUser.name)
+        } else {
+            excludeName = false
+        }
+
+        let details = builder
             .build(owner: self)
 
         try await account.supplyUserDetails(details)

@@ -29,7 +29,6 @@ struct NameOverview: View {
 
             Section {
                 NavigationLink {
-                    // TODO does adding a name work at all?
                     SingleEditView<PersonNameKey>(model: model, details: accountDetails)
                 } label: {
                     if let name = accountDetails.name {

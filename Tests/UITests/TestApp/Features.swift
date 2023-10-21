@@ -38,6 +38,8 @@ struct Features: ParsableArguments, EnvironmentKey {
     @Flag(help: "Enable the AccountRequiredModifier.swift") var accountRequiredModifier = false
 
     @Flag(help: "Enable the VerifyRequiredAccountDetailsModifier") var verifyRequiredDetails = false
+
+    @Flag(help: "Set no name by default.") var noName = false
 }
 
 

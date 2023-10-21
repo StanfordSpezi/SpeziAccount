@@ -213,6 +213,30 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts["L"].waitForExistence(timeout: 2.0)) // ensure the "account image" is updated accordingly
     }
 
+    func testAddName() throws {
+        let app = TestApp.launch(defaultCredentials: true, noName: true)
+        let overview = app.openAccountOverview()
+
+        overview.verifyExistence(text: "Name, E-Mail Address")
+
+        overview.tap(button: "Name, E-Mail Address")
+        sleep(2)
+        XCTAssertTrue(overview.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 6.0))
+
+        // open user id
+        overview.tap(button: "Add Name")
+        sleep(2)
+        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+
+        try overview.enter(field: "enter first name", text: "Leland")
+        try overview.enter(field: "enter last name", text: "Stanford")
+
+        overview.tap(button: "Done")
+        sleep(3)
+
+        overview.verifyExistence(text: "Name, Leland Stanford")
+    }
+
     func testSecurityOverview() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()

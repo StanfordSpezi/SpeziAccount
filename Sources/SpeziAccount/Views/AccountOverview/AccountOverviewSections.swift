@@ -130,7 +130,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
             }
 
-            if model.hasSignInSecurityDetails(accountDetails) {
+            if model.displaysSignInSecurityDetails(accountDetails) {
                 NavigationLink {
                     SecurityOverview(model: model, details: accountDetails)
                 } label: {

@@ -182,12 +182,9 @@ class AccountOverviewFormViewModel: ObservableObject {
         return userId
     }
 
-    func hasSignInSecurityDetails(_ details: AccountDetails) -> Bool {
-        !details.keys
-            .filter { key in
-                key.category == .credentials && key != UserIdKey.self
-            }
-            .isEmpty
+    func displaysSignInSecurityDetails(_ details: AccountDetails) -> Bool {
+        accountKeys(by: .credentials, using: details)
+            .contains(where: { $0 != UserIdKey.self })
     }
 
 
