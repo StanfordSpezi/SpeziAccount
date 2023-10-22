@@ -27,7 +27,7 @@ private protocol GeneralizedStringEntryView {
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
     private var dataHookId: String {
-        "DataHook-\(Wrapped.Key.id)"
+        "DataHook-\(Wrapped.Key.self)"
     }
 
     @EnvironmentObject private var account: Account
@@ -43,15 +43,6 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
 
     public var body: some View {
-        engines.register(id: dataHookId) {
-            // values like `GenderIdentity` provide a default value a user might not want to change
-            if viewType?.enteringNewData == true,
-               case let .default(value) = Wrapped.Key.initialValue,
-               detailsBuilder.get(Wrapped.Key.self) == nil {
-                detailsBuilder.set(Wrapped.Key.self, value: value)
-            }
-        }
-
         Group {
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {
@@ -71,6 +62,17 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
             }
         }
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
+            .onAppear {
+                // values like `GenderIdentity` provide a default value a user might not want to change
+                if viewType?.enteringNewData == true,
+                   case let .default(value) = Wrapped.Key.initialValue {
+                    engines.register(id: dataHookId) {
+                        if detailsBuilder.get(Wrapped.Key.self) == nil {
+                            detailsBuilder.set(Wrapped.Key.self, value: value)
+                        }
+                    }
+                }
+            }
             .onDisappear {
                 engines.remove(hook: dataHookId)
             }
