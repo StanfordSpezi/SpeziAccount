@@ -89,7 +89,7 @@ public class Account: ObservableObject, Sendable {
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    let registeredAccountServices: [any AccountService]
+    public let registeredAccountServices: [any AccountService]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
