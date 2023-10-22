@@ -74,9 +74,11 @@ class AccountOverviewFormViewModel: ObservableObject {
         return result
     }
 
-    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        let results = categorizedAccountKeys.filter { category, _ in
-            category != .credentials && category != .name
+    private func baseSortedAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        var results = categorizedAccountKeys
+
+        for describedKey in accountDetails.accountService.configuration.requiredAccountKeys {
+            results[describedKey.key.category, default: []] += [describedKey.key]
         }
 
         // We want to establish the following order:
@@ -86,6 +88,27 @@ class AccountOverviewFormViewModel: ObservableObject {
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
             value.sorted(using: AccountOverviewValuesComparator(details: accountDetails, added: addedAccountKeys, removed: removedAccountKeys))
+        }
+    }
+
+    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        baseSortedAccountKeys(details: accountDetails).filter { category, _ in
+            category != .credentials && category != .name
+        }
+    }
+
+    func namesOverviewKeys(details accountDetails: AccountDetails) -> [any AccountKey.Type] {
+        var result = baseSortedAccountKeys(details: accountDetails)
+            .filter { category, _ in
+                category == .credentials || category == .name
+            }
+
+        if result[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true {
+            result[.credentials] = [UserIdKey.self] // ensure userId is the only credential we display
+        }
+
+        return result.reduce(into: []) { result, tuple in
+            result.append(contentsOf: tuple.value)
         }
     }
 
@@ -185,6 +208,11 @@ class AccountOverviewFormViewModel: ObservableObject {
     func displaysSignInSecurityDetails(_ details: AccountDetails) -> Bool {
         accountKeys(by: .credentials, using: details)
             .contains(where: { !$0.isHiddenCredential })
+    }
+
+    func displaysNameDetails() -> Bool {
+        categorizedAccountKeys[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true
+            || categorizedAccountKeys[.name]?.isEmpty != true
     }
 
 

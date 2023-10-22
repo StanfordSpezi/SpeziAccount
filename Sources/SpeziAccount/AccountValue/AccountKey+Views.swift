@@ -52,4 +52,8 @@ extension AccountKey {
 
         return AnyView(DataDisplay(value))
     }
+
+    static func singleEditView(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) -> AnyView {
+        AnyView(SingleEditView<Self>(model: model, details: accountDetails))
+    }
 }

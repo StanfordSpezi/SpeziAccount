@@ -122,22 +122,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
-        
-        Section {
-            NavigationLink {
-                NameOverview(model: model, details: accountDetails)
-            } label: {
-                model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
-            }
 
-            if model.displaysSignInSecurityDetails(accountDetails) {
-                NavigationLink {
-                    SecurityOverview(model: model, details: accountDetails)
-                } label: {
-                    Text("SIGN_IN_AND_SECURITY", bundle: .module)
-                }
-            }
-        }
+        defaultSections
         
         sectionsView
             .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
@@ -164,6 +150,31 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 }
             }
                 .frame(maxWidth: .infinity, alignment: .center)
+        }
+    }
+
+    @ViewBuilder private var defaultSections: some View {
+        let displayName = model.displaysNameDetails()
+        let displaySecurity = model.displaysSignInSecurityDetails(accountDetails)
+
+        if displayName || displaySecurity {
+            Section {
+                if displayName {
+                    NavigationLink {
+                        NameOverview(model: model, details: accountDetails)
+                    } label: {
+                        model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
+                    }
+                }
+
+                if displaySecurity {
+                    NavigationLink {
+                        SecurityOverview(model: model, details: accountDetails)
+                    } label: {
+                        Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                    }
+                }
+            }
         }
     }
     

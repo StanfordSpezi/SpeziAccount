@@ -14,6 +14,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     @AccountReference private var account: Account
 
     public let configuration: AccountServiceConfiguration
+    private var userIdToAccountId: [String: UUID] = [:]
 
 
     /// Create a new userId- and password-based account service.
@@ -34,6 +35,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
         try await Task.sleep(for: .seconds(1))
 
         let details = AccountDetails.Builder()
+            .set(\.accountId, value: userIdToAccountId[userId, default: UUID()].uuidString)
             .set(\.userId, value: userId)
             .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build(owner: self)
@@ -44,7 +46,11 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
         print("Mock Signup: \(signupDetails)")
         try await Task.sleep(for: .seconds(1))
 
+        let id = UUID()
+        userIdToAccountId[signupDetails.userId] = id
+
         let details = AccountDetails.Builder(from: signupDetails)
+            .set(\.accountId, value: id.uuidString)
             .remove(\.password)
             .build(owner: self)
         try await account.supplyUserDetails(details)
