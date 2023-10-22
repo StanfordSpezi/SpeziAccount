@@ -26,7 +26,9 @@ private protocol GeneralizedStringEntryView {
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
-    private let dataHookId: String = "DateEntry_DataHook"
+    private var dataHookId: String {
+        "DataHook-\(Wrapped.Key.id)"
+    }
 
     @EnvironmentObject private var account: Account
 
