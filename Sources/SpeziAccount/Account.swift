@@ -188,8 +188,8 @@ public class Account: ObservableObject, Sendable {
     ///   - isNewUser: An optional flag that indicates if the provided account details are for a new user registration.
     ///     If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
     ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
-    ///     This is primarily helpful for identity providers. You might not want to set this flag if you using
-    ///     the builtin ``SignupForm``!
+    ///     This is primarily helpful for identity providers. You might not want to set this flag
+    ///     if you using the builtin ``SignupForm``!
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
         precondition(
             details.contains(AccountIdKey.self),
