@@ -54,22 +54,6 @@ struct AccountTestsView: View {
             .verifyRequiredAccountDetails(features.verifyRequiredDetails)
     }
 
-    @ViewBuilder
-    func setupSheet(closeable: Bool = true) -> some View {
-        NavigationStack {
-            AccountSetup { _ in
-                showSetup = false
-            } continue: {
-                finishButton
-            }
-                .toolbar {
-                    if closeable {
-                        toolbar(closing: $showSetup)
-                    }
-                }
-        }
-    }
-
     @ViewBuilder var overviewSheet: some View {
         NavigationStack {
             AccountOverview(isEditing: $isEditing) {
@@ -110,6 +94,22 @@ struct AccountTestsView: View {
             .buttonStyle(.borderedProminent)
     }
 
+
+    @ViewBuilder
+    func setupSheet(closeable: Bool = true) -> some View {
+        NavigationStack {
+            AccountSetup { _ in
+                showSetup = false
+            } continue: {
+                finishButton
+            }
+                .toolbar {
+                    if closeable {
+                        toolbar(closing: $showSetup)
+                    }
+                }
+        }
+    }
 
     @ToolbarContentBuilder
     func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
