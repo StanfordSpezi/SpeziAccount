@@ -26,10 +26,13 @@ private protocol GeneralizedStringEntryView {
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
+    private let dataHookId: String = "DateEntry_DataHook"
+
     @EnvironmentObject private var account: Account
 
     @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+    @EnvironmentObject private var engines: ValidationEngines<String>
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType
@@ -38,6 +41,15 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
 
     public var body: some View {
+        engines.register(id: dataHookId) {
+            // values like `GenderIdentity` provide a default value a user might not want to change
+            if viewType?.enteringNewData == true,
+               case let .default(value) = Wrapped.Key.initialValue,
+               detailsBuilder.get(Wrapped.Key.self) == nil {
+                detailsBuilder.set(Wrapped.Key.self, value: value)
+            }
+        }
+
         Group {
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {
@@ -57,12 +69,8 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
             }
         }
             .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
-            .onAppear {
-                // values like `GenderIdentity` provide a default value a user might not want to change
-                if viewType?.enteringNewData == true, // TODO move that to signup form? or inject a validation closure?
-                   case let .default(value) = Wrapped.Key.initialValue {
-                    detailsBuilder.set(Wrapped.Key.self, value: value) // TODO this triggers (discard changes?)
-                }
+            .onDisappear {
+                engines.remove(hook: dataHookId)
             }
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
