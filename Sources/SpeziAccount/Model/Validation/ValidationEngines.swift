@@ -232,9 +232,8 @@ public class ValidationEngines<FieldIdentifier: Hashable>: ObservableObject {
         }
     }
 
-    func register(id: String, hook: @escaping () -> Void) -> EmptyView {
+    func register(id: String, hook: @escaping () -> Void) {
         hooks[id] = hook
-        return EmptyView()
     }
 
     func remove(hook: String) {
