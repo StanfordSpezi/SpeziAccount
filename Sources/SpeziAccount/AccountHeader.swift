@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
-/// A account summary view that can be to link to ``AccountOverview``.
+/// A account summary view that can be used to link to the ``AccountOverview``.
 ///
 /// Below is a short code example on how to use the `AccountHeader` view.
 ///
