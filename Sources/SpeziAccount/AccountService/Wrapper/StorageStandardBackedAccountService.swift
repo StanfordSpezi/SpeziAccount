@@ -18,6 +18,8 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
     let standard: Standard
     let serviceSupportedKeys: AccountKeyCollection
 
+    private var pendingSignupDetails: SignupDetails?
+
     nonisolated var configuration: AccountServiceConfiguration {
         accountService.configuration
     }
@@ -27,9 +29,9 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
     }
 
 
-    private var currentUserId: String? {
+    private var currentAccountId: String? {
         get async {
-            await account.details?.userId
+            await account.details?.accountId
         }
     }
 
@@ -44,24 +46,28 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
         self.serviceSupportedKeys = keys
     }
 
-
     func signUp(signupDetails: SignupDetails) async throws {
         let details = splitDetails(from: signupDetails)
 
-        let recordId = AdditionalRecordId(serviceId: accountService.id, userId: signupDetails.userId)
-
-        // call standard first, such that it will happen before any `supplyAccountDetails` calls made by the Account Service
-        try await standard.create(recordId, details.standard)
+        // save the details until the accountId is available. This will be in preUserDetailsSupply
+        self.pendingSignupDetails = details.standard
 
         try await accountService.signUp(signupDetails: details.service)
     }
 
+    func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {
+        if let pendingSignupDetails {
+            try await standard.create(recordId, pendingSignupDetails)
+            self.pendingSignupDetails = nil
+        }
+    }
+
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
-        guard let userId = await currentUserId else {
+        guard let accountId = await currentAccountId else {
             return
         }
 
-        let modifiedDetails = splitDetails(from: modifications.modifiedDetails, copyUserId: true)
+        let modifiedDetails = splitDetails(from: modifications.modifiedDetails)
         let removedDetails = splitDetails(from: modifications.removedAccountDetails)
 
         let serviceModifications = AccountModifications(
@@ -74,7 +80,7 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
             removedAccountDetails: removedDetails.standard
         )
 
-        let recordId = AdditionalRecordId(serviceId: accountService.id, userId: userId)
+        let recordId = AdditionalRecordId(serviceId: accountService.id, accountId: accountId)
 
         // first call the standard, such that it will happen before any `supplyAccountDetails` calls made by the Account Service
         try await standard.modify(recordId, standardModifications)
@@ -83,29 +89,22 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
     }
 
     func delete() async throws {
-        guard let userId = await currentUserId else {
+        guard let accountId = await currentAccountId else {
             return
         }
 
-        try await standard.delete(AdditionalRecordId(serviceId: accountService.id, userId: userId))
+        try await standard.delete(AdditionalRecordId(serviceId: accountService.id, accountId: accountId))
         try await accountService.delete()
     }
 
     private func splitDetails<Values: AccountValues>(
-        from details: Values,
-        copyUserId: Bool = false
+        from details: Values
     ) -> (service: Values, standard: Values) {
         let serviceBuilder = AccountValuesBuilder<Values>()
         let standardBuilder = AccountValuesBuilder<Values>(from: details)
 
 
         for element in serviceSupportedKeys {
-            if copyUserId && element.key == UserIdKey.self {
-                // ensure that in a `modify` call, the Standard gets notified about the updated userId as the primary
-                // identifier will change.
-                continue
-            }
-
             // remove all service supported keys from the standard builder (which is a copy of `details` currently)
             standardBuilder.remove(element.key)
         }

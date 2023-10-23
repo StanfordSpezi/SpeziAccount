@@ -18,6 +18,7 @@ struct UserStorage {
         .day(.twoDigits)
 
     static let supportedKeys = AccountKeyCollection {
+        \.accountId
         \.userId
         \.password
         \.name
@@ -28,20 +29,24 @@ struct UserStorage {
     static let defaultUsername = "lelandstanford"
     static let defaultEmail = "lelandstanford@stanford.edu"
 
+    var accountId: UUID
     var userId: String
     var password: String
     var name: PersonNameComponents?
     var genderIdentity: GenderIdentity?
     var dateOfBirth: Date?
+    var biography: String?
     
     
-    init(
+    init( // swiftlint:disable:this function_default_parameter_at_end
+        accountId: UUID = UUID(),
         userId: String,
         password: String = "StanfordRocks123!",
         name: PersonNameComponents? = PersonNameComponents(givenName: "Leland", familyName: "Stanford"),
         gender: GenderIdentity? = .male,
         dateOfBirth: Date? = try? Date("09.03.1824", strategy: dateStyle)
     ) {
+        self.accountId = accountId
         self.userId = userId
         self.password = password
         self.name = name
@@ -59,6 +64,7 @@ struct UserStorage {
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
         self.dateOfBirth = modifiedDetails.dateOfBrith ?? dateOfBirth
+        self.biography = modifiedDetails.biography ?? biography
 
         // user Id cannot be removed!
         if removedKeys.name != nil {
@@ -69,6 +75,9 @@ struct UserStorage {
         }
         if removedKeys.dateOfBrith != nil {
             self.dateOfBirth = nil
+        }
+        if removedKeys.biography != nil {
+            self.biography = nil
         }
     }
 }

@@ -49,9 +49,7 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     init(account: Account) {
-        self.categorizedAccountKeys = account.configuration.reduce(into: [:]) { result, configuration in
-            result[configuration.key.category, default: []] += [configuration.key]
-        }
+        self.categorizedAccountKeys = account.configuration.allCategorized()
 
         // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
         // Otherwise, changes to the object wouldn't be important.
@@ -65,13 +63,22 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
-        categorizedAccountKeys[category, default: []]
+        var result = categorizedAccountKeys[category, default: []]
             .sorted(using: AccountOverviewValuesComparator(details: details, added: addedAccountKeys, removed: removedAccountKeys))
+
+        for describedKey in details.accountService.configuration.requiredAccountKeys
+            where describedKey.key.category == category {
+            result.append(describedKey.key)
+        }
+
+        return result
     }
 
-    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        let results = categorizedAccountKeys.filter { category, _ in
-            category != .credentials && category != .name
+    private func baseSortedAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        var results = categorizedAccountKeys
+
+        for describedKey in accountDetails.accountService.configuration.requiredAccountKeys {
+            results[describedKey.key.category, default: []] += [describedKey.key]
         }
 
         // We want to establish the following order:
@@ -81,6 +88,27 @@ class AccountOverviewFormViewModel: ObservableObject {
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
             value.sorted(using: AccountOverviewValuesComparator(details: accountDetails, added: addedAccountKeys, removed: removedAccountKeys))
+        }
+    }
+
+    func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        baseSortedAccountKeys(details: accountDetails).filter { category, _ in
+            category != .credentials && category != .name
+        }
+    }
+
+    func namesOverviewKeys(details accountDetails: AccountDetails) -> [any AccountKey.Type] {
+        var result = baseSortedAccountKeys(details: accountDetails)
+            .filter { category, _ in
+                category == .credentials || category == .name
+            }
+
+        if result[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true {
+            result[.credentials] = [UserIdKey.self] // ensure userId is the only credential we display
+        }
+
+        return result.reduce(into: []) { result, tuple in
+            result.append(contentsOf: tuple.value)
         }
     }
 
@@ -144,8 +172,8 @@ class AccountOverviewFormViewModel: ObservableObject {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
         removedDetailsBuilder.merging(with: removedAccountKeys.keys, from: details)
 
-        let modifications = AccountModifications(
-            modifiedDetails: modifiedDetailsBuilder.build(),
+        let modifications = try AccountModifications(
+            modifiedDetails: modifiedDetailsBuilder.build(validation: true),
             removedAccountDetails: removedDetailsBuilder.build()
         )
 
@@ -177,16 +205,14 @@ class AccountOverviewFormViewModel: ObservableObject {
         return userId
     }
 
-    func accountSecurityLabel(_ configuration: AccountValueConfiguration) -> Text {
-        let security = Text("SECURITY", bundle: .module)
+    func displaysSignInSecurityDetails(_ details: AccountDetails) -> Bool {
+        accountKeys(by: .credentials, using: details)
+            .contains(where: { !$0.isHiddenCredential })
+    }
 
-        if configuration[PasswordKey.self] != nil {
-            return Text("UP_PASSWORD", bundle: .module)
-                + Text(" & ")
-                + security
-        }
-
-        return security
+    func displaysNameDetails() -> Bool {
+        categorizedAccountKeys[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true
+            || categorizedAccountKeys[.name]?.isEmpty != true
     }
 
 

@@ -21,6 +21,7 @@ enum AccountServiceType: String, ExpressibleByArgument {
 enum AccountValueConfigurationType: String, ExpressibleByArgument {
     case `default`
     case allRequired
+    case allRequiredWithBio
 }
 
 
@@ -33,6 +34,12 @@ struct Features: ParsableArguments, EnvironmentKey {
     @Option(help: "Define which type of AccountValueConfiguration is used.") var configurationType: AccountValueConfigurationType = .default
 
     @Flag(help: "Control if the app should be populated with default credentials.") var defaultCredentials = false
+
+    @Flag(help: "Enable the AccountRequiredModifier.swift") var accountRequiredModifier = false
+
+    @Flag(help: "Enable the VerifyRequiredAccountDetailsModifier") var verifyRequiredDetails = false
+
+    @Flag(help: "Set no name by default.") var noName = false
 }
 
 

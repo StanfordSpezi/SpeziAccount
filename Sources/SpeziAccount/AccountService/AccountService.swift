@@ -19,8 +19,9 @@ import SwiftUI
 /// You may improve the user experience or rely on user interface defaults if you adopt protocols like
 /// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``.
 ///
-/// - Note: `SpeziAccount` provides the generalized ``UserIdKey`` unique user identifier that can be customized
-///     using the ``UserIdConfiguration``.
+/// - Important: Every user account is expected to have a primary and unique user identifier.
+///     SpeziAccount requires a stable and internal ``AccountIdKey`` unique user identifier and offers
+///     a user visible ``UserIdKey`` which can be customized using the ``UserIdConfiguration``.
 ///
 /// You can learn more about creating an account service at: <doc:Creating-your-own-Account-Service>.
 ///
@@ -52,7 +53,7 @@ public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Se
 
     /// Create a new user account for the provided ``SignupDetails``.
     ///
-    /// - Note: You must call ``Account/supplyUserDetails(_:)`` eventually once the user context was established after this call.
+    /// - Note: You must call ``Account/supplyUserDetails(_:isNewUser:)`` eventually once the user context was established after this call.
     /// - Parameter signupDetails: The signup details
     /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the signup operation was unsuccessful,
     ///     inorder to present a localized description to the user.

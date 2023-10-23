@@ -12,12 +12,13 @@ import SwiftUI
 public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_name
     case generic
     case setupShown
+    case requiringAdditionalInfo(_ keys: [any AccountKey.Type])
     case loadingExistingAccount
 
     public static var defaultValue: _AccountSetupState = .generic
 }
 
-/// The essential ``SpeziAccount`` view to login into or signup for a user account.
+/// The essential `SpeziAccount` view to login into or signup for a user account.
 ///
 /// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
 /// ``IdentityProvider`` instances to setup an active user account. They might create a new account with a given
@@ -53,12 +54,14 @@ public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_
 /// }
 /// ```
 public struct AccountSetup<Header: View, Continue: View>: View {
+    private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header
     private let continueButton: Continue
 
     @EnvironmentObject var account: Account
 
     @State private var setupState: _AccountSetupState = .generic
+    @State private var followUpSheet = false
 
     private var services: [any AccountService] {
         account.registeredAccountServices
@@ -82,14 +85,13 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     Spacer()
 
                     if let details = account.details {
-                        if case .loadingExistingAccount = setupState {
+                        switch setupState {
+                        case let .requiringAdditionalInfo(keys):
+                            followUpInformationSheet(details, requiredKeys: keys)
+                        case .loadingExistingAccount:
                             // We allow the outer view to navigate away upon signup, before we show the existing account view
-                            ProgressView()
-                                .task {
-                                    try? await Task.sleep(for: .seconds(2))
-                                    setupState = .generic
-                                }
-                        } else {
+                            existingAccountLoading
+                        default:
                             ExistingAccountView(details: details) {
                                 continueButton
                             }
@@ -110,9 +112,16 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onReceive(account.$signedIn) { signedIn in
-                if signedIn, case .setupShown = setupState {
-                    setupState = .loadingExistingAccount
+            .onReceive(account.$details) { details in
+                if let details, case .setupShown = setupState {
+                    let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
+
+                    if missingKeys.isEmpty {
+                        setupState = .loadingExistingAccount
+                        setupCompleteClosure(details)
+                    } else {
+                        setupState = .requiringAdditionalInfo(missingKeys)
+                    }
                 }
             }
     }
@@ -136,25 +145,58 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
     }
 
+    @ViewBuilder private var existingAccountLoading: some View {
+        ProgressView()
+            .task {
+                try? await Task.sleep(for: .seconds(2))
+                setupState = .generic
+            }
+    }
+
+
     fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
+        self.setupCompleteClosure = { _ in }
         self.header = DefaultAccountSetupHeader()
         self.continueButton = EmptyView()
         self._setupState = State(initialValue: state)
     }
 
+    /// Create a new AccountSetup view.
+    /// - Parameters:
+    ///   - setupComplete: The closure that is called once the account setup is considered to be completed.
+    ///     Note that it may be the case, that there are global account details associated (see ``Account/details``)
+    ///     but setup is not completed (e.g., after a login where additional info was required from the user).
+    ///   - header: An optional Header view to be displayed.
+    ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
+    ///     displayed with an already associated account.
     public init(
+        setupComplete: @escaping (AccountDetails) -> Void = { _ in },
+        @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
-    ) where Header == DefaultAccountSetupHeader {
-        self.init(continue: `continue`, header: { DefaultAccountSetupHeader() })
+    ) {
+        self.setupCompleteClosure = setupComplete
+        self.header = header()
+        self.continueButton = `continue`()
     }
 
 
-    public init(
-        @ViewBuilder `continue`: () -> Continue = { EmptyView() },
-        @ViewBuilder header: () -> Header
-    ) {
-        self.header = header()
-        self.continueButton = `continue`()
+    @ViewBuilder
+    private func followUpInformationSheet(_ details: AccountDetails, requiredKeys: [any AccountKey.Type]) -> some View {
+        ProgressView()
+            .sheet(isPresented: $followUpSheet) {
+                NavigationStack {
+                    FollowUpInfoSheet(details: details, requiredKeys: requiredKeys)
+                }
+            }
+            .onAppear {
+                followUpSheet = true // we want full control through the setupState property
+            }
+            .onChange(of: followUpSheet) { newValue in
+                if !newValue { // follow up information was completed!
+                    setupState = .loadingExistingAccount
+                    setupCompleteClosure(details)
+                }
+            }
     }
 }
 
@@ -203,15 +245,15 @@ struct AccountView_Previews: PreviewProvider {
         AccountSetup(state: .setupShown)
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
-        AccountSetup {
+        AccountSetup(continue: {
             Button(action: {
                 print("Continue")
             }, label: {
                 Text("Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
             })
-                .buttonStyle(.borderedProminent)
-        }
+            .buttonStyle(.borderedProminent)
+        })
             .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
 }

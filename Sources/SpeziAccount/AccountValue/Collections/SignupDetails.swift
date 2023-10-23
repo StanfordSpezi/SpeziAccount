@@ -30,7 +30,7 @@ public struct SignupDetails: Sendable, AccountValues {
             let keyNames = missing.map { $0.keyPathDescription }
 
             LoggerKey.defaultValue.warning("\(keyNames) was/were required to be provided but wasn't/weren't provided!")
-            throw AccountValueConfigurationError.missingAccountValue(keyNames)
+            throw AccountOperationError.missingAccountValue(keyNames)
         }
     }
 }
@@ -40,7 +40,7 @@ extension AccountValuesBuilder where Values == SignupDetails {
     /// Building new ``SignupDetails`` while checking it's contents against the user-defined ``AccountValueConfiguration``.
     /// - Parameter configuration: The configured provided by the user (see ``Account/configuration``).
     /// - Returns: The built ``SignupDetails``.
-    /// - Throws: Throws potential ``AccountValueConfigurationError`` if requirements are not fulfilled.
+    /// - Throws: Throws potential ``AccountOperationError`` if requirements are not fulfilled.
     public func build(
         checking configuration: AccountValueConfiguration
     ) throws -> Values {

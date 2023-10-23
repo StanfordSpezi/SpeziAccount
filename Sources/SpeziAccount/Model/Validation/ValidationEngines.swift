@@ -171,6 +171,8 @@ public class ValidationEngines<FieldIdentifier: Hashable>: ObservableObject {
     // deliberately not @Published, registered methods should not trigger an UI update
     private var storage: OrderedDictionary<UUID, RegisteredEngine<FieldIdentifier>>
 
+    private var hooks: [String: () -> Void] = [:]
+
     /// Reports input validity of all registered ``ValidationEngine``s.
     @MainActor public var allInputValid: Bool {
         storage.values
@@ -230,9 +232,21 @@ public class ValidationEngines<FieldIdentifier: Hashable>: ObservableObject {
         }
     }
 
+    func register(id: String, hook: @escaping () -> Void) {
+        hooks[id] = hook
+    }
+
+    func remove(hook: String) {
+        hooks[hook] = nil
+    }
+
     @MainActor
     private func collectFailedResults() -> [FailedResult<FieldIdentifier>] {
-        storage.values.compactMap { engine in
+        for hook in hooks.values {
+            hook()
+        }
+
+        return storage.values.compactMap { engine in
             engine()
         }
     }

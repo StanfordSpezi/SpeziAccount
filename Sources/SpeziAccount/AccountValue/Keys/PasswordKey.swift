@@ -21,7 +21,7 @@ import SwiftUI
 /// ### Password UI
 ///
 /// - ``PasswordFieldType``
-public struct PasswordKey: RequiredAccountKey {
+public struct PasswordKey: AccountKey {
     public typealias Value = String
 
     public static let name = LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module))
@@ -42,7 +42,7 @@ extension AccountKeys {
 
 extension SignupDetails {
     /// Access the password of a user in the ``SignupDetails``.
-    public var password: String {
+    public var password: String? {
         storage[PasswordKey.self]
     }
 }

@@ -20,12 +20,18 @@ struct TestApp: TestableView {
         serviceType: String = "mail",
         config: String = "default",
         defaultCredentials: Bool = false,
+        accountRequired: Bool = false,
+        verifyAccountDetails: Bool = false,
+        noName: Bool = false,
         flags: String...
     ) -> TestApp {
         let app = XCUIApplication()
         app.launchArguments = ["--service-type", serviceType, "--configuration-type", config]
-        + (defaultCredentials ? ["--default-credentials"] : [])
-        + flags
+        app.launchArguments += (defaultCredentials ? ["--default-credentials"] : [])
+        app.launchArguments += (accountRequired ? ["--account-required-modifier"] : [])
+        app.launchArguments += (verifyAccountDetails ? ["--verify-required-details"] : [])
+        app.launchArguments += (noName ? ["--no-name"] : [])
+        app.launchArguments += flags
         app.launch()
 
         let testApp = TestApp(app: app)

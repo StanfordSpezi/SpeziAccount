@@ -19,34 +19,32 @@ struct NameOverview: View {
 
     var body: some View {
         Form {
-            Section {
-                NavigationLink {
-                    SingleEditView<UserIdKey>(model: model, details: accountDetails)
-                } label: {
-                    UserIdKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails)
-                }
-            }
+            let forEachWrappers = model.namesOverviewKeys(details: accountDetails)
+                .map { ForEachAccountKeyWrapper($0) }
 
-            Section {
-                NavigationLink {
-                    SingleEditView<PersonNameKey>(model: model, details: accountDetails)
-                } label: {
-                    if let name = accountDetails.name {
-                        PersonNameKey.DataDisplay(name)
-                    } else {
-                        HStack {
-                            Text(PersonNameKey.name)
-                                .accessibilityHidden(true)
-                            Spacer()
-                            Text("VALUE_ADD \(PersonNameKey.name)", bundle: .module)
-                                .foregroundColor(.secondary)
-                        }
+            ForEach(forEachWrappers, id: \.id) { wrapper in
+                Section {
+                    NavigationLink {
+                        wrapper.accountKey.singleEditView(model: model, details: accountDetails)
+                    } label: {
+                        if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
+                            view
+                        } else {
+                            HStack {
+                                Text(wrapper.accountKey.name)
+                                    .accessibilityHidden(true)
+                                Spacer()
+                                Text("VALUE_ADD \(wrapper.accountKey.name)", bundle: .module)
+                                    .foregroundColor(.secondary)
+                            }
                             .accessibilityElement(children: .combine)
+                        }
                     }
-                }
-            } header: {
-                if let title = PersonNameKey.category.categoryTitle {
-                    Text(title)
+                } header: {
+                    if wrapper.accountKey == PersonNameKey.self,
+                       let title = PersonNameKey.category.categoryTitle {
+                        Text(title)
+                    }
                 }
             }
         }

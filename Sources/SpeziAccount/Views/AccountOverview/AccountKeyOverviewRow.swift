@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct AccountKeyEditRow: View {
+struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
 
@@ -26,8 +26,8 @@ struct AccountKeyEditRow: View {
                     Group {
                         if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
                             view
-                        } else if let view = accountKey.dataEntryViewWithStoredValue(details: accountDetails, for: ModifiedAccountDetails.self) {
-                            view
+                        } else {
+                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
                         }
                     }
                         .environment(\.accountViewType, .overview(mode: .existing))
@@ -91,7 +91,7 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
 
     static var previews: some View {
         if let details = account.details {
-            AccountKeyEditRow(details: details, for: GenderIdentityKey.self, model: model)
+            AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
                 .injectEnvironmentObjects(service: details.accountService, model: model, focusState: $focusedDataEntry)
         }
     }

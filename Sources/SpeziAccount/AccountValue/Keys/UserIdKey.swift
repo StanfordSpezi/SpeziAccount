@@ -6,23 +6,38 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SwiftUI
 
 
-/// A string-based, unique user identifier.
+/// A string-based, user-facing, unique user identifier.
 ///
-/// The `userId` is used to uniquely identify a given account. The value might carry
-/// additional semantics. For example, the `userId` might, at the same time, be the primary email address
-/// of the user. Such semantics can be controlled by the ``AccountService``
+/// The `userId` is used to uniquely identify a given account at a given point in time.
+/// While the ``AccountIdKey`` is guaranteed to be stable, the `userId` might change over time.
+/// But it will still be unique.
+///
+/// - Note: If an ``AccountService`` doesn't provide a `userId`, it will fallback to return the ``AccountIdKey``.
+///
+/// The value might carry additional semantics. For example, the `userId` might, at the same time,
+/// be the primary email address of the user. Such semantics can be controlled by the ``AccountService``
 /// using the ``UserIdType`` configuration.
 ///
 /// - Note: You may also refer to the ``EmailAddressKey`` to query the email address of an account.
-public struct UserIdKey: RequiredAccountKey {
+public struct UserIdKey: AccountKey, ComputedKnowledgeSource {
+    public typealias StoragePolicy = AlwaysCompute
     public typealias Value = String
 
     public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
 
     public static let category: AccountKeyCategory = .credentials
+
+    public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String {
+        if let value = repository.get(Self.self) {
+            return value // return the userId if there is one stored
+        }
+
+        return repository[AccountIdKey.self] // otherwise return the primary account key
+    }
 }
 
 

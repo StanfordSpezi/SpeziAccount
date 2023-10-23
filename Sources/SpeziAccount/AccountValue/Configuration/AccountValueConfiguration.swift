@@ -32,6 +32,49 @@ public struct AccountValueConfiguration {
     }
 
 
+    func all(filteredBy filter: [AccountKeyRequirement]? = nil) -> [any AccountKey.Type] {
+        // swiftlint:disable:previous discouraged_optional_collection
+
+        if let filter {
+            return self
+                .filter { configuration in
+                    filter.contains(configuration.requirement)
+                }
+                .map { $0.key }
+        } else {
+            return configuration.values.map { $0.key }
+        }
+    }
+
+    func allCategorized(filteredBy filter: [AccountKeyRequirement]? = nil) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        // swiftlint:disable:previous discouraged_optional_collection
+        if let filter {
+            return self.reduce(into: [:]) { result, configuration in
+                guard filter.contains(configuration.requirement) else {
+                    return
+                }
+
+                result[configuration.key.category, default: []] += [configuration.key]
+            }
+        } else {
+            return self.reduce(into: [:]) { result, configuration in
+                result[configuration.key.category, default: []] += [configuration.key]
+            }
+        }
+    }
+
+    func missingRequiredKeys(for details: AccountDetails, includeCollected: Bool = false) -> [any AccountKey.Type] {
+        let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
+
+        return self
+            .all(filteredBy: includeCollected ? [.required, .collected] : [.required])
+            .filter { $0.category != .credentials } // don't collect credentials!
+            .filter { key in
+                !accountKeyIds.contains(ObjectIdentifier(key))
+            }
+    }
+
+
     /// Retrieve the configuration for a given type-erased ``AccountKey``.
     /// - Parameter key: The account key to query.
     /// - Returns: The configuration for a given ``AccountKey`` if it exists.

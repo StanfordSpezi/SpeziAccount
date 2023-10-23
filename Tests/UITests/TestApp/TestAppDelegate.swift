@@ -6,8 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 import Spezi
 import SpeziAccount
+
 
 class TestAppDelegate: SpeziAppDelegate {
     let features: Features = {
@@ -16,7 +18,7 @@ class TestAppDelegate: SpeziAppDelegate {
             return features
         } catch {
             print("Error: \(error)")
-            print("Verify the supplied command line arguments: " + CommandLine.arguments.dropFirst().joined(separator: " "))
+            print("Verify the supplied command line arguments: " + ProcessInfo.processInfo.arguments.dropFirst().joined(separator: " "))
             print(Features.helpMessage())
             return Features()
         }
@@ -27,7 +29,6 @@ class TestAppDelegate: SpeziAppDelegate {
         case .default:
             return [
                 .requires(\.userId),
-                .requires(\.password),
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
@@ -36,10 +37,18 @@ class TestAppDelegate: SpeziAppDelegate {
         case .allRequired:
             return [
                 .requires(\.userId),
-                .requires(\.password),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .requires(\.dateOfBirth)
+                .requires(\.dateOfBirth),
+                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+            ]
+        case .allRequiredWithBio:
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .requires(\.dateOfBirth),
+                .requires(\.biography)
             ]
         }
     }

@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
-/// The essential ``SpeziAccount`` view to view and modify the active account details.
+/// The essential `SpeziAccount` view to view and modify the active account details.
 ///
 /// This provides an overview of the current account details. Further, it allows the user to modify their
 /// account values.
@@ -52,7 +52,7 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// - Note: The ``init(isEditing:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
+/// - Note: The ``init(isEditing:additionalSections:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
 public struct AccountOverview<AdditionalSections: View>: View {

@@ -18,15 +18,15 @@ final class TestAccountConfiguration: Component {
     init(features: Features) {
         switch features.serviceType {
         case .mail:
-            accountServices = [TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials)]
+            accountServices = [TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials, noName: features.noName)]
         case .both:
             accountServices = [
-                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials, noName: features.noName),
                 TestAccountService(.username)
             ]
         case .withIdentityProvider:
             accountServices = [
-                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials),
+                TestAccountService(.emailAddress, defaultAccount: features.defaultCredentials, noName: features.noName),
                 MockSignInWithAppleProvider()
             ]
         case .empty:

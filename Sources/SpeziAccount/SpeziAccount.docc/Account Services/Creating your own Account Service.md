@@ -49,11 +49,11 @@ Apart from implementing the ``AccountService`` protocol, an account service is r
 of any changes of the user state (e.g., user information updated remotely).
 
 To do so, you can use the ``AccountService/AccountReference`` property wrapper to get access to the ``Account`` context.
-You can then use the ``Account/supplyUserDetails(_:)`` and ``Account/removeUserDetails()`` methods
+You can then use the ``Account/supplyUserDetails(_:isNewUser:)`` and ``Account/removeUserDetails()`` methods
 to update the account state.
 Below is a short code example that implements a basic remote session expiration handler.
 
-> Note: You will always need to call the ``Account/supplyUserDetails(_:)`` and ``Account/removeUserDetails()`` methods manually,
+> Note: You will always need to call the ``Account/supplyUserDetails(_:isNewUser:)`` and ``Account/removeUserDetails()`` methods manually,
 even if the change in user state is caused by a local operation like ``AccountService/signUp(signupDetails:)`` or ``AccountService/logout()``.
 
 ```swift
@@ -126,5 +126,5 @@ class MyComponent: Component {
 
 ### Managing Account Details
 
-- ``Account/supplyUserDetails(_:)``
+- ``Account/supplyUserDetails(_:isNewUser:)``
 - ``Account/removeUserDetails()``

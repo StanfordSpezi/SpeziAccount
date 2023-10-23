@@ -19,3 +19,16 @@ public struct ModifiedAccountDetails: Sendable, AccountValues {
         self.storage = storage
     }
 }
+
+
+extension AccountValuesBuilder where Values == ModifiedAccountDetails {
+    func build(validation: Bool) throws -> Values {
+        let details = self.build()
+
+        if details.contains(AccountIdKey.self) {
+            throw AccountOperationError.accountIdChanged
+        }
+
+        return details
+    }
+}

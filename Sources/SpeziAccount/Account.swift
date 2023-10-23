@@ -51,7 +51,7 @@ import SwiftUI
 /// ### Managing Account state
 /// This section provides an overview on how to manage and manipulate the current user account as an ``AccountService``.
 ///
-/// - ``supplyUserDetails(_:)``
+/// - ``supplyUserDetails(_:isNewUser:)``
 /// - ``removeUserDetails()``
 ///
 /// ### Initializers for your Preview Provider
@@ -89,7 +89,7 @@ public class Account: ObservableObject, Sendable {
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    let registeredAccountServices: [any AccountService]
+    public let registeredAccountServices: [any AccountService]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -112,8 +112,8 @@ public class Account: ObservableObject, Sendable {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
-                A primary and unique user identifier is expected with most SpeziAccount components and \
-                will result in those components breaking.
+                A primary, user-visible identifier is recommended with most SpeziAccount components for \
+                an optimal user experience. Ignore this warning if you know what you are doing.
                 """
             )
         }
@@ -183,9 +183,29 @@ public class Account: ObservableObject, Sendable {
     /// This method is called by the ``AccountService`` every time the state of the user account changes.
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
-    /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
-    public func supplyUserDetails(_ details: AccountDetails) async throws {
+    /// - Parameters:
+    ///   - details: The ``AccountDetails`` of the currently logged in user account.
+    ///   - isNewUser: An optional flag that indicates if the provided account details are for a new user registration.
+    ///     If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
+    ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
+    ///     This is primarily helpful for identity providers. You might not want to set this flag
+    ///     if you using the builtin ``SignupForm``!
+    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
+        precondition(
+            details.contains(AccountIdKey.self),
+            """
+            The provided `AccountDetails` do not have the \\.accountId (aka. AccountIdKey) set. \
+            A primary, unique and stable user identifier is expected with most SpeziAccount components and \
+            will result in those components breaking.
+            """
+        )
+
         var details = details
+
+        if isNewUser {
+            details.patchIsNewUser(true)
+        }
+
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
         // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
@@ -206,7 +226,9 @@ public class Account: ObservableObject, Sendable {
 
         if let standardBacked = details.accountService as? any StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
+
+            try await standardBacked.preUserDetailsSupply(recordId: recordId)
 
             let unsupportedKeys = details.accountService.configuration
                 .unsupportedAccountKeys(basedOn: configuration)
@@ -232,7 +254,7 @@ public class Account: ObservableObject, Sendable {
         if let details,
            let standardBacked = details.accountService as? any StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, userId: details.userId)
+            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
             await storageStandard.clear(recordId)
         }

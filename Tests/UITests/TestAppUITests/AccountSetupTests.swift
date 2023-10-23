@@ -160,7 +160,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
 
         // not sure why, but text-field selection has issues due to the presented validation messages, so we exit a reenter to resolve this
-        setup = signupView.tapClose()
+        setup = try signupView.tapClose()
         signupView = setup.openSignup()
 
         // enter email with validation
@@ -184,7 +184,6 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5)) // verify the header works well without a name
     }
 
     func testNameValidation() throws {
@@ -287,7 +286,6 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.images["Contact Photo"].waitForExistence(timeout: 0.5))
 
         overview.tap(button: "Name, E-Mail Address")
         sleep(2)
@@ -296,5 +294,40 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: email)
         XCTAssertFalse(overview.staticTexts["Leland"].waitForExistence(timeout: 1.0))
         overview.verifyExistence(text: "Add Name")
+    }
+
+    func testAdditionalInfoAfterLogin() throws {
+        let app = TestApp.launch(config: "allRequiredWithBio")
+
+        let setup = app.openAccountSetup()
+
+        try setup.login(email: Defaults.email, password: Defaults.password)
+
+        // verify the finish account setup view is popping up
+        XCTAssertTrue(setup.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(setup.staticTexts["Please fill out the details below to complete your account setup."].waitForExistence(timeout: 0.5))
+
+        try setup.enter(field: "Biography", text: "Hello Stanford")
+        sleep(2)
+
+        setup.tap(button: "Complete")
+        sleep(3)
+
+        // verify we are back at the start screen
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+    }
+
+    func testAccountRequiredModifier() throws {
+        let app = TestApp.launch(defaultCredentials: true, accountRequired: true)
+
+        app.tap(button: "Account Logout")
+
+        XCTAssertTrue(app.staticTexts["Your Account"].waitForExistence(timeout: 2.0))
+    }
+
+    func testVerifyRequiredAccountDetailsModifier() throws {
+        let app = TestApp.launch(config: "allRequiredWithBio", defaultCredentials: true, verifyAccountDetails: true)
+
+        XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
     }
 }

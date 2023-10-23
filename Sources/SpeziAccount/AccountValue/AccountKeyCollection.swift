@@ -69,6 +69,10 @@ public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
             .map { $0.key }
             .acceptAll(&visitor)
     }
+
+    public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
+        elements.contains(where: { $0.key == key })
+    }
 }
 
 

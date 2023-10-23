@@ -19,10 +19,12 @@
 "ACCOUNT_WELCOME_SUBTITLE" = "Please login to your account. Or create a new one if you don't have one already.";
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "You are already logged in with the account shown below. Continue or change your account by logging out.";
 
-// MARK: - AccountValues
-"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Values";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "The following required account values were not supplied: %@";
-"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Raise an issue with the developer of the Account Service.";
+// MARK: - Account Operation Error
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" = "Missing Account Values";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" = "The following required account values were not supplied: %@.";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" = "Failed Account Operation";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" = "You primary account identifier cannot be changed as it is required to be stable!";
+"ACCOUNT_ERROR_RECOVERY" = "Raise an issue with the developer of the Account Service.";
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Password";
@@ -40,7 +42,8 @@
 "UP_LOGIN_FAILED_DEFAULT_ERROR" = "Could not login!";
 
 // MARK: - UserId and Password (Signup)
-"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_SIGNUP_HEADER" = "Create a new Account";
+"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create your new account.";
 "UP_CREDENTIALS" = "Credentials";
 "UP_NAME" = "Name";
 "UP_CONTACT_DETAILS" = "Contact Details";
@@ -54,6 +57,11 @@
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Sent out a link to reset the password.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Could not reset the password!";
 
+// MARK: - Follow-Up Information
+"FOLLOW_UP_INFORMATION_TITLE" = "Finish Account Setup";
+"FOLLOW_UP_INFORMATION_INSTRUCTIONS" = "Please fill out the details below to complete your account setup.";
+"FOLLOW_UP_INFORMATION_COMPLETE" = "Complete";
+
 // MARK: - Account Summary
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Could not logout!";
 
@@ -66,7 +74,7 @@
 "CANCEL" = "Cancel";
 "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Could not save account details!";
 "REMOVE_DEFAULT_ERROR"= "Could not remove account!";
-"SECURITY" = "Security";
+"SIGN_IN_AND_SECURITY" = "Sign-In & Security";
 "VALUE_ADD %@" = "Add %@";
 "CHANGE_PASSWORD" = "Change Password";
 
@@ -75,9 +83,11 @@
 
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Are you sure you want to discard your changes?";
-"CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
 "CONFIRMATION_DISCARD_CHANGES" = "Discard Changes";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Are you sure you want to discard your input?";
 "CONFIRMATION_DISCARD_INPUT" = "Discard Input";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" = "This account information is required. If you abort, you will automatically be signed out!";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO" = "Cancel and Logout";
 "CONFIRMATION_KEEP_EDITING"= "Keep Editing";
 "CONFIRMATION_LOGOUT" = "Are you sure you want to logout?";
 "CONFIRMATION_REMOVAL" = "Are you sure you want to delete your account?";
@@ -92,6 +102,9 @@
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Passwords do not match.";
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "The first name field cannot be empty!";
 "VALIDATION_RULE_FAMILY_NAME_EMPTY" = "The last name field cannot be empty!";
+
+// MARK: - Account Id
+"ACCOUNT_ID" = "Account Identifier";
 
 // MARK: - User Id
 "USER_ID" = "User Identifier";

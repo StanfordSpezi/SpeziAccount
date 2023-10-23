@@ -35,7 +35,7 @@ struct SingleEditView<Key: AccountKey>: View {
     var body: some View {
         Form {
             VStack {
-                Key.dataEntryViewWithStoredValue(details: accountDetails, for: ModifiedAccountDetails.self)
+                Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
             }
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))

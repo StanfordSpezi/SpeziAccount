@@ -36,6 +36,10 @@ public struct AccountDetails: Sendable, AccountValues {
     mutating func patchAccountService(_ service: any AccountService) {
         storage[ActiveAccountServiceKey.self] = service
     }
+
+    mutating func patchIsNewUser(_ isNewUser: Bool) {
+        storage[IsNewUserKey.self] = isNewUser
+    }
 }
 
 

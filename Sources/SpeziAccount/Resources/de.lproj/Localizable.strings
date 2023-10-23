@@ -20,9 +20,11 @@
 "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "Du bist bereits mit dem folgenden Benutzerkonto angemeldet. Du kannst dein Benutzerkonto ändern, indem du dich abmeldest.";
 
 // MARK: - AccountValues
-"ACCOUNT_VALUES_MISSING_VALUE_DESCRIPTION" = "Fehlende Werte im Benutzerkonto";
-"ACCOUNT_VALUES_MISSING_VALUE_REASON %@" = "Die folgenden Werte wurden nicht im Benutzerkonto gesetzt: %@";
-"ACCOUNT_VALUES_MISSING_VALUE_RECOVERY" = "Melde dieses Problem dem Entwickler des Account Services.";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" = "Fehlende Werte im Benutzerkonto";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" = "Die folgenden Werte wurden nicht im Benutzerkonto gesetzt: %@.";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" = "Anfrage Fehlgeschlagen";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" = "Deine primäre Benutzerkennung kann nicht geändert werden da diese dauerhaft vergeben wird!";
+"ACCOUNT_ERROR_RECOVERY" = "Melde dieses Problem dem Entwickler des Account Services.";
 
 // MARK: - UserId and Password
 "UP_PASSWORD" = "Passwort";
@@ -40,7 +42,8 @@
 "UP_LOGIN_FAILED_DEFAULT_ERROR" = "Anmeldung fehlgeschlagen!";
 
 // MARK: - UserId and Password (Signup)
-"UP_SIGNUP_INSTRUCTIONS" = "Please fill out the details below to create a new account.";
+"UP_SIGNUP_HEADER" = "Erstelle dein Benutzerkonto";
+"UP_SIGNUP_INSTRUCTIONS" = "Bitte fülle die folgenden Informationen aus, um ein neues Benutzerkonto zu erstellen.";
 "UP_CREDENTIALS" = "Zugangsdaten";
 "UP_NAME" = "Name";
 "UP_CONTACT_DETAILS" = "Kontaktdaten";
@@ -54,6 +57,11 @@
 "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Ein Link zum Zurücksetzen das Passworts wurde versandt.";
 "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "Passwort Zurücksetzen fehlgeschlagen!";
 
+// MARK: - Follow-Up Information
+"FOLLOW_UP_INFORMATION_TITLE" = "Account Vervollständigen";
+"FOLLOW_UP_INFORMATION_INSTRUCTIONS" = "Bitte fülle die folgenden Informationen aus, um dein Benutzerkonto zu vervollständigen.";
+"FOLLOW_UP_INFORMATION_COMPLETE" = "Fertig";
+
 // MARK: - Account Summary
 "UP_LOGOUT_FAILED_DEFAULT_ERROR" = "Abmelden fehlgeschlagen!";
 
@@ -66,7 +74,7 @@
 "CANCEL" = "Abbrechen";
 "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "Speichern deiner Änderung fehlgeschlagen!";
 "REMOVE_DEFAULT_ERROR"= "Löschen fehlgeschlagen!";
-"SECURITY" = "Sicherheit";
+"SIGN_IN_AND_SECURITY" = "Anmeldung & Sicherheit";
 "VALUE_ADD %@" = "%@ Hinzufügen";
 "CHANGE_PASSWORD" = "Passwort Ändern";
 
@@ -75,9 +83,11 @@
 
 // MARK - Confirmation Dialogs
 "CONFIRMATION_DISCARD_CHANGES_TITLE" = "Willst du alle Änderungen verwerfen?";
-"CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
 "CONFIRMATION_DISCARD_CHANGES" = "Änderungen Verwerfen";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "Willst du deine Eingaben verwerfen?";
 "CONFIRMATION_DISCARD_INPUT" = "Eingaben Verwerfen";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" = "Diese Kontoinformationen sind erfoderlich. Wenn du abbrichst, wirst du automatisch abgemeldet!";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO" = "Abbrechen und Abmelden";
 "CONFIRMATION_KEEP_EDITING"= "Weiter Bearbeiten";
 "CONFIRMATION_LOGOUT" = "Willst du dich wirklich abmelden?";
 "CONFIRMATION_REMOVAL" = "Willst du wirklich dein Benutzerkonto löschen?";
@@ -93,14 +103,13 @@
 "VALIDATION_RULE_GIVEN_NAME_EMPTY" = "Dein Vorname kann nicht leer sein!";
 "VALIDATION_RULE_FAMILY_NAME_EMPTY" = "Dein Nachname kann nicht leer sein!";
 
+// MARK: - Account Id
+"ACCOUNT_ID" = "Benutzerkennung";
+
 // MARK: - User Id
-"USER_ID" = "Benutzerkennung";
+"USER_ID" = "Benutzername";
 "USER_ID_EMAIL" = "E-Mail Adresse";
 "USER_ID_USERNAME" = "Benutzername";
-
-// MARK: - General Views
-"LOGIN" = "Anmelden";
-"SIGN_UP" = "Benutzerkonto Erstellen";
 
 // MARK: - Person Name
 "NAME" = "Name";

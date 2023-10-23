@@ -26,10 +26,15 @@ private protocol GeneralizedStringEntryView {
 ///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
 ///     the modified by declaring a custom one in the subview.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
+    private var dataHookId: String {
+        "DataHook-\(Wrapped.Key.self)"
+    }
+
     @EnvironmentObject private var account: Account
 
     @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+    @EnvironmentObject private var engines: ValidationEngines<String>
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType
@@ -61,8 +66,15 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 // values like `GenderIdentity` provide a default value a user might not want to change
                 if viewType?.enteringNewData == true,
                    case let .default(value) = Wrapped.Key.initialValue {
-                    detailsBuilder.set(Wrapped.Key.self, value: value)
+                    engines.register(id: dataHookId) {
+                        if detailsBuilder.get(Wrapped.Key.self) == nil {
+                            detailsBuilder.set(Wrapped.Key.self, value: value)
+                        }
+                    }
                 }
+            }
+            .onDisappear {
+                engines.remove(hook: dataHookId)
             }
             .onChange(of: value) { newValue in
                 // ensure parent view has access to the latest value
