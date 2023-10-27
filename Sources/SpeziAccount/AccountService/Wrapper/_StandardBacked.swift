@@ -10,43 +10,50 @@ import Spezi
 
 
 /// Internal marker protocol to determine what ``AccountService`` require assistance by a ``AccountStorageStandard``.
-protocol StandardBacked: AccountService {
+public protocol _StandardBacked: AccountService { // swiftlint:disable:this type_name
     associatedtype Service: AccountService
     associatedtype AccountStandard: Standard
 
     var accountService: Service { get }
     var standard: AccountStandard { get }
 
+    /// Retrieves the underlying account service, resolving multiple levels of nesting.
+    var underlyingService: any AccountService { get }
+
     init(service: Service, standard: AccountStandard)
 
+    /// ObjectIdentifier-based check if they underlying account service equals the provided one.
     func isBacking(service accountService: any AccountService) -> Bool
 
     func preUserDetailsSupply(recordId: AdditionalRecordId) async throws
 }
 
 
-extension StandardBacked {
-    var backedId: String {
-        if let nestedBacked = accountService as? any StandardBacked {
-            return nestedBacked.backedId
-        }
-
-        return accountService.id
+extension _StandardBacked {
+    /// The account service id of the underlying account service
+    public var backedId: String {
+        underlyingService.id
     }
 
-
-    func isBacking(service: any AccountService) -> Bool {
-        if let nestedBacked = self.accountService as? any StandardBacked {
-            return nestedBacked.isBacking(service: service)
+    /// Recursively retrieves the innermost account service.
+    public var underlyingService: any AccountService {
+        if let nestedBacked = accountService as? any _StandardBacked {
+            return nestedBacked.underlyingService
         }
-        return self.accountService.objId == service.objId
+        return accountService
     }
 
-    func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {}
+    /// An ObjectIdentifier-based check if they underlying account service equals the provided one.
+    public func isBacking(service: any AccountService) -> Bool {
+        underlyingService.objId == service.objId
+    }
+
+    /// Default implementation.
+    public func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {}
 }
 
 
-extension StandardBacked {
+extension _StandardBacked {
     func signUp(signupDetails: SignupDetails) async throws {
         try await accountService.signUp(signupDetails: signupDetails)
     }
@@ -65,7 +72,7 @@ extension StandardBacked {
 }
 
 
-extension StandardBacked where Self: UserIdPasswordAccountService, Service: UserIdPasswordAccountService {
+extension _StandardBacked where Self: UserIdPasswordAccountService, Service: UserIdPasswordAccountService {
     func login(userId: String, password: String) async throws {
         try await accountService.login(userId: userId, password: password)
     }

@@ -11,7 +11,7 @@ import Spezi
 
 /// An ``AccountService`` implementation for account services with ``SupportedAccountKeys/exactly(_:)`` configuration
 /// to forward unsupported account values to a ``AccountStorageStandard`` implementation.
-actor StorageStandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, StandardBacked {
+actor StorageStandardBackedAccountService<Service: AccountService, Standard: AccountStorageStandard>: AccountService, _StandardBacked {
     @AccountReference private var account
 
     let accountService: Service

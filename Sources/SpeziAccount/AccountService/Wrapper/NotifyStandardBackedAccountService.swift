@@ -9,7 +9,7 @@
 import Spezi
 
 
-actor NotifyStandardBackedAccountService<Service: AccountService, Standard: AccountNotifyStandard>: AccountService, StandardBacked {
+actor NotifyStandardBackedAccountService<Service: AccountService, Standard: AccountNotifyStandard>: AccountService, _StandardBacked {
     @AccountReference private var account
 
     let accountService: Service
