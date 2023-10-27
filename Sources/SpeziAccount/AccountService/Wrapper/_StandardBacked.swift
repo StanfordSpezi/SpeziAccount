@@ -43,7 +43,7 @@ extension _StandardBacked {
         return accountService
     }
 
-    /// ObjectIdentifier-based check if they underlying account service equals the provided one.
+    /// An ObjectIdentifier-based check if they underlying account service equals the provided one.
     public func isBacking(service: any AccountService) -> Bool {
         underlyingService.objId == service.objId
     }
