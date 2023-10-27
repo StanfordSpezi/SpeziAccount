@@ -210,7 +210,7 @@ public class Account: ObservableObject, Sendable {
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
         // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
         for service in registeredAccountServices {
-            if let standardBacked = service as? any StandardBacked,
+            if let standardBacked = service as? any _StandardBacked,
                standardBacked.isBacking(service: details.accountService) {
                 details.patchAccountService(service)
                 break
@@ -224,7 +224,7 @@ public class Account: ObservableObject, Sendable {
             )
         }
 
-        if let standardBacked = details.accountService as? any StandardBacked,
+        if let standardBacked = details.accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
@@ -252,7 +252,7 @@ public class Account: ObservableObject, Sendable {
     /// signed in user and notify others that the user logged out (or the account was removed).
     public func removeUserDetails() async {
         if let details,
-           let standardBacked = details.accountService as? any StandardBacked,
+           let standardBacked = details.accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
