@@ -59,9 +59,9 @@ struct AccountTestsView: View {
             AccountOverview(isEditing: $isEditing) {
                 NavigationLink {
                     Text("")
-                        .navigationTitle(Text("Package Dependencies"))
+                        .navigationTitle(Text(verbatim: "Package Dependencies"))
                 } label: {
-                    Text("License Information")
+                    Text(verbatim: "License Information")
                 }
             }
         }
@@ -78,7 +78,7 @@ struct AccountTestsView: View {
         }
         if standard.deleteNotified {
             Section {
-                Text("Got notified about deletion!")
+                Text(verbatim: "Got notified about deletion!")
             }
         }
     }
