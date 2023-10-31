@@ -269,16 +269,16 @@ struct AccountOverviewSections_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             AccountOverview {
-                Section(header: Text("App")) {
+                Section(header: Text(verbatim: "App")) {
                     NavigationLink {
                         Text("")
                     } label: {
-                        Text("General Settings")
+                        Text(verbatim: "General Settings")
                     }
                     NavigationLink {
                         Text("")
                     } label: {
-                        Text("License Information")
+                        Text(verbatim: "License Information")
                     }
                 }
             }

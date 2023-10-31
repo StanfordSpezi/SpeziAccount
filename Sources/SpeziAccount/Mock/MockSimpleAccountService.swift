@@ -20,7 +20,7 @@ struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
 
 
     func makePrimaryView() -> some View {
-        Text("Hello World")
+        Text(verbatim: "Hello World")
     }
 }
 

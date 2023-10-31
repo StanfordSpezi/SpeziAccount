@@ -114,15 +114,15 @@ struct AccountOverView_Previews: PreviewProvider {
             AccountOverview {
                 NavigationLink {
                     Text("")
-                        .navigationTitle(Text("Settings"))
+                        .navigationTitle(Text(verbatim: "Settings"))
                 } label: {
-                    Text("General Settings")
+                    Text(verbatim: "General Settings")
                 }
                 NavigationLink {
                     Text("")
-                        .navigationTitle(Text("Package Dependencies"))
+                        .navigationTitle(Text(verbatim: "Package Dependencies"))
                 } label: {
-                    Text("License Information")
+                    Text(verbatim: "License Information")
                 }
             }
         }

@@ -1220,10 +1220,24 @@
       }
     },
     "The internal account identifier is meant to be generated!" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der interne Kontokenner soll generiert werden!"
+          }
+        }
+      }
     },
     "The internal account identifier is not meant to be user facing!" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der interne Kontokenner ist nicht dafür gedacht, dem Benutzer angezeigt zu werden!"
+          }
+        }
+      }
     },
     "UAP_PASSWORD_RESET_SUBTITLE %@" : {
       "extractionState" : "manual",
