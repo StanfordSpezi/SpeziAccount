@@ -1,0 +1,133 @@
+//
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
+//
+
+// MARK: - General
+"OR" = "o";
+"YES" = "Sí";
+"NO" = "No";
+"MISSING_ACCOUNT_SERVICES" = "**No hay servicios de cuenta configurados.**\n\n¡Por favor, consulte la documentación del paquete SpeziAccount sobre cómo configurar un servicio de cuenta!";
+"MISSING_ACCOUNT_DETAILS" = "**No se pudo encontrar una cuenta de usuario.**\n\nEsta pagina require una cuenta de usuario activa.\n¡Consulte la documentación de la pagina 'AccountSetup' sobre cómo configurar una nueva cuenta de usuario!"; 
+
+"OPEN_DOCUMENTATION" = "Abrir Documentación";
+
+// MARK: - Account
+"ACCOUNT_WELCOME" = "Tu Cuenta";
+"ACCOUNT_WELCOME_SUBTITLE" = "Por favor inicia sesión en tu cuenta. O crea una nueva si aún no tienes una.";
+"ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" = "Ya has iniciado una sesión con la cuenta que se muestra abajo. Continúa o cambia tu cuenta cerrando la sesión.";
+
+// MARK: - Account Operation Error
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" = "Falta información en la cuenta";
+"ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" = "No se proporciono la siguiente información requerida para la cuenta: %@.";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" = "Operación de cuenta fallida";
+"ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" = "¡Tu identificador principal de cuenta no puede ser cambiado!";
+"ACCOUNT_ERROR_RECOVERY" = "Exponer cualquier problema con el representante del servicio de cuentas.";
+
+
+// MARK: - UserId and Password
+"UP_PASSWORD" = "Contraseña";
+"NEW_PASSWORD" = "Nueva Contraseña";
+"NEW_PASSWORD_PROMPT" = "Entre contraseña";
+"REPEAT_PASSWORD" = "Verificar contraseña";
+"REPEAT_PASSWORD_PROMPT" = "Escriba la contraseña otra vez";
+"UP_FORGOT_PASSWORD" = "¿Olvidaste tu contraseña?";
+"UP_LOGIN" = "Iniciar sesión";
+"UP_SIGNUP" = "Inscribirse";  
+"UP_LOGOUT" = "Cerrar sesión";
+"UP_NO_ACCOUNT_YET" = "¿Aún no tienes una cuenta?";
+
+// MARK: - UserId and Password (Login)
+"UP_LOGIN_FAILED_DEFAULT_ERROR" = "¡No pude iniciar sesión!";
+
+// MARK: - UserId and Password (Signup)
+"UP_SIGNUP_HEADER" = "Crear una nueva cuenta";
+"UP_SIGNUP_INSTRUCTIONS" = "Por favor, rellena los detalles a continuación para crear tu nueva cuenta.";
+"UP_CREDENTIALS" = "Credenciales";
+"UP_NAME" = "Nombre y Apellido";
+"UP_CONTACT_DETAILS" = "Detalles de Contacto";
+"UP_PERSONAL_DETAILS" = "Detalles Personales";
+"UP_SIGNUP_FAILED_DEFAULT_ERROR" = "¡No pude registrar!";
+"CLOSE" = "Cerrar";
+
+// MARK: - UserId and Password (Password Reset)
+"UP_RESET_PASSWORD" = "Restablecer Contraseña";
+"UAP_PASSWORD_RESET_SUBTITLE %@" = "Por favor, escribe tu %@ de tu cuenta. Se enviará un correo electrónico para restablecer la contraseña a la dirección de correo electrónico vinculado.";
+"UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" = "Se ha enviado un enlace para restablecer la contraseña.";
+"UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" = "¡No pude restablecer la contraseña!";
+
+// MARK: - Follow-Up Information
+"FOLLOW_UP_INFORMATION_TITLE" = "Finalizar Configuración de Cuenta";
+"FOLLOW_UP_INFORMATION_INSTRUCTIONS" = "Por favor, rellena los detalles a continuación para completar la configuración de tu cuenta.";
+"FOLLOW_UP_INFORMATION_COMPLETE" = "Completar";
+
+// MARK: - Account Summary
+"UP_LOGOUT_FAILED_DEFAULT_ERROR" = "¡No se pudo cerrar la sesión!";
+
+// MARK - Account Overview
+"ACCOUNT_OVERVIEW" = "Resumen de la Cuenta";
+"DELETE_ACCOUNT" = "Eliminar Cuenta";
+"DONE" = "Hecho";
+"EDIT" = "Editar";
+"DELETE"= "Eliminar";
+"CANCEL" = "Cancelar";
+"ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" = "¡No se pudieron guardar los detalles de la cuenta!";
+"REMOVE_DEFAULT_ERROR"= "¡No se pudo eliminar la cuenta!";
+"SIGN_IN_AND_SECURITY" = "Inicio de Sesión y Seguridad";
+"VALUE_ADD %@" = "Agregar %@";
+"CHANGE_PASSWORD" = "Cambiar Contraseña";
+
+// MARK - Account Header
+"ACCOUNT_HEADER_CAPTION" = "Información y Detalles de la Cuenta";
+
+// MARK - Confirmation Dialogs
+"CONFIRMATION_DISCARD_CHANGES_TITLE" = "¿Estás seguro de que deseas descartar tus cambios?";
+"CONFIRMATION_DISCARD_CHANGES" = "Descartar Cambios";
+"CONFIRMATION_DISCARD_INPUT_TITLE" = "¿Estás seguro de que deseas descartar tu información?";
+"CONFIRMATION_DISCARD_INPUT" = "Descartar Información";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" = "¡Esta información de la cuenta es necesaria. Si abortas, se cerrará automáticamente tu sesión!";
+"CONFIRMATION_DISCARD_ADDITIONAL_INFO" = "Cancelar y Cerrar Sesión";
+"CONFIRMATION_KEEP_EDITING"= "Continuar Editando";
+"CONFIRMATION_LOGOUT" = "¿Estás seguro de que deseas cerrar sesión?";
+"CONFIRMATION_REMOVAL" = "¿Estás seguro de que deseas eliminar tu cuenta?";
+"CONFIRMATION_REMOVAL_SUGGESTION" = "Este cambio es permanente y no podrás recuperar la información de tu cuenta.";
+
+// MARK: - Validation Rules
+"VALIDATION_RULE_NON_EMPTY" = "Este espacio no puede estar vacío.";
+"VALIDATION_RULE_UNICODE_LETTERS" = "Debes usar solo letras.";
+"VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "Debes usar solo letras estándar en inglés.";
+"VALIDATION_RULE_MINIMAL_EMAIL" = "El correo electrónico proporcionado no es válido.";
+"VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Tu contraseña debe tener al menos %lld caracteres.";
+"VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Las contraseñas no coinciden.";
+"VALIDATION_RULE_GIVEN_NAME_EMPTY" = "¡El espacio del primer nombre no puede estar vacío!";
+"VALIDATION_RULE_FAMILY_NAME_EMPTY" = "¡El espacio del apellido no puede estar vacío!";
+
+// MARK: - Account Id
+"ACCOUNT_ID" = "Identificador de Cuenta";
+
+// MARK: - User Id
+"USER_ID" = "Identificador de Usuario";
+"USER_ID_EMAIL" = "Dirección de Correo Electrónico";
+"USER_ID_USERNAME" = "Nombre de Usuario";
+
+// MARK: - Person Name
+"NAME" = "Nombre";
+"UAP_SIGNUP_GIVEN_NAME_TITLE" = "Nombre";
+"UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" = "escribir tu nombre";
+"UAP_SIGNUP_FAMILY_NAME_TITLE" = "Apellido";
+"UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" = "escribir tu apellido";
+
+// MARK: - Date Of Birth
+"UAP_SIGNUP_DATE_OF_BIRTH_TITLE" = "Fecha de Nacimiento";
+"ADD_DATE" = "Agregar Fecha";
+
+// MARK: - Gender Identity
+"GENDER_IDENTITY_TITLE" = "Identidad de Género";
+"GENDER_IDENTITY_FEMALE" = "Femenino";
+"GENDER_IDENTITY_MALE" = "Masculino";
+"GENDER_IDENTITY_TRANSGENDER" = "Transgénero";
+"GENDER_IDENTITY_NON_BINARY" = "No Binario";
+"GENDER_IDENTITY_PREFER_NOT_TO_STATE" = "Prefiero no responder";
