@@ -88,7 +88,7 @@ struct ExistingAccountView_Previews: PreviewProvider {
         NavigationStack {
             ExistingAccountView(details: details) {
                 Button(action: {}, label: {
-                    Text("Continue")
+                    Text(verbatim: "Continue")
                         .frame(maxWidth: .infinity, minHeight: 38)
                 })
                 .buttonStyle(.borderedProminent)

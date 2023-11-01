@@ -12,7 +12,8 @@ import SwiftUI
 struct SimpleTextRow<Value: View>: View {
     private let name: LocalizedStringResource
     private let value: Value
-
+    
+    
     var body: some View {
         HStack {
             Text(name)
@@ -22,7 +23,8 @@ struct SimpleTextRow<Value: View>: View {
         }
             .accessibilityElement(children: .combine)
     }
-
+    
+    
     init(name: LocalizedStringResource, @ViewBuilder value: () -> Value) {
         self.name = name
         self.value = value()
@@ -33,7 +35,7 @@ struct SimpleTextRow<Value: View>: View {
 #if DEBUG
 struct SimpleTextRow_Previews: PreviewProvider {
     static var previews: some View {
-        SimpleTextRow(name: "Hello") {
+        SimpleTextRow(name: LocalizedStringResource("Hello", comment: "No need to translate, only used in Previews ...")) {
             Text(verbatim: "World")
         }
     }
