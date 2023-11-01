@@ -4,11 +4,7 @@
     "" : {
 
     },
-    ", " : {
-
-    },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -31,7 +27,6 @@
       }
     },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -54,7 +49,6 @@
       }
     },
     "ACCOUNT_ERROR_RECOVERY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -77,7 +71,6 @@
       }
     },
     "ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -100,7 +93,6 @@
       }
     },
     "ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -123,7 +115,6 @@
       }
     },
     "ACCOUNT_HEADER_CAPTION" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -146,7 +137,6 @@
       }
     },
     "ACCOUNT_ID" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -169,7 +159,6 @@
       }
     },
     "ACCOUNT_OVERVIEW" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -192,7 +181,6 @@
       }
     },
     "ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -215,7 +203,6 @@
       }
     },
     "ACCOUNT_WELCOME" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -238,7 +225,6 @@
       }
     },
     "ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -261,7 +247,6 @@
       }
     },
     "ACCOUNT_WELCOME_SUBTITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -284,7 +269,6 @@
       }
     },
     "ADD_DATE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -306,11 +290,7 @@
         }
       }
     },
-    "App" : {
-
-    },
     "CANCEL" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -333,7 +313,6 @@
       }
     },
     "CHANGE_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -356,7 +335,6 @@
       }
     },
     "CLOSE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -379,7 +357,6 @@
       }
     },
     "CONFIRMATION_DISCARD_ADDITIONAL_INFO" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -402,7 +379,6 @@
       }
     },
     "CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -425,7 +401,6 @@
       }
     },
     "CONFIRMATION_DISCARD_CHANGES" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -448,7 +423,6 @@
       }
     },
     "CONFIRMATION_DISCARD_CHANGES_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -471,7 +445,6 @@
       }
     },
     "CONFIRMATION_DISCARD_INPUT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -494,7 +467,6 @@
       }
     },
     "CONFIRMATION_DISCARD_INPUT_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -517,7 +489,6 @@
       }
     },
     "CONFIRMATION_KEEP_EDITING" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -540,7 +511,6 @@
       }
     },
     "CONFIRMATION_LOGOUT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -563,7 +533,6 @@
       }
     },
     "CONFIRMATION_REMOVAL" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -586,7 +555,6 @@
       }
     },
     "CONFIRMATION_REMOVAL_SUGGESTION" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -615,7 +583,6 @@
 
     },
     "DELETE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -638,7 +605,6 @@
       }
     },
     "DELETE_ACCOUNT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -661,7 +627,6 @@
       }
     },
     "DONE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -684,7 +649,6 @@
       }
     },
     "EDIT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -707,7 +671,6 @@
       }
     },
     "FOLLOW_UP_INFORMATION_COMPLETE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -730,7 +693,6 @@
       }
     },
     "FOLLOW_UP_INFORMATION_INSTRUCTIONS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -753,7 +715,6 @@
       }
     },
     "FOLLOW_UP_INFORMATION_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -776,7 +737,6 @@
       }
     },
     "GENDER_IDENTITY_FEMALE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -799,7 +759,6 @@
       }
     },
     "GENDER_IDENTITY_MALE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -822,7 +781,6 @@
       }
     },
     "GENDER_IDENTITY_NON_BINARY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -845,7 +803,6 @@
       }
     },
     "GENDER_IDENTITY_PREFER_NOT_TO_STATE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -868,7 +825,6 @@
       }
     },
     "GENDER_IDENTITY_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -891,7 +847,6 @@
       }
     },
     "GENDER_IDENTITY_TRANSGENDER" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -913,20 +868,10 @@
         }
       }
     },
-    "General Settings" : {
-
-    },
     "Hello" : {
 
     },
-    "Hello World" : {
-
-    },
-    "License Information" : {
-
-    },
     "MISSING_ACCOUNT_DETAILS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -949,7 +894,6 @@
       }
     },
     "MISSING_ACCOUNT_SERVICES" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -981,7 +925,6 @@
 
     },
     "NAME" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1004,7 +947,6 @@
       }
     },
     "NEW_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1027,7 +969,6 @@
       }
     },
     "NEW_PASSWORD_PROMPT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1050,7 +991,6 @@
       }
     },
     "NO" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1073,7 +1013,6 @@
       }
     },
     "OPEN_DOCUMENTATION" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1096,7 +1035,6 @@
       }
     },
     "OR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1118,14 +1056,10 @@
         }
       }
     },
-    "Package Dependencies" : {
-
-    },
     "Preview Service" : {
 
     },
     "REMOVE_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1148,7 +1082,6 @@
       }
     },
     "REPEAT_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1171,7 +1104,6 @@
       }
     },
     "REPEAT_PASSWORD_PROMPT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1193,11 +1125,7 @@
         }
       }
     },
-    "Settings" : {
-
-    },
     "SIGN_IN_AND_SECURITY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1240,7 +1168,6 @@
       }
     },
     "UAP_PASSWORD_RESET_SUBTITLE %@" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1263,7 +1190,6 @@
       }
     },
     "UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1286,7 +1212,6 @@
       }
     },
     "UAP_RESET_PASSWORD_PROCESS_SUCCESSFUL_LABEL" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1309,7 +1234,6 @@
       }
     },
     "UAP_SIGNUP_DATE_OF_BIRTH_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1332,7 +1256,6 @@
       }
     },
     "UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1355,7 +1278,6 @@
       }
     },
     "UAP_SIGNUP_FAMILY_NAME_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1378,7 +1300,6 @@
       }
     },
     "UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1401,7 +1322,6 @@
       }
     },
     "UAP_SIGNUP_GIVEN_NAME_TITLE" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1424,7 +1344,6 @@
       }
     },
     "UP_CONTACT_DETAILS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1447,7 +1366,6 @@
       }
     },
     "UP_CREDENTIALS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1470,7 +1388,6 @@
       }
     },
     "UP_FORGOT_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1493,7 +1410,6 @@
       }
     },
     "UP_LOGIN" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1516,7 +1432,6 @@
       }
     },
     "UP_LOGIN_FAILED_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1539,7 +1454,6 @@
       }
     },
     "UP_LOGOUT" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1562,7 +1476,6 @@
       }
     },
     "UP_LOGOUT_FAILED_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1585,7 +1498,6 @@
       }
     },
     "UP_NAME" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1608,7 +1520,6 @@
       }
     },
     "UP_NO_ACCOUNT_YET" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1631,7 +1542,6 @@
       }
     },
     "UP_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1654,7 +1564,6 @@
       }
     },
     "UP_PERSONAL_DETAILS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1677,7 +1586,6 @@
       }
     },
     "UP_RESET_PASSWORD" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1700,7 +1608,6 @@
       }
     },
     "UP_SIGNUP" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1723,7 +1630,6 @@
       }
     },
     "UP_SIGNUP_FAILED_DEFAULT_ERROR" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1746,7 +1652,6 @@
       }
     },
     "UP_SIGNUP_HEADER" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1769,7 +1674,6 @@
       }
     },
     "UP_SIGNUP_INSTRUCTIONS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1792,7 +1696,6 @@
       }
     },
     "USER_ID" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1815,7 +1718,6 @@
       }
     },
     "USER_ID_EMAIL" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1838,7 +1740,6 @@
       }
     },
     "USER_ID_USERNAME" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1877,7 +1778,6 @@
       }
     },
     "VALIDATION_RULE_FAMILY_NAME_EMPTY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1900,7 +1800,6 @@
       }
     },
     "VALIDATION_RULE_GIVEN_NAME_EMPTY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1923,7 +1822,6 @@
       }
     },
     "VALIDATION_RULE_MINIMAL_EMAIL" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1946,7 +1844,6 @@
       }
     },
     "VALIDATION_RULE_NON_EMPTY" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1969,7 +1866,6 @@
       }
     },
     "VALIDATION_RULE_PASSWORD_LENGTH %lld" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1992,7 +1888,6 @@
       }
     },
     "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2015,7 +1910,6 @@
       }
     },
     "VALIDATION_RULE_UNICODE_LETTERS" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2038,7 +1932,6 @@
       }
     },
     "VALIDATION_RULE_UNICODE_LETTERS_ASCII" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2061,7 +1954,6 @@
       }
     },
     "VALUE_ADD %@" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2083,11 +1975,7 @@
         }
       }
     },
-    "World" : {
-
-    },
     "YES" : {
-      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {

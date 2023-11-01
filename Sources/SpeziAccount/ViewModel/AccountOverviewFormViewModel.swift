@@ -193,8 +193,9 @@ class AccountOverviewFormViewModel: ObservableObject {
         let userId = Text(userIdType.localizedStringResource)
 
         if configuration[PersonNameKey.self] != nil {
+            let separator = ", "
             return Text(PersonNameKey.name)
-                + Text(", ")
+                + Text(separator)
                 + userId
         }
 

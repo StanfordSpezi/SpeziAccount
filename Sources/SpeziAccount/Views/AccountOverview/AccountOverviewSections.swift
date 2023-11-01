@@ -271,12 +271,12 @@ struct AccountOverviewSections_Previews: PreviewProvider {
             AccountOverview {
                 Section(header: Text(verbatim: "App")) {
                     NavigationLink {
-                        Text("")
+                        Text(String())
                     } label: {
                         Text(verbatim: "General Settings")
                     }
                     NavigationLink {
-                        Text("")
+                        Text(String())
                     } label: {
                         Text(verbatim: "License Information")
                     }
