@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
 import SpeziViews
+import SpeziValidation
 import SwiftUI
 
 
@@ -27,12 +27,13 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
     @Environment(\.dismiss) private var dismiss
 
+    @ValidationState(PasswordResetFocusState.self) private var validation
+
     @State private var userId = ""
     @State private var requestSubmitted: Bool
 
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: PasswordResetFocusState?
-    @StateObject private var validationEngine = ValidationEngine(rules: .nonEmpty)
 
 
     public var body: some View {
@@ -49,6 +50,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                     .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                     .disableDismissiveActions(isProcessing: state)
+                    .receiveValidation(in: $validation, focus: $focusedField)
                     .viewStateAlert(state: $state)
                     .toolbar {
                         Button(action: {
@@ -64,14 +66,14 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
         }
     }
 
-    @ViewBuilder private var resetPasswordForm: some View {
+    @MainActor @ViewBuilder private var resetPasswordForm: some View {
         VStack {
             Text("UAP_PASSWORD_RESET_SUBTITLE \(userIdConfiguration.idType.localizedStringResource)", bundle: .module)
                 .padding()
                 .padding(.bottom, 30)
 
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                .environmentObject(validationEngine)
+                .validate(input: userId, field: PasswordResetFocusState.userId, rules: .nonEmpty)
                 .textFieldStyle(.roundedBorder)
                 .disableFieldAssistants()
                 .textContentType(userIdConfiguration.textContentType)
@@ -109,10 +111,9 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
     }
 
 
+    @MainActor
     private func submitRequestAction() async throws {
-        validationEngine.runValidation(input: userId)
-        guard validationEngine.inputValid else {
-            focusedField = .userId
+        guard validation.validateSubviews() else {
             return
         }
 

@@ -94,14 +94,8 @@
 "CONFIRMATION_REMOVAL_SUGGESTION" = "Dieser Vorgang is endgültig und du kannst dein Konto Informationen nicht wiederherstellen.";
 
 // MARK: - Validation Rules
-"VALIDATION_RULE_NON_EMPTY" = "Diese Feld kann nicht leer sein.";
-"VALIDATION_RULE_UNICODE_LETTERS" = "Du kannst nur Zeichen verwenden.";
-"VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "You must only use standard English letters.";
-"VALIDATION_RULE_MINIMAL_EMAIL" = "Diese E-Mail ist ungültig.";
-"VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Dein Passwort muss mindestens %lld Zeichen lang sein.";
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Die Passwörter stimmen nicht überein.";
-"VALIDATION_RULE_GIVEN_NAME_EMPTY" = "Dein Vorname kann nicht leer sein!";
-"VALIDATION_RULE_FAMILY_NAME_EMPTY" = "Dein Nachname kann nicht leer sein!";
+"VALIDATION_RULE_ALWAYS_ACCEPT" = "Diese Regel akzeptiert alle Eingaben.";
 
 // MARK: - Account Id
 "ACCOUNT_ID" = "Benutzerkennung";

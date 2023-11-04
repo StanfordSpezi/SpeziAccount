@@ -28,7 +28,6 @@ class AccountOverviewFormViewModel: ObservableObject {
 
 
     let modifiedDetailsBuilder = ModifiedAccountDetails.Builder() // nested ObservableObject, see init
-    let validationEngines = ValidationEngines<String>()
 
     @Published var presentingCancellationDialog = false
     @Published var presentingLogoutAlert = false
@@ -54,9 +53,6 @@ class AccountOverviewFormViewModel: ObservableObject {
         // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
         // Otherwise, changes to the object wouldn't be important.
         anyCancellable.append(modifiedDetailsBuilder.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
-        })
-        anyCancellable.append(validationEngines.objectWillChange.sink { [weak self] _ in
             self?.objectWillChange.send()
         })
     }

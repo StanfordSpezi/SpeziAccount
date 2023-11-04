@@ -7,6 +7,7 @@
 //
 
 import Spezi
+import SpeziValidation
 import SwiftUI
 
 
@@ -34,7 +35,6 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
     @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
-    @EnvironmentObject private var engines: ValidationEngines<String>
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType
@@ -49,7 +49,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 // if we have a string value, we have to check if FieldValidationRules is configured and
                 // inject a ValidationEngine into the environment
                 Wrapped($value)
-                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
+                    .validate(input: stringValue, field: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
             } else if case .empty = Wrapped.Key.initialValue,
                       account.configuration[Wrapped.Key.self]?.requirement == .required {
                 // If the field provides an empty value and is required, we inject a `nonEmpty` validation rule
@@ -66,25 +66,18 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 // values like `GenderIdentity` provide a default value a user might not want to change
                 if viewType?.enteringNewData == true,
                    case let .default(value) = Wrapped.Key.initialValue {
-                    engines.register(id: dataHookId) {
-                        if detailsBuilder.get(Wrapped.Key.self) == nil {
-                            detailsBuilder.set(Wrapped.Key.self, value: value)
-                        }
-                    }
+                    detailsBuilder.set(Wrapped.Key.self, defaultValue: value)
                 }
             }
-            .onDisappear {
-                engines.remove(hook: dataHookId)
-            }
-            .onChange(of: value) { newValue in
+            .onChange(of: value) {
                 // ensure parent view has access to the latest value
                 if viewType?.enteringNewData == true,
                    case let .empty(emptyValue) = Wrapped.Key.initialValue,
-                   newValue == emptyValue {
+                   value == emptyValue {
                     // e.g. make sure we don't save an empty value (e.g. an empty PersonNameComponents)
                     detailsBuilder.remove(Wrapped.Key.self)
                 } else {
-                    detailsBuilder.set(Wrapped.Key.self, value: newValue)
+                    detailsBuilder.set(Wrapped.Key.self, value: value)
                 }
             }
     }

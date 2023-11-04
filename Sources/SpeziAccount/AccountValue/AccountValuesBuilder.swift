@@ -88,10 +88,12 @@ private class CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>:
 /// - ``AccountValuesBuilder/build(checking:)``
 public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, AccountValuesCollection {
     @Published var storage: AccountStorage
+    @Published var defaultValues: AccountStorage
 
 
     init(from storage: AccountStorage) {
         self.storage = storage
+        self.defaultValues = AccountStorage()
     }
 
     /// Initialize a new empty builder.
@@ -128,6 +130,12 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
         if let value {
             storage[Key.self] = value
         }
+        return self
+    }
+
+    @discardableResult
+    func set<Key: AccountKey>(_ key: Key.Type, defaultValue: Key.Value) -> Self {
+        defaultValues[Key.self] = defaultValue
         return self
     }
 
@@ -211,7 +219,15 @@ public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, Acco
     /// Build a new storage instance.
     /// - Returns: The built ``AccountValues``.
     public func build() -> Values {
-        Values(from: storage)
+        if !defaultValues.isEmpty {
+            // .merge(with:allowOverwrite:) is implemented using account values builder.
+            // without this isEmpty check we would run an infinite recursion.
+            // Calling merge on the built container ensures that this build() method doesn't have any side effects.
+            return Values(from: storage)
+                .merge(with: Values(from: defaultValues), allowOverwrite: false)
+        } else {
+            return Values(from: storage)
+        }
     }
 }
 

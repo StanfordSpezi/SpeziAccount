@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -22,6 +23,7 @@ struct PasswordChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var model: AccountOverviewFormViewModel
+    @ValidationState(String.self) private var validation
 
     @State private var viewState: ViewState = .idle
     @FocusState private var focusedDataEntry: String?
@@ -39,9 +41,9 @@ struct PasswordChangeSheet: View {
                 passwordFieldsSection
                     .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
                     .environment(\.accountViewType, .overview(mode: .new))
+                    .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
                 .viewStateAlert(state: $viewState)
-                .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -70,12 +72,12 @@ struct PasswordChangeSheet: View {
                 PasswordKey.DataEntry($newPassword)
                     .environment(\.passwordFieldType, .new)
                     .focused($focusedDataEntry, equals: PasswordKey.focusState)
-                    .managedValidation(input: newPassword, for: PasswordKey.focusState, rules: passwordValidations)
-                    .onChange(of: newPassword) { newValue in
+                    .validate(input: newPassword, field: PasswordKey.focusState, rules: passwordValidations)
+                    .onChange(of: newPassword) {
                         // A workaround to execute the validation engine of the repeat field if it contains content.
                         // It works, as we only have two validation engines in this view.
-                        if !newValue.isEmpty && !repeatPassword.isEmpty {
-                            model.validationEngines.validateSubviews() // don't supply focus state. Must not switch focus here!
+                        if !newPassword.isEmpty && !repeatPassword.isEmpty {
+                            validation.validateSubviews(switchFocus: false) // Must not switch focus here!
                         }
 
                         model.modifiedDetailsBuilder.set(\.password, value: newPassword)
@@ -87,8 +89,8 @@ struct PasswordChangeSheet: View {
                 PasswordKey.DataEntry($repeatPassword)
                     .environment(\.passwordFieldType, .repeat)
                     .focused($focusedDataEntry, equals: "$-newPassword")
-                    .managedValidation(input: repeatPassword, for: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
-                    .environment(\.validationEngineConfiguration, .hideFailedValidationOnEmptySubmit)
+                    .validate(input: repeatPassword, field: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
+                    .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
             PasswordValidationRuleFooter(configuration: service.configuration)
@@ -102,7 +104,7 @@ struct PasswordChangeSheet: View {
     }
 
     func submitPasswordChange() async throws {
-        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validation.validateSubviews() else {
             return
         }
 

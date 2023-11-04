@@ -27,7 +27,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     func body(content: Content) -> some View {
         if required {
             content
-                .onChange(of: [account.signedIn, presentingSheet]) { _ in
+                .onChange(of: [account.signedIn, presentingSheet]) {
                     if !account.signedIn && !presentingSheet {
                         presentingSheet = true
                     }

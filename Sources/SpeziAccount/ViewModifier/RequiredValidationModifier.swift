@@ -6,16 +6,17 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziValidation
 import SwiftUI
 
 
 private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
-    @EnvironmentObject private var engines: ValidationEngines<String>
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
-    @Binding private var value: Key.Value
+    @ValidationState(String.self) private var validation
 
-    @StateObject private var validation = ValidationEngine(rules: .nonEmpty) // mock validation engine
+    @Binding private var value: Key.Value
+    @State private var enableMockValidation = false
 
     private var mockText: String {
         detailsBuilder.contains(Key.self) ? "CONTAINED" : ""
@@ -28,20 +29,22 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
     func body(content: Content) -> some View {
         VStack {
             content // the wrapped data entry view
-                .onChange(of: value) { _ in
-                    // only if we are still registered
-                    if engines.contains(validation) {
-                        // as soon as the user changed the input once, we will always have a value.
-                        validation.submit(input: mockText, debounce: true)
-                    }
-                }
+                .validate(input: mockText, field: Key.focusState, rules: .nonEmpty)
 
             HStack {
-                ValidationResultsView(results: validation.displayedValidationResults)
+                ValidationResultsView(results: validation.allDisplayedValidationResults)
                 Spacer()
             }
         }
-            .register(engine: validation, with: engines, input: mockText)
+            .receiveValidation(in: $validation)
+            .onChange(of: validation, initial: true) {
+                // we disable our injected validation engine once we detect that the subview already defines a validation on their own
+                if validation.count > 1 {
+                    enableMockValidation = true
+                } else if validation.count == 0 {
+                    enableMockValidation = true
+                }
+            }
     }
 }
 
@@ -53,16 +56,6 @@ extension View {
         storage values: Values.Type,
         _ value: Binding<Key.Value>
     ) -> some View {
-        // this is a workaround to allow subviews to define their own ValidationEngine
-        let containsValidation = Mirror(reflecting: self).children.contains { _, value in
-            value is StateObject<ValidationEngine>
-        }
-
-        if containsValidation {
-            self
-        } else {
-            self
-                .modifier(RequiredValidationModifier<Key, Values>(value))
-        }
+        modifier(RequiredValidationModifier<Key, Values>(value))
     }
 }

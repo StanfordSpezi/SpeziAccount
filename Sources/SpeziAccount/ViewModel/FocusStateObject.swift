@@ -12,12 +12,11 @@ import SwiftUI
 
 /// An `ObservableObject` that wraps a `FocusState` instance.
 ///
-/// This is currently necessary as there is no viable mechanism to pass FocusState around and preexisting components
-/// like the Spezi `NameFields` expect a `FocusState` instance.
+/// This is currently necessary as there is no viable mechanism to pass FocusState around.
 ///
 /// - Note: This is only available in ``DataEntryView`` and ``DataDisplayView`` views.
 @dynamicMemberLookup
-class FocusStateObject: ObservableObject {
+class FocusStateObject: ObservableObject { // TODO: do we still need this?
     /// The `FocusState` of the parent view.
     /// Focus state is typically handled automatically using the ``AccountKey/focusState`` property.
     /// Access to this property is useful when defining a ``DataEntryView`` that exposes more than one field.

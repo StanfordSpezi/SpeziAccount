@@ -14,6 +14,8 @@ final class AccountSetupTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
+        continueAfterFailure = false
+
         try disablePasswordAutofill()
     }
 
@@ -198,13 +200,12 @@ final class AccountSetupTests: XCTestCase {
         try signupView.enter(field: "enter first name", text: "a")
         try signupView.delete(field: "enter first name", count: 1)
 
-        XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(signupView.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
 
         try signupView.enter(field: "enter last name", text: "a")
         try signupView.delete(field: "enter last name", count: 1)
 
-        XCTAssertTrue(signupView.staticTexts["The first name field cannot be empty!"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(signupView.staticTexts["The last name field cannot be empty!"].waitForExistence(timeout: 0.5))
+        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
     }
 
     func testInvalidCredentials() throws {
