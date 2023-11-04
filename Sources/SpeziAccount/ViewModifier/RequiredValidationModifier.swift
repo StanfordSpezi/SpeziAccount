@@ -13,10 +13,10 @@ import SwiftUI
 private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 
-    @ValidationState(String.self) private var validation
+    @ValidationState private var validation
+    @ValidationState private var innerValidation
 
     @Binding private var value: Key.Value
-    @State private var enableMockValidation = false
 
     private var mockText: String {
         detailsBuilder.contains(Key.self) ? "CONTAINED" : ""
@@ -29,21 +29,22 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
     func body(content: Content) -> some View {
         VStack {
             content // the wrapped data entry view
-                .validate(input: mockText, field: Key.focusState, rules: .nonEmpty)
+                .receiveValidation(in: $innerValidation)
+                .validate(input: mockText, rules: .nonEmpty)
 
-            HStack {
-                ValidationResultsView(results: validation.allDisplayedValidationResults)
-                Spacer()
+            if innerValidation.isEmpty {
+                HStack {
+                    ValidationResultsView(results: validation.allDisplayedValidationResults)
+                    Spacer()
+                }
             }
         }
             .receiveValidation(in: $validation)
+            .onChange(of: innerValidation, initial: true) {
+                print("InnerValidation: \(innerValidation)")
+            }
             .onChange(of: validation, initial: true) {
-                // we disable our injected validation engine once we detect that the subview already defines a validation on their own
-                if validation.count > 1 {
-                    enableMockValidation = true
-                } else if validation.count == 0 {
-                    enableMockValidation = true
-                }
+                print("Validation: \(validation)")
             }
     }
 }

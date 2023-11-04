@@ -67,23 +67,14 @@ extension PersonNameKey {
 
 
         @EnvironmentObject private var account: Account
-        @EnvironmentObject private var focusState: FocusStateObject
 
-        @ValidationState(String.self) private var givenNameValidation
-        @ValidationState(String.self) private var familyNameValidation
+        @ValidationState private var givenNameValidation
+        @ValidationState private var familyNameValidation
 
         @Binding private var name: Value
 
         private var nameIsRequired: Bool {
             account.configuration[Key.self]?.requirement == .required
-        }
-
-        private var givenNameField: String {
-            Key.focusState
-        }
-
-        private var familyNameField: String {
-            Key.focusState + "-familyName"
         }
         
         private var validationRule: ValidationRule {
@@ -97,12 +88,10 @@ extension PersonNameKey {
                 } label: {
                     Text("UAP_SIGNUP_GIVEN_NAME_PLACEHOLDER", bundle: .module)
                 }
-                    .focused(focusState.projectedValue, equals: givenNameField)
-                    .validate(input: name.givenName ?? "", field: givenNameField, rules: validationRule)
+                    .validate(input: name.givenName ?? "", rules: validationRule)
                     .receiveValidation(in: $givenNameValidation)
 
-                
-                // TODO: make this its own UI component!
+
                 if givenNameValidation.isDisplayingValidationErrors { // otherwise we have some weird layout issues
                     HStack {
                         ValidationResultsView(results: givenNameValidation.allDisplayedValidationResults)
@@ -118,8 +107,7 @@ extension PersonNameKey {
                 } label: {
                     Text("UAP_SIGNUP_FAMILY_NAME_PLACEHOLDER", bundle: .module)
                 }
-                    .focused(focusState.projectedValue, equals: familyNameField)
-                    .validate(input: name.familyName ?? "", field: familyNameField, rules: validationRule)
+                    .validate(input: name.familyName ?? "", rules: validationRule)
                     .receiveValidation(in: $familyNameValidation)
 
                 if familyNameValidation.isDisplayingValidationErrors { // otherwise we have some weird layout issues
@@ -130,6 +118,12 @@ extension PersonNameKey {
                 }
             }
                 .environment(\.validationConfiguration, .considerNoInputAsValid)
+                .onChange(of: givenNameValidation) {
+                    print("given Name: \(givenNameValidation)")
+                }
+                .onChange(of: familyNameValidation) {
+                    print("family Name: \(familyNameValidation)")
+                }
         }
 
 

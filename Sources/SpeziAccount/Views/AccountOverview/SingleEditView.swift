@@ -23,10 +23,10 @@ struct SingleEditView<Key: AccountKey>: View {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var model: AccountOverviewFormViewModel
-    @ValidationState(String.self) private var validation
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
+    @FocusState private var isFocused: Bool
 
     private var disabledDone: Bool {
         !model.hasUnsavedChanges // we don't have any changes
@@ -38,13 +38,14 @@ struct SingleEditView<Key: AccountKey>: View {
         Form {
             VStack {
                 Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                    .focused($isFocused)
             }
                 .environment(\.accountViewType, .overview(mode: .existing))
-                .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
+                .injectEnvironmentObjects(service: service, model: model)
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
-            .receiveValidation(in: $validation, focus: $focusedDataEntry)
+            .receiveValidation(in: $validation)
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
@@ -69,7 +70,7 @@ struct SingleEditView<Key: AccountKey>: View {
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         logger.debug("Saving updated \(Key.self) value!")
 

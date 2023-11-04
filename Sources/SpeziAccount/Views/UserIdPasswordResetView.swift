@@ -11,11 +11,6 @@ import SpeziValidation
 import SwiftUI
 
 
-private enum PasswordResetFocusState {
-    case userId
-}
-
-
 /// A password reset view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
     private let service: Service
@@ -27,13 +22,13 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
     @Environment(\.dismiss) private var dismiss
 
-    @ValidationState(PasswordResetFocusState.self) private var validation
+    @ValidationState private var validation
 
     @State private var userId = ""
     @State private var requestSubmitted: Bool
 
     @State private var state: ViewState = .idle
-    @FocusState private var focusedField: PasswordResetFocusState?
+    @FocusState private var isFocused: Bool
 
 
     public var body: some View {
@@ -50,7 +45,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                     .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                     .disableDismissiveActions(isProcessing: state)
-                    .receiveValidation(in: $validation, focus: $focusedField)
+                    .receiveValidation(in: $validation)
                     .viewStateAlert(state: $state)
                     .toolbar {
                         Button(action: {
@@ -58,9 +53,6 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                         }) {
                             Text("DONE", bundle: .module)
                         }
-                    }
-                    .onTapGesture {
-                        focusedField = nil
                     }
             }
         }
@@ -73,12 +65,12 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
                 .padding(.bottom, 30)
 
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                .validate(input: userId, field: PasswordResetFocusState.userId, rules: .nonEmpty)
+                .validate(input: userId, rules: .nonEmpty)
+                .focused($isFocused)
                 .textFieldStyle(.roundedBorder)
                 .disableFieldAssistants()
                 .textContentType(userIdConfiguration.textContentType)
                 .keyboardType(userIdConfiguration.keyboardType)
-                .onTapFocus(focusedField: $focusedField, fieldIdentifier: .userId)
                 .font(.title3)
 
             Spacer()
@@ -117,7 +109,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
             return
         }
 
-        focusedField = nil
+        isFocused = false
 
         try await service.resetPassword(userId: userId)
 

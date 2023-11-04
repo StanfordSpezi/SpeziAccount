@@ -67,7 +67,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "allRequiredWithBio"
+            argument = "allRequired"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument

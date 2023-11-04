@@ -31,7 +31,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     @EnvironmentObject private var account: Account
 
     // for login we do all checks server-side. Except that we don't pass empty values.
-    @ValidationState(LoginFocusState.self) private var validation
+    @ValidationState private var validation
 
     @State private var userId: String = ""
     @State private var password: String = ""
@@ -71,7 +71,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
-            .receiveValidation(in: $validation, focus: $focusedField)
+            .receiveValidation(in: $validation)
             .sheet(isPresented: $presentingSignupSheet) {
                 NavigationStack {
                     service.viewStyle.makeSignupView()
@@ -93,10 +93,10 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         VStack {
             Group {
                 VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                    .validate(input: userId, field: LoginFocusState.userId, rules: .nonEmpty)
+                    .validate(input: userId, rules: .nonEmpty)
+                    .focused($focusedField, equals: .userId)
                     .textContentType(userIdConfiguration.textContentType)
                     .keyboardType(userIdConfiguration.keyboardType)
-                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .userId)
                     .padding(.bottom, 0.5)
 
                 VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
@@ -109,9 +109,9 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                             .foregroundColor(Color(uiColor: .systemGray))
                     }
                 }
-                    .validate(input: password, field: LoginFocusState.password, rules: .nonEmpty)
+                    .validate(input: password, rules: .nonEmpty)
+                    .focused($focusedField, equals: .userId)
                     .textContentType(.password)
-                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .password)
             }
                 .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
                 .disableFieldAssistants()

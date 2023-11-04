@@ -81,11 +81,6 @@ extension AccountKey {
         ObjectIdentifier(Self.self)
     }
 
-    /// The default identifier for the `@FocusState` property that is automatically handled by the ``GeneralizedDataEntryView``.
-    public static var focusState: String {
-        "\(Self.self)"
-    }
-
     static var isRequired: Bool {
         self is any RequiredAccountKey.Type
     }

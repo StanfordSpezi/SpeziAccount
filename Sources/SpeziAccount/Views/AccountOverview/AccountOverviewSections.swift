@@ -28,12 +28,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var model: AccountOverviewFormViewModel
-    @ValidationState(String.self) private var validation
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
     // separate view state for any destructive actions like logout or account removal
     @State private var destructiveViewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
+    @FocusState private var isFocused: Bool
 
     @Binding private var isEditing: Bool
 
@@ -128,8 +128,9 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         defaultSections
         
         sectionsView
-            .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
-            .receiveValidation(in: $validation, focus: $focusedDataEntry)
+            .injectEnvironmentObjects(service: service, model: model)
+            .receiveValidation(in: $validation)
+            .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
         
         additionalSections
@@ -235,7 +236,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             return
         }
         
-        focusedDataEntry = nil
+        isFocused = false
         
         logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         

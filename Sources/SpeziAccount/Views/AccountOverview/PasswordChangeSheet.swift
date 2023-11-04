@@ -23,10 +23,10 @@ struct PasswordChangeSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var model: AccountOverviewFormViewModel
-    @ValidationState(String.self) private var validation
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
+    @FocusState private var isFocused: Bool
 
     @State private var newPassword: String = ""
     @State private var repeatPassword: String = ""
@@ -39,7 +39,8 @@ struct PasswordChangeSheet: View {
         NavigationStack {
             Form {
                 passwordFieldsSection
-                    .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
+                    .injectEnvironmentObjects(service: service, model: model)
+                    .focused($isFocused)
                     .environment(\.accountViewType, .overview(mode: .new))
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
@@ -71,8 +72,7 @@ struct PasswordChangeSheet: View {
             Grid {
                 PasswordKey.DataEntry($newPassword)
                     .environment(\.passwordFieldType, .new)
-                    .focused($focusedDataEntry, equals: PasswordKey.focusState)
-                    .validate(input: newPassword, field: PasswordKey.focusState, rules: passwordValidations)
+                    .validate(input: newPassword, rules: passwordValidations)
                     .onChange(of: newPassword) {
                         // A workaround to execute the validation engine of the repeat field if it contains content.
                         // It works, as we only have two validation engines in this view.
@@ -88,8 +88,7 @@ struct PasswordChangeSheet: View {
 
                 PasswordKey.DataEntry($repeatPassword)
                     .environment(\.passwordFieldType, .repeat)
-                    .focused($focusedDataEntry, equals: "$-newPassword")
-                    .validate(input: repeatPassword, field: "$-newPassword", rules: passwordEqualityValidation(new: $newPassword))
+                    .validate(input: repeatPassword, rules: passwordEqualityValidation(new: $newPassword))
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
@@ -108,7 +107,7 @@ struct PasswordChangeSheet: View {
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         logger.debug("Saving updated password to AccountService!")
 

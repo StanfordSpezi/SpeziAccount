@@ -51,10 +51,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
-    @ValidationState(String.self) private var validation
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
+    @FocusState private var isFocused: Bool
 
     @State private var presentingCloseConfirmation = false
 
@@ -115,7 +115,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
-                .environmentObject(FocusStateObject(focusedField: $focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP", bundle: .module)
@@ -129,7 +128,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .disabled(!validation.allInputValid)
         }
             .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-            .receiveValidation(in: $validation, focus: $focusedDataEntry)
+            .receiveValidation(in: $validation)
     }
 
 
@@ -149,7 +148,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 

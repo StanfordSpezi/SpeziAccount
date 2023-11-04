@@ -87,12 +87,11 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
     static let account = Account(building: details, active: MockUserIdPasswordAccountService())
 
     @StateObject private static var model = AccountOverviewFormViewModel(account: account)
-    @FocusState private static var focusedDataEntry: String?
 
     static var previews: some View {
         if let details = account.details {
             AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
-                .injectEnvironmentObjects(service: details.accountService, model: model, focusState: $focusedDataEntry)
+                .injectEnvironmentObjects(service: details.accountService, model: model)
         }
     }
 }

@@ -16,7 +16,7 @@ final class AccountOverviewTests: XCTestCase {
 
         continueAfterFailure = false
 
-        // TODO: try disablePasswordAutofill()
+        try disablePasswordAutofill()
     }
 
     func testRequirementLevelsOverview() throws {

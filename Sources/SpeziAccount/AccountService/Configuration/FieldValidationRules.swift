@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziValidation
 import Spezi
+import SpeziValidation
 
 
 /// A list of ``ValidationRule`` to validate the input for String-based ``AccountKey``s.
