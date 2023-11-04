@@ -90,12 +90,7 @@ extension PasswordKey {
                         .disableFieldAssistants()
                 }
 
-                if validation.isDisplayingValidationErrors { // otherwise we have some weird layout issues
-                    HStack {
-                        ValidationResultsView(results: validation.displayedValidationResults)
-                        Spacer()
-                    }
-                }
+                GridValidationStateFooter(validation.displayedValidationResults)
             }
         }
     }

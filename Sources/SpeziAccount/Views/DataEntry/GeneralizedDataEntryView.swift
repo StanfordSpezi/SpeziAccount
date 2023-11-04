@@ -23,8 +23,7 @@ private protocol GeneralizedStringEntryView {
 /// Particularly, the following things are taken care of:
 /// - Declare and manage the state of the value and post any changes back up to the parent view.
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
-///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
-///     the modified by declaring a custom one in the subview.
+///     ``DataEntryView/Key``, a `validate` modifier is automatically injected. TODO: link to the thingy!
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
     private var dataHookId: String {
         "DataHook-\(Wrapped.Key.self)"

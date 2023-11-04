@@ -9,14 +9,16 @@
 import Spezi
 import SpeziValidation
 
+// TODO: add external documentation links
 
-/// A list of ``ValidationRule`` to validate the input for String-based ``AccountKey``s.
+
+/// A list of `ValidationRule` to validate the input for String-based ``AccountKey``s.
 ///
-/// You can use this configuration to set up ``ValidationRule`` used by an ``ValidationEngine`` for any string-based
+/// You can use this configuration to set up ``ValidationRule`` used for validation for any string-based
 /// ``AccountKey``. Input fields (e.g., placed in signup or edit forms) use those rules to validate the received string input
 /// against the provided value.
 ///
-/// Below is a minimal code example on how to configure ``ValidationRule``s for the `userId` and `password` account values:
+/// Below is a minimal code example on how to configure `ValidationRule`s for the `userId` and `password` account values:
 /// ```swift
 /// public actor SomeAccountService: AccountService {
 ///     public let configuration = AccountServiceConfiguration(name: "Some name") {
@@ -26,9 +28,7 @@ import SpeziValidation
 /// }
 /// ```
 ///
-/// - Note: When using built-in views like ``SignupForm`` that use the ``GeneralizedDataEntryView``, a ``ValidationEngine``
-///     with the configured validation rules is automatically injected using the ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g``
-///     or ``SwiftUI/View/managedValidation(input:for:rules:)-zito``  modifier.
+/// - Note: When using built-in views like ``SignupForm`` that use the ``GeneralizedDataEntryView``, validation is automatically configured to `String`-based inputs.
 ///
 /// ### Default Values
 /// The configuration provides the following default validation rules depending on the context:
@@ -42,14 +42,14 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
 
     /// The ``AccountKey`` type for which this instance provides validation rules.
     public let key: Key.Type
-    /// The list of ``ValidationRule`` a new value is validated against.
+    /// The list of `ValidationRule` a new value is validated against.
     public let validationRules: [ValidationRule]
 
 
     /// Initialize a new `FieldValidationRules`.
     /// - Parameters:
     ///   - key: The ``AccountKey`` type.
-    ///   - validationRules: The array of ``ValidationRule``s.
+    ///   - validationRules: The array of `ValidationRule`s.
     public init(for key: Key.Type, rules validationRules: [ValidationRule]) {
         self.key = key
         self.validationRules = validationRules
@@ -58,7 +58,7 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     /// Initialize a new `FieldValidationRules`.
     /// - Parameters:
     ///   - key: The ``AccountKey`` type.
-    ///   - validationRules: The array of ``ValidationRule``s supplied as variadic arguments.
+    ///   - validationRules: The array of `ValidationRule`s supplied as variadic arguments.
     public init(for key: Key.Type, rules validationRules: ValidationRule...) {
         self.init(for: key, rules: validationRules)
     }
@@ -66,7 +66,7 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     /// Initialize a new `FieldValidationRules`.
     /// - Parameters:
     ///   - keyPath: The ``AccountKey`` type supplied as a `KeyPath`.
-    ///   - validationRules: The array of ``ValidationRule``s.
+    ///   - validationRules: The array of `ValidationRule`s.
     public init(for keyPath: KeyPath<AccountKeys, Key.Type>, rules validationRules: [ValidationRule]) {
         self.init(for: Key.self, rules: validationRules)
     }
@@ -74,7 +74,7 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     /// Initialize a new `FieldValidationRules`.
     /// - Parameters:
     ///   - keyPath: The ``AccountKey`` type supplied as a `KeyPath`.
-    ///   - validationRules: The array of ``ValidationRule``s supplied as variadic arguments.
+    ///   - validationRules: The array of `ValidationRule`s supplied as variadic arguments.
     public init(for keyPath: KeyPath<AccountKeys, Key.Type>, rules validationRules: ValidationRule...) {
         self.init(for: Key.self, rules: validationRules)
     }
@@ -102,14 +102,14 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
 extension AccountServiceConfiguration {
     /// Access the validation rules for String-based ``AccountKey`` configured by an ``AccountService``.
     /// - Parameter key: The ``AccountKey`` type.
-    /// - Returns: The array of ``ValidationRule``s.
+    /// - Returns: The array of `ValidationRule`s.
     public func fieldValidationRules<Key: AccountKey>(for key: Key.Type) -> [ValidationRule]? where Key.Value == String {
         storage[FieldValidationRules<Key>.self]?.validationRules
     }
 
     /// Access the validation rules for String-based ``AccountKey`` configured by an ``AccountService``.
     /// - Parameter keyPath: The ``AccountKey`` type supplied as `KeyPath`.
-    /// - Returns: The array of ``ValidationRule``s.
+    /// - Returns: The array of `ValidationRule`s.
     public func fieldValidationRules<Key: AccountKey>(
         for keyPath: KeyPath<AccountKeys, Key.Type>
     ) -> [ValidationRule]? where Key.Value == String {

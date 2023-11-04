@@ -12,6 +12,8 @@ import SpeziViews
 import SwiftUI
 
 
+// TODO test compile documentation
+
 /// The name of a user.
 public struct PersonNameKey: AccountKey {
     public typealias Value = PersonNameComponents
@@ -91,13 +93,7 @@ extension PersonNameKey {
                     .validate(input: name.givenName ?? "", rules: validationRule)
                     .receiveValidation(in: $givenNameValidation)
 
-
-                if givenNameValidation.isDisplayingValidationErrors { // otherwise we have some weird layout issues
-                    HStack {
-                        ValidationResultsView(results: givenNameValidation.allDisplayedValidationResults)
-                        Spacer()
-                    }
-                }
+                GridValidationStateFooter(givenNameValidation.allDisplayedValidationResults)
 
                 Divider()
                     .gridCellUnsizedAxes(.horizontal)
@@ -110,12 +106,7 @@ extension PersonNameKey {
                     .validate(input: name.familyName ?? "", rules: validationRule)
                     .receiveValidation(in: $familyNameValidation)
 
-                if familyNameValidation.isDisplayingValidationErrors { // otherwise we have some weird layout issues
-                    HStack {
-                        ValidationResultsView(results: familyNameValidation.allDisplayedValidationResults)
-                        Spacer()
-                    }
-                }
+                GridValidationStateFooter(familyNameValidation.allDisplayedValidationResults)
             }
                 .environment(\.validationConfiguration, .considerNoInputAsValid)
                 .onChange(of: givenNameValidation) {

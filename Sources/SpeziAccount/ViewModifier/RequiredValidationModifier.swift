@@ -28,15 +28,20 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
 
     func body(content: Content) -> some View {
         VStack {
-            content // the wrapped data entry view
+            let view = content // the wrapped data entry view
                 .receiveValidation(in: $innerValidation)
-                .validate(input: mockText, rules: .nonEmpty)
 
             if innerValidation.isEmpty {
+                // ensure we don't nest validate modifiers. Otherwise, we get visibility problems.
+                view
+                    .validate(input: mockText, rules: .nonEmpty)
+
                 HStack {
                     ValidationResultsView(results: validation.allDisplayedValidationResults)
                     Spacer()
                 }
+            } else {
+                view
             }
         }
             .receiveValidation(in: $validation)

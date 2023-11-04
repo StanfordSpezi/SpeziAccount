@@ -21,7 +21,7 @@ import XCTRuntimeAssertions
 /// - Important: The `Value` of an ``AccountKey`` must conform to `Sendable` such that storage containers
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
-///     and validate input against a ``ValidationEngine``.
+///     and validate input.
 ///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageStandard``s
 ///     can easily store arbitrarily defined account values.
 ///
@@ -47,8 +47,8 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// The ``DataEntryView`` that is used to enter a value for this account value.
     ///
     /// This view is wrapped into a ``GeneralizedDataEntryView`` and used in views like the ``SignupForm`` to enter the account value.
-    /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField` or ``VerifiableTextField``.
-    associatedtype DataEntry: DataEntryView<Self>
+    /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField` or `VerifiableTextField`.
+    associatedtype DataEntry: DataEntryView<Self> // TODO: link to SpeziValidation
 
     /// The localized name describing a value of this `AccountKey`.
     static var name: LocalizedStringResource { get }

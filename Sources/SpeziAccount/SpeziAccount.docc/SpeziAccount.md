@@ -41,7 +41,6 @@ An ``AccountService`` provides an abstraction layer for managing different types
 
 - <doc:Adding-new-Account-Values>
 - <doc:Handling-Account-Value-Storage>
-- <doc:Validation>
 
 ### Account Services
 
