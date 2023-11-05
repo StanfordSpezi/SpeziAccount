@@ -92,6 +92,7 @@ extension PersonNameKey {
                 }
                     .validate(input: name.givenName ?? "", rules: validationRule)
                     .receiveValidation(in: $givenNameValidation)
+                    .focusOnTap() // ensure field receives focus when tapping on the description label
 
                 GridValidationStateFooter(givenNameValidation.allDisplayedValidationResults)
 
@@ -105,6 +106,7 @@ extension PersonNameKey {
                 }
                     .validate(input: name.familyName ?? "", rules: validationRule)
                     .receiveValidation(in: $familyNameValidation)
+                    .focusOnTap() // ensure field receives focus when tapping on the description label
 
                 GridValidationStateFooter(familyNameValidation.allDisplayedValidationResults)
             }
