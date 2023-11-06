@@ -58,7 +58,7 @@ struct AccountTestsView: View {
         NavigationStack {
             AccountOverview(isEditing: $isEditing) {
                 NavigationLink {
-                    Text("")
+                    Text(verbatim: "")
                         .navigationTitle(Text(verbatim: "Package Dependencies"))
                 } label: {
                     Text(verbatim: "License Information")

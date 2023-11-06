@@ -1,28 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ""
-          }
-        }
-      }
-    },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
       "localizations" : {
         "de" : {
@@ -910,19 +888,19 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Hallo"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Hello"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Hola"
           }
         }
       }
@@ -1175,19 +1153,19 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Preview Service"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Preview Service"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "-"
+            "value" : "Preview Service"
           }
         }
       }
@@ -1933,115 +1911,11 @@
             "state" : "translated",
             "value" : "This rule always accepts."
           }
-        }
-      }
-    },
-    "VALIDATION_RULE_FAMILY_NAME_EMPTY" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Nachname kann nicht leer sein!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The last name field cannot be empty!"
-          }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¡El espacio del apellido no puede estar vacío!"
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_GIVEN_NAME_EMPTY" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Vorname kann nicht leer sein!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The first name field cannot be empty!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡El espacio del primer nombre no puede estar vacío!"
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_MINIMAL_EMAIL" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diese E-Mail ist ungültig."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The provided email is invalid."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El correo electrónico proporcionado no es válido."
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_NON_EMPTY" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diese Feld kann nicht leer sein."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This field cannot be empty."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Este espacio no puede estar vacío."
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_PASSWORD_LENGTH %lld" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Passwort muss mindestens %lld Zeichen lang sein."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your password must be at least %lld characters long."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu contraseña debe tener al menos %lld caracteres."
+            "value" : "Esta regla siempre acepta todas las entradas."
           }
         }
       }
@@ -2064,50 +1938,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Las contraseñas no coinciden."
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_UNICODE_LETTERS" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du kannst nur Zeichen verwenden."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You must only use letters."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debes usar solo letras."
-          }
-        }
-      }
-    },
-    "VALIDATION_RULE_UNICODE_LETTERS_ASCII" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You must only use standard English letters."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You must only use standard English letters."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debes usar solo letras estándar en inglés."
           }
         }
       }

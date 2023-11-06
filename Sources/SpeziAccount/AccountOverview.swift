@@ -113,13 +113,13 @@ struct AccountOverView_Previews: PreviewProvider {
         NavigationStack {
             AccountOverview {
                 NavigationLink {
-                    Text("")
+                    Text(verbatim: "")
                         .navigationTitle(Text(verbatim: "Settings"))
                 } label: {
                     Text(verbatim: "General Settings")
                 }
                 NavigationLink {
-                    Text("")
+                    Text(verbatim: "")
                         .navigationTitle(Text(verbatim: "Package Dependencies"))
                 } label: {
                     Text(verbatim: "License Information")
