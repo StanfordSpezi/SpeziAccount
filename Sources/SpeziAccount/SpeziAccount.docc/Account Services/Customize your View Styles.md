@@ -38,6 +38,7 @@ or ``IdentityProviderViewStyle``.
 - ``DateOfBirthPicker``
 - ``GenderIdentityPicker``
 - ``SuccessfulPasswordResetView``
+- ``SwiftUI/View/accountServiceButtonBackground()``
 
 ### UI Components for the UserIdPasswordAccountService
 

@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Foundation
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -30,24 +30,17 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
     @EnvironmentObject private var account: Account
 
+    // for login we do all checks server-side. Except that we don't pass empty values.
+    @ValidationState private var validation
+
     @State private var userId: String = ""
     @State private var password: String = ""
 
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: LoginFocusState?
 
-    // for login we do all checks server-side. Except that we don't pass empty values.
-    @StateObject private var userIdValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
-    @StateObject private var passwordValidation = ValidationEngine(rules: [.nonEmpty], configuration: .hideFailedValidationOnEmptySubmit)
-
     @State private var presentingSignupSheet = false
     @State private var presentingPasswordForgetSheet = false
-
-    @State private var loginTask: Task<Void, Error>? {
-        willSet {
-            loginTask?.cancel()
-        }
-    }
 
     public var body: some View {
         VStack {
@@ -60,7 +53,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                     .frame(maxWidth: .infinity)
             }
                 .buttonStyle(.borderedProminent)
-                .disabled(!userIdValidation.inputValid || !passwordValidation.inputValid)
+                .disabled(!validation.allInputValid)
                 .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 .padding(.bottom, 12)
                 .padding(.top)
@@ -78,6 +71,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
+            .receiveValidation(in: $validation)
             .sheet(isPresented: $presentingSignupSheet) {
                 NavigationStack {
                     service.viewStyle.makeSignupView()
@@ -99,10 +93,10 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         VStack {
             Group {
                 VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
-                    .environmentObject(userIdValidation)
+                    .validate(input: userId, rules: .nonEmpty)
+                    .focused($focusedField, equals: .userId)
                     .textContentType(userIdConfiguration.textContentType)
                     .keyboardType(userIdConfiguration.keyboardType)
-                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .userId)
                     .padding(.bottom, 0.5)
 
                 VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
@@ -115,10 +109,11 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
                             .foregroundColor(Color(uiColor: .systemGray))
                     }
                 }
-                    .environmentObject(passwordValidation)
+                    .validate(input: password, rules: .nonEmpty)
+                    .focused($focusedField, equals: .userId)
                     .textContentType(.password)
-                    .onTapFocus(focusedField: $focusedField, fieldIdentifier: .password)
             }
+                .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
                 .disableFieldAssistants()
                 .textFieldStyle(.roundedBorder)
                 .font(.title3)
@@ -134,16 +129,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
 
     private func loginButtonAction() async throws {
-        userIdValidation.runValidation(input: userId)
-        passwordValidation.runValidation(input: password)
-
-        guard userIdValidation.inputValid else {
-            focusedField = .userId
-            return
-        }
-
-        guard passwordValidation.inputValid else {
-            focusedField = .password
+        guard validation.validateSubviews() else {
             return
         }
 
@@ -155,14 +141,11 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
 
 #if DEBUG
-struct DefaultUserIdPasswordBasedEmbeddedView_Previews: PreviewProvider {
-    static let accountService = MockUserIdPasswordAccountService()
-
-    static var previews: some View {
-        NavigationStack {
-            UserIdPasswordEmbeddedView(using: accountService)
-        }
-            .environmentObject(Account(accountService))
+#Preview {
+    let accountService = MockUserIdPasswordAccountService()
+    return NavigationStack {
+        UserIdPasswordEmbeddedView(using: accountService)
     }
+        .environmentObject(Account(accountService))
 }
 #endif

@@ -191,8 +191,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             .onAppear {
                 followUpSheet = true // we want full control through the setupState property
             }
-            .onChange(of: followUpSheet) { newValue in
-                if !newValue { // follow up information was completed!
+            .onChange(of: followUpSheet) {
+                if !followUpSheet { // follow up information was completed!
                     setupState = .loadingExistingAccount
                     setupCompleteClosure(details)
                 }

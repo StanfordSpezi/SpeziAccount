@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -27,14 +28,15 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var model: AccountOverviewFormViewModel
-    @Binding private var isEditing: Bool
-    
+    @ValidationState private var validation
+
     @State private var viewState: ViewState = .idle
     // separate view state for any destructive actions like logout or account removal
     @State private var destructiveViewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
-    
-    
+    @FocusState private var isFocused: Bool
+
+    @Binding private var isEditing: Bool
+
     var isProcessing: Bool {
         viewState == .processing || destructiveViewState == .processing
     }
@@ -67,7 +69,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                            .disabled(editMode?.wrappedValue.isEditing == true && model.validationEngines.isDisplayingValidationErrors)
+                            .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
                             .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
@@ -118,7 +120,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
-            .onChange(of: editMode?.wrappedValue.isEditing ?? false) { newValue in
+            .onChange(of: editMode?.wrappedValue.isEditing ?? false) { _, newValue in
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
@@ -126,7 +128,9 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         defaultSections
         
         sectionsView
-            .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
+            .injectEnvironmentObjects(service: service, model: model)
+            .receiveValidation(in: $validation)
+            .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
         
         additionalSections
@@ -227,12 +231,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             return
         }
         
-        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validation.validateSubviews() else {
             logger.debug("Some input validation failed. Staying in edit mode!")
             return
         }
         
-        focusedDataEntry = nil
+        isFocused = false
         
         logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         

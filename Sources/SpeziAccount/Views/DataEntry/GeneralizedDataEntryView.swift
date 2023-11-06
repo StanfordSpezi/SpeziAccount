@@ -7,6 +7,7 @@
 //
 
 import Spezi
+import SpeziValidation
 import SwiftUI
 
 
@@ -18,13 +19,11 @@ private protocol GeneralizedStringEntryView {
 
 /// A View to manage the state of a ``DataEntryView``.
 ///
-/// Every ``DataEntryView`` is wrapped into a `GeneralizedDataEntryView` which is responsible to manage state of its child-view.
-/// Particularly, the following things are taken care of:
+/// For every ``DataEntryView`` the following things are automatically taken care of:
 /// - Declare and manage the state of the value and post any changes back up to the parent view.
-/// - Declare a default `focused(_:equals:)` modifier to String-based fields to automatically manage focus state based on ``AccountKey/focusState``.
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
-///     ``DataEntryView/Key``, a  ``SwiftUI/View/managedValidation(input:for:rules:)-5gj5g`` modifier is automatically injected. One can easily override
-///     the modified by declaring a custom one in the subview.
+///     ``DataEntryView/Key``, a [validate(input:rules:)](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/swiftui/view/validate(input:rules:)-5dac4)
+///      modifier is automatically injected.
 public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
     private var dataHookId: String {
         "DataHook-\(Wrapped.Key.self)"
@@ -32,9 +31,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
     @EnvironmentObject private var account: Account
 
-    @EnvironmentObject private var focusState: FocusStateObject
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
-    @EnvironmentObject private var engines: ValidationEngines<String>
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType
@@ -49,7 +46,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 // if we have a string value, we have to check if FieldValidationRules is configured and
                 // inject a ValidationEngine into the environment
                 Wrapped($value)
-                    .managedValidation(input: stringValue, for: Wrapped.Key.focusState, rules: stringEntryView.validationRules())
+                    .validate(input: stringValue, rules: stringEntryView.validationRules())
             } else if case .empty = Wrapped.Key.initialValue,
                       account.configuration[Wrapped.Key.self]?.requirement == .required {
                 // If the field provides an empty value and is required, we inject a `nonEmpty` validation rule
@@ -61,30 +58,22 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 Wrapped($value)
             }
         }
-            .focused(focusState.projectedValue, equals: Wrapped.Key.focusState)
             .onAppear {
                 // values like `GenderIdentity` provide a default value a user might not want to change
                 if viewType?.enteringNewData == true,
                    case let .default(value) = Wrapped.Key.initialValue {
-                    engines.register(id: dataHookId) {
-                        if detailsBuilder.get(Wrapped.Key.self) == nil {
-                            detailsBuilder.set(Wrapped.Key.self, value: value)
-                        }
-                    }
+                    detailsBuilder.set(Wrapped.Key.self, defaultValue: value)
                 }
             }
-            .onDisappear {
-                engines.remove(hook: dataHookId)
-            }
-            .onChange(of: value) { newValue in
+            .onChange(of: value) {
                 // ensure parent view has access to the latest value
                 if viewType?.enteringNewData == true,
                    case let .empty(emptyValue) = Wrapped.Key.initialValue,
-                   newValue == emptyValue {
+                   value == emptyValue {
                     // e.g. make sure we don't save an empty value (e.g. an empty PersonNameComponents)
                     detailsBuilder.remove(Wrapped.Key.self)
                 } else {
-                    detailsBuilder.set(Wrapped.Key.self, value: newValue)
+                    detailsBuilder.set(Wrapped.Key.self, value: value)
                 }
             }
     }

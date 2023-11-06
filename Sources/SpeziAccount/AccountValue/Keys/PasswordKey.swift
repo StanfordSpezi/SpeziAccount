@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -63,8 +64,7 @@ extension PasswordKey {
 
         @Environment(\.accountViewType) private var accountViewType
         @Environment(\.passwordFieldType) private var fieldType
-
-        @EnvironmentObject var validationEngine: ValidationEngine
+        @Environment(ValidationEngine.self) private var validation
 
         @Binding private var password: Value
 
@@ -88,20 +88,9 @@ extension PasswordKey {
                     }
                         .textContentType(.newPassword)
                         .disableFieldAssistants()
-                        .onChange(of: password) { _ in
-                            validationEngine.submit(input: password, debounce: true)
-                        }
-                        .onSubmit {
-                            validationEngine.submit(input: password, debounce: false)
-                        }
                 }
 
-                if !validationEngine.displayedValidationResults.isEmpty { // otherwise we have some weird layout issues
-                    HStack {
-                        ValidationResultsView(results: validationEngine.displayedValidationResults)
-                        Spacer()
-                    }
-                }
+                GridValidationStateFooter(validation.displayedValidationResults)
             }
         }
     }

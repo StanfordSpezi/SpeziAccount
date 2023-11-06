@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -25,10 +26,10 @@ struct FollowUpInfoSheet: View {
     @EnvironmentObject private var account: Account
 
     @StateObject private var detailsBuilder = ModifiedAccountDetails.Builder()
-    @StateObject private var validationEngines = ValidationEngines<String>()
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
+    @FocusState private var isFocused: Bool
 
     @State private var presentingCancellationConfirmation = false
 
@@ -36,6 +37,7 @@ struct FollowUpInfoSheet: View {
     var body: some View {
         form
             .interactiveDismissDisabled(true)
+            .receiveValidation(in: $validation)
             .viewStateAlert(state: $viewState)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -88,8 +90,7 @@ struct FollowUpInfoSheet: View {
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environmentObject(detailsBuilder)
-                .environmentObject(validationEngines)
-                .environmentObject(FocusStateObject(focusedField: $focusedDataEntry))
+                .focused($isFocused)
 
             AsyncButton(state: $viewState, action: completeButtonAction) {
                 Text("FOLLOW_UP_INFORMATION_COMPLETE", bundle: .module)
@@ -100,7 +101,7 @@ struct FollowUpInfoSheet: View {
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
-                .disabled(!validationEngines.allInputValid)
+                .disabled(!validation.allInputValid)
         }
             .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
@@ -115,12 +116,12 @@ struct FollowUpInfoSheet: View {
 
 
     private func completeButtonAction() async throws {
-        guard validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validation.validateSubviews() else {
             logger.debug("Failed to save updated account information. Validation failed!")
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         let modifiedDetails = try detailsBuilder.build(validation: true)
         let removedDetails = RemovedAccountDetails.Builder().build()

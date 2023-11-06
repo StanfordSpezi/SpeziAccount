@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -50,10 +51,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
-    @StateObject private var validationEngines = ValidationEngines<String>()
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String? // see `AccountKey.Type/focusState`
+    @FocusState private var isFocused: Bool
 
     @State private var presentingCloseConfirmation = false
 
@@ -114,8 +115,6 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environmentObject(signupDetailsBuilder)
-                .environmentObject(validationEngines)
-                .environmentObject(FocusStateObject(focusedField: $focusedDataEntry))
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP", bundle: .module)
@@ -126,9 +125,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
-                .disabled(!validationEngines.allInputValid)
+                .disabled(!validation.allInputValid)
         }
             .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+            .receiveValidation(in: $validation)
     }
 
 
@@ -144,11 +144,11 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
 
 
     private func signupButtonAction() async throws {
-        guard validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validation.validateSubviews() else {
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 

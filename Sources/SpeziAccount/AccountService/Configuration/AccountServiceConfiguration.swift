@@ -26,7 +26,7 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 /// A instance of this type is required to be provided by every ``AccountService``. It is used to
 /// set and communicate certain configuration options of the account service to the UI components that
 /// represent the account service (e.g., determining the type of userId through ``UserIdConfiguration`` or
-/// providing ``ValidationRule``s for a field through the ``FieldValidationRules`` configuration).
+/// providing `ValidationRule`s for a field through the ``FieldValidationRules`` configuration).
 ///
 /// For more information on how to provide custom configuration options, refer to the documentation of
 /// ``AccountServiceConfigurationKey``.
@@ -39,8 +39,8 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 /// - ``name``
 /// - ``image``
 /// - ``userIdConfiguration``
-/// - ``fieldValidationRules(for:)-5n7c0``
-/// - ``fieldValidationRules(for:)-2nqpi``
+/// - ``fieldValidationRules(for:)-28x74``
+/// - ``fieldValidationRules(for:)-w2n2``
 ///
 /// ### Result Builder
 /// - ``AccountServiceConfigurationKey``

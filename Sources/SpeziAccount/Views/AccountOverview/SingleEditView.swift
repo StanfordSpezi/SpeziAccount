@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziValidation
 import SpeziViews
 import SwiftUI
 
@@ -22,26 +23,29 @@ struct SingleEditView<Key: AccountKey>: View {
     @Environment(\.dismiss) private var dismiss
 
     @ObservedObject private var model: AccountOverviewFormViewModel
+    @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
+    @FocusState private var isFocused: Bool
 
     private var disabledDone: Bool {
         !model.hasUnsavedChanges // we don't have any changes
             || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self) // it's the same value
-            || !model.validationEngines.allInputValid // or the input isn't valid
+            || !validation.allInputValid // or the input isn't valid
     }
 
     var body: some View {
         Form {
             VStack {
                 Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                    .focused($isFocused)
             }
+                .environment(\.accountViewType, .overview(mode: .existing))
+                .injectEnvironmentObjects(service: service, model: model)
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
-            .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
-            .environment(\.accountViewType, .overview(mode: .existing))
+            .receiveValidation(in: $validation)
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
                     Text("DONE", bundle: .module)
@@ -62,11 +66,11 @@ struct SingleEditView<Key: AccountKey>: View {
 
 
     private func submitChange() async throws {
-        guard model.validationEngines.validateSubviews(focusState: $focusedDataEntry) else {
+        guard validation.validateSubviews() else {
             return
         }
 
-        focusedDataEntry = nil
+        isFocused = false
 
         logger.debug("Saving updated \(Key.self) value!")
 

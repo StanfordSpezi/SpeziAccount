@@ -96,14 +96,7 @@
 "CONFIRMATION_REMOVAL_SUGGESTION" = "Este cambio es permanente y no podrás recuperar la información de tu cuenta.";
 
 // MARK: - Validation Rules
-"VALIDATION_RULE_NON_EMPTY" = "Este espacio no puede estar vacío.";
-"VALIDATION_RULE_UNICODE_LETTERS" = "Debes usar solo letras.";
-"VALIDATION_RULE_UNICODE_LETTERS_ASCII" = "Debes usar solo letras estándar en inglés.";
-"VALIDATION_RULE_MINIMAL_EMAIL" = "El correo electrónico proporcionado no es válido.";
-"VALIDATION_RULE_PASSWORD_LENGTH %lld" = "Tu contraseña debe tener al menos %lld caracteres.";
 "VALIDATION_RULE_PASSWORDS_NOT_MATCHED" = "Las contraseñas no coinciden.";
-"VALIDATION_RULE_GIVEN_NAME_EMPTY" = "¡El espacio del primer nombre no puede estar vacío!";
-"VALIDATION_RULE_FAMILY_NAME_EMPTY" = "¡El espacio del apellido no puede estar vacío!";
 
 // MARK: - Account Id
 "ACCOUNT_ID" = "Identificador de Cuenta";

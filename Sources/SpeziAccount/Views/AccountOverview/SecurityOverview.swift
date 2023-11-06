@@ -22,8 +22,6 @@ struct SecurityOverview: View {
     @ObservedObject private var model: AccountOverviewFormViewModel
 
     @State private var viewState: ViewState = .idle
-    @FocusState private var focusedDataEntry: String?
-
     @State private var presentingPasswordChangeSheet = false
 
 
@@ -55,7 +53,7 @@ struct SecurityOverview: View {
                     }
                 }
             }
-                .injectEnvironmentObjects(service: service, model: model, focusState: $focusedDataEntry)
+                .injectEnvironmentObjects(service: service, model: model)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)

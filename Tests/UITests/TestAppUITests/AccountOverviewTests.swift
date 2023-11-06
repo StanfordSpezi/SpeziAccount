@@ -14,6 +14,8 @@ final class AccountOverviewTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
 
+        continueAfterFailure = false
+
         try disablePasswordAutofill()
     }
 

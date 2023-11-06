@@ -21,7 +21,7 @@ import XCTRuntimeAssertions
 /// - Important: The `Value` of an ``AccountKey`` must conform to `Sendable` such that storage containers
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
-///     and validate input against a ``ValidationEngine``.
+///     and validate input.
 ///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageStandard``s
 ///     can easily store arbitrarily defined account values.
 ///
@@ -41,13 +41,14 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     ///
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.
     /// - Note: This View implementation is automatically provided if the `Value` is a String or the `Value`
-    ///     conforms to `CustomLocalizedStringResourceConvertible`.
+    ///     conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
     associatedtype DataDisplay: DataDisplayView<Self>
 
     /// The ``DataEntryView`` that is used to enter a value for this account value.
     ///
     /// This view is wrapped into a ``GeneralizedDataEntryView`` and used in views like the ``SignupForm`` to enter the account value.
-    /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField` or ``VerifiableTextField``.
+    /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField`
+    /// or [VerifiableTextField](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/verifiabletextfield).
     associatedtype DataEntry: DataEntryView<Self>
 
     /// The localized name describing a value of this `AccountKey`.
@@ -79,11 +80,6 @@ extension AccountKey {
     /// A unique identifier for an account key.
     public static var id: ObjectIdentifier {
         ObjectIdentifier(Self.self)
-    }
-
-    /// The default identifier for the `@FocusState` property that is automatically handled by the ``GeneralizedDataEntryView``.
-    public static var focusState: String {
-        "\(Self.self)"
     }
 
     static var isRequired: Bool {
