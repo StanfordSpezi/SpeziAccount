@@ -108,6 +108,7 @@ extension AccountServiceConfiguration {
     /// - Parameter key: The ``AccountKey`` type.
     /// - Returns: The array of `ValidationRule`s.
     public func fieldValidationRules<Key: AccountKey>(for key: Key.Type) -> [ValidationRule]? where Key.Value == String {
+        // swiftlint:disable:previous discouraged_optional_collection
         storage[FieldValidationRules<Key>.self]?.validationRules
     }
 
@@ -117,6 +118,7 @@ extension AccountServiceConfiguration {
     public func fieldValidationRules<Key: AccountKey>(
         for keyPath: KeyPath<AccountKeys, Key.Type>
     ) -> [ValidationRule]? where Key.Value == String {
+        // swiftlint:disable:previous discouraged_optional_collection
         fieldValidationRules(for: Key.self)
     }
 }
