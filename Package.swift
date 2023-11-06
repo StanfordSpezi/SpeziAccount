@@ -22,7 +22,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.7.2")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "feature/spezi-validation"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.6.1")),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5")),
         .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.0.4"))
     ],
