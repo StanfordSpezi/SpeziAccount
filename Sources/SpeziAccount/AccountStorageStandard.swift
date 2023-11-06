@@ -17,6 +17,11 @@ import Spezi
 /// inorder to handle storage and retrieval of these additional account values.
 ///
 /// - Note: You can use the ``Spezi/Standard/AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
+///
+/// ## Topics
+///
+/// ### Access Account
+/// - ``Spezi/Standard/AccountReference``
 public protocol AccountStorageStandard: Standard {
     /// Create new associated account data.
     ///

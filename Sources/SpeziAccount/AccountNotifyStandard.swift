@@ -10,6 +10,11 @@ import Spezi
 
 
 /// A `Spezi` Standard that allows to react to certain Account-based events.
+///
+/// ## Topics
+///
+/// ### Access Account
+/// - ``Spezi/Standard/AccountReference``
 public protocol AccountNotifyStandard: Standard {
     /// Notifies the Standard that the associated account was requested to be deleted by the user.
     ///

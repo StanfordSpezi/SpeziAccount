@@ -10,7 +10,8 @@ import Spezi
 import SwiftUI
 
 
-/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to `CustomLocalizedStringResourceConvertible`.
+/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to
+/// [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
 public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayView
     where Key.Value: CustomLocalizedStringResourceConvertible {
     private let value: Key.Value

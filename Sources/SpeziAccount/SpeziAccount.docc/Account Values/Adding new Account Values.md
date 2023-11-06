@@ -90,8 +90,9 @@ Read through the following sections for more information how to provide UI compo
 ### Data Display View
 
 The associated `DataDisplay` type provides the SwiftUI view that handles displaying a value of the ``AccountKey``.
-In cases where the `Value` is `String`-based or conforms to the `CustomLocalizedStringResourceConvertible` protocol,
-an automatic implementation is provided.
+In cases where the `Value` is `String`-based
+or conforms to the [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
+protocol, an automatic implementation is provided.
 Therefore, you typically do not need to provide a custom view implementation,
 or you might consider adding `CustomLocalizedStringResourceConvertible` protocol
 conformance to your `Value` type.
@@ -172,6 +173,7 @@ Still, you are required to evaluate to which extent validation has to be handled
 ### Available Environment Keys
 
 - ``SwiftUI/EnvironmentValues/accountViewType``
+- ``SwiftUI/EnvironmentValues/passwordFieldType``
 - ``SwiftUI/EnvironmentValues/accountServiceConfiguration``
 - ``AccountViewType``
 - ``OverviewEntryMode``

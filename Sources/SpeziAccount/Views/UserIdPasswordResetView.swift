@@ -10,8 +10,6 @@ import SpeziValidation
 import SpeziViews
 import SwiftUI
 
-// TODO mention all external implementations in the docs!
-
 
 /// A password reset view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {

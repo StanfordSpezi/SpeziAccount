@@ -9,17 +9,17 @@
 import Spezi
 import SpeziValidation
 
-// TODO: add external documentation links
-
 
 /// A list of `ValidationRule` to validate the input for String-based ``AccountKey``s.
 ///
-/// You can use this configuration to set up ``ValidationRule`` used for validation for any string-based
-/// ``AccountKey``. Input fields (e.g., placed in signup or edit forms) use those rules to validate the received string input
+/// You can use this configuration to set up [ValidationRule](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule)
+/// used for validation for any string-based ``AccountKey``. Input fields (e.g., placed in signup or edit forms) use those rules to validate the received string input
 /// against the provided value.
 ///
 /// Below is a minimal code example on how to configure `ValidationRule`s for the `userId` and `password` account values:
 /// ```swift
+/// import SpeziValidation
+///
 /// public actor SomeAccountService: AccountService {
 ///     public let configuration = AccountServiceConfiguration(name: "Some name") {
 ///         FieldValidationRules(for: \.userId, rules: .interceptingChain(.nonEmpty), .minimalEmail)
@@ -32,17 +32,21 @@ import SpeziValidation
 ///
 /// ### Default Values
 /// The configuration provides the following default validation rules depending on the context:
-/// * ``ValidationRule/nonEmpty`` (intercepting) and ``ValidationRule/minimalEmail`` if the `Key` is of type ``UserIdKey`` and the user id type is ``UserIdType/emailAddress``
-///     or if the `Key` is of type ``EmailAddressKey``.
-/// * ``ValidationRule/nonEmpty`` (intercepting) and ``ValidationRule/minimalPassword`` if the `Key` is of type ``PasswordKey``.
-/// * ``ValidationRule/nonEmpty`` otherwise.
+/// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
+///     and [minimalEmail](https://swiftpackageindex.com/stanfordspezi/speziviews/0.6.1/documentation/spezivalidation/validationrule/minimalemail) rules
+///     if the `Key` is of type ``UserIdKey`` and the user id type is ``UserIdType/emailAddress`` or if the `Key` is of type ``EmailAddressKey``.
+/// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
+///     and [minimalPassword](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/minimalpassword)] rules
+///     if the `Key` is of type ``PasswordKey``.
+/// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) rule otherwise.
 public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfigurationKey, OptionalComputedKnowledgeSource where Key.Value == String {
     // We use always compute, as we don't want our computation result to get stored. We don't have a mutable view anyways.
     public typealias StoragePolicy = AlwaysCompute
 
     /// The ``AccountKey`` type for which this instance provides validation rules.
     public let key: Key.Type
-    /// The list of `ValidationRule` a new value is validated against.
+    /// The list of [ValidationRule](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule)s
+    /// a new value is validated against.
     public let validationRules: [ValidationRule]
 
 

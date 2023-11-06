@@ -124,6 +124,12 @@ struct MyView: View {
 - ``AccountOverview``
 - ``AccountHeader``
 
+### Enforcing Restrictions
+
+- ``SwiftUI/View/accountRequired(_:setupSheet:)``
+- ``SwiftUI/View/verifyRequiredAccountDetails(_:)``
+- ``SwiftUI/EnvironmentValues/accountRequired``
+
 ### Reacting to Events
 
 - ``AccountNotifyStandard``

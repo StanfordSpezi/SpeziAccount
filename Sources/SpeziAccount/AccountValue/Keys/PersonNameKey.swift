@@ -12,8 +12,6 @@ import SpeziViews
 import SwiftUI
 
 
-// TODO test compile documentation
-
 /// The name of a user.
 public struct PersonNameKey: AccountKey {
     public typealias Value = PersonNameComponents

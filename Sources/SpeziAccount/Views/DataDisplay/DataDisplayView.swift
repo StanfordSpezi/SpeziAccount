@@ -13,8 +13,8 @@ import SwiftUI
 /// A view that displays the current value of a given ``AccountKey`` implementation.
 ///
 /// This view is default implemented for all ``AccountKey``s which value type is `String`-based or conforms
-/// to `CustomLocalizedStringResourceConvertible`. So before implementing one yourself verify if you might be able
-/// to rely on the default implementation.
+/// to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
+///  So before implementing one yourself verify if you might be able to rely on the default implementation.
 ///
 /// This view is typically placed as a row in the ``AccountOverview`` view.
 public protocol DataDisplayView<Key>: View {

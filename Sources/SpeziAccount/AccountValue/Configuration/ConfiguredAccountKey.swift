@@ -19,6 +19,11 @@
 ///     .supported(\.genderIdentity)
 /// ]
 /// ```
+///
+/// ## Topics
+///
+/// ### Configuration
+/// - ``Swift/Array/default``
 public struct ConfiguredAccountKey {
     let configuration: any AccountKeyConfiguration
 
