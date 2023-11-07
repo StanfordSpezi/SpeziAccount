@@ -36,6 +36,9 @@ let package = Package(
                 .product(name: "SpeziValidation", package: "SpeziViews"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections")
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
         .testTarget(

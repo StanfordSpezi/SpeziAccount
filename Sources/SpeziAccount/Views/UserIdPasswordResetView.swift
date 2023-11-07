@@ -75,7 +75,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
 
             Spacer()
             AsyncButton(state: $state, action: submitRequestAction) {
-                Text("Reset Password")
+                Text("UP_RESET_PASSWORD", bundle: .module)
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }

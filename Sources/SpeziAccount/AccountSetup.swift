@@ -249,7 +249,7 @@ struct AccountView_Previews: PreviewProvider {
             Button(action: {
                 print("Continue")
             }, label: {
-                Text("Continue")
+                Text(verbatim: "Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
             })
             .buttonStyle(.borderedProminent)

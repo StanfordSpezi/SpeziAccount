@@ -55,7 +55,7 @@ extension AccountIdKey {
         public typealias Key = AccountIdKey
 
         public var body: some View {
-            Text("The internal account identifier is not meant to be user facing!")
+            Text("The internal account identifier is not meant to be user facing!", comment: "Pure debug message, no need to translate.")
         }
 
         public init(_ value: Value) {}
@@ -65,7 +65,7 @@ extension AccountIdKey {
         public typealias Key = AccountIdKey
 
         public var body: some View {
-            Text("The internal account identifier is meant to be generated!")
+            Text("The internal account identifier is meant to be generated!", comment: "Pure debug message, no need to translate.")
         }
 
         public init(_ value: Binding<Key.Value>) {}
