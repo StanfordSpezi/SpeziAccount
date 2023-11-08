@@ -113,7 +113,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onChange(of: account.signedIn) { // TODO: ideally react on account.details
+            .onChange(of: account.signedIn) {
                 if let details = account.details, case .setupShown = setupState {
                     let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
 
