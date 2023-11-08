@@ -12,7 +12,7 @@ import Spezi
 import SpeziAccount
 
 
-final class TestAccountConfiguration: Component {
+final class TestAccountConfiguration: Module {
     @Provide var accountServices: [any AccountService]
 
     init(features: Features) {

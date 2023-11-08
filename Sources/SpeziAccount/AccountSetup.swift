@@ -58,7 +58,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     private let header: Header
     private let continueButton: Continue
 
-    @EnvironmentObject var account: Account
+    @Environment(Account.self) var account
 
     @State private var setupState: _AccountSetupState = .generic
     @State private var followUpSheet = false
@@ -112,8 +112,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onReceive(account.$details) { details in
-                if let details, case .setupShown = setupState {
+            .onChange(of: account.signedIn) { // TODO: ideally react on account.details
+                if let details = account.details, case .setupShown = setupState {
                     let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
 
                     if missingKeys.isEmpty {
@@ -236,14 +236,14 @@ struct AccountView_Previews: PreviewProvider {
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
             AccountSetup()
-                .environmentObject(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
+                .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
 
         AccountSetup()
-            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
         AccountSetup(state: .setupShown)
-            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
 
         AccountSetup(continue: {
             Button(action: {
@@ -254,7 +254,7 @@ struct AccountView_Previews: PreviewProvider {
             })
             .buttonStyle(.borderedProminent)
         })
-            .environmentObject(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 struct IsNewUserKey: KnowledgeSource {

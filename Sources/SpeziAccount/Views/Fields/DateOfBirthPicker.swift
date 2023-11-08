@@ -15,7 +15,7 @@ public struct DateOfBirthPicker: DataEntryView {
 
     private let titleLocalization: LocalizedStringResource
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @Environment(\.accountViewType) private var viewType
 
     @Binding private var date: Date
@@ -133,18 +133,18 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
     static var previews: some View {
         // preview entering new data.
         Preview()
-            .environmentObject(Account(MockUserIdPasswordAccountService()))
+            .environment(Account(MockUserIdPasswordAccountService()))
             .environment(\.accountViewType, .signup)
 
         // preview entering new data but displaying existing data.
         Preview()
-            .environmentObject(Account(MockUserIdPasswordAccountService()))
+            .environment(Account(MockUserIdPasswordAccountService()))
             .environment(\.accountViewType, .overview(mode: .existing))
 
         // preview entering new data but required.
         Preview()
+            .environment(Account(MockUserIdPasswordAccountService(), configuration: [.requires(\.dateOfBirth)]))
             .environment(\.accountViewType, .signup)
-            .environmentObject(Account(MockUserIdPasswordAccountService(), configuration: [.requires(\.dateOfBirth)]))
     }
 }
 #endif

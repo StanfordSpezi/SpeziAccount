@@ -96,7 +96,7 @@ struct SingleEditView_Previews: PreviewProvider {
                 SingleEditView<PersonNameKey>(model: model, details: details)
             }
         }
-            .environmentObject(account)
+            .environment(account)
     }
 }
 #endif

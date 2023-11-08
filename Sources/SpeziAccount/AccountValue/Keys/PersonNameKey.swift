@@ -66,7 +66,7 @@ extension PersonNameKey {
         public typealias Key = PersonNameKey
 
 
-        @EnvironmentObject private var account: Account
+        @Environment(Account.self) private var account
 
         @ValidationState private var givenNameValidation
         @ValidationState private var familyNameValidation

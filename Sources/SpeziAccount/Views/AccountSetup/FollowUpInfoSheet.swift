@@ -23,7 +23,7 @@ struct FollowUpInfoSheet: View {
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     @StateObject private var detailsBuilder = ModifiedAccountDetails.Builder()
     @ValidationState private var validation
@@ -150,7 +150,7 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
                 FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
             }
         }
-            .environmentObject(account)
+            .environment(account)
     }
 }
 #endif

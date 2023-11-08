@@ -22,7 +22,7 @@ import XCTRuntimeAssertions
 ///
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration: Component, ObservableObjectProvider {
+public final class AccountConfiguration: Module {
     private let logger = LoggerKey.defaultValue
 
     /// The user-defined configuration of account values that all user accounts need to support.
@@ -30,21 +30,12 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     private let providedAccountServices: [any AccountService]
 
-    private var account: Account?
+    @Model private var account = Account() // TODO Model supporting optionals? (+ Modifier?)
 
     @StandardActor private var standard: any Standard
 
     /// The array of ``AccountService``s provided through other Spezi `Components`.
     @Collect private var accountServices: [any AccountService]
-
-
-    public var observableObjects: [any ObservableObject] {
-        guard let account else {
-            preconditionFailure("Tried to access ObservableObjectProvider before \(Self.self).configure() was called")
-        }
-
-        return [account]
-    }
 
 
     /// Initializes a `AccountConfiguration` without directly  providing any ``AccountService`` instances.
@@ -93,7 +84,7 @@ public final class AccountConfiguration: Component, ObservableObjectProvider {
             configuration: configuredAccountKeys
         )
 
-        self.account?.injectWeakAccount(into: standard)
+        self.account.injectWeakAccount(into: standard)
     }
 
     private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {

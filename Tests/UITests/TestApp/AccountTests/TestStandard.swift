@@ -12,7 +12,7 @@ import SwiftUI
 
 
 // mock implementation of the AccountStorageStandard
-actor TestStandard: AccountStorageStandard, AccountNotifyStandard, ObservableObject, ObservableObjectProvider {
+actor TestStandard: AccountStorageStandard, AccountNotifyStandard, EnvironmentAccessible {
     @MainActor @Published var deleteNotified = false
 
     var records: [AdditionalRecordId: PartialAccountDetails.Builder] = [:]

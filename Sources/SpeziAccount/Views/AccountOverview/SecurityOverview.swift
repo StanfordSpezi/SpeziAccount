@@ -18,7 +18,7 @@ struct SecurityOverview: View {
     }
 
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @ObservedObject private var model: AccountOverviewFormViewModel
 
     @State private var viewState: ViewState = .idle
@@ -90,7 +90,7 @@ struct SecurityOverview_Previews: PreviewProvider {
                 SecurityOverview(model: model, details: details)
             }
         }
-            .environmentObject(account)
+            .environment(account)
     }
 }
 #endif

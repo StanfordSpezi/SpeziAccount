@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Spezi
+import SpeziFoundation
 
 
 private class RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {

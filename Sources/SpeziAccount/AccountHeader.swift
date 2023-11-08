@@ -41,7 +41,7 @@ public struct AccountHeader: View {
         // swiftlint:disable:previous attributes
     }
     
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     private var caption: LocalizedStringResource
     
     public var body: some View {
@@ -89,12 +89,12 @@ public struct AccountHeader: View {
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
     
     return AccountHeader()
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
 }
 
 #Preview {
     AccountHeader(caption: "Email, Password, Preferences")
-        .environmentObject(Account(MockUserIdPasswordAccountService()))
+        .environment(Account(MockUserIdPasswordAccountService()))
 }
 
 #Preview {
@@ -113,7 +113,7 @@ public struct AccountHeader: View {
             }
         }
     }
-        .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
 }
 
 #Preview {
@@ -131,7 +131,7 @@ public struct AccountHeader: View {
             }
         }
     }
-    .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+    .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
 }
 
 #Preview {
@@ -146,6 +146,6 @@ public struct AccountHeader: View {
             }
         }
     }
-        .environmentObject(Account(MockUserIdPasswordAccountService()))
+        .environment(Account(MockUserIdPasswordAccountService()))
 }
 #endif

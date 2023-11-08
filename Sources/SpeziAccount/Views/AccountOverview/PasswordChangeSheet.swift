@@ -145,7 +145,7 @@ struct PasswordChangeSheet_Previews: PreviewProvider {
                 PasswordChangeSheet(model: model, details: details)
             }
         }
-        .environmentObject(account)
+        .environment(account)
     }
 }
 #endif

@@ -29,7 +29,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
         "DataHook-\(Wrapped.Key.self)"
     }
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
 

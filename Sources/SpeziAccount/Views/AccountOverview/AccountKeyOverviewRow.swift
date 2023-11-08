@@ -13,7 +13,7 @@ struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @Environment(\.editMode) private var editMode
 
     @ObservedObject private var model: AccountOverviewFormViewModel
@@ -92,6 +92,7 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
         if let details = account.details {
             AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
                 .injectEnvironmentObjects(service: details.accountService, model: model)
+                .environment(account)
         }
     }
 }

@@ -54,7 +54,7 @@ struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             UserIdPasswordPrimaryView(using: accountService)
-                .environmentObject(Account(accountService))
+                .environment(Account(accountService))
         }
     }
 }

@@ -13,7 +13,7 @@ import SwiftUI
 struct NameOverview: View {
     private let accountDetails: AccountDetails
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     @ObservedObject private var model: AccountOverviewFormViewModel
 
@@ -83,14 +83,14 @@ struct NameOverview_Previews: PreviewProvider {
                 NameOverview(model: model, details: details)
             }
         }
-            .environmentObject(account)
+            .environment(account)
 
         NavigationStack {
             if let details = accountWithoutName.details {
                 NameOverview(model: model, details: details)
             }
         }
-        .environmentObject(accountWithoutName)
+            .environment(accountWithoutName)
     }
 }
 #endif

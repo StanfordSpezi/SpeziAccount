@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Spezi
+import SpeziFoundation
 
 
 /// The localized name of an ``AccountService``.

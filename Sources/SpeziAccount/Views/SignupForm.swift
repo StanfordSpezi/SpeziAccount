@@ -47,7 +47,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
 
     @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
@@ -168,7 +168,7 @@ struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
         NavigationStack {
             SignupForm(using: accountService)
         }
-            .environmentObject(Account(accountService))
+            .environment(Account(accountService))
     }
 }
 #endif

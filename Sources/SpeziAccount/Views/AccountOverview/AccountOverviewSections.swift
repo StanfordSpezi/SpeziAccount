@@ -21,8 +21,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         accountDetails.accountService
     }
     
-    @EnvironmentObject private var account: Account
-    
+    @Environment(Account.self) private var account
+
     @Environment(\.logger) private var logger
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
@@ -283,7 +283,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
                 }
             }
         }
-            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
     }
 }
 #endif

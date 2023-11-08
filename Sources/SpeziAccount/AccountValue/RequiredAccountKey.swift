@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 /// A typed storage key extending ``AccountKey`` for values that are required for every user account if used.

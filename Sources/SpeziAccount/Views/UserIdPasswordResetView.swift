@@ -137,14 +137,14 @@ struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
             UserIdPasswordResetView(using: accountService) {
                 SuccessfulPasswordResetView()
             }
-                .environmentObject(Account(accountService))
+                .environment(Account(accountService))
         }
 
         NavigationStack {
             UserIdPasswordResetView(using: accountService, requestSubmitted: true) {
                 SuccessfulPasswordResetView()
             }
-                .environmentObject(Account(accountService))
+                .environment(Account(accountService))
         }
     }
 }

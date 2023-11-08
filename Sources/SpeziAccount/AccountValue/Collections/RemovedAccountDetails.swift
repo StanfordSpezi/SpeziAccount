@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 /// Set of ``AccountValues`` that were removed providing access to the old values.
