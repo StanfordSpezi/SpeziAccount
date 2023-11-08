@@ -11,11 +11,11 @@ import SwiftUI
 
 
 struct NameOverview: View {
+    private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
     @Environment(Account.self) private var account
 
-    @ObservedObject private var model: AccountOverviewFormViewModel
 
     var body: some View {
         Form {
@@ -75,7 +75,7 @@ struct NameOverview_Previews: PreviewProvider {
     static let accountWithoutName = Account(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
 
     // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+    @State static var model = AccountOverviewFormViewModel(account: account)
 
     static var previews: some View {
         NavigationStack {

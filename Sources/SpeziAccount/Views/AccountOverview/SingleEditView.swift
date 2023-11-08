@@ -11,7 +11,9 @@ import SpeziViews
 import SwiftUI
 
 
+@MainActor
 struct SingleEditView<Key: AccountKey>: View {
+    private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
     private var service: any AccountService {
@@ -22,7 +24,6 @@ struct SingleEditView<Key: AccountKey>: View {
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject private var model: AccountOverviewFormViewModel
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -88,7 +89,7 @@ struct SingleEditView_Previews: PreviewProvider {
     static let account = Account(building: details, active: MockUserIdPasswordAccountService())
 
     // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+    @State static var model = AccountOverviewFormViewModel(account: account)
 
     static var previews: some View {
         NavigationStack {

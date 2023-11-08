@@ -13,6 +13,7 @@ import SwiftUI
 
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
+@MainActor
 struct AccountOverviewSections<AdditionalSections: View>: View {
     let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
@@ -27,7 +28,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var model: AccountOverviewFormViewModel
+    @State private var model: AccountOverviewFormViewModel
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -213,7 +214,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
-        self._model = StateObject(wrappedValue: AccountOverviewFormViewModel(account: account))
+        self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account))
         self._isEditing = isEditing
         self.additionalSections = additionalSections()
     }

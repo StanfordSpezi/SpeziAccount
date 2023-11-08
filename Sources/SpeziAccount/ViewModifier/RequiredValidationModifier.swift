@@ -11,7 +11,7 @@ import SwiftUI
 
 
 private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
-    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
 
     @ValidationState private var validation
     @ValidationState private var innerValidation

@@ -11,8 +11,10 @@ import SpeziViews
 import SwiftUI
 
 
+@MainActor
 struct PasswordChangeSheet: View {
     private let accountDetails: AccountDetails
+    private let model: AccountOverviewFormViewModel
 
     private var service: any AccountService {
         accountDetails.accountService
@@ -22,7 +24,6 @@ struct PasswordChangeSheet: View {
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
-    @ObservedObject private var model: AccountOverviewFormViewModel
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -137,7 +138,7 @@ struct PasswordChangeSheet_Previews: PreviewProvider {
     static let account = Account(building: details, active: MockUserIdPasswordAccountService())
 
     // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+    @State static var model = AccountOverviewFormViewModel(account: account)
 
     static var previews: some View {
         NavigationStack {

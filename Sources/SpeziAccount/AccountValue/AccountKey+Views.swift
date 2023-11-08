@@ -21,6 +21,7 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 }
 
 
+@MainActor
 extension AccountKey {
     static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
         AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: initialValue.value))

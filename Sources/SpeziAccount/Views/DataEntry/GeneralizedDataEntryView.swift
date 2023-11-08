@@ -31,7 +31,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
     @Environment(Account.self) private var account
 
-    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType

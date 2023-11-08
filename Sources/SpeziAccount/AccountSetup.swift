@@ -53,6 +53,7 @@ public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_
 ///     }
 /// }
 /// ```
+@MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header
