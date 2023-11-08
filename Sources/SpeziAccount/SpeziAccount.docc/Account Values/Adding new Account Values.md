@@ -26,15 +26,15 @@ The first step is to create a new type that adopts the ``AccountKey`` protocol.
 
 > Note: Refer to the ``RequiredAccountKey`` protocol if you require an account value that is always required to be supplied if configured.
 
-When adopting the protocol, you have to provide the associated [Value](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/knowledgesource/value)
+When adopting the protocol, you have to provide the associated [Value](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/knowledgesource/value)
 type, a ``AccountKey/name``, a ``AccountKey/category`` and an ``AccountKey/initialValue-6h1oo``.
 The `Value` defines the type of the account value, the `name` is used to textually refer to the account value and 
 the `category` is used to group the account values in UI components (see ``AccountKeyCategory`` for more information).
 The `initialValue` defines the initial value on signup and how it is used. For some types like String a default ``InitialValue/empty(_:)`` implementation is provided.
 
 > Note: The associated type for the value is coming from the underlying 
-    [KnowledgeSource](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/knowledgesource) protocol from the Spezi framework. 
-    Refer to the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository)
+    [KnowledgeSource](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/knowledgesource) protocol from the Spezi framework. 
+    Refer to the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/shared-repository)
     documentation for more information.
 
 Below is a code example implementing a simple string-based biography that a user might show on their profile.
