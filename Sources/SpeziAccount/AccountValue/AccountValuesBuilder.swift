@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Spezi
+import SpeziFoundation
 
 
 private class RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
@@ -86,9 +86,10 @@ private class CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>:
 /// - ``AccountValuesBuilder/build()-pqt5``
 /// - ``AccountValuesBuilder/build(owner:)``
 /// - ``AccountValuesBuilder/build(checking:)``
-public class AccountValuesBuilder<Values: AccountValues>: ObservableObject, AccountValuesCollection {
-    @Published var storage: AccountStorage
-    @Published var defaultValues: AccountStorage
+@Observable
+public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollection {
+    var storage: AccountStorage
+    var defaultValues: AccountStorage
 
 
     init(from storage: AccountStorage) {

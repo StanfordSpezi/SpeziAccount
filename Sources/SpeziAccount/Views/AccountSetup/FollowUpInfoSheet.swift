@@ -12,6 +12,7 @@ import SpeziViews
 import SwiftUI
 
 
+@MainActor
 struct FollowUpInfoSheet: View {
     private let accountDetails: AccountDetails
     private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
@@ -23,9 +24,9 @@ struct FollowUpInfoSheet: View {
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
-    @StateObject private var detailsBuilder = ModifiedAccountDetails.Builder()
+    @State private var detailsBuilder = ModifiedAccountDetails.Builder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -89,7 +90,7 @@ struct FollowUpInfoSheet: View {
             SignupSectionsView(for: ModifiedAccountDetails.self, service: service, sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
-                .environmentObject(detailsBuilder)
+                .environment(detailsBuilder)
                 .focused($isFocused)
 
             AsyncButton(state: $viewState, action: completeButtonAction) {
@@ -150,7 +151,7 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
                 FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
             }
         }
-            .environmentObject(account)
+            .environment(account)
     }
 }
 #endif

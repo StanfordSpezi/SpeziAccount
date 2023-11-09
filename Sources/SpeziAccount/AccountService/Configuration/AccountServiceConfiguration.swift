@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Spezi
+import SpeziFoundation
 import SwiftUI
 
 

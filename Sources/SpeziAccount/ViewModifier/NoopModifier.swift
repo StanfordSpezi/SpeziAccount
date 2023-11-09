@@ -6,8 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SpeziFoundation
+import SwiftUI
 
 
-/// A `RepositoryAnchor` for ``AccountStorage``.
-public struct AccountAnchor: RepositoryAnchor, Sendable {}
+struct NoopModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+    }
+}

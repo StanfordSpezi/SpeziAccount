@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 /// A `ValueRepository` that stores `KnowledgeSource`s anchored to the ``AccountAnchor``.

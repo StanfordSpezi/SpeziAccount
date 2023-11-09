@@ -13,6 +13,6 @@ extension View {
     func injectEnvironmentObjects(service: any AccountService, model: AccountOverviewFormViewModel) -> some View {
         self
             .environment(\.accountServiceConfiguration, service.configuration)
-            .environmentObject(model.modifiedDetailsBuilder)
+            .environment(model.modifiedDetailsBuilder)
     }
 }

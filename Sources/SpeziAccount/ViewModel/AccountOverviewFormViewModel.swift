@@ -14,7 +14,8 @@ import SwiftUI
 
 
 @MainActor
-class AccountOverviewFormViewModel: ObservableObject {
+@Observable
+class AccountOverviewFormViewModel {
     private static var logger: Logger {
         LoggerKey.defaultValue
     }
@@ -27,14 +28,14 @@ class AccountOverviewFormViewModel: ObservableObject {
     private let categorizedAccountKeys: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
 
-    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder() // nested ObservableObject, see init
+    let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
 
-    @Published var presentingCancellationDialog = false
-    @Published var presentingLogoutAlert = false
-    @Published var presentingRemovalAlert = false
+    var presentingCancellationDialog = false
+    var presentingLogoutAlert = false
+    var presentingRemovalAlert = false
 
-    @Published var addedAccountKeys = CategorizedAccountKeys()
-    @Published var removedAccountKeys = CategorizedAccountKeys()
+    var addedAccountKeys = CategorizedAccountKeys()
+    var removedAccountKeys = CategorizedAccountKeys()
 
     var hasUnsavedChanges: Bool {
         !modifiedDetailsBuilder.isEmpty
@@ -44,17 +45,9 @@ class AccountOverviewFormViewModel: ObservableObject {
         .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module))
     }
 
-    private var anyCancellable: [AnyCancellable] = []
-
 
     init(account: Account) {
         self.categorizedAccountKeys = account.configuration.allCategorized()
-
-        // We forward the objectWillChange publisher. Our `hasUnsavedChanges` is affected by changes to the builder.
-        // Otherwise, changes to the object wouldn't be important.
-        anyCancellable.append(modifiedDetailsBuilder.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
-        })
     }
 
 
@@ -210,10 +203,5 @@ class AccountOverviewFormViewModel: ObservableObject {
     func displaysNameDetails() -> Bool {
         categorizedAccountKeys[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true
             || categorizedAccountKeys[.name]?.isEmpty != true
-    }
-
-
-    deinit {
-        anyCancellable.forEach { $0.cancel() }
     }
 }

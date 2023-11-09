@@ -13,7 +13,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     private let required: Bool
     private let setupSheet: SetupSheet
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     @State private var presentingSheet = false
 

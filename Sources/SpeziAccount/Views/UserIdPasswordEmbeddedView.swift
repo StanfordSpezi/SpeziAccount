@@ -28,7 +28,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         service.configuration.userIdConfiguration
     }
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     // for login we do all checks server-side. Except that we don't pass empty values.
     @ValidationState private var validation
@@ -128,6 +128,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     }
 
 
+    @MainActor
     private func loginButtonAction() async throws {
         guard validation.validateSubviews() else {
             return
@@ -146,6 +147,6 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
     return NavigationStack {
         UserIdPasswordEmbeddedView(using: accountService)
     }
-        .environmentObject(Account(accountService))
+        .environment(Account(accountService))
 }
 #endif

@@ -56,7 +56,7 @@ import SwiftUI
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
 public struct AccountOverview<AdditionalSections: View>: View {
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     
     @Binding private var isEditing: Bool
     
@@ -126,12 +126,12 @@ struct AccountOverView_Previews: PreviewProvider {
                 }
             }
         }
-            .environmentObject(Account(building: details, active: MockUserIdPasswordAccountService()))
-        
+            .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+
         NavigationStack {
             AccountOverview()
         }
-            .environmentObject(Account())
+            .environment(Account())
     }
 }
 #endif

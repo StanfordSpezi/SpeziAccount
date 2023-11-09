@@ -59,8 +59,9 @@ import SwiftUI
 /// - ``init(services:configuration:)``
 /// - ``init(_:configuration:)``
 /// - ``init(building:active:configuration:)``
+@Observable
 @MainActor
-public class Account: ObservableObject, Sendable {
+public final class Account: Sendable {
     private let logger: Logger
 
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
@@ -71,7 +72,7 @@ public class Account: ObservableObject, Sendable {
     ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
     ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
     ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
-    @Published public private(set) var signedIn: Bool
+    public private(set) var signedIn: Bool
 
     /// Provides access to associated data of the currently associated user account.
     ///
@@ -80,7 +81,7 @@ public class Account: ObservableObject, Sendable {
     ///
     /// - Note: The associated ``AccountService`` that is responsible for managing the associated user can be retrieved
     ///     using the ``AccountDetails/accountService`` property.
-    @Published public private(set) var details: AccountDetails?
+    public private(set) var details: AccountDetails?
 
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
@@ -103,8 +104,10 @@ public class Account: ObservableObject, Sendable {
     ) {
         self.logger = LoggerKey.defaultValue
 
-        self._signedIn = Published(wrappedValue: details != nil)
-        self._details = Published(wrappedValue: details)
+        // we have to initialize the macro generated properties directly to stay non-isolated.
+        self._signedIn = details != nil
+        self._details = details
+
         self.configuration = supportedConfiguration
         self.registeredAccountServices = services
 

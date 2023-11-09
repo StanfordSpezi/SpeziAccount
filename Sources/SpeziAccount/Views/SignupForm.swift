@@ -47,10 +47,10 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     private let service: Service
     private let header: Header
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
 
-    @StateObject private var signupDetailsBuilder = SignupDetails.Builder()
+    @State private var signupDetailsBuilder = SignupDetails.Builder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -107,14 +107,14 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
             }
     }
 
-    @ViewBuilder var form: some View {
+    @MainActor @ViewBuilder var form: some View {
         Form {
             header
 
             SignupSectionsView(for: SignupDetails.self, service: service, sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
-                .environmentObject(signupDetailsBuilder)
+                .environment(signupDetailsBuilder)
 
             AsyncButton(state: $viewState, action: signupButtonAction) {
                 Text("UP_SIGNUP", bundle: .module)
@@ -143,6 +143,7 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     }
 
 
+    @MainActor
     private func signupButtonAction() async throws {
         guard validation.validateSubviews() else {
             return
@@ -168,7 +169,7 @@ struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
         NavigationStack {
             SignupForm(using: accountService)
         }
-            .environmentObject(Account(accountService))
+            .environment(Account(accountService))
     }
 }
 #endif

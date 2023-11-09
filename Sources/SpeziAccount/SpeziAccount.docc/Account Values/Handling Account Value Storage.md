@@ -23,7 +23,7 @@ few differences in construction operations, they convey entirely different seman
 
 ``AccountKey``s define an extension to the ``AccountValues`` so account values can be conveniently accessed. For example, the
 ``PersonNameKey`` defines the ``AccountValues/name`` property as an extension to access the name of a person if it exists.
-Otherwise, you can always access the underlying [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository)
+Otherwise, you can always access the underlying [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/shared-repository)
 using the ``AccountValues/storage`` property.
 
 ### Iterating through Account Values
@@ -56,7 +56,7 @@ let encoded = details.acceptAll(&visitor)
 ```
 
 > Important: ``AccountValues`` implement the `Collection` protocol and therefore support iteration. However, `Element`s of the collection are of type
-    [AnyRepositoryValue](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/anyrepositoryvalue) as ``AccountValues`` might store
+    [AnyRepositoryValue](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/anyrepositoryvalue) as ``AccountValues`` might store
     non-``AccountKey`` conforming knowledge sources like the ``ActiveAccountServiceKey``.
 
 ### Iterating through Account Keys

@@ -194,6 +194,9 @@ final class AccountOverviewTests: XCTestCase {
         overview.app.typeText("tum.de") // we still have keyboard focus
         overview.app.dismissKeyboard()
         overview.tap(button: "Done")
+
+        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
+        app.alerts["Security Alert"].buttons["Dismiss"].tap()
         sleep(3)
 
         overview.verifyExistence(text: "lelandstanford@tum.de")
@@ -268,6 +271,9 @@ final class AccountOverviewTests: XCTestCase {
         overview.app.typeText("6789")
 
         overview.tap(button: "Done")
+
+        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
+        app.alerts["Security Alert"].buttons["Dismiss"].tap()
         sleep(2)
 
         XCTAssertFalse(overview.secureTextFields["enter password"].waitForExistence(timeout: 2.0))

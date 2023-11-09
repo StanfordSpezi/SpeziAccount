@@ -24,7 +24,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
     private let sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
     private let storageType: Storage.Type
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     var body: some View {
         // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
@@ -67,7 +67,7 @@ struct SignupSectionsView_Previews: PreviewProvider {
                 .name: [PersonNameKey.self]
             ])
         }
-            .environmentObject(Account(service))
+            .environment(Account(service))
     }
 }
 #endif

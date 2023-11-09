@@ -11,11 +11,15 @@ import SwiftUI
 
 
 struct NameOverview: View {
+    private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    @EnvironmentObject private var account: Account
+    private var service: any AccountService {
+        accountDetails.accountService
+    }
 
-    @ObservedObject private var model: AccountOverviewFormViewModel
+    @Environment(Account.self) private var account
+
 
     var body: some View {
         Form {
@@ -37,7 +41,7 @@ struct NameOverview: View {
                                 Text("VALUE_ADD \(wrapper.accountKey.name)", bundle: .module)
                                     .foregroundColor(.secondary)
                             }
-                            .accessibilityElement(children: .combine)
+                                .accessibilityElement(children: .combine)
                         }
                     }
                 } header: {
@@ -48,6 +52,7 @@ struct NameOverview: View {
                 }
             }
         }
+            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
@@ -75,7 +80,7 @@ struct NameOverview_Previews: PreviewProvider {
     static let accountWithoutName = Account(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
 
     // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @StateObject static var model = AccountOverviewFormViewModel(account: account)
+    @State static var model = AccountOverviewFormViewModel(account: account)
 
     static var previews: some View {
         NavigationStack {
@@ -83,14 +88,14 @@ struct NameOverview_Previews: PreviewProvider {
                 NameOverview(model: model, details: details)
             }
         }
-            .environmentObject(account)
+            .environment(account)
 
         NavigationStack {
             if let details = accountWithoutName.details {
                 NameOverview(model: model, details: details)
             }
         }
-        .environmentObject(accountWithoutName)
+            .environment(accountWithoutName)
     }
 }
 #endif

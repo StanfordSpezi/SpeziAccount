@@ -81,13 +81,13 @@ The first approach is to provide your ``AccountService`` as is and let the user 
 pass it to the result builder closure of the ``AccountServiceConfiguration/init(name:supportedKeys:configuration:)`` initializer.
 This is the preferred approach for account services that don't require additional setup or rely on any special infrastructure.
 
-If your account service requires additional setup or any infrastructure that relies on other `Component`s you can implement
-your own `Spezi` [Component](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/component) that _provides_ your
-``AccountService`` directly to the ``AccountServiceConfiguration`` component. To do so, declare the `@Provide` property wrapper with a type of
+If your account service requires additional setup or any infrastructure that relies on other `Module`s you can implement
+your own `Spezi` [Module](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/module) that _provides_ your
+``AccountService`` directly to the ``AccountServiceConfiguration`` module. To do so, declare the `@Provide` property wrapper with a type of
 `any AccountService` and populate it within your initializer. Below is a code example.
 
 ```swift
-class MyComponent: Component {
+class MyModule: Module {
     @Provide var accountService: any AccountService // you can also use a type of [any AccountService] to provide multiple with a single @Provide
 
     init() {
@@ -100,7 +100,7 @@ class MyComponent: Component {
 }
 ```
 
-> Note: Refer to the [Component Communication](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/component#Communication) documentation
+> Note: Refer to the [Module Communication](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/module-communication) documentation
     of the `Spezi` framework for more detailed information.
 
 

@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 /// The collection of ``AccountKey``s that are required when using the associated ``AccountService``.

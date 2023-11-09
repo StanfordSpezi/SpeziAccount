@@ -19,6 +19,7 @@
 		2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2FAD38BF2A455FC200E79ED1 /* SpeziAccount */; };
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
 		A96924112A9A2E7800E2128B /* TestAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96924102A9A2E7800E2128B /* TestAccountService.swift */; };
+		A99D25052AFCB7AD002CC42A /* TestAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */; };
 		A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */; };
 		A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */; };
 		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
@@ -60,6 +61,7 @@
 		2FE750C92A8720CE00723EAE /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 		636D985F2AF188E00020B8BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A96924102A9A2E7800E2128B /* TestAccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccountService.swift; sourceTree = "<group>"; };
+		A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAlertModifier.swift; sourceTree = "<group>"; };
 		A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetupTests.swift; sourceTree = "<group>"; };
 		A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountOverviewTests.swift; sourceTree = "<group>"; };
 		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 		2F027C9629D6C63300234098 /* AccountTests */ = {
 			isa = PBXGroup;
 			children = (
+				A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */,
 				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
 				2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */,
 				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
@@ -313,6 +316,7 @@
 			files = (
 				2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */,
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
+				A99D25052AFCB7AD002CC42A /* TestAlertModifier.swift in Sources */,
 				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
 				A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
@@ -574,6 +578,120 @@
 			};
 			name = Release;
 		};
+		A94FDCE12AFC4A86008026CE /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TEST;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Test;
+		};
+		A94FDCE22AFC4A86008026CE /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TestApp/TestApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = 637867499T;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TestApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.spezi.account.testapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Test;
+		};
+		A94FDCE32AFC4A86008026CE /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 637867499T;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.stanford.spezi.account.testappuitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TestApp;
+			};
+			name = Test;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -581,6 +699,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2F6D13B428F5F386007C25D6 /* Debug */,
+				A94FDCE12AFC4A86008026CE /* Test */,
 				2F6D13B528F5F386007C25D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -590,6 +709,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2F6D13B728F5F386007C25D6 /* Debug */,
+				A94FDCE22AFC4A86008026CE /* Test */,
 				2F6D13B828F5F386007C25D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -599,6 +719,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2F6D13BD28F5F386007C25D6 /* Debug */,
+				A94FDCE32AFC4A86008026CE /* Test */,
 				2F6D13BE28F5F386007C25D6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

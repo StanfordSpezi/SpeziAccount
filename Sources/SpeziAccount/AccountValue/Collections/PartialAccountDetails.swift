@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
+import SpeziFoundation
 
 
 /// Set of ``AccountValues`` that resembled ``AccountDetails`` but may be incomplete in respect to the

@@ -7,10 +7,23 @@
 //
 
 import SpeziAccount
+import SwiftUI
+
+
+struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
+    let service: TestAccountService
+
+
+    var securityRelatedViewModifier: any ViewModifier {
+        TestAlertModifier()
+    }
+}
 
 
 actor TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
+
+    private let model: TestAlertModel
     private let defaultUserId: String
     private let defaultAccountOnConfigure: Bool
     private var excludeName: Bool
@@ -18,8 +31,12 @@ actor TestAccountService: UserIdPasswordAccountService {
     @AccountReference var account: Account
     var registeredUser: UserStorage // simulates the backend
 
+    nonisolated var viewStyle: TestViewStyle {
+        TestViewStyle(service: self)
+    }
 
-    init(_ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
+
+    init(_ model: TestAlertModel, _ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
         configuration = AccountServiceConfiguration(
             name: "\(type.localizedStringResource) and Password",
             supportedKeys: .exactly(UserStorage.supportedKeys)
@@ -31,10 +48,11 @@ actor TestAccountService: UserIdPasswordAccountService {
             UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
         }
 
-        defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
+        self.model = model
+        self.defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
         self.defaultAccountOnConfigure = defaultAccount
         self.excludeName = noName
-        registeredUser = UserStorage(userId: defaultUserId)
+        self.registeredUser = UserStorage(userId: defaultUserId)
     }
 
     nonisolated func configure() {
@@ -76,7 +94,16 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
-        try await Task.sleep(for: .seconds(1))
+        if modifications.modifiedDetails.storage.get(UserIdKey.self) != nil
+            || modifications.modifiedDetails.storage.get(PasswordKey.self) != nil {
+            await withCheckedContinuation { continuation in
+                model.presentingAlert = true
+                model.continuation = continuation
+            }
+        } else {
+            try await Task.sleep(for: .seconds(1))
+        }
+
         registeredUser.update(modifications)
 
         try await updateUser()

@@ -12,12 +12,13 @@ import SpeziViews
 import SwiftUI
 
 
+@MainActor
 struct AccountTestsView: View {
     @Environment(\.features) var features
     
-    @EnvironmentObject var account: Account
-    @EnvironmentObject var standard: TestStandard
-    
+    @Environment(Account.self) var account: Account
+    @Environment(TestStandard.self) var standard
+
     @State var showSetup = false
     @State var showOverview = false
     @State var isEditing = false
@@ -133,13 +134,13 @@ struct AccountTestsView_Previews: PreviewProvider {
     
     static var previews: some View {
         AccountTestsView()
-            .environmentObject(Account(TestAccountService(.emailAddress)))
-        
+            .environment(Account(TestAccountService(TestAlertModel(), .emailAddress)))
+
         AccountTestsView()
-            .environmentObject(Account(building: details, active: TestAccountService(.emailAddress)))
-        
+            .environment(Account(building: details, active: TestAccountService(TestAlertModel(), .emailAddress)))
+
         AccountTestsView()
-            .environmentObject(Account())
+            .environment(Account())
     }
 }
 #endif

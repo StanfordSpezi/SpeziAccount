@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import SpeziValidation
 import SwiftUI
 
@@ -29,9 +28,9 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
         "DataHook-\(Wrapped.Key.self)"
     }
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
-    @EnvironmentObject private var detailsBuilder: AccountValuesBuilder<Values>
+    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType

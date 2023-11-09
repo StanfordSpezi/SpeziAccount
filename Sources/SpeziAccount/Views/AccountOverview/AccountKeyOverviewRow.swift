@@ -12,11 +12,10 @@ import SwiftUI
 struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
+    private let model: AccountOverviewFormViewModel
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
     @Environment(\.editMode) private var editMode
-
-    @ObservedObject private var model: AccountOverviewFormViewModel
 
     var body: some View {
         if editMode?.wrappedValue.isEditing == true {
@@ -67,6 +66,7 @@ struct AccountKeyOverviewRow: View {
     }
 
 
+    @MainActor
     func isDeleteDisabled(for key: any AccountKey.Type) -> Bool {
         if accountDetails.contains(key) && !model.removedAccountKeys.contains(key) {
             return account.configuration[key]?.requirement == .required
@@ -86,12 +86,13 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
 
     static let account = Account(building: details, active: MockUserIdPasswordAccountService())
 
-    @StateObject private static var model = AccountOverviewFormViewModel(account: account)
+    @State private static var model = AccountOverviewFormViewModel(account: account)
 
     static var previews: some View {
         if let details = account.details {
             AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
                 .injectEnvironmentObjects(service: details.accountService, model: model)
+                .environment(account)
         }
     }
 }

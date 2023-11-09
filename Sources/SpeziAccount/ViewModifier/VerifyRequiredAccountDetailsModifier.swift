@@ -22,7 +22,7 @@ private struct FollowUpSession: Identifiable {
 struct VerifyRequiredAccountDetailsModifier: ViewModifier {
     private let verify: Bool
 
-    @EnvironmentObject private var account: Account
+    @Environment(Account.self) private var account
 
     @SceneStorage("edu.stanford.spezi-account.startup-account-check") private var verifiedAccount = false
     @State private var followUpSession: FollowUpSession?
