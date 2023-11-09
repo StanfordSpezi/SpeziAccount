@@ -46,6 +46,7 @@ struct PasswordChangeSheet: View {
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
                 .viewStateAlert(state: $viewState)
+                .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

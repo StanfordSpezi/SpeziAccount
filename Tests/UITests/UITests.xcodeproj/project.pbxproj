@@ -19,6 +19,7 @@
 		2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2FAD38BF2A455FC200E79ED1 /* SpeziAccount */; };
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
 		A96924112A9A2E7800E2128B /* TestAccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A96924102A9A2E7800E2128B /* TestAccountService.swift */; };
+		A99D25052AFCB7AD002CC42A /* TestAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */; };
 		A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */; };
 		A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */; };
 		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
@@ -60,6 +61,7 @@
 		2FE750C92A8720CE00723EAE /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 		636D985F2AF188E00020B8BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A96924102A9A2E7800E2128B /* TestAccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccountService.swift; sourceTree = "<group>"; };
+		A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAlertModifier.swift; sourceTree = "<group>"; };
 		A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetupTests.swift; sourceTree = "<group>"; };
 		A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountOverviewTests.swift; sourceTree = "<group>"; };
 		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 		2F027C9629D6C63300234098 /* AccountTests */ = {
 			isa = PBXGroup;
 			children = (
+				A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */,
 				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
 				2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */,
 				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
@@ -313,6 +316,7 @@
 			files = (
 				2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */,
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
+				A99D25052AFCB7AD002CC42A /* TestAlertModifier.swift in Sources */,
 				2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */,
 				A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,

@@ -14,6 +14,10 @@ struct NameOverview: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
+    private var service: any AccountService {
+        accountDetails.accountService
+    }
+
     @Environment(Account.self) private var account
 
 
@@ -37,7 +41,7 @@ struct NameOverview: View {
                                 Text("VALUE_ADD \(wrapper.accountKey.name)", bundle: .module)
                                     .foregroundColor(.secondary)
                             }
-                            .accessibilityElement(children: .combine)
+                                .accessibilityElement(children: .combine)
                         }
                     }
                 } header: {
@@ -48,6 +52,7 @@ struct NameOverview: View {
                 }
             }
         }
+            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)

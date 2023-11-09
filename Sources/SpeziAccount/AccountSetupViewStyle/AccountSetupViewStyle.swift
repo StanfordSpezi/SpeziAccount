@@ -26,6 +26,16 @@ public protocol AccountSetupViewStyle {
     /// The associated ``AccountService`` instance.
     var service: Service { get }
 
+    /// A `ViewModifier` that is injected into views with security related operations.
+    ///
+    /// This modifier is injected into views that expose security related operations like changing the password
+    /// or change the user identifier. It is guaranteed that this modifier is not injected twice into the same
+    /// view hierarchy.
+    ///
+    /// - Note: It is advised to implement this as a computed property.
+    var securityRelatedViewModifier: any ViewModifier { get }
+
+
     /// The button label in the list of account services for the ``AccountSetup`` view.
     @ViewBuilder
     func makeServiceButtonLabel() -> ButtonLabel
@@ -41,6 +51,12 @@ public protocol AccountSetupViewStyle {
 
 
 extension AccountSetupViewStyle {
+    /// Default implementation that doesn't modify anything.
+    public var securityRelatedViewModifier: any ViewModifier {
+        NoopModifier()
+    }
+
+
     /// Default service button label using the ``AccountServiceName`` and ``AccountServiceImage`` configurations.
     public func makeServiceButtonLabel() -> some View {
         Group {
