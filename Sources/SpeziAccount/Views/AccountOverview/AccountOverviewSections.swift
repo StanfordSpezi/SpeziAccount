@@ -125,6 +125,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
+            .anyViewModifier(service.viewStyle.securityRelatedViewModifier) // for delete action
 
         defaultSections
         
