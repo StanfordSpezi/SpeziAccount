@@ -24,7 +24,7 @@ state.
 Below is a short code example to access the global ``Account`` instance.
 ```swift
 struct MyView: View {
-    @EnvironmentObject var account: Account
+    @Environment(Account.self) var account
 
     var body: some View {
         // ... use account

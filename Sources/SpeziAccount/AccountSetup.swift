@@ -35,7 +35,7 @@ public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_
 ///
 /// ```swift
 /// struct MyView: View {
-///     @EnvironmentObject var account: Account
+///     @Environment(Account.self) var account
 ///
 ///     var body: some View {
 ///         // You may use `account.signedIn` to conditionally render another view if there is already a signed in account
