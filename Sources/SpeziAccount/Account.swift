@@ -23,12 +23,12 @@ import SwiftUI
 /// ### Accessing `Account` in your view
 ///
 /// To access the `Account` object from anywhere in your view hierarchy (assuming you have ``AccountConfiguration`` configured),
-/// you may just declare the respective [@EnvironmentObject](https://developer.apple.com/documentation/swiftui/environmentobject)
+/// you may just declare the respective [@Environment](https://developer.apple.com/documentation/swiftui/environment)
 /// property wrapper as in the code sample below.
 ///
 /// ```swift
 /// struct MyView: View {
-///     @EnvironmentObject var account: Account
+///     @Environment(Account.self) var account
 ///
 ///     var body: some View {
 ///         if let details = account.details {

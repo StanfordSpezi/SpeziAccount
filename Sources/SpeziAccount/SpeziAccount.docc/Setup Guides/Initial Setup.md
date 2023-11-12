@@ -65,7 +65,7 @@ You can use the ``Account/signedIn`` property to conditionally hide or render an
 
 ```swift
 struct MyView: View {
-    @EnvironmentObject var account: Account
+    @Environment(Account.self) var account
 
     var body: some View {
         if !account.signedIn {
