@@ -57,6 +57,7 @@ extension View {
     ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
     ///     This view is directly used with the standard SwiftUI sheet modifier.
     /// - Returns: The modified view.
+    @ViewBuilder
     public func accountRequired<SetupSheet: View>(_ required: Bool = true, @ViewBuilder setupSheet: () -> SetupSheet) -> some View {
         if required {
             modifier(AccountRequiredModifier(setupSheet: setupSheet))
