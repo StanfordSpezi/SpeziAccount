@@ -20,44 +20,37 @@ private struct FollowUpSession: Identifiable {
 
 
 struct VerifyRequiredAccountDetailsModifier: ViewModifier {
-    private let verify: Bool
-
     @Environment(Account.self) private var account
 
     @SceneStorage("edu.stanford.spezi-account.startup-account-check") private var verifiedAccount = false
     @State private var followUpSession: FollowUpSession?
 
 
-    init(verify: Bool) {
-        self.verify = verify
+    init() {
     }
 
 
     func body(content: Content) -> some View {
-        if verify {
-            content
-                .sheet(item: $followUpSession) { session in
-                    FollowUpInfoSheet(details: session.details, requiredKeys: session.requiredKeys)
+        content
+            .sheet(item: $followUpSession) { session in
+                FollowUpInfoSheet(details: session.details, requiredKeys: session.requiredKeys)
+            }
+            .task {
+                guard !verifiedAccount else {
+                    return
                 }
-                .task {
-                    guard !verifiedAccount else {
-                        return
-                    }
 
-                    try? await Task.sleep(for: .milliseconds(500))
-                    verifiedAccount = true
+                try? await Task.sleep(for: .milliseconds(500))
+                verifiedAccount = true
 
-                    if let details = account.details {
-                        let missingKeys = account.configuration.missingRequiredKeys(for: details)
+                if let details = account.details {
+                    let missingKeys = account.configuration.missingRequiredKeys(for: details)
 
-                        if !missingKeys.isEmpty {
-                            followUpSession = FollowUpSession(details: details, requiredKeys: missingKeys)
-                        }
+                    if !missingKeys.isEmpty {
+                        followUpSession = FollowUpSession(details: details, requiredKeys: missingKeys)
                     }
                 }
-        } else {
-            content
-        }
+            }
     }
 }
 
@@ -72,7 +65,12 @@ extension View {
     ///
     /// - Parameter verify: Flag indicating if this verification check is turned on.
     /// - Returns: The modified view.
+    @ViewBuilder
     public func verifyRequiredAccountDetails(_ verify: Bool = true) -> some View {
-        modifier(VerifyRequiredAccountDetailsModifier(verify: verify))
+        if verify {
+            modifier(VerifyRequiredAccountDetailsModifier())
+        } else {
+            self
+        }
     }
 }
