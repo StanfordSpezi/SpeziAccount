@@ -10,7 +10,6 @@ import SwiftUI
 
 
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
-    private let required: Bool
     private let setupSheet: SetupSheet
 
     @Environment(Account.self) private var account
@@ -18,34 +17,29 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     @State private var presentingSheet = false
 
 
-    init(required: Bool, @ViewBuilder setupSheet: () -> SetupSheet) {
-        self.required = required
+    init(@ViewBuilder setupSheet: () -> SetupSheet) {
         self.setupSheet = setupSheet()
     }
 
 
     func body(content: Content) -> some View {
-        if required {
-            content
-                .onChange(of: [account.signedIn, presentingSheet]) {
-                    if !account.signedIn && !presentingSheet {
-                        presentingSheet = true
-                    }
+        content
+            .onChange(of: [account.signedIn, presentingSheet]) {
+                if !account.signedIn && !presentingSheet {
+                    presentingSheet = true
                 }
-                .task {
-                    try? await Task.sleep(for: .milliseconds(500))
-                    if !account.signedIn {
-                        presentingSheet = true
-                    }
+            }
+            .task {
+                try? await Task.sleep(for: .milliseconds(500))
+                if !account.signedIn {
+                    presentingSheet = true
                 }
-                .sheet(isPresented: $presentingSheet) {
-                    setupSheet
-                        .interactiveDismissDisabled(true)
-                }
-                .environment(\.accountRequired, true)
-        } else {
-            content
-        }
+            }
+            .sheet(isPresented: $presentingSheet) {
+                setupSheet
+                    .interactiveDismissDisabled(true)
+            }
+            .environment(\.accountRequired, true)
     }
 }
 
@@ -63,7 +57,12 @@ extension View {
     ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
     ///     This view is directly used with the standard SwiftUI sheet modifier.
     /// - Returns: The modified view.
-    public func accountRequired<SetupSheet: View>(_ required: Bool, @ViewBuilder setupSheet: () -> SetupSheet) -> some View {
-        modifier(AccountRequiredModifier(required: required, setupSheet: setupSheet))
+    @ViewBuilder
+    public func accountRequired<SetupSheet: View>(_ required: Bool = true, @ViewBuilder setupSheet: () -> SetupSheet) -> some View {
+        if required {
+            modifier(AccountRequiredModifier(setupSheet: setupSheet))
+        } else {
+            self
+        }
     }
 }
