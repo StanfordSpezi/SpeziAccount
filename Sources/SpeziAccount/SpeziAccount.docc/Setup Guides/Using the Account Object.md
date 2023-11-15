@@ -17,8 +17,8 @@ Use the global `Account` object to access the current account state.
 ## Overview
 
 You can use the ``Account`` object
-that is injected into your App's view hierarchy as an environment object to access ``SpeziAccount`` state.
-Particularly useful are the published properties ``Account/signedIn`` and ``Account/details`` to access the current account
+that is injected into your App's view hierarchy as an environment object to access `SpeziAccount` state.
+Particularly useful are the properties ``Account/signedIn`` and ``Account/details`` to access the current account
 state.
 
 Below is a short code example to access the global ``Account`` instance.
@@ -34,7 +34,7 @@ struct MyView: View {
 
 ## Topics
 
-### Account and Account Details
+### Account Details
 
 - ``Account``
 - ``Account/signedIn``
@@ -45,6 +45,7 @@ struct MyView: View {
 
 Below is a list of built-in account details. Other frameworks might extend this list.
 
+- ``AccountDetails/accountId``
 - ``AccountDetails/userId``
 - ``AccountDetails/email``
 - ``AccountDetails/name``
