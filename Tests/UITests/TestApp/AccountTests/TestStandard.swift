@@ -18,6 +18,7 @@ actor TestStandard: AccountStorageStandard, AccountNotifyStandard, EnvironmentAc
     var records: [AdditionalRecordId: PartialAccountDetails.Builder] = [:]
 
     func create(_ identifier: AdditionalRecordId, _ details: SignupDetails) async throws {
+        print("Received created!")
         records[identifier] = PartialAccountDetails.Builder(from: details)
     }
 

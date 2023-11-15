@@ -250,6 +250,35 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: "Date of Birth")
     }
 
+    func testFullSignupWithAdditionalStorage() throws {
+        let app = TestApp.launch(config: "allRequiredWithBio")
+        let signupView = app
+            .openAccountSetup()
+            .openSignup(sleep: 3)
+
+        try signupView.fillForm(
+            email: "lelandstanford2@stanford.edu",
+            password: Defaults.password,
+            name: .init("Leland Stanford"),
+            genderIdentity: "Male",
+            supplyDateOfBirth: true,
+            biography: "Hello Stanford"
+        )
+
+        signupView.signup(sleep: 3)
+
+        // Now verify what we entered
+        let overview = app.openAccountOverview(timeout: 6.0)
+
+        // verify all the details
+        overview.verifyExistence(text: "LS")
+        overview.verifyExistence(text: "Leland Stanford")
+        overview.verifyExistence(text: "lelandstanford2@stanford.edu")
+        overview.verifyExistence(text: "Gender Identity, Male")
+        overview.verifyExistence(text: "Date of Birth")
+        overview.verifyExistence(text: "Biography, Hello Stanford")
+    }
+
     func testRequirementLevelsSignup() throws {
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app

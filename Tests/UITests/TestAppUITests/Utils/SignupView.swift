@@ -25,7 +25,8 @@ struct SignupView: AccountValueView {
         password: String,
         name: PersonNameComponents? = nil,
         genderIdentity: String? = nil,
-        supplyDateOfBirth: Bool = false
+        supplyDateOfBirth: Bool = false,
+        biography: String? = nil
     ) throws {
         // we access through collectionViews as there is another E-Mail Address and Password field behind the signup sheet
         XCTAssertTrue(app.collectionViews.textFields["E-Mail Address"].waitForExistence(timeout: 1.0))
@@ -43,12 +44,18 @@ struct SignupView: AccountValueView {
             }
         }
 
+        usleep(500_000) // wait for the keyboard to fully disappear
+        
         if let genderIdentity {
             self.updateGenderIdentity(from: "Choose not to answer", to: genderIdentity)
         }
 
         if supplyDateOfBirth {
             self.changeDatePreviousMonthFirstDay()
+        }
+
+        if let biography {
+            try self.enter(field: "Biography", text: biography)
         }
     }
 

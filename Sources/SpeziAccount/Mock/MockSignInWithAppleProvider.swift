@@ -27,15 +27,9 @@ private struct MockButton: View {
 
 /// Mock ``IdentityProviderViewStyle`` view style for the ``MockSignInWithAppleProvider``.
 public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
-    public let service: MockSignInWithAppleProvider
+    public typealias Service = MockSignInWithAppleProvider
 
-    
-    fileprivate init(service: MockSignInWithAppleProvider) {
-        self.service = service
-    }
-
-
-    public func makeSignInButton() -> some View {
+    public func makeSignInButton(_ provider: any IdentityProvider) -> some View {
         MockButton()
     }
 }
@@ -49,9 +43,7 @@ public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
 public actor MockSignInWithAppleProvider: IdentityProvider {
     public let configuration = AccountServiceConfiguration(name: "Mock SignIn with Apple", supportedKeys: .arbitrary)
 
-    public nonisolated var viewStyle: MockSignInWithAppleProviderStyle {
-        MockSignInWithAppleProviderStyle(service: self)
-    }
+    public let viewStyle = MockSignInWithAppleProviderStyle()
 
 
     public init() {}

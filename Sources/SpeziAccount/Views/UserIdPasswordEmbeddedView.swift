@@ -22,8 +22,8 @@ private enum LoginFocusState {
 /// Every ``EmbeddableAccountService`` might provide a view that is directly integrated into the ``AccountSetup``
 /// view for more easy navigation. This view implements such a view for ``UserIdPasswordAccountService``-based
 /// account service implementations.
-public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>: View {
-    private let service: Service
+public struct UserIdPasswordEmbeddedView: View {
+    private let service: any UserIdPasswordAccountService
     private var userIdConfiguration: UserIdConfiguration {
         service.configuration.userIdConfiguration
     }
@@ -74,12 +74,12 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
             .receiveValidation(in: $validation)
             .sheet(isPresented: $presentingSignupSheet) {
                 NavigationStack {
-                    service.viewStyle.makeSignupView()
+                    service.viewStyle.makeAnySignupForm(service)
                 }
             }
             .sheet(isPresented: $presentingPasswordForgetSheet) {
                 NavigationStack {
-                    service.viewStyle.makePasswordResetView()
+                    service.viewStyle.makeAnyPasswordResetView(service)
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
@@ -123,7 +123,7 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
 
     /// Create a new embedded view.
     /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
-    public init(using service: Service) {
+    public init(using service: any UserIdPasswordAccountService) {
         self.service = service
     }
 
@@ -137,6 +137,17 @@ public struct UserIdPasswordEmbeddedView<Service: UserIdPasswordAccountService>:
         focusedField = nil
 
         try await service.login(userId: userId, password: password)
+    }
+}
+
+
+extension UserIdPasswordAccountSetupViewStyle {
+    fileprivate func makeAnySignupForm(_ service: any UserIdPasswordAccountService) -> AnyView {
+        AnyView(makeSignupView(service))
+    }
+
+    fileprivate func makeAnyPasswordResetView(_ service: any UserIdPasswordAccountService) -> AnyView {
+        AnyView(makePasswordResetView(service))
     }
 }
 

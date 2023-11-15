@@ -12,9 +12,6 @@ import SwiftUI
 
 /// A view style defining UI components for an associated ``AccountService``.
 public protocol AccountSetupViewStyle {
-    /// The associated ``AccountService``.
-    associatedtype Service: AccountService
-
     /// The button label rendered in the list of account services in ``AccountSetup``
     associatedtype ButtonLabel: View
     /// The primary view that is opened as the destination of the ``ButtonLabel``.
@@ -22,9 +19,6 @@ public protocol AccountSetupViewStyle {
     /// A small account summary that is rendered if ``AccountSetup`` is presented on an already
     /// signed in user.
     associatedtype AccountSummaryView: View
-
-    /// The associated ``AccountService`` instance.
-    var service: Service { get }
 
     /// A `ViewModifier` that is injected into views with security related operations.
     ///
@@ -38,15 +32,15 @@ public protocol AccountSetupViewStyle {
 
     /// The button label in the list of account services for the ``AccountSetup`` view.
     @ViewBuilder
-    func makeServiceButtonLabel() -> ButtonLabel
+    func makeServiceButtonLabel(_ service: any AccountService) -> ButtonLabel
 
     /// The primary view that is opened as the destination of the ``makeServiceButtonLabel()-6ihdh`` button.
     @ViewBuilder
-    func makePrimaryView() -> PrimaryView
+    func makePrimaryView(_ service: any AccountService) -> PrimaryView
 
     /// The account summary that is presented in the ``AccountSetup`` for an already signed in user.
     @ViewBuilder
-    func makeAccountSummary(details: AccountDetails) -> AccountSummaryView
+    func makeAccountSummary(_ service: any AccountService, details: AccountDetails) -> AccountSummaryView
 }
 
 
@@ -58,7 +52,7 @@ extension AccountSetupViewStyle {
 
 
     /// Default service button label using the ``AccountServiceName`` and ``AccountServiceImage`` configurations.
-    public func makeServiceButtonLabel() -> some View {
+    public func makeServiceButtonLabel(_ service: any AccountService) -> some View {
         Group {
             service.configuration.image
                 .font(.title2)
@@ -69,7 +63,7 @@ extension AccountSetupViewStyle {
     }
 
     /// Default account summary using ``AccountSummaryBox``.
-    public func makeAccountSummary(details: AccountDetails) -> some View {
+    public func makeAccountSummary(_ service: any AccountService, details: AccountDetails) -> some View {
         AccountSummaryBox(details: details)
     }
 }

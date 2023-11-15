@@ -11,8 +11,8 @@ import SwiftUI
 
 
 /// A primary view implementation for a ``UserIdPasswordAccountService``.
-public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: View {
-    private let service: Service
+public struct UserIdPasswordPrimaryView: View {
+    private let service: any UserIdPasswordAccountService
 
 
     public var body: some View {
@@ -40,7 +40,7 @@ public struct UserIdPasswordPrimaryView<Service: UserIdPasswordAccountService>: 
     }
 
 
-    init(using service: Service) {
+    init(using service: any UserIdPasswordAccountService) {
         self.service = service
     }
 }

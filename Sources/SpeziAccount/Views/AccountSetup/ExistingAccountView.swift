@@ -24,7 +24,7 @@ struct ExistingAccountView<Continue: View>: View {
     var body: some View {
         VStack {
             VStack {
-                AnyView(service.viewStyle.makeAnyAccountSummary(details: accountDetails))
+                service.viewStyle.makeAnyAccountSummary(service, details: accountDetails)
 
                 AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
                     try await service.logout()
@@ -65,8 +65,8 @@ struct ExistingAccountView<Continue: View>: View {
 
 
 extension AccountSetupViewStyle {
-    fileprivate func makeAnyAccountSummary(details: AccountDetails) -> AnyView {
-        AnyView(self.makeAccountSummary(details: details))
+    fileprivate func makeAnyAccountSummary(_ service: any AccountService, details: AccountDetails) -> AnyView {
+        AnyView(self.makeAccountSummary(service, details: details))
     }
 }
 

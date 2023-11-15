@@ -15,7 +15,7 @@ struct IdentityProviderSection: View {
     var body: some View {
         VStack {
             ForEach(providers.indices, id: \.self) { index in
-                providers[index].viewStyle.makeAnySignInButton()
+                providers[index].viewStyle.makeAnySignInButton(providers[index])
             }
         }
     }
@@ -27,8 +27,8 @@ struct IdentityProviderSection: View {
 
 
 extension IdentityProviderViewStyle {
-    func makeAnySignInButton() -> AnyView {
-        AnyView(self.makeSignInButton())
+    func makeAnySignInButton(_ provider: any IdentityProvider) -> AnyView {
+        AnyView(self.makeSignInButton(provider))
     }
 }
 
