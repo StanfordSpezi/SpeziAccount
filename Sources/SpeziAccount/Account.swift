@@ -205,7 +205,7 @@ public final class Account: Sendable {
 
         var details = details
 
-        if isNewUser {
+        if isNewUser { // mark the account details to be from a new user
             details.patchIsNewUser(true)
         }
 
@@ -227,6 +227,7 @@ public final class Account: Sendable {
             )
         }
 
+        // Check if the account service is wrapped with a storage standard. If that's the case, contact them about the signup!
         if let standardBacked = details.accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageStandard {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)

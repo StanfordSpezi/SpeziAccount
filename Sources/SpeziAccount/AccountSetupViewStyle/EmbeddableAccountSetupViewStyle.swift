@@ -11,12 +11,12 @@ import SwiftUI
 
 
 /// A view style defining UI components for an associated ``EmbeddableAccountService``.
-public protocol EmbeddableAccountSetupViewStyle: AccountSetupViewStyle where Service: EmbeddableAccountService {
+public protocol EmbeddableAccountSetupViewStyle: AccountSetupViewStyle {
     /// The view that is embedded into the ``AccountSetup`` view if the associated ``EmbeddableAccountService``
     /// is the only configured embeddable account service.
     associatedtype EmbeddedView: View
 
     /// The view that is embedded into the ``AccountSetup`` view if applicable.
     @ViewBuilder
-    func makeEmbeddedAccountView() -> EmbeddedView
+    func makeEmbeddedAccountView(_ service: any EmbeddableAccountService) -> EmbeddedView
 }

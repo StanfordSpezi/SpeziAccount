@@ -20,9 +20,9 @@ struct AccountServiceButtonList: View {
             let style = service.viewStyle
 
             NavigationLink {
-                AnyView(style.makePrimaryView())
+                AnyView(style.makePrimaryView(service))
             } label: {
-                style.makeAnyAccountServiceButtonLabel()
+                style.makeAnyAccountServiceButtonLabel(service)
             }
         }
     }
@@ -34,10 +34,10 @@ struct AccountServiceButtonList: View {
 
 
 extension AccountSetupViewStyle {
-    fileprivate func makeAnyAccountServiceButtonLabel() -> AnyView {
+    fileprivate func makeAnyAccountServiceButtonLabel(_ service: any AccountService) -> AnyView {
         // as the `AccountSetup` only has a type-erased view on the `AccountSetupViewStyle`
         // we can't, because of the default implementation, create the AnyView inline.
-        AnyView(self.makeServiceButtonLabel())
+        AnyView(self.makeServiceButtonLabel(service))
     }
 }
 

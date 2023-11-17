@@ -12,8 +12,8 @@ import SwiftUI
 
 
 /// A password reset view implementation for a ``UserIdPasswordAccountService``.
-public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, SuccessView: View>: View {
-    private let service: Service
+public struct UserIdPasswordResetView<SuccessView: View>: View {
+    private let service: any UserIdPasswordAccountService
     private let successView: SuccessView
 
     private var userIdConfiguration: UserIdConfiguration {
@@ -87,7 +87,11 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
             .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
-    fileprivate init(using service: Service, requestSubmitted: Bool, @ViewBuilder success successViewBuilder: () -> SuccessView) {
+    fileprivate init(
+        using service: any UserIdPasswordAccountService,
+        requestSubmitted: Bool,
+        @ViewBuilder success successViewBuilder: () -> SuccessView
+    ) {
         self.service = service
         self.successView = successViewBuilder()
         self._requestSubmitted = State(wrappedValue: requestSubmitted)
@@ -98,7 +102,7 @@ public struct UserIdPasswordResetView<Service: UserIdPasswordAccountService, Suc
     /// - Parameters:
     ///   - service: The ``UserIdPasswordAccountService`` instance.
     ///   - successViewBuilder: A view to display on successful password reset.
-    public init(using service: Service, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
+    public init(using service: any UserIdPasswordAccountService, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
         self.init(using: service, requestSubmitted: false, success: successViewBuilder)
     }
 

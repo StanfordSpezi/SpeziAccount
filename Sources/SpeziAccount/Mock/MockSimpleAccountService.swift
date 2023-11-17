@@ -11,15 +11,7 @@ import SwiftUI
 
 /// The view style for the `MockSimpleAccountService` rendering `"Hello World"` text.
 struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
-    var service: MockSimpleAccountService
-
-
-    init(using service: MockSimpleAccountService) {
-        self.service = service
-    }
-
-
-    func makePrimaryView() -> some View {
+    func makePrimaryView(_ service: any AccountService) -> some View {
         Text(verbatim: "Hello World")
     }
 }
@@ -32,9 +24,7 @@ actor MockSimpleAccountService: AccountService {
     let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedKeys: .arbitrary)
 
 
-    nonisolated var viewStyle: some AccountSetupViewStyle {
-        MockSimpleAccountSetupViewStyle(using: self)
-    }
+    let viewStyle = MockSimpleAccountSetupViewStyle()
 
 
     init() {}

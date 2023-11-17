@@ -49,7 +49,11 @@ extension _StandardBacked {
     }
 
     /// Default implementation.
-    public func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {}
+    public func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {
+        if let nestedBacked = accountService as? any _StandardBacked {
+            try await nestedBacked.preUserDetailsSupply(recordId: recordId)
+        }
+    }
 }
 
 

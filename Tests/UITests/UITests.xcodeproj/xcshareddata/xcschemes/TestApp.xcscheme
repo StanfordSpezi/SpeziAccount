@@ -64,11 +64,11 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--configuration-type"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "allRequired"
-            isEnabled = "NO">
+            argument = "allRequiredWithBio"
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--default-credentials"

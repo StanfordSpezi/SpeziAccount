@@ -54,6 +54,11 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// The localized name describing a value of this `AccountKey`.
     static var name: LocalizedStringResource { get }
 
+    /// A string-based identifier that is meant to be stable. Used by storage modules.
+    ///
+    /// By default this maps to the type name.
+    static var identifier: String { get }
+
 
     /// The category of the account key.
     ///
@@ -77,9 +82,14 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
 
 
 extension AccountKey {
-    /// A unique identifier for an account key.
+    /// A unique identifier for an account key. Bound to the process lifetime.
     public static var id: ObjectIdentifier {
         ObjectIdentifier(Self.self)
+    }
+
+    /// Default implementation falling back to the Swift type name.
+    public static var identifier: String {
+        "\(Self.self)"
     }
 
     static var isRequired: Bool {

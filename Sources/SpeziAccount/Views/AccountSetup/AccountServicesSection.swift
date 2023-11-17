@@ -31,7 +31,7 @@ struct AccountServicesSection: View {
     var body: some View {
         if let embeddableService = embeddableAccountService {
             let embeddableViewStyle = embeddableService.viewStyle
-            AnyView(embeddableViewStyle.makeEmbeddedAccountView())
+            AnyView(embeddableViewStyle.makeEmbeddedAccountView(embeddableService))
 
             if !nonEmbeddableAccountServices.isEmpty {
                 ServicesDivider()

@@ -43,8 +43,8 @@ struct DefaultSignupFormHeader: View {
 /// split into `Section`s according the their ``AccountKeyCategory`` (see ``AccountKey/category``).
 ///
 /// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
-public struct SignupForm<Service: AccountService, Header: View>: View {
-    private let service: Service
+public struct SignupForm<Header: View>: View {
+    private let service: any AccountService
     private let header: Header
 
     @Environment(Account.self) private var account
@@ -132,12 +132,12 @@ public struct SignupForm<Service: AccountService, Header: View>: View {
     }
 
 
-    init(using service: Service) where Header == DefaultSignupFormHeader {
+    init(using service: any AccountService) where Header == DefaultSignupFormHeader {
         self.service = service
         self.header = DefaultSignupFormHeader()
     }
 
-    init(service: Service, @ViewBuilder header: () -> Header) {
+    init(service: any AccountService, @ViewBuilder header: () -> Header) {
         self.service = service
         self.header = header()
     }

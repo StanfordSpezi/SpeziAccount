@@ -11,9 +11,6 @@ import SwiftUI
 
 
 struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
-    let service: TestAccountService
-
-
     var securityRelatedViewModifier: any ViewModifier {
         TestAlertModifier()
     }
@@ -31,9 +28,7 @@ actor TestAccountService: UserIdPasswordAccountService {
     @AccountReference var account: Account
     var registeredUser: UserStorage // simulates the backend
 
-    nonisolated var viewStyle: TestViewStyle {
-        TestViewStyle(service: self)
-    }
+    let viewStyle = TestViewStyle()
 
 
     init(_ model: TestAlertModel, _ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
