@@ -27,8 +27,6 @@ private struct MockButton: View {
 
 /// Mock ``IdentityProviderViewStyle`` view style for the ``MockSignInWithAppleProvider``.
 public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
-    public typealias Service = MockSignInWithAppleProvider
-
     public func makeSignInButton(_ provider: any IdentityProvider) -> some View {
         MockButton()
     }
