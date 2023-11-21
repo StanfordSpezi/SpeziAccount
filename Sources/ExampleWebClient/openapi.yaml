@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: Account Web Service
+  description: Account Web Service
+  version: 1.0.0
+servers:
+  - url: 'http://127.0.0.1:8080'
+paths:
+  /account:
+    put:
+      tags:
+        - account
+      summary: Create a new account
+      operationId: createAccount
+      requestBody:
+        description: Create a new account
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccount"
+      responses:
+        200:
+          description: Account creation successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+#  /account/${accountId}:
+#    get: # TODO: get account details? => requires authenication!
+#      responses:
+    # TODO: account modifications, how?? (JSON update?)
+    #  /account/${accountId}/tokens:
+      #put:
+          #tags:
+        #- account
+      #responses:
+  # TODO: password reset!
+components:
+  schemas:
+    NewAccount:
+      type: object
+      properties:
+        # TODO: how to configure email address?
+        userId:
+          type: string
+          description: The user-visible user identifier
+          example: "mail@example.com"
+        password:
+          type: string
+          description: The password the user choose
+          example: "MySuperStrongPassword1658"
+        details: # TODO: how to model arbitrary key-value storage
+          type: object
+          description: Arbitrary key-value storage for additional user details.
+          # TODO: example!
+    Account:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: Internal, stable, unique user identifier
+        userId:
+          type: string
+        details:
+          type: object
+          description: Arbitrary key-value storage for additional user details.
+
+
