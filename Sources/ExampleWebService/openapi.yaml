@@ -17,27 +17,221 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewAccount"
+              $ref: "#/components/schemas/SignupRequest"
       responses:
         200:
-          description: Account creation successful
+          description: Account creation successful.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Account"
-#  /account/${accountId}:
-#    get: # TODO: get account details? => requires authenication!
-#      responses:
-    # TODO: account modifications, how?? (JSON update?)
-    #  /account/${accountId}/tokens:
-      #put:
-          #tags:
-        #- account
-      #responses:
-  # TODO: password reset!
+        400:
+          $ref: "#/components/responses/BadRequest"
+        # TODO: model common error codes!
+  /account/${accountId}:
+    get: # TODO: get account details? => requires authentication!
+      tags:
+        - account
+      operationId: getAccount
+      summary: Retrieve the account details for a given account.
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+      security:
+        - jwtToken: []
+        - webservice_oauth:
+            - read:account
+        # TODO: account modifications, how?? (JSON update?)
+    post:
+      tags:
+        - account
+      operationId: updateAccount
+      summary: Update the account details for a given account.
+      parameters:
+        - name: accountId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        description: Describes the account details change
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifiedAccountDetails"
+      responses:
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+      security:
+        - jwtToken: []
+    delete:
+      tags:
+        - account
+      operationId: deleteAccount
+      parameters:
+        - name: accountId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Account was successfully deleted.
+        401:
+          $ref: "#/components/responses/UnauthorizedError"
+      security:
+        - jwtToken: [ ]
+  /token:
+    post:
+      tags:
+        - token
+      operationId: requestToken
+      summary: Request Access Token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/UsernamePasswordAccessTokenRequest"
+                - $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        200: # See https://datatracker.ietf.org/doc/html/rfc6749.html#section-5.1
+          description: Token Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessTokenResponse"
+        400: # See https://datatracker.ietf.org/doc/html/rfc6749.html#section-5.2
+          description: Token Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessTokenError"
+        # TODO put, delete?
+  /token/revoce:
+    post:
+      tags:
+        - token
+      operationId: revokeToken
+      summary: Revoke Refresh Token
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/RevokeTokenRequest"
+      responses:
+        200:
+          description: Successful token revocation. Empty response.
+          content:
+            application/json:
+              schema:
+                type: object
+        400:
+          description: Token Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessTokenError" # TODO: same error with additional codes
+        503:
+          description: Token Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessTokenError" # TODO: Access token should not be considered revoked. Retry! May include "Retry-After"
 components:
   schemas:
-    NewAccount:
+    UsernamePasswordAccessTokenRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - "password"
+        username:
+          type: string
+        password:
+          type: string
+        scope:
+          type: string
+      required:
+        - grant_type
+        - username
+        - password
+    RefreshTokenRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - "refresh_token"
+        refresh_token:
+          type: string
+        scope:
+          type: string
+      required:
+        - grant_type
+        - refresh_token
+    # Refer to https://datatracker.ietf.org/doc/html/rfc7009#section-2.1
+    RevokeTokenRequest:
+      type: object
+      properties:
+        token:
+          type: string
+        token_type_hint:
+          type: string
+          enum:
+            - "refresh_token" # TODO: we don't support access_token revocation
+      required:
+        - token
+    AccessTokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          description: Case insensitive token type. See https://datatracker.ietf.org/doc/html/rfc6749.html#section-7.1
+          enum:
+            - "Bearer"
+        expires_in:
+          type: integer
+          description: Lifetime in seconds.
+        refresh_token:
+          type: string
+          # TODO: generally optional?
+        scope:
+          type: string
+      required:
+        - access_token
+        - token_type
+        - refresh_token
+    AccessTokenError: # Refer to https://datatracker.ietf.org/doc/html/rfc6749.html#section-5.2
+      type: object
+      properties:
+        error:
+          type: string
+          enum:
+            - "invalid_request"
+            - "invalid_client"
+            - "invalid_grant"
+            - "unauthorized_client"
+            - "unsupported_grant_type"
+            - "invalid_scope"
+            - "unsupported_token_type" # TODO: only for token revocation!
+        error_description:
+          type: string
+        error_uri:
+          type: string
+          format: url # TODO: does this work?
+      required:
+        - error
+    SignupRequest:
       type: object
       properties:
         # TODO: how to configure email address?
@@ -45,14 +239,32 @@ components:
           type: string
           description: The user-visible user identifier
           example: "mail@example.com"
-        password:
+        password: # TODO: different credential? types
           type: string
           description: The password the user choose
           example: "MySuperStrongPassword1658"
         details: # TODO: how to model arbitrary key-value storage
           type: object
           description: Arbitrary key-value storage for additional user details.
-          # TODO: example!
+          example:
+            name:
+              givenName: "Leland"
+              familyName: "Stanford"
+            genderIdentity: "female"
+    ModifiedAccountDetails:
+      type: object
+      properties:
+        modifiedDetails:
+          type: object
+          description: Key-Value storage of update account details.
+          example:
+            genderIdentity: "binary"
+        removedDetails:
+          type: array
+          items: {
+
+          }
+          # TODO: how to specify items!
     Account:
       type: object
       properties:
@@ -64,5 +276,58 @@ components:
         details:
           type: object
           description: Arbitrary key-value storage for additional user details.
-
+    Error:
+      type: object
+      title: "Error"
+      description: "Generic error object"
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    webservice_oauth:
+      description: OAuth2 endpoints.
+      type: oauth2
+      flows:
+        password:
+          #authorizationUrl: "https://example.org/api/oauth/token"
+          tokenUrl: "https://example.org/api/oauth/token"
+          refreshUrl: "https://example.org/api/oauth/token/revoce" # TODO: this must be a https url
+          scopes:
+            read:account: Read account details.
+            write:account: Write account details.
+            delete:account: Delete account details. # TODO: recent authentication? or on demand scoping?
+    jwtToken:
+      type: http
+      # TODO: better documentation!
+      description: JWT token obtained from the web service.
+      scheme: bearer
+      bearerFormat: JWT
+    stanford:
+      type: openIdConnect2
+      openIdConnectUrl: "https://demo.duendesoftware.com"
+  responses:
+    BadRequest:
+      description: Malformed request (HTTP 400).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    UnauthorizedError:
+      description: Access token is missing or invalid (HTTP 401).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    # TODO: NotFoundError: (any other route?)
+    ValidationError:
+      description: Request failed due to semantic errors (HTTP 422).
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    InternalServerError: # TODO: do we really want to support this?
+      description: Encountered an internal server error (HTTP 500).
+    # TODO: service unavailable?
 

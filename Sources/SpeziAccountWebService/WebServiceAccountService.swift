@@ -40,4 +40,7 @@ actor WebServiceAccountService: UserIdPasswordAccountService {
     func delete() async throws {
 
     }
+
+    // TODO: auth token valid for 1h!
+    //  => refresh token!
 }
