@@ -41,8 +41,9 @@ You use the ``AccountDetails`` abstraction within your views to visualize accoun
 An ``AccountService`` provides an abstraction layer for managing different types of account management services
 (e.g., email address and password-based service combined with an identity provider like Sign in with Apple).
 
-> Note: The [SpeziFirebase](https://swiftpackageindex.com/StanfordSpezi/SpeziFirebase/documentation/spezifirebaseaccount)
-framework provides the `FirebaseAccountConfiguration` you can use to configure an Account Service base on the Google Firebase service.
+> Note: The [SpeziFirebase](https://github.com/StanfordSpezi/SpeziFirebase)
+framework provides the [`FirebaseAccountConfiguration`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountconfiguration)
+you can use to configure an Account Service base on the Google Firebase service.
 
 ## Setup
 

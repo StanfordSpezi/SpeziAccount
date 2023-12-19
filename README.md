@@ -37,8 +37,10 @@ An ``AccountService`` provides an abstraction layer for managing different types
 For more information, please refer to the [API documentation](https://swiftpackageindex.com/StanfordSpezi/SpeziAccount/documentation).
 
 > [!NOTE]
-> The [SpeziFirebase](https://swiftpackageindex.com/StanfordSpezi/SpeziFirebase/documentation/spezifirebaseaccount)
-framework provides the `FirebaseAccountConfiguration` you can use to configure an Account Service base on the Google Firebase service.
+> The [SpeziFirebase](https://github.com/StanfordSpezi/SpeziFirebase)
+framework provides the [`FirebaseAccountConfiguration`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountconfiguration)
+you can use to configure an Account Service base on the Google Firebase service.
+
 
 ## Setup
 
