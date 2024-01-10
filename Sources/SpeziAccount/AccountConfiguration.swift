@@ -101,7 +101,7 @@ public final class AccountConfiguration: Module {
 
         self.account = Account(
             services: accountServices,
-            configuration: configuredAccountKeys,
+            supportedConfiguration: configuredAccountKeys,
             details: defaultActiveDetails
         )
 
