@@ -1,6 +1,6 @@
 # Custom Storage Provider
 
-Store arbitrary account values by providing a ``AccountStorageStandard`` implementation.
+Store arbitrary account values by providing a ``AccountStorageConstraint`` implementation.
 
 <!--
 
@@ -16,13 +16,13 @@ SPDX-License-Identifier: MIT
 
 In certain cases, a given ``AccountService`` implementation might be limited to storing only a fixed set of account values.
 If you have ``ConfiguredAccountKey``s that are not part of the ``SupportedAccountKeys`` set of a configured ``AccountService``
-you can provide a ``AccountStorageStandard`` conformance to your `Spezi`
+you can provide a ``AccountStorageConstraint`` conformance to your `Spezi`
 [Standard](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/standard) to handle storage of additional
 account values.
 
 ### Define the Conformance
 
-Refer to the documentation of the ``AccountStorageStandard`` protocol for more information on the required implementation.
+Refer to the documentation of the ``AccountStorageConstraint`` protocol for more information on the required implementation.
 
 Contact the [Standard Conformance](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/standard#1-Standard-Conformance)
 section of the `Spezi` documentation on how to conform to `Standard` constraints.
@@ -43,7 +43,7 @@ var configuration: Configuration {
 }
 ```
 
-> Note: Your ``AccountStorageStandard`` will be used
+> Note: Your ``AccountStorageConstraint`` will be used
     to handle data flow for all configured ``AccountService``s that do not support at least one
     ``ConfiguredAccountKey``.
 
@@ -51,7 +51,7 @@ var configuration: Configuration {
 
 ### Providing Storage
 
-- ``AccountStorageStandard``
+- ``AccountStorageConstraint``
 
 ### Identifying Additional Storage Records
 

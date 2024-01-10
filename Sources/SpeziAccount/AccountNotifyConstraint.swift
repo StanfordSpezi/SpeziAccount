@@ -15,7 +15,7 @@ import Spezi
 ///
 /// ### Access Account
 /// - ``Spezi/Standard/AccountReference``
-public protocol AccountNotifyStandard: Standard {
+public protocol AccountNotifyConstraint: Standard {
     /// Notifies the Standard that the associated account was requested to be deleted by the user.
     ///
     /// Use this method to cleanup any account related data that might be associated with the account.

@@ -53,7 +53,7 @@ Your `Value` type requires several protocol conformances.
 
 * The `Value` type must conform to `Sendable` to be safely passed across actor boundaries.
 * The `Value` type must conform to `Equatable` to be easily notified about changes at data entry.
-* The `Value` type must conform to `Codable` such that ``AccountService``s or a ``AccountStorageStandard`` can easily store and retrieve
+* The `Value` type must conform to `Codable` such that ``AccountService``s or a ``AccountStorageConstraint`` can easily store and retrieve
     arbitrary `Value` types.
 
 ### Accessors

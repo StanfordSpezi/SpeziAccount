@@ -22,7 +22,7 @@ import XCTRuntimeAssertions
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
 ///     and validate input.
-///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageStandard``s
+///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageConstraint``s
 ///     can easily store arbitrarily defined account values.
 ///
 /// ## Topics

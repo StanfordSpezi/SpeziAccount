@@ -42,7 +42,7 @@ framework provides the [`FirebaseAccountConfiguration`](https://swiftpackageinde
 you can use to configure an Account Service base on the Google Firebase service.
 
 
-## Setup
+### Setup
 
 You need to add the Spezi Account Swift package to
 [your app in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#) or

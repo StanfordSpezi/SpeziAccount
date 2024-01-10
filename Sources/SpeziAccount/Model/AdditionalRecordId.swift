@@ -7,7 +7,7 @@
 //
 
 
-/// A stable identifier used by ``AccountStorageStandard`` instances to identity a set of additionally stored records.
+/// A stable identifier used by ``AccountStorageConstraint`` instances to identity a set of additionally stored records.
 ///
 /// The identifier is built by combining a stable ``AccountService`` identifier and the primary accountID (see ``AccountIdKey``).
 /// Using both, additional data records of a user can be uniquely identified across ``AccountService`` implementations.

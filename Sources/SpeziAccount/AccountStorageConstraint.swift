@@ -13,7 +13,7 @@ import Spezi
 ///
 /// Certain ``AccountService`` implementations might be limited to supported only a specific set of ``AccountKey``s
 /// (see ``SupportedAccountKeys/exactly(_:)``. If you nonetheless want to use ``AccountKey``s that are unsupported
-/// by your ``AccountService``, you may add an implementation of the `AccountStorageStandard` protocol to your App's `Standard`,
+/// by your ``AccountService``, you may add an implementation of the `AccountStorageConstraint` protocol to your App's `Standard`,
 /// inorder to handle storage and retrieval of these additional account values.
 ///
 /// - Note: You can use the ``Spezi/Standard/AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
@@ -22,7 +22,7 @@ import Spezi
 ///
 /// ### Access Account
 /// - ``Spezi/Standard/AccountReference``
-public protocol AccountStorageStandard: Standard {
+public protocol AccountStorageConstraint: Standard {
     /// Create new associated account data.
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
@@ -85,7 +85,7 @@ extension Standard {
     ///
     /// Below is a short code example on how to use this property wrapper:
     /// ```swift
-    /// public actor MyStandard: AccountStorageStandard {
+    /// public actor MyStandard: AccountStorageConstraint {
     ///     @AccountReference var account
     /// }
     /// ```

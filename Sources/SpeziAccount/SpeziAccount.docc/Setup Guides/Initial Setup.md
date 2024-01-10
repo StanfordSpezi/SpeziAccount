@@ -49,7 +49,7 @@ operations. ``AccountService``s can be manually provided via the ``AccountConfig
 Otherwise, ``AccountService``s might be directly provided by other Spezi `Componet`s (like the `FirebaseAccountConfiguration`).
 
 > Note: A given ``AccountService`` implementation might only support storing a fixed set of account values (see ``SupportedAccountKeys``).
-    In those cases you may be required to supply your own ``AccountStorageStandard`` implementation
+    In those cases you may be required to supply your own ``AccountStorageConstraint`` implementation
     to handle storage of additional account values. Refer to the <doc:Custom-Storage-Provider> article for information.
 
 ### Account Setup
@@ -132,4 +132,4 @@ struct MyView: View {
 
 ### Reacting to Events
 
-- ``AccountNotifyStandard``
+- ``AccountNotifyConstraint``

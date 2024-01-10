@@ -37,7 +37,7 @@ public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Se
     /// This identifier is used to uniquely identify an account service that persists across process instances.
     ///
     /// - Important: A default implementation is defined that relies on the type name. If you rename the account service
-    ///     type without supplying a manual `id` implementation, components like a ``AccountStorageStandard`` won't
+    ///     type without supplying a manual `id` implementation, components like a ``AccountStorageConstraint`` won't
     ///     be able to associate existing user details with this account service.
     var id: String { get }
 

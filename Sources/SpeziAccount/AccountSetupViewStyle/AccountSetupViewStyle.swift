@@ -34,7 +34,7 @@ public protocol AccountSetupViewStyle {
     @ViewBuilder
     func makeServiceButtonLabel(_ service: any AccountService) -> ButtonLabel
 
-    /// The primary view that is opened as the destination of the ``makeServiceButtonLabel()-6ihdh`` button.
+    /// The primary view that is opened as the destination of the ``makeServiceButtonLabel(_:)-54dx4`` button.
     @ViewBuilder
     func makePrimaryView(_ service: any AccountService) -> PrimaryView
 
