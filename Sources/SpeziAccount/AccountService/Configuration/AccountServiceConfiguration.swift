@@ -58,7 +58,7 @@ public struct AccountServiceConfiguration: Sendable {
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     public init(name: LocalizedStringResource, supportedKeys: SupportedAccountKeys) {
         self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys)
@@ -68,7 +68,7 @@ public struct AccountServiceConfiguration: Sendable {
     /// - Parameters:
     ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageStandard``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(

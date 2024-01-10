@@ -11,8 +11,8 @@ import SpeziAccount
 import SwiftUI
 
 
-// mock implementation of the AccountStorageStandard
-actor TestStandard: AccountStorageStandard, AccountNotifyStandard, EnvironmentAccessible {
+// mock implementation of the AccountStorageConstraint
+actor TestStandard: AccountStorageConstraint, AccountNotifyConstraint, EnvironmentAccessible {
     @MainActor @Published var deleteNotified = false
 
     var records: [AdditionalRecordId: PartialAccountDetails.Builder] = [:]

@@ -21,11 +21,11 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", .upToNextMinor(from: "0.1.0")),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", .upToNextMinor(from: "0.8.0")),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", .upToNextMinor(from: "0.6.1")),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", .upToNextMinor(from: "0.2.5")),
-        .package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.0.4"))
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "1.0.0"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.0.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.0.0"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.4")
     ],
     targets: [
         .target(

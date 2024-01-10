@@ -9,7 +9,7 @@
 import Spezi
 
 
-/// Internal marker protocol to determine what ``AccountService`` require assistance by a ``AccountStorageStandard``.
+/// Internal marker protocol to determine what ``AccountService`` require assistance by a ``AccountStorageConstraint``.
 public protocol _StandardBacked: AccountService { // swiftlint:disable:this type_name
     associatedtype Service: AccountService
     associatedtype AccountStandard: Standard
@@ -88,24 +88,24 @@ extension _StandardBacked where Self: UserIdPasswordAccountService, Service: Use
 
 
 extension AccountService {
-    func backedBy(standard: any AccountStorageStandard) -> any AccountService {
+    func backedBy(standard: any AccountStorageConstraint) -> any AccountService {
         standard.backedService(with: self)
     }
 
-    func backedBy(standard: any AccountNotifyStandard) -> any AccountService {
+    func backedBy(standard: any AccountNotifyConstraint) -> any AccountService {
         standard.backedService(with: self)
     }
 }
 
 
-extension AccountStorageStandard {
+extension AccountStorageConstraint {
     fileprivate nonisolated func backedService<Service: AccountService>(with service: Service) -> any AccountService {
         StorageStandardBackedAccountService(service: service, standard: self)
     }
 }
 
 
-extension AccountNotifyStandard {
+extension AccountNotifyConstraint {
     fileprivate nonisolated func backedService<Service: AccountService>(with service: Service) -> any AccountService {
         NotifyStandardBackedAccountService(service: service, standard: self)
     }

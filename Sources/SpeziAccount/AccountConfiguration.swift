@@ -72,7 +72,7 @@ public final class AccountConfiguration: Module {
             // If applicable, wraps the service into an StandardBackedAccountService
             let service = verifyConfigurationRequirements(against: service)
 
-            if let notifyStandard = standard as? any AccountNotifyStandard {
+            if let notifyStandard = standard as? any AccountNotifyConstraint {
                 return service.backedBy(standard: notifyStandard)
             }
 
@@ -112,7 +112,7 @@ public final class AccountConfiguration: Module {
         }
 
 
-        if let accountStandard = standard as? any AccountStorageStandard {
+        if let accountStandard = standard as? any AccountStorageConstraint {
             // we are also fine, we have a standard that can store any unsupported account values
             logger.debug("""
                          The standard \(accountStandard.description) is used to store the following account values that \
@@ -132,7 +132,7 @@ public final class AccountConfiguration: Module {
             The Account Service \(service.description) indicated that it cannot store the above-listed account values.
 
             In order to proceed you may use a Standard inside your Spezi Configuration that conforms to \
-            `AccountStorageStandard` which handles storage of the above-listed account values. Otherwise, you may \
+            `AccountStorageConstraint` which handles storage of the above-listed account values. Otherwise, you may \
             remove the above-listed account values from your SpeziAccount configuration.
             """
         )

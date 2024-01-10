@@ -220,16 +220,14 @@ public final class Account: Sendable {
             }
         }
 
-        if let existingDetails = self.details {
-            precondition(
-                existingDetails.accountService.id == details.accountService.id,
-                "The AccountService \(details.accountService) tried to overwrite `AccountDetails` from \(existingDetails.accountService)!"
-            )
+        if let existingDetails = self.details,
+           existingDetails.accountService.id != details.accountService.id {
+            logger.warning("The AccountService \(details.accountService.description) is overwriting `AccountDetails` from \(existingDetails.accountService.description)!")
         }
 
         // Check if the account service is wrapped with a storage standard. If that's the case, contact them about the signup!
         if let standardBacked = details.accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageStandard {
+           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
             try await standardBacked.preUserDetailsSupply(recordId: recordId)
@@ -257,7 +255,7 @@ public final class Account: Sendable {
     public func removeUserDetails() async {
         if let details,
            let standardBacked = details.accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageStandard {
+           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
             await storageStandard.clear(recordId)

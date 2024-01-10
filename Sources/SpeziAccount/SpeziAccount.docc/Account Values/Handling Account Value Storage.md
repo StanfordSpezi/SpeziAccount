@@ -64,7 +64,7 @@ let encoded = details.acceptAll(&visitor)
 You can iterate through a collection of ``AccountKey``s in a type-safe way using the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
 This is provided through the ``AccountKeyVisitor`` protocol and the ``AcceptingAccountKeyVisitor/acceptAll(_:)-1ytax`` method all implemented by
 `[any AccountKey.Type]` arrays or ``AccountKeyCollection``s. This is useful when you are accessing the ``AccountValues/keys-572sk`` property or
-implement a custom storage provider (see ``AccountStorageStandard/load(_:_:)``).
+implement a custom storage provider (see ``AccountStorageConstraint/load(_:_:)``).
 
 An implementation is similarly structured to the code example shown in the previous section.
 
