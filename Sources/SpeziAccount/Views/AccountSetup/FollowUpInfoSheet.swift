@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
@@ -143,15 +144,15 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
         .set(\.userId, value: "lelandstanford@stanford.edu")
 
-    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
-
     static var previews: some View {
         NavigationStack {
-            if let details = account.details {
+            AccountDetailsReader { _, details in
                 FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
             }
         }
-            .environment(account)
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

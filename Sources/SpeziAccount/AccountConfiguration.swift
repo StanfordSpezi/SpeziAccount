@@ -30,7 +30,7 @@ public final class AccountConfiguration: Module {
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     private let providedAccountServices: [any AccountService]
 
-    @Model private var account: Account
+    @Model private(set) var account: Account
 
     @StandardActor private var standard: any Standard
 

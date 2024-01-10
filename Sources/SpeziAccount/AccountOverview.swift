@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziViews
 import SwiftUI
 
@@ -126,7 +127,9 @@ struct AccountOverView_Previews: PreviewProvider {
                 }
             }
         }
-            .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
 
         NavigationStack {
             AccountOverview()

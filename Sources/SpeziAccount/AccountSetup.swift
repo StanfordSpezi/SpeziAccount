@@ -241,10 +241,14 @@ struct AccountView_Previews: PreviewProvider {
         }
 
         AccountSetup()
-            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
+            }
 
         AccountSetup(state: .setupShown)
-            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
+            }
 
         AccountSetup(continue: {
             Button(action: {
@@ -255,7 +259,9 @@ struct AccountView_Previews: PreviewProvider {
             })
             .buttonStyle(.borderedProminent)
         })
-            .environment(Account(building: detailsBuilder, active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

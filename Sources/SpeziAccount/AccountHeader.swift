@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziPersonalInfo
 import SwiftUI
 
@@ -89,7 +90,9 @@ public struct AccountHeader: View {
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
     
     return AccountHeader()
-        .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .previewWith {
+            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+        }
 }
 
 #Preview {
@@ -113,7 +116,9 @@ public struct AccountHeader: View {
             }
         }
     }
-        .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .previewWith {
+            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+        }
 }
 
 #Preview {
@@ -131,7 +136,9 @@ public struct AccountHeader: View {
             }
         }
     }
-    .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+        .previewWith {
+            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+        }
 }
 
 #Preview {
@@ -146,6 +153,10 @@ public struct AccountHeader: View {
             }
         }
     }
-        .environment(Account(MockUserIdPasswordAccountService()))
+        .previewWith {
+            AccountConfiguration {
+                MockUserIdPasswordAccountService()
+            }
+        }
 }
 #endif
