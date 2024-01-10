@@ -97,7 +97,7 @@ public final class Account: Sendable {
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
-    private nonisolated init(
+    nonisolated init(
         services: [any AccountService],
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
