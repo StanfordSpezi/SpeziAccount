@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
@@ -86,18 +87,15 @@ struct SingleEditView_Previews: PreviewProvider {
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
 
-    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
-
-    // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @State static var model = AccountOverviewFormViewModel(account: account)
-
     static var previews: some View {
         NavigationStack {
-            if let details = account.details {
-                SingleEditView<PersonNameKey>(model: model, details: details)
+            AccountDetailsReader { account, details in
+                SingleEditView<PersonNameKey>(model: AccountOverviewFormViewModel(account: account), details: details)
             }
         }
-            .environment(account)
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
@@ -285,7 +286,9 @@ struct AccountOverviewSections_Previews: PreviewProvider {
                 }
             }
         }
-            .environment(Account(building: details, active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

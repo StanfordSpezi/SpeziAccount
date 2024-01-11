@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SwiftUI
 
 
@@ -84,16 +85,16 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
 
-    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
-
-    @State private static var model = AccountOverviewFormViewModel(account: account)
-
     static var previews: some View {
-        if let details = account.details {
+        AccountDetailsReader { account, details in
+            let model = AccountOverviewFormViewModel(account: account)
+            
             AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
                 .injectEnvironmentObjects(service: details.accountService, model: model)
-                .environment(account)
         }
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

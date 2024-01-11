@@ -76,26 +76,24 @@ struct NameOverview_Previews: PreviewProvider {
     static let detailsWithoutName = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
 
-    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
-    static let accountWithoutName = Account(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
-
-    // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @State static var model = AccountOverviewFormViewModel(account: account)
-
     static var previews: some View {
         NavigationStack {
-            if let details = account.details {
-                NameOverview(model: model, details: details)
+            AccountDetailsReader { account, details in
+                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
             }
         }
-            .environment(account)
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
 
         NavigationStack {
-            if let details = accountWithoutName.details {
-                NameOverview(model: model, details: details)
+            AccountDetailsReader { account, details in
+                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
             }
         }
-            .environment(accountWithoutName)
+            .previewWith {
+                AccountConfiguration(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

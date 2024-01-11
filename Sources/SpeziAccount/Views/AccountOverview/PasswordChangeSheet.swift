@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
@@ -136,18 +137,15 @@ struct PasswordChangeSheet_Previews: PreviewProvider {
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
         .set(\.genderIdentity, value: .male)
 
-    static let account = Account(building: details, active: MockUserIdPasswordAccountService())
-
-    // be aware, modifications won't be displayed due to declaration in PreviewProvider that do not trigger an UI update
-    @State static var model = AccountOverviewFormViewModel(account: account)
-
     static var previews: some View {
         NavigationStack {
-            if let details = account.details {
-                PasswordChangeSheet(model: model, details: details)
+            AccountDetailsReader { account, details in
+                PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account), details: details)
             }
         }
-        .environment(account)
+            .previewWith {
+                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif

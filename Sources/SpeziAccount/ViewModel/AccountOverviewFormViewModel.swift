@@ -57,7 +57,9 @@ class AccountOverviewFormViewModel {
 
         for describedKey in details.accountService.configuration.requiredAccountKeys
             where describedKey.key.category == category {
-            result.append(describedKey.key)
+            if !result.contains(where: { $0 == describedKey.key }) {
+                result.append(describedKey.key)
+            }
         }
 
         return result

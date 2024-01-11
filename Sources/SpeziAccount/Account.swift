@@ -97,7 +97,7 @@ public final class Account: Sendable {
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
-    private nonisolated init(
+    nonisolated init(
         services: [any AccountService],
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
@@ -159,6 +159,7 @@ public final class Account: Sendable {
     ///   - builder: A  ``AccountValuesBuilder`` for ``AccountDetails`` with all account details for the logged in user.
     ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
     public nonisolated convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,

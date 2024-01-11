@@ -30,12 +30,14 @@ public final class AccountConfiguration: Module {
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     private let providedAccountServices: [any AccountService]
 
-    @Model private var account: Account
+    @Model private(set) var account: Account
 
     @StandardActor private var standard: any Standard
 
     /// The array of ``AccountService``s provided through other Spezi `Components`.
     @Collect private var accountServices: [any AccountService]
+    /// Default active Account Details provided for previewing opportunities.
+    private let defaultActiveDetails: AccountDetails?
 
 
     /// Initializes a `AccountConfiguration` without directly  providing any ``AccountService`` instances.
@@ -46,6 +48,7 @@ public final class AccountConfiguration: Module {
     public init(configuration: AccountValueConfiguration = .default) {
         self.configuredAccountKeys = configuration
         self.providedAccountServices = []
+        self.defaultActiveDetails = nil
     }
 
     /// Initializes a `AccountConfiguration` by directly providing a set of ``AccountService`` instances.
@@ -62,6 +65,23 @@ public final class AccountConfiguration: Module {
     ) {
         self.configuredAccountKeys = configuration
         self.providedAccountServices = accountServices()
+        self.defaultActiveDetails = nil
+    }
+
+    /// Configure the Account Module for previewing purposes with default `AccountDetails`.
+    ///
+    /// - Parameters:
+    ///   - builder: The ``AccountDetails`` Builder for the account details that you want to supply.
+    ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    public init<Service: AccountService>(
+        building builder: AccountDetails.Builder,
+        active accountService: Service,
+        configuration: AccountValueConfiguration = .default
+    ) {
+        self.configuredAccountKeys = configuration
+        self.providedAccountServices = [accountService]
+        self.defaultActiveDetails = builder.build(owner: accountService)
     }
 
 
@@ -81,7 +101,8 @@ public final class AccountConfiguration: Module {
 
         self.account = Account(
             services: accountServices,
-            configuration: configuredAccountKeys
+            supportedConfiguration: configuredAccountKeys,
+            details: defaultActiveDetails
         )
 
         self.account.injectWeakAccount(into: standard)
