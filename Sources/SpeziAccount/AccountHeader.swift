@@ -43,8 +43,8 @@ public struct AccountHeader: View {
     }
     
     @Environment(Account.self) private var account
-    private var caption: LocalizedStringResource
-    
+    private let caption: Text
+
     public var body: some View {
         let accountDetails = account.details
         
@@ -69,7 +69,7 @@ public struct AccountHeader: View {
                     .font(.title2)
                     .fontWeight(.semibold)
                     .redacted(reason: account.details == nil ? .placeholder : [])
-                Text(caption)
+                caption
                     .font(.caption)
             }
         }
@@ -78,6 +78,12 @@ public struct AccountHeader: View {
     /// Display a new Account Header.
     /// - Parameter caption: A descriptive text displayed under the account name giving the user a brief explanation of what to expect when they interact with the header.
     public init(caption: LocalizedStringResource = Defaults.caption) {
+        self.init(caption: Text(caption))
+    }
+
+    /// Display a new Account Header.
+    /// - Parameter caption: A descriptive text displayed under the account name giving the user a brief explanation of what to expect when they interact with the header.
+    public init(caption: Text) {
         self.caption = caption
     }
 }
@@ -96,7 +102,7 @@ public struct AccountHeader: View {
 }
 
 #Preview {
-    AccountHeader(caption: "Email, Password, Preferences")
+    AccountHeader(caption: Text(verbatim: "Email, Password, Preferences"))
         .environment(Account(MockUserIdPasswordAccountService()))
 }
 
