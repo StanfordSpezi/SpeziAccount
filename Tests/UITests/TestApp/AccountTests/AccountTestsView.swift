@@ -134,10 +134,16 @@ struct AccountTestsView_Previews: PreviewProvider {
     
     static var previews: some View {
         AccountTestsView()
-            .environment(Account(TestAccountService(TestAlertModel(), .emailAddress)))
+            .previewWith {
+                AccountConfiguration {
+                    TestAccountService(TestAlertModel(), .emailAddress)
+                }
+            }
 
         AccountTestsView()
-            .environment(Account(building: details, active: TestAccountService(TestAlertModel(), .emailAddress)))
+            .previewWith {
+                AccountConfiguration(building: details, active: TestAccountService(TestAlertModel(), .emailAddress))
+            }
 
         AccountTestsView()
             .environment(Account())

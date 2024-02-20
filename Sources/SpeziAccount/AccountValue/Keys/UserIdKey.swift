@@ -8,6 +8,7 @@
 
 import SpeziFoundation
 import SpeziValidation
+import SpeziViews
 import SwiftUI
 
 
@@ -68,7 +69,7 @@ extension UserIdKey {
         @Environment(\.accountServiceConfiguration) private var configuration
 
         public var body: some View {
-            SimpleTextRow(name: configuration.userIdConfiguration.idType.localizedStringResource) {
+            ListRow(configuration.userIdConfiguration.idType.localizedStringResource) {
                 Text(verbatim: value)
             }
         }

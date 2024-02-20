@@ -30,7 +30,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
                 }
             }
             .task {
-                try? await Task.sleep(for: .milliseconds(500))
+                try? await Task.sleep(for: .seconds(2))
                 if !account.signedIn {
                     presentingSheet = true
                 }

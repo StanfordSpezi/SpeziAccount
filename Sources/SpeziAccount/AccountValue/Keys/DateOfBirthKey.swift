@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -58,7 +59,7 @@ extension DateOfBirthKey {
         }
 
         public var body: some View {
-            SimpleTextRow(name: Key.name) {
+            ListRow(Key.name) {
                 Text(value.formatted(formatStyle))
             }
         }

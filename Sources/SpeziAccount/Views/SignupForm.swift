@@ -58,7 +58,7 @@ public struct SignupForm<Header: View>: View {
 
     @State private var presentingCloseConfirmation = false
 
-    private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+    @MainActor private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
 
         // patch the user configured account values with account values additionally required by
