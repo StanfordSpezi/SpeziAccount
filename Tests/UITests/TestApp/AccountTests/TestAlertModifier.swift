@@ -10,7 +10,7 @@ import SwiftUI
 
 
 @Observable
-final class TestAlertModel: Sendable {
+final class TestAlertModel: @unchecked Sendable {
     var presentingAlert = false
     var continuation: CheckedContinuation<Void, Never>?
 }

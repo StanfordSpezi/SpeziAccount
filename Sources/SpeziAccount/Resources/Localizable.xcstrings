@@ -882,29 +882,6 @@
         }
       }
     },
-    "Hello" : {
-      "comment" : "No need to translate, only used in Previews ...",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hallo"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hello"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hola"
-          }
-        }
-      }
-    },
     "MISSING_ACCOUNT_DETAILS" : {
       "localizations" : {
         "de" : {
