@@ -7,6 +7,7 @@
 //
 
 import SpeziFoundation
+import SpeziViews
 import SwiftUI
 
 
@@ -17,7 +18,7 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
     private let value: Key.Value
 
     public var body: some View {
-        SimpleTextRow(name: Key.name) {
+        ListRow(Key.name) {
             Text(value.localizedStringResource)
         }
     }
@@ -37,8 +38,8 @@ extension Bool: CustomLocalizedStringResourceConvertible {
 
 
 #if DEBUG
-struct LocalizableStringBasedDisplayView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    Form {
         LocalizableStringBasedDisplayView<GenderIdentityKey>(.preferNotToState)
     }
 }

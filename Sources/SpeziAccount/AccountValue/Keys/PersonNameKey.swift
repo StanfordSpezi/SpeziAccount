@@ -49,7 +49,7 @@ extension PersonNameKey {
         private let value: PersonNameComponents
 
         public var body: some View {
-            SimpleTextRow(name: Key.name) {
+            ListRow(Key.name) {
                 Text(value.formatted(.name(style: .long)))
             }
         }

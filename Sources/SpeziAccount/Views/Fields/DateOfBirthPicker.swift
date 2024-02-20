@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -20,6 +21,8 @@ public struct DateOfBirthPicker: DataEntryView {
 
     @Binding private var date: Date
     @State private var dateAdded = false
+
+    @State private var layout: DynamicLayout?
 
     private var dateRange: ClosedRange<Date> {
         let calendar = Calendar.current
@@ -38,7 +41,7 @@ public struct DateOfBirthPicker: DataEntryView {
     ///  - The date is configured to be required.
     ///  - We are NOT entering new date. Showing existing data the user might want to change.
     ///  - If we are entering new data and the user pressed the add button.
-    private var showPicker: Bool {
+    @MainActor private var showPicker: Bool {
         account.configuration[Key.self]?.requirement == .required
             || viewType?.enteringNewData == false
             || dateAdded
@@ -47,30 +50,40 @@ public struct DateOfBirthPicker: DataEntryView {
 
     public var body: some View {
         HStack {
-            Text(titleLocalization)
-                .multilineTextAlignment(.leading)
-            Spacer()
+            DynamicHStack {
+                Text(titleLocalization)
+                    .multilineTextAlignment(.leading)
 
-            if showPicker {
-                DatePicker(
-                    selection: $date,
-                    in: dateRange,
-                    displayedComponents: .date
-                ) {
-                    Text(titleLocalization)
+                if layout == .horizontal {
+                    Spacer()
                 }
+
+                if showPicker {
+                    DatePicker(
+                        selection: $date,
+                        in: dateRange,
+                        displayedComponents: .date
+                    ) {
+                        Text(titleLocalization)
+                    }
                     .labelsHidden()
-            } else {
-                Button(action: addDateAction) {
-                    Text("ADD_DATE", bundle: .module)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.primary)
-                        .frame(width: 110, height: 34)
-                }
+                } else {
+                    Button(action: addDateAction) {
+                        Text("ADD_DATE", bundle: .module)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.primary)
+                            .padding([.leading, .trailing], 20)
+                            .padding([.top, .bottom], 7)
+                    }
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color(uiColor: .tertiarySystemFill))
                     )
+                }
+            }
+
+            if layout == .vertical {
+                Spacer()
             }
         }
             .accessibilityRepresentation {
@@ -85,6 +98,9 @@ public struct DateOfBirthPicker: DataEntryView {
                             .frame(maxWidth: .infinity)
                     }
                 }
+            }
+            .onPreferenceChange(DynamicLayout.self) { value in
+                layout = value
             }
     }
 
@@ -118,11 +134,10 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
         @State private var date = Date.now
 
         var body: some View {
+            Form {
+                DateOfBirthPicker(date: $date)
+            }
             VStack {
-                Form {
-                    DateOfBirthPicker(date: $date)
-                }
-                    .frame(height: 200)
                 DateOfBirthPicker(date: $date)
                     .padding(32)
             }

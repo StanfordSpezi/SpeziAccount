@@ -7,6 +7,7 @@
 //
 
 import SpeziFoundation
+import SpeziViews
 import SwiftUI
 
 
@@ -15,7 +16,7 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
     private let value: Key.Value
 
     public var body: some View {
-        SimpleTextRow(name: Key.name) {
+        ListRow(Key.name) {
             Text(value)
         }
     }
@@ -27,8 +28,8 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
 
 
 #if DEBUG
-struct StringDataDisplayView_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    List {
         StringBasedDisplayView<UserIdKey>("andreas.bauer")
     }
 }
