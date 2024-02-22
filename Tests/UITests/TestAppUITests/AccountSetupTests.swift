@@ -15,8 +15,6 @@ final class AccountSetupTests: XCTestCase {
         try super.setUpWithError()
 
         continueAfterFailure = false
-
-        try disablePasswordAutofill()
     }
 
     func testEmbeddedViewValidation() throws {
