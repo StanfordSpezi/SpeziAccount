@@ -77,7 +77,12 @@ extension PasswordKey {
             switch accountViewType {
             case .signup, .none:
                 VerifiableTextField(fieldType.localizedStringResource, text: $password, type: .secure)
+                    #if targetEnvironment(simulator)
+                    // we do not use `.newPassword` within simulator builds to not interfer with UI tests
+                    .textContentType(.password)
+                    #else
                     .textContentType(.newPassword)
+                    #endif
                     .disableFieldAssistants()
             case .overview: // display description labels in the PasswordChangeSheet (as we have two password fields)
                 DescriptionGridRow {
@@ -86,7 +91,12 @@ extension PasswordKey {
                     SecureField(text: $password) {
                         Text(fieldType.localizedPrompt)
                     }
+                        #if targetEnvironment(simulator)
+                        // we do not use `.newPassword` within simulator builds to not interfer with UI tests
+                        .textContentType(.password)
+                        #else
                         .textContentType(.newPassword)
+                        #endif
                         .disableFieldAssistants()
                 }
 
