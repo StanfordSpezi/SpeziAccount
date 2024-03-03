@@ -115,7 +115,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         }
             .onChange(of: account.signedIn) {
                 if let details = account.details, case .setupShown = setupState {
-                    let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
+                    // set includeCollected to true to collect the same information through self sign-up and administered signup
+                    let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: true)
 
                     if missingKeys.isEmpty {
                         setupState = .loadingExistingAccount
