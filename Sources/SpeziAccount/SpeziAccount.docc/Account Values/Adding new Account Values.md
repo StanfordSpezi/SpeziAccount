@@ -99,20 +99,24 @@ conformance to your `Value` type.
 
 However, if your `Value` is not `String`-based, you need to implement your own DataDisplayView. Below is a short code example that demonstrates how to implement a DataDisplayView for which the `Value` is `Int`-based for a HeightValue Key.
 ```swift
-public struct DataDisplay: DataDisplayView {
-    public typealias Key = HeightKey
-    private let height: Int
-    public init(_ value: Int) {
-        self.height = value
-    }
-    public var body: some View {
-        HStack {
-            Text(HeightKey.name)
-            Spacer()
-            Text("\(height) cm")
-                .foregroundColor(.secondary)
+extension HeightKey {
+    public struct DataDisplay: DataDisplayView {
+        public typealias Key = HeightKey
+        private let height: Int
+        
+        public var body: some View {
+            HStack {
+                Text(HeightKey.name)
+                Spacer()
+                Text("\(height) cm")
+                    .foregroundColor(.secondary)
+            }
+                    .accessibilityElement(children: .combine)
         }
-        .accessibilityElement(children: .combine)
+
+        public init(_ value: Int) {
+            self.height = value
+        }
     }
 }
 ```
