@@ -111,7 +111,7 @@ extension HeightKey {
                 Text("\(height) cm")
                     .foregroundColor(.secondary)
             }
-                    .accessibilityElement(children: .combine)
+                .accessibilityElement(children: .combine)
         }
 
         public init(_ value: Int) {
