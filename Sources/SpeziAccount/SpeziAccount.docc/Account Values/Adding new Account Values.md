@@ -97,6 +97,30 @@ Therefore, you typically do not need to provide a custom view implementation,
 or you might consider adding `CustomLocalizedStringResourceConvertible` protocol
 conformance to your `Value` type.
 
+However, if your `Value` is not `String`-based, you need to implement your own DataDisplayView. Below is a short code example that demonstrates how to implement a DataDisplayView for which the `Value` is `Int`-based for a HeightValue Key.
+```swift
+extension HeightKey {
+    public struct DataDisplay: DataDisplayView {
+        public typealias Key = HeightKey
+        private let height: Int
+        
+        public var body: some View {
+            HStack {
+                Text(HeightKey.name)
+                Spacer()
+                Text("\(height) cm")
+                    .foregroundColor(.secondary)
+            }
+                .accessibilityElement(children: .combine)
+        }
+
+        public init(_ value: Int) {
+            self.height = value
+        }
+    }
+}
+```
+
 > Note: For more information on how to implement your custom data display view, refer to the ``DataDisplayView`` protocol.
 
 #### Data Entry View
