@@ -53,7 +53,6 @@ struct NameOverview: View {
                 }
             }
         }
-            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
