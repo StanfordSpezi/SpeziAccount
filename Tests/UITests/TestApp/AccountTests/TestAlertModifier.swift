@@ -19,9 +19,11 @@ final class TestAlertModel: @unchecked Sendable {
 struct TestAlertModifier: ViewModifier {
     @Environment(TestAlertModel.self) var model
 
+    @State private var isActive = false
+
     var isPresented: Binding<Bool> {
         Binding {
-            model.presentingAlert
+            model.presentingAlert && isActive
         } set: { newValue in
             model.presentingAlert = newValue
         }
@@ -30,6 +32,12 @@ struct TestAlertModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            .onAppear {
+                isActive = true
+            }
+            .onDisappear {
+                isActive = false
+            }
             .alert("Security Alert", isPresented: isPresented, presenting: model.continuation) { continuation in
                 Button("Dismiss") {
                     continuation.resume()

@@ -22,7 +22,7 @@ import Foundation
 /// - ``contactDetails``
 /// - ``personalDetails``
 /// - ``other``
-public struct AccountKeyCategory {
+public struct AccountKeyCategory: Sendable {
     /// A category to group account credentials.
     public static let credentials = AccountKeyCategory(title: LocalizedStringResource("UP_CREDENTIALS", bundle: .atURL(from: .module)))
 
