@@ -46,10 +46,14 @@ public struct DefaultAccountSetupHeader: View {
 struct DefaultAccountSetupHeader_Previews: PreviewProvider {
     static var previews: some View {
         DefaultAccountSetupHeader()
-            .environment(Account())
+            .previewWith {
+                AccountConfiguration()
+            }
 
         DefaultAccountSetupHeader()
-            .environment(Account(building: .init().set(\.userId, value: "myUser"), active: MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration(building: .init().set(\.userId, value: "myUser"), active: MockUserIdPasswordAccountService())
+            }
     }
 }
 #endif
