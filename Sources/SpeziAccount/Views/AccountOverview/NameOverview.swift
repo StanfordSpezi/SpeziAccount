@@ -30,6 +30,7 @@ struct NameOverview: View {
                 Section {
                     NavigationLink {
                         wrapper.accountKey.singleEditView(model: model, details: accountDetails)
+                            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
                     } label: {
                         if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                             view
