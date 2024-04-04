@@ -60,9 +60,10 @@ import SwiftUI
 /// - ``init(_:configuration:)``
 /// - ``init(building:active:configuration:)``
 @Observable
-@MainActor
-public final class Account: Sendable {
-    private let logger: Logger
+public final class Account: @unchecked Sendable {
+    private var logger: Logger {
+        LoggerKey.defaultValue
+    }
 
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
     ///
@@ -72,7 +73,7 @@ public final class Account: Sendable {
     ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
     ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
     ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
-    public private(set) var signedIn: Bool
+    @MainActor public private(set) var signedIn: Bool
 
     /// Provides access to associated data of the currently associated user account.
     ///
@@ -81,7 +82,7 @@ public final class Account: Sendable {
     ///
     /// - Note: The associated ``AccountService`` that is responsible for managing the associated user can be retrieved
     ///     using the ``AccountDetails/accountService`` property.
-    public private(set) var details: AccountDetails?
+    @MainActor public private(set) var details: AccountDetails?
 
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
@@ -97,13 +98,11 @@ public final class Account: Sendable {
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
-    nonisolated init(
+    init(
         services: [any AccountService],
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
-        self.logger = LoggerKey.defaultValue
-
         // we have to initialize the macro generated properties directly to stay non-isolated.
         self._signedIn = details != nil
         self._details = details
@@ -132,7 +131,7 @@ public final class Account: Sendable {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    public nonisolated convenience init(
+    public convenience init(
         services: [any AccountService],
         configuration: AccountValueConfiguration = .default
     ) {
@@ -145,7 +144,7 @@ public final class Account: Sendable {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    public nonisolated convenience init(
+    public convenience init(
         _ services: any AccountService...,
         configuration: AccountValueConfiguration = .default
     ) {
@@ -160,7 +159,7 @@ public final class Account: Sendable {
     ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
     @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public nonisolated convenience init<Service: AccountService>(
+    public convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,
         configuration: AccountValueConfiguration = .default
@@ -169,7 +168,7 @@ public final class Account: Sendable {
     }
 
 
-    nonisolated func injectWeakAccount(into value: Any) {
+    func injectWeakAccount(into value: Any) {
         let mirror = Mirror(reflecting: value)
 
         for (_, value) in mirror.children {
@@ -194,6 +193,7 @@ public final class Account: Sendable {
     ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
     ///     This is primarily helpful for identity providers. You might not want to set this flag
     ///     if you using the builtin ``SignupForm``!
+    @MainActor
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
         precondition(
             details.contains(AccountIdKey.self),
@@ -253,6 +253,7 @@ public final class Account: Sendable {
     ///
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
+    @MainActor
     public func removeUserDetails() async {
         if let details,
            let standardBacked = details.accountService as? any _StandardBacked,

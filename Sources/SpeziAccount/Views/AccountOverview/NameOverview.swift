@@ -30,6 +30,7 @@ struct NameOverview: View {
                 Section {
                     NavigationLink {
                         wrapper.accountKey.singleEditView(model: model, details: accountDetails)
+                            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
                     } label: {
                         if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                             view
@@ -52,7 +53,6 @@ struct NameOverview: View {
                 }
             }
         }
-            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
             .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
