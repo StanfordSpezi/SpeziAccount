@@ -154,17 +154,16 @@ extension BiographyKey {
 
 ##### Input Validation
 
-Input validation relies on the `SpeziValidation` package.
-```swift
-// TODO: link to validation! whole section
-```
+Input validation relies on the [SpeziValidation](https://swiftpackageindex.com/StanfordSpezi/SpeziViews/documentation/spezivalidation) package.
+
 `SpeziAccount` provides basic validation for most cases where necessary due to ``FieldValidationRules`` or ``AccountKeyRequirement`` configurations.
 Still, you are required to evaluate to which extent validation has to be handled in your implementation.
 
 * For all `String`-based types validation is automatically managed. Validation is either configured based on
     the rules provided by the account service through ``FieldValidationRules`` or if the user specified a ``AccountKeyRequirement/required`` level.
-    If not using default components like `VerifiableTextField`, you need to visualize validation results yourself using the `ValidationEngine` in the
-    environment.
+    If not using default components like [`VerifiableTextField`](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/verifiabletextfield)),
+    you need to visualize validation results yourself using the [`ValidationEngine`](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationengine))
+    in the environment.
 * For other types that use ``InitialValue/empty(_:)`` and are specified to be ``AccountKeyRequirement/required``,
     validation is automatically set up to check if the user provided a value. For example given a `Date`-based account value, we would require that
     the user modifies the Data at least once.
