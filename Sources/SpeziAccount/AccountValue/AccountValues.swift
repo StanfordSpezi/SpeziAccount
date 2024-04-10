@@ -29,9 +29,6 @@ public protocol AccountValuesCollection: AcceptingAccountValueVisitor, Collectio
 /// - ``AccountAnchor``
 /// - ``AccountStorage``
 public protocol AccountValues: AccountValuesCollection {
-    /// Builder pattern to build a container of this type.
-    typealias Builder = AccountValuesBuilder<Self>
-
     /// The underlying storage repository.
     var storage: AccountStorage { get }
 
@@ -50,6 +47,12 @@ public protocol AccountValues: AccountValuesCollection {
     ///   - allowOverwrite: Flag indicating the the provided values might overwrite these already contained in here.
     /// - Returns: The resulting values containing the combination of both ``AccountValues`` instances.
     func merge<Values: AccountValues>(with values: Values, allowOverwrite: Bool) -> Self
+}
+
+
+extension AccountValues {
+    /// Builder pattern to build a container of this type.
+    public typealias Builder = AccountValuesBuilder<Self>
 }
 
 
