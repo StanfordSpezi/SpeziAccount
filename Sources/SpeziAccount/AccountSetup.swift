@@ -78,7 +78,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    if !services.isEmpty {
+                    if !services.isEmpty || !identityProviders.isEmpty {
                         header
                             .environment(\._accountSetupState, setupState)
                     }
@@ -239,6 +239,9 @@ struct AccountView_Previews: PreviewProvider {
             AccountSetup()
                 .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
+
+        AccountSetup()
+            .environment(Account(services: [MockSignInWithAppleProvider()]))
 
         AccountSetup()
             .previewWith {
