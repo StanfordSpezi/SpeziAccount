@@ -1,0 +1,33 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
+
+    },
+    "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON" : {
+
+    },
+    "ACCOUNT_ERROR_RECOVERY" : {
+
+    },
+    "ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION" : {
+
+    },
+    "ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON %@" : {
+
+    },
+    "UP_CONTACT_DETAILS" : {
+
+    },
+    "UP_CREDENTIALS" : {
+
+    },
+    "UP_NAME" : {
+
+    },
+    "UP_PERSONAL_DETAILS" : {
+
+    }
+  },
+  "version" : "1.0"
+}

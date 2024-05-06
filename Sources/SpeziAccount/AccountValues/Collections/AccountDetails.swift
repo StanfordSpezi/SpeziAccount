@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AccountService // TODO: use?
+import AccountValues // TODO: use?
 import SpeziFoundation
 
 
@@ -22,8 +24,10 @@ public struct AccountDetails: Sendable, AccountValues {
         self.storage = storage
         precondition(storage[ActiveAccountServiceKey.self] != nil, "Direct init access failed to supply ActiveAccountServiceKey")
     }
+}
 
 
+extension AccountDetails {
     fileprivate init<Service: AccountService>(from storage: AccountStorage, owner accountService: Service) {
         var storage = storage
 
@@ -46,7 +50,7 @@ public struct AccountDetails: Sendable, AccountValues {
 extension AccountValuesBuilder where Values == AccountDetails {
     /// ``AccountDetails`` must always be created through the ``build(owner:)`` method.
     @available(*, deprecated, message: "You must use the build(owner:) method to build AccountDetails. This method will result in a runtime crash!")
-    public func build() -> AccountDetails {
+    public func build() -> AccountDetails { // TODO: check if we can make ti unavailable??
         // swiftlint:disable:previous unavailable_function
         preconditionFailure("You need to build AccountDetails using build(owner:)")
     }

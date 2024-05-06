@@ -40,7 +40,7 @@ extension Bool: CustomLocalizedStringResourceConvertible {
 #if DEBUG
 #Preview {
     Form {
-        LocalizableStringBasedDisplayView<GenderIdentityKey>(.preferNotToState)
+        EmptyView() // TODO: LocalizableStringBasedDisplayView<GenderIdentityKey>(.preferNotToState)
     }
 }
 #endif

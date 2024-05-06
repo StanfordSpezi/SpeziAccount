@@ -16,14 +16,10 @@ import OrderedCollections
 ///
 /// A configuration instance is created using ``AccountConfiguration`` and stored at ``Account/configuration``.
 public struct AccountValueConfiguration {
-    /// The default set of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
-    public static let `default` = AccountValueConfiguration(.default)
+    private let configuration: OrderedDictionary<ObjectIdentifier, any AccountKeyConfiguration>
 
 
-    private var configuration: OrderedDictionary<ObjectIdentifier, any AccountKeyConfiguration>
-
-
-    init(_ configuration: [ConfiguredAccountKey]) {
+    public init(_ configuration: [ConfiguredAccountKey]) { // TODO: was internal previously
         self.configuration = configuration
             .map { $0.configuration }
             .reduce(into: [:]) { result, configuration in
@@ -63,7 +59,7 @@ public struct AccountValueConfiguration {
         }
     }
 
-    func missingRequiredKeys(for details: AccountDetails, includeCollected: Bool = false) -> [any AccountKey.Type] {
+    func missingRequiredKeys<Details: AccountValues>(for details: Details, includeCollected: Bool = false) -> [any AccountKey.Type] {
         let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
 
         return self
@@ -95,18 +91,6 @@ public struct AccountValueConfiguration {
     public subscript<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> (any AccountKeyConfiguration)? {
         self[Key.self]
     }
-}
-
-
-extension Array where Element == ConfiguredAccountKey {
-    /// The default array of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
-    public static let `default`: [ConfiguredAccountKey] = [
-        .requires(\.userId),
-        .requires(\.password),
-        .requires(\.name),
-        .collects(\.dateOfBirth),
-        .collects(\.genderIdentity)
-    ]
 }
 
 

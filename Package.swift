@@ -18,7 +18,9 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: "SpeziAccount", targets: ["SpeziAccount"])
+        .library(name: "SpeziAccount", targets: ["SpeziAccount"]),
+        .library(name: "AccountValues", targets: ["AccountValues"]),
+        .library(name: "AccountService", targets: ["AccountService"]) // TODO: remove them again
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "1.0.0"),
@@ -29,6 +31,18 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "AccountValues",
+            dependencies: [
+                .product(name: "SpeziFoundation", package: "SpeziFoundation")
+            ]
+        ),
+        .target(
+            name: "AccountService",
+            dependencies: [
+                .target(name: "AccountValues")
+            ]
+        ),
+        .target(
             name: "SpeziAccount",
             dependencies: [
                 .product(name: "SpeziFoundation", package: "SpeziFoundation"),
@@ -37,7 +51,9 @@ let package = Package(
                 .product(name: "SpeziPersonalInfo", package: "SpeziViews"),
                 .product(name: "SpeziValidation", package: "SpeziViews"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
-                .product(name: "OrderedCollections", package: "swift-collections")
+                .product(name: "OrderedCollections", package: "swift-collections"),
+                .target(name: "AccountValues"),
+                .target(name: "AccountService")
             ],
             resources: [
                 .process("Resources")

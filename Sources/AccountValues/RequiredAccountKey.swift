@@ -23,6 +23,7 @@ import SpeziFoundation
 /// to safely unwrap the value.
 public protocol RequiredAccountKey: AccountKey, DefaultProvidingKnowledgeSource {}
 
+
 extension RequiredAccountKey {
     /// A default implementation that results in a fatal error.
     ///

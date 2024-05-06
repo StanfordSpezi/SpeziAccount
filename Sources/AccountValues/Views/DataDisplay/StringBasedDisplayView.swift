@@ -30,7 +30,7 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
 #if DEBUG
 #Preview {
     List {
-        StringBasedDisplayView<UserIdKey>("andreas.bauer")
+        EmptyView() // TODO: StringBasedDisplayView<UserIdKey>("andreas.bauer")
     }
 }
 #endif

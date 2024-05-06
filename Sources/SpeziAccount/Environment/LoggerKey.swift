@@ -10,6 +10,7 @@ import os
 import SwiftUI
 
 
+// TODO: SpeziViews issue was actually resolved???
 struct LoggerKey: EnvironmentKey {
     // this is currently internal to SpeziAccount but will be addressed on a framework level with https://github.com/StanfordSpezi/SpeziViews/issues/9
     static let defaultValue = Logger(subsystem: "edu.stanford.spezi", category: "SpeziAccount")

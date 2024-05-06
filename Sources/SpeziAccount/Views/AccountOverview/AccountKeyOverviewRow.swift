@@ -78,6 +78,7 @@ struct AccountKeyOverviewRow: View {
     }
 }
 
+
 #if DEBUG
 struct AccountKeyEditRow_Previews: PreviewProvider {
     static let details = AccountDetails.Builder()
