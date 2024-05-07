@@ -37,9 +37,7 @@ struct MissingAccountDetailsWarning: View {
 
 
 #if DEBUG
-struct MissingAccountDetailsWarning_Previews: PreviewProvider {
-    static var previews: some View {
-        MissingAccountDetailsWarning()
-    }
+#Preview {
+    MissingAccountDetailsWarning()
 }
 #endif

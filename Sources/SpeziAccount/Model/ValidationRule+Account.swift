@@ -10,7 +10,7 @@ import SpeziValidation
 
 
 extension ValidationRule {
-    static let acceptAll: ValidationRule = {
+    static let acceptAll: ValidationRule = { // TODO: is that used?
         ValidationRule(rule: { _ in true }, message: "VALIDATION_RULE_ALWAYS_ACCEPT", bundle: .module)
     }()
 }

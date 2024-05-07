@@ -13,7 +13,7 @@
 /// Using both, additional data records of a user can be uniquely identified across ``AccountService`` implementations.
 public struct AdditionalRecordId: CustomStringConvertible, Hashable, Identifiable, Sendable {
     /// A stable ``AccountService`` identifier. See ``AccountService/id-83c6c``.
-    public let accountServiceId: String
+    public let accountServiceId: String // TODO: this should be removed!
     /// The primary user identifier. See ``AccountIdKey``.
     public let accountId: String
 

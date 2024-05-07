@@ -10,6 +10,7 @@ import Foundation
 import Spezi
 import XCTRuntimeAssertions
 
+// TODO: embrace new module modifiers (@Dependency, @Model?)
 
 /// The Spezi `Component` to configure the ``SpeziAccount`` framework in the `Configuration` section of your app.
 ///
