@@ -93,6 +93,7 @@ public final class Account: @unchecked Sendable {
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
     public let registeredAccountServices: [any AccountService]
 
+
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
