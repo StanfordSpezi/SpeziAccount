@@ -89,5 +89,6 @@ extension Standard {
     ///     @AccountReference var account
     /// }
     /// ```
-    public typealias AccountReference = _WeakInjectable<Account>
+    public typealias AccountReference = _WeakInjectable<Account> // TODO: aim to remove AccountReference!
+    public typealias ReplacedAccountReference = Dependency<Account>
 }

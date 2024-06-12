@@ -22,16 +22,17 @@ import XCTRuntimeAssertions
 ///
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration: Module {
+public final class AccountConfiguration: Module { // TODO: make Account and AccountConfiguration one thing?
     private let logger = LoggerKey.defaultValue
 
     /// The user-defined configuration of account values that all user accounts need to support.
     private let configuredAccountKeys: AccountValueConfiguration
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
-    private let providedAccountServices: [any AccountService]
+    @Dependency private var providedAccountServices: [any Module]
 
-    @Model private(set) var account: Account
+    private(set) var account: Account?
 
+    @Application(\.spezi) private var spezi
     @StandardActor private var standard: any Standard
 
     /// The array of ``AccountService``s provided through other Spezi `Components`.
@@ -47,7 +48,6 @@ public final class AccountConfiguration: Module {
     /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
     public init(configuration: AccountValueConfiguration = .default) {
         self.configuredAccountKeys = configuration
-        self.providedAccountServices = []
         self.defaultActiveDetails = nil
     }
 
@@ -61,10 +61,10 @@ public final class AccountConfiguration: Module {
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public init(
         configuration: AccountValueConfiguration = .default,
-        @AccountServiceBuilder _ accountServices: () -> [any AccountService]
+        @AccountServiceBuilder _ accountServices: () -> DependencyCollection
     ) {
         self.configuredAccountKeys = configuration
-        self.providedAccountServices = accountServices()
+        self._providedAccountServices = Dependency(accountServices)
         self.defaultActiveDetails = nil
     }
 
@@ -74,20 +74,22 @@ public final class AccountConfiguration: Module {
     ///   - builder: The ``AccountDetails`` Builder for the account details that you want to supply.
     ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    public init<Service: AccountService>(
+    public init<Service: AccountService & Module>( // TODO: Module wrapper?
         building builder: AccountDetails.Builder,
         active accountService: Service,
         configuration: AccountValueConfiguration = .default
     ) {
         self.configuredAccountKeys = configuration
-        self.providedAccountServices = [accountService]
+        self._providedAccountServices = Dependency(using: DependencyCollection {
+            accountService
+        })
         self.defaultActiveDetails = builder.build(owner: accountService)
     }
 
 
     public func configure() {
         // assemble the final array of account services
-        let accountServices = (providedAccountServices + self.accountServices).map { service in
+        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService } + self.accountServices).map { service in
             // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
             let service = verifyConfigurationRequirements(against: service)
@@ -99,13 +101,17 @@ public final class AccountConfiguration: Module {
             return service
         }
 
-        self.account = Account(
+        let account = Account(
             services: accountServices,
             supportedConfiguration: configuredAccountKeys,
             details: defaultActiveDetails
         )
 
-        self.account.injectWeakAccount(into: standard)
+        account.injectWeakAccount(into: standard) // TODO: is this still necessary
+
+
+        self.account = account // TODO: this requires declaring it as an optional dependency!
+        spezi.loadModule(account)
     }
 
     private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {

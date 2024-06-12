@@ -60,7 +60,7 @@ import SwiftUI
 /// - ``init(_:configuration:)``
 /// - ``init(building:active:configuration:)``
 @Observable
-public final class Account {
+public final class Account: Module, EnvironmentAccessible { // TODO: extension conformances
     private var logger: Logger {
         LoggerKey.defaultValue
     }
@@ -91,7 +91,7 @@ public final class Account {
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    public let registeredAccountServices: [any AccountService]
+    public let registeredAccountServices: [any AccountService] // TODO: just collect them here?
 
 
     /// Initialize a new `Account` object by providing all properties individually.
