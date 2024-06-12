@@ -9,6 +9,7 @@
 import Spezi
 
 
+// TODO: account services as modules?
 actor NotifyStandardBackedAccountService<Service: AccountService, Standard: AccountNotifyConstraint>: AccountService, _StandardBacked {
     @AccountReference private var account
 
