@@ -6,44 +6,28 @@
 // SPDX-License-Identifier: MIT
 //
 
+// TODO: dependency builder
+/*
+ import Spezi
+
+ /// A result builder to build a ``DependencyCollection``.
+@resultBuilder
+public enum AccountServiceBuilder: DependencyCollectionBuilder {
+    /// An auto-closure expression, providing the default dependency value, building the ``DependencyCollection``.
+    public static func buildExpression<Service: AccountService & Module>(_ expression: @escaping @autoclosure () -> M) -> DependencyCollection {
+        DependencyCollection(DependencyContext(defaultValue: expression))
+    }
+}
+ */
+import Spezi
+
 /// A result builder to build a collection of ``AccountService``s.
 @resultBuilder
-public enum AccountServiceBuilder {
+public enum AccountServiceBuilder: DependencyCollectionBuilder {
     /// Build a single ``AccountService`` expression.
-    public static func buildExpression<Service: AccountService>(_ service: Service) -> [any AccountService] {
-        [service]
-    }
-
-    /// Build a block of ``AccountService``s.
-    public static func buildBlock(_ components: [any AccountService]...) -> [any AccountService] {
-        buildArray(components)
-    }
-
-    /// Build the first block of an conditional ``AccountService`` component.
-    public static func buildEither(first component: [any AccountService]) -> [any AccountService] {
-        component
-    }
-
-    /// Build the second block of an conditional ``AccountService`` component.
-    public static func buildEither(second component: [any AccountService]) -> [any AccountService] {
-        component
-    }
-
-    /// Build an optional ``AccountService`` component.
-    public static func buildOptional(_ component: [any AccountService]?) -> [any AccountService] {
-        // swiftlint:disable:previous discouraged_optional_collection
-        component ?? []
-    }
-
-    /// Build an ``AccountService`` component with limited availability.
-    public static func buildLimitedAvailability(_ component: [any AccountService]) -> [any AccountService] {
-        component
-    }
-
-    /// Build an array of ``AccountService`` components.
-    public static func buildArray(_ components: [[any AccountService]]) -> [any AccountService] {
-        components.reduce(into: []) { result, services in
-            result.append(contentsOf: services)
+    public static func buildExpression<Service: AccountService & Module>(_ service: Service) -> DependencyCollection {
+        DependencyCollection {
+            service
         }
     }
 }
