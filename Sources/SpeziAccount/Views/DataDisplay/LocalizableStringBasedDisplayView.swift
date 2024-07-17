@@ -30,8 +30,15 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 }
 
 
-// TODO: review for what we need this!
-extension Bool: CustomLocalizedStringResourceConvertible {
+#if compiler(<6)
+extension Bool: @retroactive CustomLocalizedStringResourceConvertible {}
+#else
+extension Swift.Bool: Foundation.CustomLocalizedStringResourceConvertible {}
+#endif
+
+
+extension Bool {
+    /// Localizes the bool value to "Yes" and "No".
     public var localizedStringResource: LocalizedStringResource {
         .init(self ? "YES" : "NO", bundle: .atURL(from: .module))
     }
