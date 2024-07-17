@@ -31,7 +31,8 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
 
     private var currentAccountId: String? {
         get async {
-            await account.details?.accountId
+            let account = account
+            return await account.details?.accountId
         }
     }
 

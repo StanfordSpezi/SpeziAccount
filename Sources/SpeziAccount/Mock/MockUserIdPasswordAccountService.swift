@@ -39,6 +39,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             .set(\.userId, value: userId)
             .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
             .build(owner: self)
+        let account = account
         try await account.supplyUserDetails(details)
     }
 
@@ -53,6 +54,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
             .set(\.accountId, value: id.uuidString)
             .remove(\.password)
             .build(owner: self)
+        let account = account
         try await account.supplyUserDetails(details)
     }
 
@@ -64,16 +66,19 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     public func logout() async throws {
         print("Mock Logout")
         try await Task.sleep(for: .seconds(1))
+        let account = account
         await account.removeUserDetails()
     }
 
     public func delete() async throws {
         print("Mock Remove Account")
         try await Task.sleep(for: .seconds(1))
+        let account = account
         await account.removeUserDetails()
     }
 
     public func updateAccountDetails(_ modifications: AccountModifications) async throws {
+        let account = account
         guard let details = await account.details else {
             return
         }
