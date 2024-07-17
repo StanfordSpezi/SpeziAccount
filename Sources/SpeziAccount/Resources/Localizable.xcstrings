@@ -1126,6 +1126,7 @@
     },
     "Preview Service" : {
       "comment" : "No need to translate, only used in Previews ...",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

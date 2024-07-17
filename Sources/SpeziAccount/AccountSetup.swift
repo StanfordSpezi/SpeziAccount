@@ -9,13 +9,13 @@
 import SwiftUI
 
 
-public enum _AccountSetupState: EnvironmentKey { // swiftlint:disable:this type_name
+public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:this type_name
     case generic
     case setupShown
     case requiringAdditionalInfo(_ keys: [any AccountKey.Type])
     case loadingExistingAccount
 
-    public static var defaultValue: _AccountSetupState = .generic
+    public static let defaultValue: _AccountSetupState = .generic
 }
 
 /// The essential `SpeziAccount` view to login into or signup for a user account.

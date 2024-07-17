@@ -23,5 +23,6 @@ public protocol DataDisplayView<Key>: View {
 
     /// Create a new display view.
     /// - Parameter value: The current account value.
+    @MainActor
     init(_ value: Key.Value)
 }

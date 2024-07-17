@@ -136,16 +136,20 @@ public struct UserIdPasswordEmbeddedView: View {
 
         focusedField = nil
 
+        let userId = userId
+        let password = password
         try await service.login(userId: userId, password: password)
     }
 }
 
 
 extension UserIdPasswordAccountSetupViewStyle {
+    @MainActor
     fileprivate func makeAnySignupForm(_ service: any UserIdPasswordAccountService) -> AnyView {
         AnyView(makeSignupView(service))
     }
 
+    @MainActor
     fileprivate func makeAnyPasswordResetView(_ service: any UserIdPasswordAccountService) -> AnyView {
         AnyView(makePasswordResetView(service))
     }

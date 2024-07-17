@@ -8,7 +8,7 @@
 
 
 /// A user-configured ``AccountKey``.
-public protocol AccountKeyConfiguration: CustomStringConvertible, CustomDebugStringConvertible, Identifiable, Hashable
+public protocol AccountKeyConfiguration: CustomStringConvertible, CustomDebugStringConvertible, Identifiable, Hashable, Sendable
     where ID == ObjectIdentifier {
     /// The associated ``AccountKey``.
     associatedtype Key: AccountKey

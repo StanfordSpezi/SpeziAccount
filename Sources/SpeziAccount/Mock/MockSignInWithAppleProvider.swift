@@ -41,7 +41,9 @@ public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
 public actor MockSignInWithAppleProvider: IdentityProvider {
     public let configuration = AccountServiceConfiguration(name: "Mock SignIn with Apple", supportedKeys: .arbitrary)
 
-    public let viewStyle = MockSignInWithAppleProviderStyle()
+    public nonisolated var viewStyle: MockSignInWithAppleProviderStyle {
+        MockSignInWithAppleProviderStyle()
+    }
 
 
     public init() {}

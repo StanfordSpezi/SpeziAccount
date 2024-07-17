@@ -30,6 +30,7 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 }
 
 
+// TODO: review for what we need this!
 extension Bool: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         .init(self ? "YES" : "NO", bundle: .atURL(from: .module))

@@ -34,6 +34,7 @@ struct AccountServiceButtonList: View {
 
 
 extension AccountSetupViewStyle {
+    @MainActor
     fileprivate func makeAnyAccountServiceButtonLabel(_ service: any AccountService) -> AnyView {
         // as the `AccountSetup` only has a type-erased view on the `AccountSetupViewStyle`
         // we can't, because of the default implementation, create the AnyView inline.

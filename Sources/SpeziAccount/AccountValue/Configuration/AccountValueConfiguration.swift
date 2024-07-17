@@ -110,6 +110,9 @@ extension Array where Element == ConfiguredAccountKey {
 }
 
 
+extension AccountValueConfiguration: Sendable {}
+
+
 extension AccountValueConfiguration: Collection {
     public typealias Index = OrderedDictionary<ObjectIdentifier, any AccountKeyConfiguration>.Index
 

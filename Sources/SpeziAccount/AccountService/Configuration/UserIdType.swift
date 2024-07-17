@@ -22,7 +22,7 @@ public enum UserIdType: Sendable, Equatable {
 }
 
 
-extension LocalizedStringResource: @unchecked Sendable {}
+extension LocalizedStringResource: @unchecked Sendable {} // TODO: review Sendbale!
 
 
 extension UserIdType: CustomLocalizedStringResourceConvertible {

@@ -74,3 +74,6 @@ public struct ConfiguredAccountKey {
         requires(keyPath)
     }
 }
+
+
+extension ConfiguredAccountKey: Sendable {}

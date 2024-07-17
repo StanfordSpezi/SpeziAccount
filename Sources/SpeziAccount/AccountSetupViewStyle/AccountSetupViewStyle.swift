@@ -32,14 +32,17 @@ public protocol AccountSetupViewStyle {
 
     /// The button label in the list of account services for the ``AccountSetup`` view.
     @ViewBuilder
+    @MainActor
     func makeServiceButtonLabel(_ service: any AccountService) -> ButtonLabel
 
     /// The primary view that is opened as the destination of the ``makeServiceButtonLabel(_:)-54dx4`` button.
     @ViewBuilder
+    @MainActor
     func makePrimaryView(_ service: any AccountService) -> PrimaryView
 
     /// The account summary that is presented in the ``AccountSetup`` for an already signed in user.
     @ViewBuilder
+    @MainActor
     func makeAccountSummary(_ service: any AccountService, details: AccountDetails) -> AccountSummaryView
 }
 
@@ -52,6 +55,7 @@ extension AccountSetupViewStyle {
 
 
     /// Default service button label using the ``AccountServiceName`` and ``AccountServiceImage`` configurations.
+    @MainActor
     public func makeServiceButtonLabel(_ service: any AccountService) -> some View {
         Group {
             service.configuration.image
@@ -63,6 +67,7 @@ extension AccountSetupViewStyle {
     }
 
     /// Default account summary using ``AccountSummaryBox``.
+    @MainActor
     public func makeAccountSummary(_ service: any AccountService, details: AccountDetails) -> some View {
         AccountSummaryBox(details: details)
     }
