@@ -121,6 +121,7 @@ actor TestAccountService: UserIdPasswordAccountService {
         let details = builder
             .build(owner: self)
 
+        let account = account
         try await account.supplyUserDetails(details)
     }
 
@@ -129,10 +130,12 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func logout() async throws {
+        let account = account
         await account.removeUserDetails()
     }
 
     func delete() async throws {
+        let account = account
         await account.removeUserDetails()
         registeredUser = UserStorage(userId: defaultUserId)
     }

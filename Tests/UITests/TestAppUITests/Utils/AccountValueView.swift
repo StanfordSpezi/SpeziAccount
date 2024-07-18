@@ -9,6 +9,7 @@
 import XCTest
 
 
+@MainActor
 protocol AccountValueView: TestableView {}
 
 

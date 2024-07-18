@@ -17,6 +17,7 @@ final class AccountSetupTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    @MainActor
     func testEmbeddedViewValidation() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
@@ -44,6 +45,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(!setup.buttons["Login"].isEnabled)
     }
 
+    @MainActor
     func testLoginWithEmail() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
@@ -63,6 +65,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testAccountSummary() throws {
         let app = TestApp.launch(serviceType: "mail", defaultCredentials: true)
         var setup = app.openAccountSetup()
@@ -83,6 +86,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testLoginWithMultipleServices() throws {
         let app = TestApp.launch(serviceType: "both")
         let setup = app.openAccountSetup()
@@ -96,6 +100,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testBasicIdentityProviderLayout() throws {
         let app = TestApp.launch(serviceType: "withIdentityProvider")
         let setup = app.openAccountSetup()
@@ -105,6 +110,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(setup.buttons["Sign in with Apple"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testResetPassword() throws {
         let app = TestApp.launch(serviceType: "mail")
         let setup = app.openAccountSetup()
@@ -131,6 +137,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertFalse(setup.staticTexts["Your Account"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testSignupCredentialsValidation() throws {
         let app = TestApp.launch(serviceType: "mail")
         var setup = app.openAccountSetup()
@@ -186,6 +193,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testNameValidation() throws {
         let app = TestApp.launch(config: "allRequired")
         let signupView = app
@@ -206,6 +214,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
     }
 
+    @MainActor
     func testInvalidCredentials() throws {
         let app = TestApp.launch(serviceType: "mail")
 
@@ -221,6 +230,7 @@ final class AccountSetupTests: XCTestCase {
         app.alerts["User Identifier is already taken"].scrollViews.otherElements.buttons["OK"].tap()
     }
 
+    @MainActor
     func testFullSignup() throws {
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app
@@ -248,6 +258,7 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: "Date of Birth")
     }
 
+    @MainActor
     func testFullSignupWithAdditionalStorage() throws {
         let app = TestApp.launch(config: "allRequiredWithBio")
         let signupView = app
@@ -277,6 +288,7 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: "Biography, Hello Stanford")
     }
 
+    @MainActor
     func testRequirementLevelsSignup() throws {
         let app = TestApp.launch(serviceType: "mail")
         let signupView = app
@@ -291,6 +303,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testNameEmptinessCheck() throws {
         // if we type in the name in the signup view but then remove all text input then (empty strings in the text fields)
         // we shouldn't save a empty name but instead save no name at all
@@ -324,6 +337,7 @@ final class AccountSetupTests: XCTestCase {
         overview.verifyExistence(text: "Add Name")
     }
 
+    @MainActor
     func testAdditionalInfoAfterLogin() throws {
         let app = TestApp.launch(config: "allRequiredWithBio")
 
@@ -345,6 +359,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testAccountRequiredModifier() throws {
         let app = TestApp.launch(defaultCredentials: true, accountRequired: true)
 
@@ -353,6 +368,7 @@ final class AccountSetupTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Your Account"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
         let app = TestApp.launch(config: "allRequiredWithBio", defaultCredentials: true, verifyAccountDetails: true)
 

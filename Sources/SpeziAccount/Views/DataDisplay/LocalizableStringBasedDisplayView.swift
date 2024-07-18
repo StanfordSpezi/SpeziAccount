@@ -31,9 +31,9 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 
 
 #if compiler(<6)
-extension Bool: @retroactive CustomLocalizedStringResourceConvertible {}
-#else
 extension Swift.Bool: Foundation.CustomLocalizedStringResourceConvertible {}
+#else
+extension Bool: @retroactive CustomLocalizedStringResourceConvertible {}
 #endif
 
 

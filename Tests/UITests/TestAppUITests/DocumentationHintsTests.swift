@@ -11,6 +11,7 @@ import XCTestExtensions
 
 
 final class DocumentationHintsTests: XCTestCase {
+    @MainActor
     func testDocumentationHint(type: String, button: String, hint: String) {
         let testApp = TestApp.launch(serviceType: type)
         let app = testApp.app
@@ -30,6 +31,7 @@ final class DocumentationHintsTests: XCTestCase {
         app.activate()
     }
 
+    @MainActor
     func testEmptyAccountServices() {
         testDocumentationHint(
             type: "empty",
@@ -41,6 +43,7 @@ final class DocumentationHintsTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testMissingAccount() {
         testDocumentationHint(
             type: "mail",

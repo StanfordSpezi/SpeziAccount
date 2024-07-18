@@ -10,6 +10,7 @@ import XCTest
 
 
 @dynamicMemberLookup
+@MainActor
 protocol TestableView {
     var app: XCUIApplication { get }
 

@@ -17,6 +17,7 @@ final class AccountOverviewTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    @MainActor
     func testRequirementLevelsOverview() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -36,6 +37,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(overview.buttons["Logout"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testEditView() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -60,6 +62,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Hello Stanford")
     }
 
+    @MainActor
     func testLogout() {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -75,6 +78,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].waitForExistence(timeout: 0.5))
     }
 
+    @MainActor
     func testAccountRemoval() {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -94,6 +98,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Got notified about deletion!"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testEditDiscard() {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -123,6 +128,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Male") // make sure value didn't change
     }
 
+    @MainActor
     func testRemoveDiscard() {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -145,6 +151,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Male") // make sure value didn't change
     }
 
+    @MainActor
     func testRemoval() {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -165,6 +172,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertFalse(overview.staticTexts["Male"].waitForExistence(timeout: 2.0)) // ensure value is gone
     }
 
+    @MainActor
     func testNameOverview() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -216,6 +224,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(overview.staticTexts["L"].waitForExistence(timeout: 2.0)) // ensure the "account image" is updated accordingly
     }
 
+    @MainActor
     func testAddName() throws {
         let app = TestApp.launch(defaultCredentials: true, noName: true)
         let overview = app.openAccountOverview()
@@ -240,6 +249,7 @@ final class AccountOverviewTests: XCTestCase {
         overview.verifyExistence(text: "Name, Leland Stanford")
     }
 
+    @MainActor
     func testSecurityOverview() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
@@ -276,7 +286,8 @@ final class AccountOverviewTests: XCTestCase {
 
         XCTAssertFalse(overview.secureTextFields["enter password"].waitForExistence(timeout: 2.0))
     }
-    
+
+    @MainActor
     func testLicenseOverview() throws {
         let app = TestApp.launch(defaultCredentials: true)
         let overview = app.openAccountOverview()
