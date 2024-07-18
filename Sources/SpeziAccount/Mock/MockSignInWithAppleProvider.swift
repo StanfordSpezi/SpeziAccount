@@ -7,8 +7,8 @@
 //
 
 import AuthenticationServices
-import SwiftUI
 import Spezi
+import SwiftUI
 
 
 private struct MockButton: View {

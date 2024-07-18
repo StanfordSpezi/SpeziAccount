@@ -148,17 +148,29 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
     static var previews: some View {
         // preview entering new data.
         Preview()
-            .environment(Account(MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration {
+                    MockUserIdPasswordAccountService()
+                }
+            }
             .environment(\.accountViewType, .signup)
 
         // preview entering new data but displaying existing data.
         Preview()
-            .environment(Account(MockUserIdPasswordAccountService()))
+            .previewWith {
+                AccountConfiguration {
+                    MockUserIdPasswordAccountService()
+                }
+            }
             .environment(\.accountViewType, .overview(mode: .existing))
 
         // preview entering new data but required.
         Preview()
-            .environment(Account(MockUserIdPasswordAccountService(), configuration: [.requires(\.dateOfBirth)]))
+            .previewWith {
+                AccountConfiguration(configuration: [.requires(\.dateOfBirth)]) {
+                    MockUserIdPasswordAccountService()
+                }
+            }
             .environment(\.accountViewType, .signup)
     }
 }

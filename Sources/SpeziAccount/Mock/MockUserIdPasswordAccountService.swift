@@ -6,13 +6,13 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import Foundation
+import Spezi
 
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
 public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService, Module {
-    @AccountReference private var account: Account
+    @Dependency private var account: Account
 
     public let configuration: AccountServiceConfiguration
     private var userIdToAccountId: [String: UUID] = [:]

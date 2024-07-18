@@ -12,7 +12,8 @@ import Spezi
 /// An ``AccountService`` implementation for account services with ``SupportedAccountKeys/exactly(_:)`` configuration
 /// to forward unsupported account values to a ``AccountStorageConstraint`` implementation.
 actor StorageStandardBackedAccountService<Service: AccountService, Standard: AccountStorageConstraint>: AccountService, _StandardBacked {
-    @AccountReference private var account
+    @Dependency private var account: Account
+    @Dependency var accountServiceWorkaround: [any Module] // TODO: wtf does the required init from @Dependency not work anymore!
 
     let accountService: Service
     let standard: Standard
@@ -43,6 +44,7 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
         }
 
         self.accountService = accountService
+        _accountServiceWorkaround = Dependency(using: DependencyCollection { accountService })
         self.standard = standard
         self.serviceSupportedKeys = keys
     }

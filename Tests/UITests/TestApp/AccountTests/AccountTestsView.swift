@@ -137,13 +137,13 @@ struct AccountTestsView_Previews: PreviewProvider {
         AccountTestsView()
             .previewWith {
                 AccountConfiguration {
-                    TestAccountService(TestAlertModel(), .emailAddress)
+                    TestAccountService(.emailAddress)
                 }
             }
 
         AccountTestsView()
             .previewWith {
-                AccountConfiguration(building: details, active: TestAccountService(TestAlertModel(), .emailAddress))
+                AccountConfiguration(building: details, active: TestAccountService(.emailAddress))
             }
 
         AccountTestsView()

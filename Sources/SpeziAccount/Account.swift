@@ -60,7 +60,7 @@ import SwiftUI
 /// - ``init(_:configuration:)``
 /// - ``init(building:active:configuration:)``
 @Observable
-public final class Account: Module, EnvironmentAccessible { // TODO: extension conformances
+public final class Account {
     private var logger: Logger {
         LoggerKey.defaultValue
     }
@@ -91,8 +91,10 @@ public final class Account: Module, EnvironmentAccessible { // TODO: extension c
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    public let registeredAccountServices: [any AccountService] // TODO: just collect them here?
+    public private(set) var registeredAccountServices: [any AccountService]
+    // TODO: why no sendability warning?
 
+    // TODO: remove all those public inits (we have .previewWith now!)
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -119,10 +121,6 @@ public final class Account: Module, EnvironmentAccessible { // TODO: extension c
                 an optimal user experience. Ignore this warning if you know what you are doing.
                 """
             )
-        }
-
-        for service in registeredAccountServices {
-            injectWeakAccount(into: service)
         }
     }
 
@@ -168,18 +166,13 @@ public final class Account: Module, EnvironmentAccessible { // TODO: extension c
         self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
     }
 
+    public convenience init() {
+        self.init(configuration: .default)
+    }
 
-    func injectWeakAccount(into value: Any) {
-        let mirror = Mirror(reflecting: value)
-
-        for (_, value) in mirror.children {
-            if let weakReference = value as? _WeakInjectable<Account> { // see AccountService.AccountReference
-                weakReference.inject(self)
-            } else if let accountService = value as? any AccountService {
-                // allow for nested injection like in the case of `StandardBackedAccountService`
-                injectWeakAccount(into: accountService)
-            }
-        }
+    @MainActor
+    func configureServices(_ services: [any AccountService]) {
+        registeredAccountServices.append(contentsOf: services)
     }
 
     /// Supply the ``AccountDetails`` of the currently logged in user.
@@ -273,3 +266,6 @@ public final class Account: Module, EnvironmentAccessible { // TODO: extension c
 
 
 extension Account: Sendable {}
+
+
+extension Account: Module, EnvironmentAccessible, DefaultInitializable {}

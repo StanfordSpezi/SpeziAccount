@@ -162,6 +162,8 @@ extension UserIdPasswordAccountSetupViewStyle {
     return NavigationStack {
         UserIdPasswordEmbeddedView(using: accountService)
     }
-        .environment(Account(accountService))
+        .previewWith {
+            Account(accountService)
+        }
 }
 #endif

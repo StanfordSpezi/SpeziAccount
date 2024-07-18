@@ -55,8 +55,29 @@ class TestAppDelegate: SpeziAppDelegate {
 
     override var configuration: Configuration {
         Configuration(standard: TestStandard()) {
-            AccountConfiguration(configuration: configuredValues)
-            TestAccountConfiguration(features: features)
+            AccountConfiguration(configuration: configuredValues) {
+                let defaultCredentials = features.defaultCredentials
+                let noName = features.noName
+                switch features.serviceType {
+                case .mail:
+                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
+                case .both:
+                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
+                    TestAccountService(.username)
+                case .withIdentityProvider:
+                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
+                    MockSignInWithAppleProvider()
+                case .empty:
+                    [] // TODO: how to properly provide an empty service!
+                }
+            }
         }
+    }
+}
+
+
+extension AccountServiceBuilder {
+    static func buildExpression(_ empty: [Void]) -> DependencyCollection {
+        Self.buildBlock()
     }
 }

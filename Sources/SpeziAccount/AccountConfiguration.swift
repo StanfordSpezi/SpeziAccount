@@ -23,22 +23,16 @@ import XCTRuntimeAssertions
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
 public final class AccountConfiguration: Module { // TODO: make Account and AccountConfiguration one thing?
-    private let logger = LoggerKey.defaultValue
+    @Application(\.logger) private var logger
 
-    /// The user-defined configuration of account values that all user accounts need to support.
-    private let configuredAccountKeys: AccountValueConfiguration
-    /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
-    @Dependency private var providedAccountServices: [any Module]
 
-    private(set) var account: Account?
+    @Dependency private var account: Account? // TODO: somehow get this to non-optional?
 
-    @Application(\.spezi) private var spezi
     @StandardActor private var standard: any Standard
+    // TODO: should that really be a Standard constraint(just configure it as a module? in the dependency builder?)
 
-    /// The array of ``AccountService``s provided through other Spezi `Components`.
-    @Collect private var accountServices: [any AccountService]
-    /// Default active Account Details provided for previewing opportunities.
-    private let defaultActiveDetails: AccountDetails?
+    /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
+    @Dependency @ObservationIgnored private var providedAccountServices: [any Module]
 
 
     /// Initializes a `AccountConfiguration` without directly  providing any ``AccountService`` instances.
@@ -46,9 +40,8 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
     ///
     /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
-    public init(configuration: AccountValueConfiguration = .default) {
-        self.configuredAccountKeys = configuration
-        self.defaultActiveDetails = nil
+    public convenience init(configuration: AccountValueConfiguration = .default) { // TODO: can we remove this ini?
+        self.init(configuration: configuration, defaultActiveDetails: nil) {}
     }
 
     /// Initializes a `AccountConfiguration` by directly providing a set of ``AccountService`` instances.
@@ -59,13 +52,11 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
     /// - Parameters:
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
-    public init(
+    public convenience init(
         configuration: AccountValueConfiguration = .default,
         @AccountServiceBuilder _ accountServices: () -> DependencyCollection
     ) {
-        self.configuredAccountKeys = configuration
-        self._providedAccountServices = Dependency(accountServices)
-        self.defaultActiveDetails = nil
+        self.init(configuration: configuration, defaultActiveDetails: nil, accountServices)
     }
 
     /// Configure the Account Module for previewing purposes with default `AccountDetails`.
@@ -74,47 +65,59 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
     ///   - builder: The ``AccountDetails`` Builder for the account details that you want to supply.
     ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    public init<Service: AccountService & Module>( // TODO: Module wrapper?
+    public convenience init<Service: AccountService>(
         building builder: AccountDetails.Builder,
         active accountService: Service,
         configuration: AccountValueConfiguration = .default
     ) {
-        self.configuredAccountKeys = configuration
-        self._providedAccountServices = Dependency(using: DependencyCollection {
+        let details = builder.build(owner: accountService)
+        self.init(configuration: configuration, defaultActiveDetails: details) {
             accountService
-        })
-        self.defaultActiveDetails = builder.build(owner: accountService)
+        }
     }
 
+    init(
+        configuration: AccountValueConfiguration = .default,
+        defaultActiveDetails: AccountDetails? = nil,
+        @AccountServiceBuilder _ accountServices: () -> DependencyCollection
+    ) {
+        self._providedAccountServices = Dependency(using: accountServices())
+
+        self._account = Dependency(wrappedValue: Account(
+            services: [],
+            supportedConfiguration: configuration,
+            details: defaultActiveDetails
+        ))
+    }
 
     public func configure() {
         // assemble the final array of account services
-        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService } + self.accountServices).map { service in
+        // TODO: we need to filter that first, before passing the collection to Dependency (not accessible in the init)
+        //   -> then we also need to add the backed services to the array!
+        guard let account else {
+            preconditionFailure("Something went wrong") // TODO: Update message!
+        }
+
+        // TODO: bring back support for all of that!
+        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService }).map { service in
             // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
-            let service = verifyConfigurationRequirements(against: service)
+            let service = verify(configurationRequirements: account.configuration, against: service)
 
             if let notifyStandard = standard as? any AccountNotifyConstraint {
-                return service.backedBy(standard: notifyStandard)
+                return service.backedBy(standard: notifyStandard) // TODO: services are never loaded!
             }
 
             return service
         }
 
-        let account = Account(
-            services: accountServices,
-            supportedConfiguration: configuredAccountKeys,
-            details: defaultActiveDetails
-        )
-
-        account.injectWeakAccount(into: standard) // TODO: is this still necessary
-
-
-        self.account = account // TODO: this requires declaring it as an optional dependency!
-        spezi.loadModule(account)
+        account.configureServices(accountServices)
     }
 
-    private func verifyConfigurationRequirements(against service: any AccountService) -> any AccountService {
+    private func verify(
+        configurationRequirements configuration: AccountValueConfiguration,
+        against service: any AccountService
+    ) -> any AccountService {
         logger.debug("Checking \(service.description) against the configured account keys.")
 
         // if account service states exact supported keys, AccountIdKey must be one of them
@@ -132,7 +135,7 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
 
         // collect all values that cannot be handled by the account service
         let unmappedAccountKeys: [any AccountKeyConfiguration] = service.configuration
-            .unsupportedAccountKeys(basedOn: configuredAccountKeys)
+            .unsupportedAccountKeys(basedOn: configuration)
 
         guard !unmappedAccountKeys.isEmpty else {
             return service // we are fine, nothing unsupported
@@ -146,7 +149,8 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
                          are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
 
                          """)
-            return service.backedBy(standard: accountStandard)
+            // TODO: that nesting caused a lot of trouble!
+            return service.backedBy(standard: accountStandard) // TODO: services are never loaded
         }
 
         // When we reach here, we have no way to store the configured account value

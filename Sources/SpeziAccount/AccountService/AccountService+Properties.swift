@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
+
 
 extension AccountService {
     /// A property wrapper that can be used within ``AccountService`` instances to request
@@ -17,5 +19,6 @@ extension AccountService {
     ///     @AccountReference var account
     /// }
     /// ```
-    public typealias AccountReference = _WeakInjectable<Account>
+    @available(*, deprecated, renamed: "Dependency", message: "Account is now a module. Please use the @Dependency property wrapper from Spezi.")
+    public typealias AccountReference = Dependency<Account>
 }

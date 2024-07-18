@@ -6,8 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
-import SwiftUI
 import Spezi
+import SwiftUI
 
 
 /// The view style for the `MockSimpleAccountService` rendering `"Hello World"` text.
@@ -20,7 +20,7 @@ struct MockSimpleAccountSetupViewStyle: AccountSetupViewStyle {
 
 /// A simple mock ``AccountService`` that is barely implemented but useful for SwiftUI previewing purposes.
 actor MockSimpleAccountService: AccountService, Module {
-    @AccountReference private var account: Account
+    @Dependency private var account: Account
     
     let configuration = AccountServiceConfiguration(name: "Mock Simple AccountService", supportedKeys: .arbitrary)
 
