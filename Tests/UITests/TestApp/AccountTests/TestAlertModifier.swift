@@ -23,7 +23,7 @@ struct TestAlertModifier: ViewModifier {
 
     @State private var isActive = false
 
-    var isPresented: Binding<Bool> {
+    @MainActor var isPresented: Binding<Bool> {
         Binding {
             model.presentingAlert && isActive
         } set: { newValue in

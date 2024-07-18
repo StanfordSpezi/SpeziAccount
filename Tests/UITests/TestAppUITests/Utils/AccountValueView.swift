@@ -14,29 +14,42 @@ protocol AccountValueView: TestableView {}
 
 
 extension AccountValueView {
-    func updateGenderIdentity(from: String, to: String) {
-        app.staticTexts[from].tap()
-        XCTAssertTrue(app.buttons[to].waitForExistence(timeout: 0.5))
-        app.buttons[to].tap()
+    @available(*, deprecated, message: "Removed")
+    func updateGenderIdentity(from: String, to: String) { // TODO: remove
+        app.updateGenderIdentity(from: from, to: to)
+    }
+
+    @available(*, deprecated, message: "Removed")
+    func changeDatePreviousMonthFirstDay() { // TODO: remove
+        app.changeDatePreviousMonthFirstDay()
+    }
+}
+
+
+extension XCUIApplication {
+    func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
+        staticTexts[from].tap()
+        XCTAssertTrue(buttons[to].waitForExistence(timeout: 0.5), "Couldn't locate gender identity dropdown", file: file, line: line)
+        buttons[to].tap()
     }
 
     func changeDatePreviousMonthFirstDay() {
         // add date button is presented if date is not required or doesn't exists yet
-        if app.buttons["Add Date of Birth"].exists { // uses the accessibility label
-            app.buttons["Add Date of Birth"].tap()
+        if buttons["Add Date of Birth"].exists { // uses the accessibility label
+            buttons["Add Date of Birth"].tap()
         }
 
-        XCTAssertTrue(app.datePickers.firstMatch.waitForExistence(timeout: 2.0))
-        app.datePickers.firstMatch.tap()
+        XCTAssertTrue(datePickers.firstMatch.waitForExistence(timeout: 2.0))
+        datePickers.firstMatch.tap()
 
         // navigate to previous month and select the first date
-        XCTAssertTrue(app.datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0))
-        app.datePickers.buttons["Previous Month"].tap()
+        XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0))
+        datePickers.buttons["Previous Month"].tap()
 
         usleep(500_000)
-        app.datePickers.collectionViews.buttons.element(boundBy: 0).tap()
+        datePickers.collectionViews.buttons.element(boundBy: 0).tap()
 
         // close the date picker again
-        app.staticTexts["Date of Birth"].tap()
+        staticTexts["Date of Birth"].tap()
     }
 }
