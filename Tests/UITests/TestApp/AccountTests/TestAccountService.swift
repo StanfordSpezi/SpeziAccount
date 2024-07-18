@@ -17,7 +17,8 @@ struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
 }
 
 
-actor TestAccountService: UserIdPasswordAccountService {
+@MainActor
+final class TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
 
     private let model: TestAlertModel
@@ -50,7 +51,7 @@ actor TestAccountService: UserIdPasswordAccountService {
         self.registeredUser = UserStorage(userId: defaultUserId)
     }
 
-    nonisolated func configure() {
+    func configure() {
         if defaultAccountOnConfigure {
             Task {
                 do {
