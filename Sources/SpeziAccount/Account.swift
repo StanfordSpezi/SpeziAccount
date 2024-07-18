@@ -92,6 +92,7 @@ public final class Account {
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
     public private(set) var registeredAccountServices: [any AccountService]
+    // TODO: just make it private, you can use the dependency system now?) => this would circumwent the nested Account Services thingy!
     // TODO: why no sendability warning?
 
     // TODO: remove all those public inits (we have .previewWith now!)
@@ -130,6 +131,7 @@ public final class Account {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
     public convenience init(
         services: [any AccountService],
         configuration: AccountValueConfiguration = .default
@@ -143,6 +145,7 @@ public final class Account {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
     public convenience init(
         _ services: any AccountService...,
         configuration: AccountValueConfiguration = .default
@@ -167,11 +170,12 @@ public final class Account {
     }
 
     public convenience init() {
-        self.init(configuration: .default)
+        self.init(services: [], supportedConfiguration: .default)
     }
 
     @MainActor
     func configureServices(_ services: [any AccountService]) {
+        // TODO: make it an initialize once storage?
         registeredAccountServices.append(contentsOf: services)
     }
 
