@@ -25,12 +25,10 @@
 		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
 		A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */; };
 		A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */; };
-		A9B6E4012A9BB2670008B232 /* TestableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4002A9BB2670008B232 /* TestableView.swift */; };
-		A9B6E4032A9BB2720008B232 /* AccountValueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4022A9BB2720008B232 /* AccountValueView.swift */; };
-		A9B6E4052A9BB27A0008B232 /* TestableAccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4042A9BB27A0008B232 /* TestableAccountSetup.swift */; };
-		A9B6E4072A9BB2830008B232 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4062A9BB2830008B232 /* SignupView.swift */; };
-		A9B6E4092A9BB28C0008B232 /* TestableAccountOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4082A9BB28C0008B232 /* TestableAccountOverview.swift */; };
-		A9B6E40B2A9BB2980008B232 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E40A2A9BB2980008B232 /* TestApp.swift */; };
+		A9B6E4032A9BB2720008B232 /* XCUIApplication+AccountValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */; };
+		A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */; };
+		A9B6E4072A9BB2830008B232 /* XCUIApplication+SignupForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */; };
+		A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */; };
 		A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */; };
 		A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* Features.swift */; };
 /* End PBXBuildFile section */
@@ -67,12 +65,10 @@
 		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiographyKey.swift; sourceTree = "<group>"; };
 		A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStandard.swift; sourceTree = "<group>"; };
-		A9B6E4002A9BB2670008B232 /* TestableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableView.swift; sourceTree = "<group>"; };
-		A9B6E4022A9BB2720008B232 /* AccountValueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountValueView.swift; sourceTree = "<group>"; };
-		A9B6E4042A9BB27A0008B232 /* TestableAccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableAccountSetup.swift; sourceTree = "<group>"; };
-		A9B6E4062A9BB2830008B232 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
-		A9B6E4082A9BB28C0008B232 /* TestableAccountOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestableAccountOverview.swift; sourceTree = "<group>"; };
-		A9B6E40A2A9BB2980008B232 /* TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
+		A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+AccountValues.swift"; sourceTree = "<group>"; };
+		A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+AccountSetup.swift"; sourceTree = "<group>"; };
+		A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+SignupForm.swift"; sourceTree = "<group>"; };
+		A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestApp.swift"; sourceTree = "<group>"; };
 		A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationHintsTests.swift; sourceTree = "<group>"; };
 		A9EE7D292A3359E800C2B9A9 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -171,12 +167,10 @@
 			isa = PBXGroup;
 			children = (
 				A9B6E3FA2A9B70360008B232 /* Defaults.swift */,
-				A9B6E4002A9BB2670008B232 /* TestableView.swift */,
-				A9B6E4022A9BB2720008B232 /* AccountValueView.swift */,
-				A9B6E4042A9BB27A0008B232 /* TestableAccountSetup.swift */,
-				A9B6E4062A9BB2830008B232 /* SignupView.swift */,
-				A9B6E4082A9BB28C0008B232 /* TestableAccountOverview.swift */,
-				A9B6E40A2A9BB2980008B232 /* TestApp.swift */,
+				A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */,
+				A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */,
+				A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */,
+				A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -336,12 +330,10 @@
 				A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */,
 				A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
-				A9B6E4072A9BB2830008B232 /* SignupView.swift in Sources */,
-				A9B6E40B2A9BB2980008B232 /* TestApp.swift in Sources */,
-				A9B6E4012A9BB2670008B232 /* TestableView.swift in Sources */,
-				A9B6E4092A9BB28C0008B232 /* TestableAccountOverview.swift in Sources */,
-				A9B6E4032A9BB2720008B232 /* AccountValueView.swift in Sources */,
-				A9B6E4052A9BB27A0008B232 /* TestableAccountSetup.swift in Sources */,
+				A9B6E4072A9BB2830008B232 /* XCUIApplication+SignupForm.swift in Sources */,
+				A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */,
+				A9B6E4032A9BB2720008B232 /* XCUIApplication+AccountValues.swift in Sources */,
+				A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */,
 				A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,23 +9,6 @@
 import XCTest
 
 
-@MainActor
-protocol AccountValueView: TestableView {}
-
-
-extension AccountValueView {
-    @available(*, deprecated, message: "Removed")
-    func updateGenderIdentity(from: String, to: String) { // TODO: remove
-        app.updateGenderIdentity(from: from, to: to)
-    }
-
-    @available(*, deprecated, message: "Removed")
-    func changeDatePreviousMonthFirstDay() { // TODO: remove
-        app.changeDatePreviousMonthFirstDay()
-    }
-}
-
-
 extension XCUIApplication {
     func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
         staticTexts[from].tap()
