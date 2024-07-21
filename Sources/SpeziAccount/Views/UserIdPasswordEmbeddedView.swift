@@ -163,7 +163,9 @@ extension UserIdPasswordAccountSetupViewStyle {
         UserIdPasswordEmbeddedView(using: accountService)
     }
         .previewWith {
-            Account(accountService)
+            AccountConfiguration {
+                accountService
+            }
         }
 }
 #endif

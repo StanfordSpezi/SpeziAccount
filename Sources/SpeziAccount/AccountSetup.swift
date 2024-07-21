@@ -237,18 +237,7 @@ struct AccountView_Previews: PreviewProvider {
     @MainActor static var previews: some View {
         ForEach(accountServicePermutations.indices, id: \.self) { index in
             AccountSetup()
-                .previewWith {
-                    AccountConfiguration {
-                        // TODO: check why this doesn't work!
-                        /*
-                        let elements = accountServicePermutations[index]
-                        for service in elements {
-                            service
-                        }
-                        */
-                        MockSignInWithAppleProvider()
-                    }
-                }
+                .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
 
         AccountSetup()

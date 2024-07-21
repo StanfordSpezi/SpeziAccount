@@ -78,7 +78,7 @@ struct AccountTestsView: View {
             }
         }
         let standard = standard
-        if standard.deleteNotified {
+        if standard.storage.deleteNotified {
             Section {
                 Text(verbatim: "Got notified about deletion!")
             }

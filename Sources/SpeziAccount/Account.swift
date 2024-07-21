@@ -91,11 +91,7 @@ public final class Account {
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    public private(set) var registeredAccountServices: [any AccountService]
-    // TODO: just make it private, you can use the dependency system now?) => this would circumwent the nested Account Services thingy!
-    // TODO: why no sendability warning?
-
-    // TODO: remove all those public inits (we have .previewWith now!)
+    @MainActor public private(set) var registeredAccountServices: [any AccountService]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -112,7 +108,7 @@ public final class Account {
         self._details = details
 
         self.configuration = supportedConfiguration
-        self.registeredAccountServices = services
+        self._registeredAccountServices = services
 
         if supportedConfiguration[UserIdKey.self] == nil {
             logger.warning(
@@ -169,13 +165,13 @@ public final class Account {
         self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
     }
 
+    /// Initialize an empty Account module.
     public convenience init() {
         self.init(services: [], supportedConfiguration: .default)
     }
 
     @MainActor
     func configureServices(_ services: [any AccountService]) {
-        // TODO: make it an initialize once storage?
         registeredAccountServices.append(contentsOf: services)
     }
 

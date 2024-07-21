@@ -11,7 +11,6 @@ import Spezi
 
 actor NotifyStandardBackedAccountService<Service: AccountService, Standard: AccountNotifyConstraint>: AccountService, _StandardBacked {
     @Dependency private var account: Account
-    @Dependency var accountServiceWorkaround: [any Module] // TODO: wtf does the init from @Dependency not work anymore!
 
     let accountService: Service
     let standard: Standard
@@ -27,7 +26,6 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
 
     init(service accountService: Service, standard: Standard) {
         self.accountService = accountService
-        self._accountServiceWorkaround = Dependency(using: DependencyCollection { accountService }) // TODO: make autoclosure
         self.standard = standard
     }
 

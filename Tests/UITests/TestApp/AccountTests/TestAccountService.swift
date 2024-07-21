@@ -54,7 +54,7 @@ final class TestAccountService: UserIdPasswordAccountService {
     @MainActor
     func configure() {
         if defaultAccountOnConfigure {
-            Task {
+            Task { @MainActor in
                 do {
                     try await updateUser()
                 } catch {

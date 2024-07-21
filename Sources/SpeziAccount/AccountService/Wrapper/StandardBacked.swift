@@ -88,10 +88,12 @@ extension _StandardBacked where Self: UserIdPasswordAccountService, Service: Use
 
 
 extension AccountService {
+    @MainActor
     func backedBy(standard: any AccountStorageConstraint) -> any AccountService {
         standard.backedService(with: self)
     }
 
+    @MainActor
     func backedBy(standard: any AccountNotifyConstraint) -> any AccountService {
         standard.backedService(with: self)
     }
@@ -99,14 +101,16 @@ extension AccountService {
 
 
 extension AccountStorageConstraint {
-    fileprivate nonisolated func backedService<Service: AccountService>(with service: Service) -> any AccountService {
+    @MainActor
+    fileprivate func backedService<Service: AccountService>(with service: Service) -> any AccountService {
         StorageStandardBackedAccountService(service: service, standard: self)
     }
 }
 
 
 extension AccountNotifyConstraint {
-    fileprivate nonisolated func backedService<Service: AccountService>(with service: Service) -> any AccountService {
+    @MainActor
+    fileprivate func backedService<Service: AccountService>(with service: Service) -> any AccountService {
         NotifyStandardBackedAccountService(service: service, standard: self)
     }
 }

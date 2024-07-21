@@ -105,6 +105,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
     @MainActor
     func testLoginWithMultipleServices() throws {
+        throw XCTSkip("Tests with multiple account services are currently disabled as Spezi is required to support multi same-type modules first.")
         let app = XCUIApplication()
         app.launch(serviceType: .both)
 

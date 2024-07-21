@@ -10,11 +10,6 @@ import Foundation
 import Spezi
 import XCTRuntimeAssertions
 
-// TODO: make Account Service Singleton design => single module
-// TODO: how do we model the AccountDetails "struct" (maybe property wrapper concept?)
-// TODO: Account storage constraint: Module interaction that an account service has to actively support?
-// TODO: account notify constraint???
-
 
 /// The Spezi `Component` to configure the ``SpeziAccount`` framework in the `Configuration` section of your app.
 ///
@@ -27,14 +22,13 @@ import XCTRuntimeAssertions
 ///
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration: Module { // TODO: make Account and AccountConfiguration one thing?
+public final class AccountConfiguration: Module {
     @Application(\.logger) private var logger
+    @Application(\.spezi) private var spezi
 
-
-    @Dependency private var account: Account? // TODO: somehow get this to non-optional?
+    @Dependency private var account: Account?
 
     @StandardActor private var standard: any Standard
-    // TODO: should that really be a Standard constraint(just configure it as a module? in the dependency builder?)
 
     /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
     @Dependency @ObservationIgnored private var providedAccountServices: [any Module]
@@ -45,7 +39,7 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
     /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
     ///
     /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
-    public convenience init(configuration: AccountValueConfiguration = .default) { // TODO: can we remove this ini?
+    public convenience init(configuration: AccountValueConfiguration = .default) {
         self.init(configuration: configuration, defaultActiveDetails: nil) {}
     }
 
@@ -97,20 +91,60 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
 
     public func configure() {
         // assemble the final array of account services
-        // TODO: we need to filter that first, before passing the collection to Dependency (not accessible in the init)
-        //   -> then we also need to add the backed services to the array!
         guard let account else {
-            preconditionFailure("Something went wrong") // TODO: Update message!
+            preconditionFailure("Failed to initialize Account module as part of Account configuration.")
         }
 
-        // TODO: bring back support for all of that!
         let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService }).map { service in
             // Verify account service can store all configured account keys.
             // If applicable, wraps the service into an StandardBackedAccountService
             let service = verify(configurationRequirements: account.configuration, against: service)
 
             if let notifyStandard = standard as? any AccountNotifyConstraint {
-                return service.backedBy(standard: notifyStandard) // TODO: services are never loaded!
+                return service.backedBy(standard: notifyStandard)
+            }
+
+            return service
+        }
+
+        account.configureServices(accountServices)
+
+        let servicesYetToLoad: [any AccountService] = accountServices.reduce(into: []) { partialResult, service in
+            guard var standardBacked = service as? any _StandardBacked else {
+                return
+            }
+            partialResult.append(standardBacked)
+            
+            while let nestedBacked = standardBacked.accountService as? any _StandardBacked {
+                partialResult.append(nestedBacked)
+                standardBacked = nestedBacked
+            }
+        }
+
+        if !servicesYetToLoad.isEmpty {
+            Task.detached { @MainActor in
+                // we cannot load additional modules within configure() so delay module loading a bit
+                for service in servicesYetToLoad {
+                    self.spezi.loadModule(service)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func configureAccountServices() {
+        // assemble the final array of account services
+        guard let account else {
+            preconditionFailure("Failed to initialize Account module as part of Account configuration.")
+        }
+
+        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService }).map { service in
+            // Verify account service can store all configured account keys.
+            // If applicable, wraps the service into an StandardBackedAccountService
+            let service = verify(configurationRequirements: account.configuration, against: service)
+
+            if let notifyStandard = standard as? any AccountNotifyConstraint {
+                return service.backedBy(standard: notifyStandard)
             }
 
             return service
@@ -119,6 +153,7 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
         account.configureServices(accountServices)
     }
 
+    @MainActor
     private func verify(
         configurationRequirements configuration: AccountValueConfiguration,
         against service: any AccountService
@@ -154,8 +189,7 @@ public final class AccountConfiguration: Module { // TODO: make Account and Acco
                          are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
 
                          """)
-            // TODO: that nesting caused a lot of trouble!
-            return service.backedBy(standard: accountStandard) // TODO: services are never loaded
+            return service.backedBy(standard: accountStandard)
         }
 
         // When we reach here, we have no way to store the configured account value

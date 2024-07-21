@@ -68,7 +68,7 @@ class TestAppDelegate: SpeziAppDelegate {
                     TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
                     MockSignInWithAppleProvider()
                 case .empty:
-                    [] // TODO: how to properly provide an empty service!
+                    []
                 }
             }
         }
