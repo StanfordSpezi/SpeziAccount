@@ -12,6 +12,7 @@ enum ServiceType: String {
     case mail
     case both
     case withIdentityProvider
+    case empty
 }
 
 enum Config: String {
