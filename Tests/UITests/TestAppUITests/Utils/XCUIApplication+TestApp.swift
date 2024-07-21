@@ -8,12 +8,14 @@
 
 import XCTest
 
-enum ServiceType: String {
+
+enum ServiceType: String { // swiftlint:disable:this file_types_order
     case mail
     case both
     case withIdentityProvider
     case empty
 }
+
 
 enum Config: String {
     case `default`
