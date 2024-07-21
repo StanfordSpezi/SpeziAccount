@@ -1124,29 +1124,6 @@
         }
       }
     },
-    "Preview Service" : {
-      "comment" : "No need to translate, only used in Previews ...",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preview Service"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preview Service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preview Service"
-          }
-        }
-      }
-    },
     "REMOVE_DEFAULT_ERROR" : {
       "localizations" : {
         "de" : {

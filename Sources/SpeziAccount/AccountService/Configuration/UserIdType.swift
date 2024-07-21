@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Determines the type and kind of the ``UserIdKey``.
-public enum UserIdType: Sendable, Equatable {
+public enum UserIdType {
     /// An user id that is the user's email address at the same time.
     case emailAddress
     /// An user id that models as some kind of alphanumeric string.
@@ -22,7 +22,7 @@ public enum UserIdType: Sendable, Equatable {
 }
 
 
-extension LocalizedStringResource: @unchecked Sendable {}
+extension UserIdType: Equatable, Sendable {}
 
 
 extension UserIdType: CustomLocalizedStringResourceConvertible {

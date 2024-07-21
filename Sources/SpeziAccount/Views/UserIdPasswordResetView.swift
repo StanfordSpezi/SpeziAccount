@@ -115,6 +115,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
 
         isFocused = false
 
+        let userId = userId
         try await service.resetPassword(userId: userId)
 
         withAnimation(.easeOut(duration: 0.5)) {

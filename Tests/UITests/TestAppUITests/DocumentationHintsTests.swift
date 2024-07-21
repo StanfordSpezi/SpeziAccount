@@ -11,28 +11,33 @@ import XCTestExtensions
 
 
 final class DocumentationHintsTests: XCTestCase {
-    func testDocumentationHint(type: String, button: String, hint: String) {
-        let testApp = TestApp.launch(serviceType: type)
-        let app = testApp.app
+    @MainActor
+    func testDocumentationHint(type: ServiceType, button: String, hint: String) {
+        let app = XCUIApplication()
+        app.launch(serviceType: type)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.buttons[button].tap()
 
         // Note for the `hint`, you have to escape any ' characters!
         let predicate = NSPredicate(format: "label LIKE '\(hint)'") // hint may be longer than 128 characters.
-        XCTAssertTrue(app.staticTexts.element(matching: predicate).waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.staticTexts.element(matching: predicate).exists)
 
-        XCTAssertTrue(app.buttons["Open Documentation"].waitForExistence(timeout: 6))
+        XCTAssertTrue(app.buttons["Open Documentation"].exists)
         app.buttons["Open Documentation"].tap()
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
-        XCTAssert(safari.wait(for: .runningForeground, timeout: 10))
+        XCTAssert(safari.wait(for: .runningForeground, timeout: 5))
 
         app.activate()
     }
 
+    @MainActor
     func testEmptyAccountServices() {
         testDocumentationHint(
-            type: "empty",
+            type: .empty,
             button: "Account Setup",
             hint: """
                   **No Account Services set up.**\\n\\n\
@@ -41,9 +46,10 @@ final class DocumentationHintsTests: XCTestCase {
         )
     }
 
+    @MainActor
     func testMissingAccount() {
         testDocumentationHint(
-            type: "mail",
+            type: .mail,
             button: "Account Overview",
             hint: """
                   **Couldn\\'t find a user account.**\\n\\nThis view requires an active user account.\\n\

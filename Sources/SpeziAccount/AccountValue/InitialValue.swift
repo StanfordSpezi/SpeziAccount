@@ -32,3 +32,11 @@ public enum InitialValue<Value> {
         }
     }
 }
+
+extension InitialValue: Equatable where Value: Equatable {}
+
+
+extension InitialValue: Hashable where Value: Hashable {}
+
+
+extension InitialValue: Sendable where Value: Sendable {}

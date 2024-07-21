@@ -12,6 +12,7 @@ import SwiftUI
 
 /// Helper protocol to easily retrieve Wrapped.Key types with String value
 private protocol GeneralizedStringEntryView {
+    @MainActor
     func validationRules() -> [ValidationRule]
 }
 

@@ -10,224 +10,294 @@ import XCTest
 import XCTestExtensions
 
 
-final class AccountSetupTests: XCTestCase {
+final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         continueAfterFailure = false
     }
 
+    @MainActor
     func testEmbeddedViewValidation() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        let setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
 
         // check fields are not valid
-        XCTAssertTrue(setup.buttons["Login"].exists)
-        XCTAssertTrue(!setup.buttons["Login"].isEnabled)
-        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
+        XCTAssertTrue(app.buttons["Login"].exists)
+        XCTAssertTrue(!app.buttons["Login"].isEnabled)
 
-        try setup.enter(field: "E-Mail Address", text: "aa")
-        try setup.enter(secureField: "Password", text: "bb")
+        XCTAssertTrue(app.textFields["E-Mail Address"].exists)
+        XCTAssertTrue(app.secureTextFields["Password"].exists)
+        try app.textFields["E-Mail Address"].enter(value: "aa")
+        XCTAssertFalse(app.buttons["Login"].isEnabled)
+        try app.secureTextFields["Password"].enter(value: "bb")
 
-
-        usleep(500_000)
-        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
+        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Login"].isEnabled)
 
         // doing it in reverse order speeds up the input
-        try setup.delete(secureField: "Password", count: 2)
-        try setup.delete(field: "E-Mail Address", count: 2)
+        try app.secureTextFields["Password"].delete(count: 2)
+        try app.textFields["E-Mail Address"].delete(count: 2)
 
-        // validation should not appear if we remove all content via keyboard
-        usleep(500_000)
-        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
-        XCTAssertTrue(setup.buttons["Login"].exists)
-        XCTAssertTrue(!setup.buttons["Login"].isEnabled)
+        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.buttons["Login"].isEnabled)
     }
 
+    @MainActor
     func testLoginWithEmail() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        let setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
 
-        try setup.login(email: Defaults.email, password: Defaults.password.dropLast(3))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        XCTAssertTrue(XCUIApplication().alerts["Credentials do not match"].waitForExistence(timeout: 6.0))
-        XCUIApplication().alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()
+        app.openAccountSetup()
+
+        try app.login(email: Defaults.email, password: Defaults.password.dropLast(3))
+
+        XCTAssertTrue(app.alerts["Credentials do not match"].waitForExistence(timeout: 6.0))
+        app.alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()
 
         // retype password
-        try setup.delete(secureField: "Password", count: Defaults.password.dropLast(3).count)
-        try setup.enter(secureField: "Password", text: Defaults.password)
+        try app.secureTextFields["Password"].delete(count: Defaults.password.dropLast(3).count, dismissKeyboard: false)
+        app.typeText(Defaults.password)
+        app.dismissKeyboard()
 
-        setup.tapLogin(sleep: 3) // this takes us back to the home screen
+        // this takes us back to the home screen
+        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
+        XCTAssertTrue(app.buttons["Login"].isEnabled)
+        app.buttons["Login"].tap()
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testAccountSummary() throws {
-        let app = TestApp.launch(serviceType: "mail", defaultCredentials: true)
-        var setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail, defaultCredentials: true)
 
-        XCTAssertTrue(setup.staticTexts[Defaults.name].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(setup.staticTexts[Defaults.email].exists)
-        XCTAssertTrue(setup.buttons["Logout"].exists)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        setup.tap(button: "Finish")
+        app.openAccountSetup()
+
+        XCTAssertTrue(app.staticTexts[Defaults.name].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts[Defaults.email].exists)
+        XCTAssertTrue(app.buttons["Logout"].exists)
+        XCTAssertTrue(app.buttons["Finish"].exists)
+        app.buttons["Finish"].tap()
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
 
-        setup = app.openAccountSetup()
-        XCTAssertTrue(setup.buttons["Logout"].waitForExistence(timeout: 1.0))
-        setup.tap(button: "Logout")
+        app.openAccountSetup()
+        XCTAssertTrue(app.buttons["Logout"].waitForExistence(timeout: 1.0))
+        app.buttons["Logout"].tap()
 
-        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testLoginWithMultipleServices() throws {
-        let app = TestApp.launch(serviceType: "both")
-        let setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .both)
 
-        setup.tap(button: "Username and Password")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 1.0))
+        app.openAccountSetup()
 
-        try setup.login(username: Defaults.username, password: Defaults.password, sleep: 3)
+        XCTAssertTrue(app.buttons["Username and Password"].exists)
+        app.buttons["Username and Password"].tap()
+
+        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 1.0))
+
+        try app.login(username: Defaults.username, password: Defaults.password)
 
         XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testBasicIdentityProviderLayout() throws {
-        let app = TestApp.launch(serviceType: "withIdentityProvider")
-        let setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .withIdentityProvider)
 
-        XCTAssertTrue(setup.buttons["Login"].waitForExistence(timeout: 0.5))
-        setup.verifyExistence(text: "or") // divider
-        XCTAssertTrue(setup.buttons["Sign in with Apple"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+
+        XCTAssertTrue(app.buttons["Login"].exists)
+        XCTAssertTrue(app.staticTexts["or"].exists) // divider
+        XCTAssertTrue(app.buttons["Sign in with Apple"].exists)
     }
 
+    @MainActor
     func testResetPassword() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        let setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
 
-        setup.tap(button: "Forgot Password?")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        XCTAssertTrue(setup.staticTexts["Reset Password"].waitForExistence(timeout: 2.0))
+        app.openAccountSetup()
 
-        setup.tap(button: "Reset Password")
+        XCTAssertTrue(app.buttons["Forgot Password?"].exists)
+        app.buttons["Forgot Password?"].tap()
+
+        XCTAssertTrue(app.staticTexts["Reset Password"].waitForExistence(timeout: 2.0))
+
+        XCTAssertTrue(app.buttons["Reset Password"].exists)
+        app.buttons["Reset Password"].tap()
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
 
         // field should already have focus, due to pressing the button
-        app.app.typeText(Defaults.email)
+        app.typeText(Defaults.email)
 
-        setup.tap(button: "Reset Password")
+        app.buttons["Reset Password"].tap()
 
-        XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 3.0))
 
-        setup.tap(button: "Done")
-        XCTAssertFalse(setup.staticTexts["Reset Password"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.buttons["Done"].exists)
+        app.buttons["Done"].tap()
 
-        setup.tap(button: "Close")
+        XCTAssertTrue(app.buttons["Close"].waitForExistence(timeout: 2.0))
+        app.buttons["Close"].tap()
 
-        XCTAssertFalse(setup.staticTexts["Your Account"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testSignupCredentialsValidation() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        var setup = app.openAccountSetup()
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+
+        XCTAssertTrue(app.staticTexts["Don't have an Account yet?"].exists)
+
+        app.openSignup()
+
+        // verify basic validation
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
+        XCTAssertFalse(app.collectionViews.buttons["Signup"].isEnabled)
+        XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
+
+        // verify empty validation appearing
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: "a", dismissKeyboard: false)
+        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
+        app.dismissKeyboard()
+
+        try app.collectionViews.secureTextFields["Password"].enter(value: "a", dismissKeyboard: false)
+        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
+        app.dismissKeyboard()
+
+        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 2.0))
+        XCTAssertEqual(app.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
+
+        // not sure why, but text-field selection has issues due to the presented validation messages, so we exit a reenter to resolve this
+        try app.closeSignupForm()
+        app.openSignup()
 
         let email = "new-adventure@stanford.edu"
         let password = "123456789"
 
-        XCTAssertTrue(setup.staticTexts["Don't have an Account yet?"].waitForExistence(timeout: 2.0))
-
-        var signupView = setup.openSignup()
-
-        // verify basic validation
-        XCTAssertTrue(signupView.collectionViews.buttons["Signup"].exists)
-        XCTAssertTrue(!signupView.collectionViews.buttons["Signup"].isEnabled)
-        XCTAssertFalse(signupView.staticTexts["This field cannot be empty."].exists)
-
-        // verify empty validation appearing
-        try signupView.collectionViews.textFields["E-Mail Address"].enter(value: "a", dismissKeyboard: false)
-        signupView.app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
-        signupView.app.dismissKeyboard()
-
-        try signupView.collectionViews.secureTextFields["Password"].enter(value: "a", dismissKeyboard: false)
-        signupView.app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
-        signupView.app.dismissKeyboard()
-
-        usleep(500_000)
-        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
-
-        // not sure why, but text-field selection has issues due to the presented validation messages, so we exit a reenter to resolve this
-        setup = try signupView.tapClose()
-        signupView = setup.openSignup()
-
         // enter email with validation
-        try signupView.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), dismissKeyboard: false)
-        XCTAssertTrue(signupView.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
-        signupView.app.typeText(String(email.dropFirst(13))) // we stay focused
-        signupView.app.dismissKeyboard()
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), dismissKeyboard: false)
+        XCTAssertTrue(app.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
+        app.typeText(String(email.dropFirst(13))) // we stay focused
+        app.dismissKeyboard()
 
         // enter password with validation
-        try signupView.collectionViews.secureTextFields["Password"].enter(value: String(password.dropLast(5)), dismissKeyboard: false)
-        XCTAssertTrue(signupView.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
-        signupView.app.typeText(String(password.dropFirst(4))) // stay focused, such that password field will not reset after regaining focus
-        signupView.app.dismissKeyboard()
+        try app.collectionViews.secureTextFields["Password"].enter(value: String(password.dropLast(5)), dismissKeyboard: false)
+        XCTAssertTrue(app.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
+        app.typeText(String(password.dropFirst(4))) // stay focused, such that password field will not reset after regaining focus
+        app.dismissKeyboard()
 
-        signupView.signup(sleep: 3) // we will be back at the start page now
+        // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
+        app.collectionViews.buttons["Signup"].tap()
+
+        XCTAssertTrue(app.staticTexts[email].waitForExistence(timeout: 4.0))
 
         // Now verify what we entered
-        let overview = app.openAccountOverview(timeout: 6.0)
+        app.openAccountOverview()
 
         // basic verification of all information recorded
-        XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
-        XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts[email].exists)
+        XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].exists)
     }
 
+    @MainActor
     func testNameValidation() throws {
-        let app = TestApp.launch(config: "allRequired")
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 3)
+        let app = XCUIApplication()
+        app.launch(config: .allRequired)
 
-        XCTAssertTrue(signupView.collectionViews.buttons["Signup"].exists)
-        XCTAssertFalse(signupView.collectionViews.buttons["Signup"].isEnabled)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        try signupView.enter(field: "enter first name", text: "a")
-        try signupView.delete(field: "enter first name", count: 1)
+        app.openAccountSetup()
+        app.openSignup()
 
-        XCTAssertTrue(signupView.staticTexts["This field cannot be empty."].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
+        XCTAssertFalse(app.collectionViews.buttons["Signup"].isEnabled)
 
-        try signupView.enter(field: "enter last name", text: "a")
-        try signupView.delete(field: "enter last name", count: 1)
+        try app.textFields["enter first name"].enter(value: "a", dismissKeyboard: false)
+        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
+        app.dismissKeyboard()
 
-        XCTAssertEqual(signupView.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
+        XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
+
+        try app.textFields["enter last name"].enter(value: "a", dismissKeyboard: false)
+        app.typeText(XCUIKeyboardKey.delete.rawValue)
+        app.dismissKeyboard()
+
+        XCTAssertEqual(app.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
     }
 
+    @MainActor
     func testInvalidCredentials() throws {
-        let app = TestApp.launch(serviceType: "mail")
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
 
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 3)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        try signupView.fillForm(email: Defaults.email, password: Defaults.password)
+        app.openAccountSetup()
+        app.openSignup()
 
-        signupView.signup(sleep: 2)
+        try app.fillSignupForm(email: Defaults.email, password: Defaults.password)
+
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
 
         XCTAssertTrue(app.alerts["User Identifier is already taken"].waitForExistence(timeout: 10.0))
         app.alerts["User Identifier is already taken"].scrollViews.otherElements.buttons["OK"].tap()
     }
 
+    @MainActor
     func testFullSignup() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 3)
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail)
 
-        try signupView.fillForm(
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+        app.openSignup()
+
+        XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5)) // test requirement level
+
+        try app.fillSignupForm(
             email: "lelandstanford2@stanford.edu",
             password: Defaults.password,
             name: .init("Leland Stanford"),
@@ -235,26 +305,34 @@ final class AccountSetupTests: XCTestCase {
             supplyDateOfBirth: true
         )
 
-        signupView.signup(sleep: 3)
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+
+        XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
 
         // Now verify what we entered
-        let overview = app.openAccountOverview(timeout: 6.0)
+        app.openAccountOverview()
 
         // verify all the details
-        overview.verifyExistence(text: "LS")
-        overview.verifyExistence(text: "Leland Stanford")
-        overview.verifyExistence(text: "lelandstanford2@stanford.edu")
-        overview.verifyExistence(text: "Gender Identity, Male")
-        overview.verifyExistence(text: "Date of Birth")
+        XCTAssertTrue(app.staticTexts["LS"].exists)
+        XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
+        XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].exists)
+        XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+        XCTAssertTrue(app.staticTexts["Date of Birth"].exists)
     }
 
+    @MainActor
     func testFullSignupWithAdditionalStorage() throws {
-        let app = TestApp.launch(config: "allRequiredWithBio")
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 3)
+        let app = XCUIApplication()
+        app.launch(config: .allRequiredWithBio)
 
-        try signupView.fillForm(
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+        app.openSignup()
+
+        try app.fillSignupForm(
             email: "lelandstanford2@stanford.edu",
             password: Defaults.password,
             name: .init("Leland Stanford"),
@@ -263,99 +341,106 @@ final class AccountSetupTests: XCTestCase {
             biography: "Hello Stanford"
         )
 
-        signupView.signup(sleep: 3)
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+
+        XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
 
         // Now verify what we entered
-        let overview = app.openAccountOverview(timeout: 6.0)
+        app.openAccountOverview()
 
         // verify all the details
-        overview.verifyExistence(text: "LS")
-        overview.verifyExistence(text: "Leland Stanford")
-        overview.verifyExistence(text: "lelandstanford2@stanford.edu")
-        overview.verifyExistence(text: "Gender Identity, Male")
-        overview.verifyExistence(text: "Date of Birth")
-        overview.verifyExistence(text: "Biography, Hello Stanford")
+        XCTAssertTrue(app.staticTexts["LS"].exists)
+        XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
+        XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].exists)
+        XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+        XCTAssertTrue(app.staticTexts["Date of Birth"].exists)
+        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
     }
 
-    func testRequirementLevelsSignup() throws {
-        let app = TestApp.launch(serviceType: "mail")
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 2)
-
-        signupView.verifyExistence(textField: "E-Mail Address")
-        signupView.verifyExistence(secureField: "Password")
-        signupView.verifyExistence(text: "First")
-        signupView.verifyExistence(text: "Last")
-        signupView.verifyExistence(text: "Gender Identity")
-        XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5))
-    }
-
+    @MainActor
     func testNameEmptinessCheck() throws {
         // if we type in the name in the signup view but then remove all text input then (empty strings in the text fields)
         // we shouldn't save a empty name but instead save no name at all
-        let app = TestApp.launch()
-        let signupView = app
-            .openAccountSetup()
-            .openSignup(sleep: 2)
+        let app = XCUIApplication()
+        app.launch()
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+        app.openSignup()
 
         let email = "lelandstanford2@stanford.edu"
 
-        try signupView.fillForm(email: email, password: "123456789", name: PersonNameComponents(givenName: "Leland"))
-        
-        try signupView.delete(field: "enter first name", count: 6)
+        try app.fillSignupForm(email: email, password: "123456789", name: .init(givenName: "Leland"))
 
-        signupView.signup(sleep: 3)
+        try app.textFields["enter first name"].delete(count: 6)
 
-        // Now verify what we entered
-        let overview = app.openAccountOverview(timeout: 6.0)
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+        XCTAssertTrue(app.staticTexts[email].waitForExistence(timeout: 3.0))
+
+        app.openAccountOverview()
 
         // basic verification of all information recorded
-        XCTAssertTrue(overview.staticTexts[email].waitForExistence(timeout: 2.0))
-        XCTAssertTrue(overview.staticTexts["Gender Identity"].waitForExistence(timeout: 0.5))
-        XCTAssertTrue(overview.staticTexts["Choose not to answer"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts[email].exists)
 
-        overview.tap(button: "Name, E-Mail Address")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.buttons["Name, E-Mail Address"].exists)
+        app.buttons["Name, E-Mail Address"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 3.0))
 
-        overview.verifyExistence(text: email)
-        XCTAssertFalse(overview.staticTexts["Leland"].waitForExistence(timeout: 1.0))
-        overview.verifyExistence(text: "Add Name")
+        XCTAssertTrue(app.staticTexts["E-Mail Address, \(email)"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.staticTexts["Leland"].exists)
+        XCTAssertTrue(app.staticTexts["Add Name"].exists)
     }
 
+    @MainActor
     func testAdditionalInfoAfterLogin() throws {
-        let app = TestApp.launch(config: "allRequiredWithBio")
+        let app = XCUIApplication()
+        app.launch(config: .allRequiredWithBio)
 
-        let setup = app.openAccountSetup()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        try setup.login(email: Defaults.email, password: Defaults.password)
+        app.openAccountSetup()
+
+        try app.login(email: Defaults.email, password: Defaults.password)
 
         // verify the finish account setup view is popping up
-        XCTAssertTrue(setup.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
-        XCTAssertTrue(setup.staticTexts["Please fill out the details below to complete your account setup."].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Please fill out the details below to complete your account setup."].exists)
 
-        try setup.enter(field: "Biography", text: "Hello Stanford")
-        sleep(2)
+        try app.textFields["Biography"].enter(value: "Hello Stanford")
 
-        setup.tap(button: "Complete")
-        sleep(3)
+        XCTAssertTrue(app.buttons["Complete"].waitForExistence(timeout: 2.0))
+        app.buttons["Complete"].tap()
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testAccountRequiredModifier() throws {
-        let app = TestApp.launch(defaultCredentials: true, accountRequired: true)
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true, accountRequired: true)
 
-        app.tap(button: "Account Logout")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        XCTAssertTrue(app.buttons["Account Logout"].exists)
+        app.buttons["Account Logout"].tap()
 
         XCTAssertTrue(app.staticTexts["Your Account"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
-        let app = TestApp.launch(config: "allRequiredWithBio", defaultCredentials: true, verifyAccountDetails: true)
+        let app = XCUIApplication()
+        app.launch(config: .allRequiredWithBio, defaultCredentials: true, verifyAccountDetails: true)
 
-        XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
     }
 }

@@ -15,7 +15,7 @@ import SwiftUI
 /// UI components may use this configuration to visually refer to an ``AccountService``.
 ///
 /// Access the configuration via the ``AccountServiceConfiguration/image`` property.
-public struct AccountServiceImage: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource, @unchecked Sendable {
+public struct AccountServiceImage: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource, Sendable {
     public static var defaultValue: AccountServiceImage {
         AccountServiceImage(Image(systemName: "person.crop.circle.fill")
             .symbolRenderingMode(.hierarchical))

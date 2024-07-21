@@ -10,9 +10,11 @@ import SwiftUI
 
 
 @Observable
-final class TestAlertModel: @unchecked Sendable {
-    var presentingAlert = false
-    var continuation: CheckedContinuation<Void, Never>?
+final class TestAlertModel: Sendable {
+    @MainActor var presentingAlert = false
+    @MainActor var continuation: CheckedContinuation<Void, Never>?
+
+    init() {}
 }
 
 
@@ -21,7 +23,7 @@ struct TestAlertModifier: ViewModifier {
 
     @State private var isActive = false
 
-    var isPresented: Binding<Bool> {
+    @MainActor var isPresented: Binding<Bool> {
         Binding {
             model.presentingAlert && isActive
         } set: { newValue in

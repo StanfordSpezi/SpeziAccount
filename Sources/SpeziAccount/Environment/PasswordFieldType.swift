@@ -46,6 +46,9 @@ public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConv
 }
 
 
+extension PasswordFieldType: Sendable, Hashable {}
+
+
 extension EnvironmentValues {
     /// The semantic use of a password field.
     public var passwordFieldType: PasswordFieldType {

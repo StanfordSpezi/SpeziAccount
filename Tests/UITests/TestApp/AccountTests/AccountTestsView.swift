@@ -77,6 +77,7 @@ struct AccountTestsView: View {
                 Text(details.userId)
             }
         }
+        let standard = standard
         if standard.deleteNotified {
             Section {
                 Text(verbatim: "Got notified about deletion!")

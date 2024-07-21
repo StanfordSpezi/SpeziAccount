@@ -17,272 +17,351 @@ final class AccountOverviewTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    @MainActor
     func testRequirementLevelsOverview() throws {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.verifyExistence(text: "Leland Stanford")
-        overview.verifyExistence(text: "lelandstanford@stanford.edu")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        overview.verifyExistence(text: "Name, E-Mail Address")
-        overview.verifyExistence(text: "Sign-In & Security")
+        app.openAccountOverview()
 
-        overview.verifyExistence(text: "Gender Identity, Male")
+        XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
+        XCTAssertTrue(app.staticTexts["lelandstanford@stanford.edu"].exists)
 
-        overview.verifyExistence(text: "Date of Birth, Mar 9, 1824")
-        
-        overview.verifyExistence(text: "License Information")
+        XCTAssertTrue(app.staticTexts["Name, E-Mail Address"].exists)
+        XCTAssertTrue(app.staticTexts["Sign-In & Security"].exists)
 
-        XCTAssertTrue(overview.buttons["Logout"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+        XCTAssertTrue(app.staticTexts["Date of Birth, Mar 9, 1824"].exists)
+
+        XCTAssertTrue(app.staticTexts["License Information"].exists)
+        XCTAssertTrue(app.buttons["Logout"].exists)
     }
 
+    @MainActor
     func testEditView() throws {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Edit")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        XCTAssertTrue(overview.buttons["Delete Account"].waitForExistence(timeout: 0.5))
+        app.openAccountOverview()
 
-        overview.updateGenderIdentity(from: "Male", to: "Choose not to answer")
-        overview.changeDatePreviousMonthFirstDay()
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
 
-        overview.tap(button: "Add Biography")
+        XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
 
-        try overview.enter(field: "Biography", text: "Hello Stanford")
-        sleep(3)
+        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+        app.changeDatePreviousMonthFirstDay()
 
-        overview.tap(button: "Done")
+        XCTAssertTrue(app.buttons["Add Biography"].exists)
+        app.buttons["Add Biography"].tap()
 
-        sleep(3)
+        XCTAssertTrue(app.textFields["Biography"].exists)
+        try app.textFields["Biography"].enter(value: "Hello Stanford")
 
-        overview.verifyExistence(text: "Choose not to answer")
-        overview.verifyExistence(text: "Hello Stanford")
+        XCTAssertTrue(app.navigationBars.buttons["Done"].exists)
+        app.navigationBars.buttons["Done"].tap()
+
+        XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].waitForExistence(timeout: 4.0))
+        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
     }
 
+    @MainActor
     func testLogout() {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Logout")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Logout"].exists)
+        app.buttons["Logout"].tap()
 
         let alert = "Are you sure you want to logout?"
-        XCTAssertTrue(XCUIApplication().alerts[alert].waitForExistence(timeout: 6.0))
-        XCUIApplication().alerts[alert].scrollViews.otherElements.buttons["Logout"].tap()
+        XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 4.0))
+        app.alerts[alert].scrollViews.otherElements.buttons["Logout"].tap()
 
-        sleep(2)
-        app.verify()
-        XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].exists)
     }
 
+    @MainActor
     func testAccountRemoval() {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Edit")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        overview.tap(button: "Delete Account")
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
+
+        XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
+        app.buttons["Delete Account"].tap()
 
         let alert = "Are you sure you want to delete your account?"
-        XCTAssertTrue(XCUIApplication().alerts[alert].waitForExistence(timeout: 6.0))
-        XCUIApplication().alerts[alert].scrollViews.otherElements.buttons["Delete"].tap()
+        XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 6.0))
+        app.alerts[alert].scrollViews.otherElements.buttons["Delete"].tap()
 
-        sleep(2)
-        app.verify()
-
-        XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].waitForExistence(timeout: 0.5))
         XCTAssertTrue(app.staticTexts["Got notified about deletion!"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].exists)
     }
 
+    @MainActor
     func testEditDiscard() {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Edit")
-        sleep(1)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
 
         // no changes, should just leave edit mode
-        overview.tap(button: "Cancel")
-        XCTAssertTrue(app.buttons["Logout"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 0.5))
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(app.buttons["Logout"].waitForExistence(timeout: 0.5))
 
 
-        overview.tap(button: "Edit")
-        overview.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
+        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 
-        overview.tap(button: "Cancel")
+        XCTAssertTrue(app.buttons["Cancel"].exists)
+        app.buttons["Cancel"].tap()
 
-        sleep(1)
+
         let confirmation = "Are you sure you want to discard your changes?"
-        overview.verifyExistence(text: confirmation, timeout: 2.0)
-        overview.tap(button: "Keep Editing")
+        XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Keep Editing"].exists)
+        app.buttons["Keep Editing"].tap()
 
-        overview.tap(button: "Cancel")
-        overview.verifyExistence(text: confirmation, timeout: 2.0)
-        overview.tap(button: "Discard Changes")
+        XCTAssertTrue(app.buttons["Cancel"].exists)
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Discard Changes"].exists)
+        app.buttons["Discard Changes"].tap()
 
-        overview.verifyExistence(text: "Male") // make sure value didn't change
+        XCTAssertTrue(app.staticTexts["Male"].waitForExistence(timeout: 2.0)) // make sure value didn't change
     }
 
+    @MainActor
     func testRemoveDiscard() {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Edit")
-        sleep(1)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
 
         // remove image on the list
-        let removeButtons = overview.images.matching(identifier: "remove")
-        removeButtons.firstMatch.tap()
-        overview.buttons["Delete"].tap()
+        let removeButton = app.images.matching(identifier: "remove").firstMatch
+        XCTAssertTrue(removeButton.waitForExistence(timeout: 2.0))
+        removeButton.tap()
+        XCTAssertTrue(app.buttons["Delete"].waitForExistence(timeout: 0.5))
+        app.buttons["Delete"].tap()
 
-        XCTAssertTrue(overview.buttons["Add Gender Identity"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Add Gender Identity"].waitForExistence(timeout: 2.0))
 
-        overview.tap(button: "Cancel")
+        XCTAssertTrue(app.buttons["Cancel"].exists)
+        app.buttons["Cancel"].tap()
+
         let confirmation = "Are you sure you want to discard your changes?"
-        overview.verifyExistence(text: confirmation, timeout: 2.0)
-        overview.tap(button: "Discard Changes")
+        XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Discard Changes"].exists)
+        app.buttons["Discard Changes"].tap()
 
-        overview.verifyExistence(text: "Male") // make sure value didn't change
+        XCTAssertTrue(app.staticTexts["Male"].waitForExistence(timeout: 2.0)) // make sure value didn't change
     }
 
+    @MainActor
     func testRemoval() {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Edit")
-        sleep(1)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Edit"].exists)
+        app.buttons["Edit"].tap()
 
         // remove image on the list
-        let removeButtons = overview.images.matching(identifier: "remove")
-        removeButtons.firstMatch.tap()
-        overview.buttons["Delete"].tap()
+        let removeButton = app.images.matching(identifier: "remove").firstMatch
+        XCTAssertTrue(removeButton.waitForExistence(timeout: 2.0))
+        removeButton.tap()
+        XCTAssertTrue(app.buttons["Delete"].waitForExistence(timeout: 0.5))
+        app.buttons["Delete"].tap()
 
-        XCTAssertTrue(overview.buttons["Add Gender Identity"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Add Gender Identity"].waitForExistence(timeout: 2.0))
 
-        overview.tap(button: "Done")
-        sleep(3)
+        XCTAssertTrue(app.buttons["Done"].exists)
+        app.buttons["Done"].tap()
 
-        XCTAssertFalse(overview.staticTexts["Male"].waitForExistence(timeout: 2.0)) // ensure value is gone
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 3.0))
+        XCTAssertFalse(app.staticTexts["Male"].exists) // ensure value is gone
     }
 
+    @MainActor
     func testNameOverview() throws {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Name, E-Mail Address")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        overview.verifyExistence(text: "lelandstanford@stanford.edu")
-        overview.verifyExistence(text: "Leland Stanford")
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Name, E-Mail Address"].exists)
+        app.buttons["Name, E-Mail Address"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 4.0))
+
+        XCTAssertTrue(app.staticTexts["lelandstanford@stanford.edu"].exists)
+        XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
 
         // open user id
-        overview.tap(button: "E-Mail Address, lelandstanford@stanford.edu")
-        sleep(2)
-
-        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+        XCTAssertTrue(app.buttons["E-Mail Address, lelandstanford@stanford.edu"].exists)
+        app.buttons["E-Mail Address, lelandstanford@stanford.edu"].tap()
+        XCTAssertTrue(app.navigationBars.buttons["Done"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
 
         // edit email
-        try overview.textFields["E-Mail Address"].delete(count: 12, dismissKeyboard: false)
+        try app.textFields["E-Mail Address"].delete(count: 12, dismissKeyboard: false)
 
         // failed validation
-        XCTAssertTrue(overview.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
-        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+        XCTAssertTrue(app.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.buttons["Done"].isEnabled)
 
-        overview.app.typeText("tum.de") // we still have keyboard focus
-        overview.app.dismissKeyboard()
-        overview.tap(button: "Done")
+        app.typeText("tum.de") // we still have keyboard focus
+        app.dismissKeyboard()
+        XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
+        app.buttons["Done"].tap()
 
         XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
         app.alerts["Security Alert"].buttons["Dismiss"].tap()
-        sleep(3)
 
-        overview.verifyExistence(text: "lelandstanford@tum.de")
+        XCTAssertTrue(app.staticTexts["lelandstanford@tum.de"].waitForExistence(timeout: 2.0))
 
         // open name
-        overview.tap(button: "Name, Leland Stanford")
-        sleep(2)
-        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+        XCTAssertTrue(app.buttons["Name, Leland Stanford"].exists)
+        app.buttons["Name, Leland Stanford"].tap()
+        XCTAssertTrue(app.navigationBars.buttons["Done"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.buttons["Done"].isEnabled)
 
         // edit name
-        try overview.delete(field: "enter last name", count: 8)
-        overview.tap(button: "Done")
-        sleep(3)
+        XCTAssertTrue(app.textFields["enter last name"].exists)
+        try app.textFields["enter last name"].delete(count: 8)
+        XCTAssertTrue(app.buttons["Done"].isEnabled)
+        app.buttons["Done"].tap()
 
-        overview.verifyExistence(text: "Leland")
+        XCTAssertTrue(app.staticTexts["Name, Leland"].waitForExistence(timeout: 2.0))
 
-        overview.navigationBars.buttons["Account Overview"].tap()
-        sleep(2)
-        XCTAssertTrue(overview.staticTexts["L"].waitForExistence(timeout: 2.0)) // ensure the "account image" is updated accordingly
+        app.navigationBars.buttons["Account Overview"].tap()
+        XCTAssertTrue(app.staticTexts["L"].waitForExistence(timeout: 2.0)) // ensure the "account image" is updated accordingly
     }
 
+    @MainActor
     func testAddName() throws {
-        let app = TestApp.launch(defaultCredentials: true, noName: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true, noName: true)
 
-        overview.verifyExistence(text: "Name, E-Mail Address")
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        overview.tap(button: "Name, E-Mail Address")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 6.0))
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Name, E-Mail Address"].exists)
+        app.buttons["Name, E-Mail Address"].tap()
+
+        XCTAssertTrue(app.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 2.0))
 
         // open user id
-        overview.tap(button: "Add Name")
-        sleep(2)
-        XCTAssertFalse(overview.buttons["Done"].isEnabled)
+        XCTAssertTrue(app.buttons["Add Name"].exists)
+        app.buttons["Add Name"].tap()
+        XCTAssertTrue(app.navigationBars.buttons["Done"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
 
-        try overview.enter(field: "enter first name", text: "Leland")
-        try overview.enter(field: "enter last name", text: "Stanford")
+        XCTAssertTrue(app.textFields["enter first name"].exists)
+        XCTAssertTrue(app.textFields["enter last name"].exists)
+        try app.textFields["enter first name"].enter(value: "Leland")
+        try app.textFields["enter last name"].enter(value: "Stanford")
 
-        overview.tap(button: "Done")
-        sleep(3)
+        app.navigationBars.buttons["Done"].tap()
 
-        overview.verifyExistence(text: "Name, Leland Stanford")
+        XCTAssertTrue(app.staticTexts["Name, Leland Stanford"].waitForExistence(timeout: 2.0))
     }
 
+    @MainActor
     func testSecurityOverview() throws {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
 
-        overview.tap(button: "Sign-In & Security")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 6.0))
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
-        XCTAssertTrue(overview.buttons["Change Password"].waitForExistence(timeout: 2.0))
-        overview.tap(button: "Change Password")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Change Password"].waitForExistence(timeout: 6.0))
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Sign-In & Security"].exists)
+        app.buttons["Sign-In & Security"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 4.0))
+
+        XCTAssertTrue(app.buttons["Change Password"].waitForExistence(timeout: 2.0))
+        app.buttons["Change Password"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Change Password"].waitForExistence(timeout: 4.0))
 
         let warningLength = "Your password must be at least 8 characters long."
-        overview.verifyExistence(text: warningLength) // the gray hint below
+        XCTAssertTrue(app.staticTexts[warningLength].waitForExistence(timeout: 2.0)) // the section footer
 
-        try overview.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
-        sleep(1)
-        XCTAssertEqual(overview.staticTexts.matching(identifier: warningLength).count, 2)
-        overview.app.typeText("6789")
+        XCTAssertTrue(app.secureTextFields["enter password"].exists)
+        XCTAssertTrue(app.secureTextFields["re-enter password"].exists)
 
-        overview.app.dismissKeyboard()
-        sleep(1)
+        try app.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
+        XCTAssertEqual(app.staticTexts.matching(identifier: warningLength).count, 2) // additional red warning.
+        app.typeText("6789")
+        app.dismissKeyboard()
 
-        try overview.secureTextFields["re-enter password"].enter(value: "12345", dismissKeyboard: false)
-        overview.verifyExistence(text: "Passwords do not match.", timeout: 2.0)
-        overview.app.typeText("6789")
+        try app.secureTextFields["re-enter password"].enter(value: "12345", dismissKeyboard: false)
+        XCTAssertTrue(app.staticTexts["Passwords do not match."].waitForExistence(timeout: 2.0))
+        app.typeText("6789")
 
-        overview.tap(button: "Done")
+        XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
+        app.buttons["Done"].tap()
 
         XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
         app.alerts["Security Alert"].buttons["Dismiss"].tap()
-        sleep(2)
 
-        XCTAssertFalse(overview.secureTextFields["enter password"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 4.0))
     }
-    
-    func testLicenseOverview() throws {
-        let app = TestApp.launch(defaultCredentials: true)
-        let overview = app.openAccountOverview()
 
-        overview.tap(button: "License Information")
-        sleep(2)
-        XCTAssertTrue(overview.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 6.0))
+    @MainActor
+    func testLicenseOverview() throws {
+        let app = XCUIApplication()
+        app.launch(defaultCredentials: true)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["License Information"].exists)
+        app.buttons["License Information"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 3.0))
     }
 }

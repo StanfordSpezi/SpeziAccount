@@ -18,5 +18,6 @@ public protocol EmbeddableAccountSetupViewStyle: AccountSetupViewStyle {
 
     /// The view that is embedded into the ``AccountSetup`` view if applicable.
     @ViewBuilder
+    @MainActor
     func makeEmbeddedAccountView(_ service: any EmbeddableAccountService) -> EmbeddedView
 }

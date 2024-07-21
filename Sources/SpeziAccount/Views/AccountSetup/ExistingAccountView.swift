@@ -65,6 +65,7 @@ struct ExistingAccountView<Continue: View>: View {
 
 
 extension AccountSetupViewStyle {
+    @MainActor
     fileprivate func makeAnyAccountSummary(_ service: any AccountService, details: AccountDetails) -> AnyView {
         AnyView(self.makeAccountSummary(service, details: details))
     }

@@ -21,5 +21,6 @@ public protocol DataEntryView<Key>: View {
 
     /// Creates a new data entry view.
     /// - Parameter value: A binding to store the current and change value.
+    @MainActor
     init(_ value: Binding<Key.Value>)
 }

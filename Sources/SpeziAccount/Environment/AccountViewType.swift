@@ -37,7 +37,7 @@ public enum AccountViewType: EnvironmentKey {
     case overview(mode: OverviewEntryMode)
 
 
-    public static var defaultValue: AccountViewType?
+    public static let defaultValue: AccountViewType? = nil
 
 
     /// Determines if the view type represents a view mode where new data is provided for an account value.
@@ -50,6 +50,12 @@ public enum AccountViewType: EnvironmentKey {
         }
     }
 }
+
+
+extension OverviewEntryMode: Sendable, Hashable {}
+
+
+extension AccountViewType: Sendable, Hashable {}
 
 
 extension EnvironmentValues {

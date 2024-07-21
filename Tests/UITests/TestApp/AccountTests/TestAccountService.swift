@@ -17,7 +17,8 @@ struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
 }
 
 
-actor TestAccountService: UserIdPasswordAccountService {
+@MainActor
+final class TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
 
     private let model: TestAlertModel
@@ -50,7 +51,7 @@ actor TestAccountService: UserIdPasswordAccountService {
         self.registeredUser = UserStorage(userId: defaultUserId)
     }
 
-    nonisolated func configure() {
+    func configure() {
         if defaultAccountOnConfigure {
             Task {
                 do {
@@ -121,6 +122,7 @@ actor TestAccountService: UserIdPasswordAccountService {
         let details = builder
             .build(owner: self)
 
+        let account = account
         try await account.supplyUserDetails(details)
     }
 
@@ -129,10 +131,12 @@ actor TestAccountService: UserIdPasswordAccountService {
     }
 
     func logout() async throws {
+        let account = account
         await account.removeUserDetails()
     }
 
     func delete() async throws {
+        let account = account
         await account.removeUserDetails()
         registeredUser = UserStorage(userId: defaultUserId)
     }

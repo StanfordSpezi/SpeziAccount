@@ -60,7 +60,7 @@ import SwiftUI
 /// - ``init(_:configuration:)``
 /// - ``init(building:active:configuration:)``
 @Observable
-public final class Account: @unchecked Sendable {
+public final class Account {
     private var logger: Logger {
         LoggerKey.defaultValue
     }
@@ -270,3 +270,6 @@ public final class Account: @unchecked Sendable {
         details = nil
     }
 }
+
+
+extension Account: Sendable {}

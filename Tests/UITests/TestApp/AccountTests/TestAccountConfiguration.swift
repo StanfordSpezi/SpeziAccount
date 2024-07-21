@@ -17,6 +17,7 @@ final class TestAccountConfiguration: Module {
 
     @Model var testModel: TestAlertModel
 
+    @MainActor
     init(features: Features) {
         let model = TestAlertModel()
 
