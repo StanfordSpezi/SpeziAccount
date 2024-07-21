@@ -10,6 +10,11 @@ import Foundation
 import Spezi
 import XCTRuntimeAssertions
 
+// TODO: make Account Service Singleton design => single module
+// TODO: how do we model the AccountDetails "struct" (maybe property wrapper concept?)
+// TODO: Account storage constraint: Module interaction that an account service has to actively support?
+// TODO: account notify constraint???
+
 
 /// The Spezi `Component` to configure the ``SpeziAccount`` framework in the `Configuration` section of your app.
 ///
