@@ -91,8 +91,7 @@ public final class Account {
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    public let registeredAccountServices: [any AccountService]
-
+    @MainActor public private(set) var registeredAccountServices: [any AccountService]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -109,7 +108,7 @@ public final class Account {
         self._details = details
 
         self.configuration = supportedConfiguration
-        self.registeredAccountServices = services
+        self._registeredAccountServices = services
 
         if supportedConfiguration[UserIdKey.self] == nil {
             logger.warning(
@@ -120,10 +119,6 @@ public final class Account {
                 """
             )
         }
-
-        for service in registeredAccountServices {
-            injectWeakAccount(into: service)
-        }
     }
 
     /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
@@ -132,6 +127,7 @@ public final class Account {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
     public convenience init(
         services: [any AccountService],
         configuration: AccountValueConfiguration = .default
@@ -145,6 +141,7 @@ public final class Account {
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
+    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
     public convenience init(
         _ services: any AccountService...,
         configuration: AccountValueConfiguration = .default
@@ -168,18 +165,14 @@ public final class Account {
         self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
     }
 
+    /// Initialize an empty Account module.
+    public convenience init() {
+        self.init(services: [], supportedConfiguration: .default)
+    }
 
-    func injectWeakAccount(into value: Any) {
-        let mirror = Mirror(reflecting: value)
-
-        for (_, value) in mirror.children {
-            if let weakReference = value as? _WeakInjectable<Account> { // see AccountService.AccountReference
-                weakReference.inject(self)
-            } else if let accountService = value as? any AccountService {
-                // allow for nested injection like in the case of `StandardBackedAccountService`
-                injectWeakAccount(into: accountService)
-            }
-        }
+    @MainActor
+    func configureServices(_ services: [any AccountService]) {
+        registeredAccountServices.append(contentsOf: services)
     }
 
     /// Supply the ``AccountDetails`` of the currently logged in user.
@@ -273,3 +266,6 @@ public final class Account {
 
 
 extension Account: Sendable {}
+
+
+extension Account: Module, EnvironmentAccessible, DefaultInitializable {}

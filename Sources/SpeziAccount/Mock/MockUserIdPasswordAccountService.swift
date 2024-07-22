@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import Spezi
 
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
-public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService {
-    @AccountReference private var account: Account
+public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService, Module {
+    @Dependency private var account: Account
 
     public let configuration: AccountServiceConfiguration
     private var userIdToAccountId: [String: UUID] = [:]

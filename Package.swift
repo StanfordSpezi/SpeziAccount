@@ -29,11 +29,11 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "1.0.0"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.2.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.3.0"),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.4"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "1.1.3"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.5.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.5.0"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0")
     ] + swiftLintPackage(),
     targets: [

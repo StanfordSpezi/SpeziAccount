@@ -169,7 +169,11 @@ struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
         NavigationStack {
             SignupForm(using: accountService)
         }
-            .environment(Account(accountService))
+            .previewWith {
+                AccountConfiguration {
+                    accountService
+                }
+            }
     }
 }
 #endif

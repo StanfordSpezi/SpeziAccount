@@ -78,7 +78,7 @@ struct AccountTestsView: View {
             }
         }
         let standard = standard
-        if standard.deleteNotified {
+        if standard.storage.deleteNotified {
             Section {
                 Text(verbatim: "Got notified about deletion!")
             }
@@ -137,13 +137,13 @@ struct AccountTestsView_Previews: PreviewProvider {
         AccountTestsView()
             .previewWith {
                 AccountConfiguration {
-                    TestAccountService(TestAlertModel(), .emailAddress)
+                    TestAccountService(.emailAddress)
                 }
             }
 
         AccountTestsView()
             .previewWith {
-                AccountConfiguration(building: details, active: TestAccountService(TestAlertModel(), .emailAddress))
+                AccountConfiguration(building: details, active: TestAccountService(.emailAddress))
             }
 
         AccountTestsView()

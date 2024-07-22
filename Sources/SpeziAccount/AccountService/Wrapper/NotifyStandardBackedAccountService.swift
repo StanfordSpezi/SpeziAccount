@@ -10,7 +10,7 @@ import Spezi
 
 
 actor NotifyStandardBackedAccountService<Service: AccountService, Standard: AccountNotifyConstraint>: AccountService, _StandardBacked {
-    @AccountReference private var account
+    @Dependency private var account: Account
 
     let accountService: Service
     let standard: Standard

@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SwiftUI
 
 
@@ -28,7 +29,7 @@ import SwiftUI
 ///
 /// ### Result Builder
 /// - ``AccountServiceBuilder``
-public protocol AccountService: AnyObject, Hashable, CustomStringConvertible, Sendable {
+public protocol AccountService: Module, Hashable, CustomStringConvertible, Sendable {
     /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
     associatedtype ViewStyle: AccountSetupViewStyle
 

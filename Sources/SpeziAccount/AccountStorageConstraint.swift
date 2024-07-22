@@ -89,5 +89,6 @@ extension Standard {
     ///     @AccountReference var account
     /// }
     /// ```
-    public typealias AccountReference = _WeakInjectable<Account>
+    @available(*, deprecated, renamed: "Dependency", message: "Account is now a module. Please use the @Dependency property wrapper from Spezi.")
+    public typealias AccountReference = Dependency<Account>
 }

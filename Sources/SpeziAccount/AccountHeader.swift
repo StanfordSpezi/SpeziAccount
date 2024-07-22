@@ -103,7 +103,11 @@ public struct AccountHeader: View {
 
 #Preview {
     AccountHeader(caption: Text(verbatim: "Email, Password, Preferences"))
-        .environment(Account(MockUserIdPasswordAccountService()))
+        .previewWith {
+            AccountConfiguration {
+                MockUserIdPasswordAccountService()
+            }
+        }
 }
 
 #Preview {

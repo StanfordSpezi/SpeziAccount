@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziAccount
 import SwiftUI
 
@@ -21,18 +22,18 @@ struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
 final class TestAccountService: UserIdPasswordAccountService {
     nonisolated let configuration: AccountServiceConfiguration
 
-    private let model: TestAlertModel
     private let defaultUserId: String
     private let defaultAccountOnConfigure: Bool
     private var excludeName: Bool
 
-    @AccountReference var account: Account
     var registeredUser: UserStorage // simulates the backend
 
     let viewStyle = TestViewStyle()
 
+    @Dependency var account: Account
+    @Model var model = TestAlertModel()
 
-    init(_ model: TestAlertModel, _ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
+    init(_ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
         configuration = AccountServiceConfiguration(
             name: "\(type.localizedStringResource) and Password",
             supportedKeys: .exactly(UserStorage.supportedKeys)
@@ -44,16 +45,16 @@ final class TestAccountService: UserIdPasswordAccountService {
             UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
         }
 
-        self.model = model
         self.defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
         self.defaultAccountOnConfigure = defaultAccount
         self.excludeName = noName
         self.registeredUser = UserStorage(userId: defaultUserId)
     }
 
+    @MainActor
     func configure() {
         if defaultAccountOnConfigure {
-            Task {
+            Task { @MainActor in
                 do {
                     try await updateUser()
                 } catch {

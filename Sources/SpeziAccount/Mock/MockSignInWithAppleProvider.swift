@@ -7,6 +7,7 @@
 //
 
 import AuthenticationServices
+import Spezi
 import SwiftUI
 
 
@@ -38,7 +39,7 @@ public struct MockSignInWithAppleProviderStyle: IdentityProviderViewStyle {
 /// ## Topics
 /// ### Mock View Style
 /// - ``MockSignInWithAppleProviderStyle``
-public actor MockSignInWithAppleProvider: IdentityProvider {
+public actor MockSignInWithAppleProvider: IdentityProvider, Module {
     public let configuration = AccountServiceConfiguration(name: "Mock SignIn with Apple", supportedKeys: .arbitrary)
 
     public nonisolated var viewStyle: MockSignInWithAppleProviderStyle {

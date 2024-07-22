@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7B29D6C29B00234098 /* AccountTestsView.swift */; };
-		2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */; };
 		2F027C8829D6C2AD00234098 /* MockAccountServiceError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */; };
 		2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* UserStorage.swift */; };
 		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
@@ -46,7 +45,6 @@
 /* Begin PBXFileReference section */
 		2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAccountServiceError.swift; sourceTree = "<group>"; };
 		2F027C7B29D6C29B00234098 /* AccountTestsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTestsView.swift; sourceTree = "<group>"; };
-		2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestAccountConfiguration.swift; sourceTree = "<group>"; };
 		2F027C7F29D6C29B00234098 /* UserStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStorage.swift; sourceTree = "<group>"; };
 		2F027C9429D6C63100234098 /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
 		2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestPrimaryButton.swift"; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 				A99D25042AFCB7AD002CC42A /* TestAlertModifier.swift */,
 				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
 				2F027C7A29D6C29B00234098 /* MockAccountServiceError.swift */,
-				2F027C7E29D6C29B00234098 /* TestAccountConfiguration.swift */,
 				2F027C7F29D6C29B00234098 /* UserStorage.swift */,
 				A96924102A9A2E7800E2128B /* TestAccountService.swift */,
 				A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */,
@@ -185,7 +182,6 @@
 				2F6D138E28F5F384007C25D6 /* Sources */,
 				2F6D138F28F5F384007C25D6 /* Frameworks */,
 				2F6D139028F5F384007C25D6 /* Resources */,
-				2F04D50A2AF23D2000095751 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -282,27 +278,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		2F04D50A2AF23D2000095751 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  cd ../../ && swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		2F6D138E28F5F384007C25D6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -315,7 +290,6 @@
 				A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
 				2F027C8929D6C2AD00234098 /* UserStorage.swift in Sources */,
-				2F027C8729D6C2AD00234098 /* TestAccountConfiguration.swift in Sources */,
 				A96924112A9A2E7800E2128B /* TestAccountService.swift in Sources */,
 				A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */,
 				A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */,

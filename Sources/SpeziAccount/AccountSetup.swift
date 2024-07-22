@@ -241,7 +241,11 @@ struct AccountView_Previews: PreviewProvider {
         }
 
         AccountSetup()
-            .environment(Account(services: [MockSignInWithAppleProvider()]))
+            .previewWith {
+                AccountConfiguration {
+                    MockSignInWithAppleProvider()
+                }
+            }
 
         AccountSetup()
             .previewWith {

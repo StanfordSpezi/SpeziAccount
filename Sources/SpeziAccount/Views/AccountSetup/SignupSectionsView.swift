@@ -67,7 +67,11 @@ struct SignupSectionsView_Previews: PreviewProvider {
                 .name: [PersonNameKey.self]
             ])
         }
-            .environment(Account(service))
+            .previewWith {
+                AccountConfiguration {
+                    service
+                }
+            }
     }
 }
 #endif

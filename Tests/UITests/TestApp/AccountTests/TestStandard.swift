@@ -13,7 +13,14 @@ import SwiftUI
 
 // mock implementation of the AccountStorageConstraint
 actor TestStandard: AccountStorageConstraint, AccountNotifyConstraint, EnvironmentAccessible {
-    @MainActor @Published var deleteNotified = false
+    @MainActor
+    @Observable
+    final class Storage {
+        var deleteNotified = false
+        nonisolated init() {}
+    }
+
+    let storage = Storage()
 
     var records: [AdditionalRecordId: PartialAccountDetails.Builder] = [:]
 
@@ -46,6 +53,6 @@ actor TestStandard: AccountStorageConstraint, AccountNotifyConstraint, Environme
 
     @MainActor
     func deletedAccount() async {
-        deleteNotified = true
+        storage.deleteNotified = true
     }
 }
