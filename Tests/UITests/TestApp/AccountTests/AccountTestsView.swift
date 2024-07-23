@@ -7,6 +7,7 @@
 //
 
 import Spezi
+@_spi(TestingSupport)
 import SpeziAccount
 import SpeziViews
 import SwiftUI
@@ -136,9 +137,7 @@ struct AccountTestsView_Previews: PreviewProvider {
     static var previews: some View {
         AccountTestsView()
             .previewWith {
-                AccountConfiguration {
-                    TestAccountService(.emailAddress)
-                }
+                AccountConfiguration(service: TestAccountService(.emailAddress))
             }
 
         AccountTestsView()

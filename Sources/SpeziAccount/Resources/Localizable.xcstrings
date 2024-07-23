@@ -684,6 +684,9 @@
         }
       }
     },
+    "Example Button" : {
+
+    },
     "FOLLOW_UP_INFORMATION_COMPLETE" : {
       "localizations" : {
         "de" : {
@@ -1124,6 +1127,9 @@
         }
       }
     },
+    "Password Reset" : {
+
+    },
     "REMOVE_DEFAULT_ERROR" : {
       "localizations" : {
         "de" : {
@@ -1211,6 +1217,9 @@
           }
         }
       }
+    },
+    "Signup View" : {
+
     },
     "The internal account identifier is meant to be generated!" : {
       "comment" : "Pure debug message, no need to translate.",

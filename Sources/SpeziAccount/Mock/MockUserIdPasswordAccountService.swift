@@ -9,13 +9,83 @@
 import Foundation
 import Spezi
 
+// TODO: remove
+import SwiftUI
+
+public protocol ViewProviding {
+    @MainActor
+    init()
+}
+
+@propertyWrapper
+public struct ViewProvider<Element: ViewProviding> { // TODO: this is our backup plan for actors!
+    @MainActor public var wrappedValue: Element {
+        Element()
+    }
+
+    public init() {}
+}
+
+
+public struct ServiceViews: ViewProviding {
+    @IdentityProviderNEW(placement: .embedded) private var testButton = UserIdPasswordEmbeddedView { credential in
+        // TODO: cannot get self
+        print("Login \(credential)")
+    } signup: {
+        NavigationStack {
+            Text("Signup View")
+        }
+    } passwordReset: {
+        Text("Password Reset")
+    }
+
+    public init() {}
+}
+
+
+struct MockUserIdPasswordEmbeddedView: View {
+    @Environment(MockUserIdPasswordAccountService.self) private var service
+
+    var body: some View {
+        UserIdPasswordEmbeddedView { credential in
+            try await service.login(userId: credential.userId, password: credential.password)
+        } signup: {
+            NavigationStack {
+                SignupForm { signupDetails in
+                    try await service.signUp(signupDetails: signupDetails)
+                }
+            }
+        } passwordReset: {
+            NavigationStack {
+                UserIdPasswordResetView { userId in
+                    try await service.resetPassword(userId: userId)
+                }
+            }
+        }
+    }
+}
+
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
-public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService, Module {
+public final class MockUserIdPasswordAccountService: UserIdPasswordAccountService {
     @Dependency private var account: Account
 
+    @IdentityProviderNEW(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
+
+    @IdentityProviderNEW(placement: .externalIdentityProvider) private var testButton2 = Button {
+        print("AAAH")
+    } label: {
+        Text("Example Button")
+    }
+    // TODO: we probably need a way to deactivate these on demand! (e.g., atomic but observable?)
+
     public let configuration: AccountServiceConfiguration
-    private var userIdToAccountId: [String: UUID] = [:]
+    @MainActor private var userIdToAccountId: [String: UUID] = [:]
+
+
+
+    // TODO: @ViewProvider private var views: ServiceViews // TODO: this might be a concept we can use even in actors?
+    // TODO: these modifier make the view automatically @MainActor (funny)!
 
 
     /// Create a new userId- and password-based account service.
@@ -80,7 +150,7 @@ public actor MockUserIdPasswordAccountService: UserIdPasswordAccountService, Mod
 
     public func updateAccountDetails(_ modifications: AccountModifications) async throws {
         let account = account
-        guard let details = await account.details else {
+        guard let details = account.details else {
             return
         }
 

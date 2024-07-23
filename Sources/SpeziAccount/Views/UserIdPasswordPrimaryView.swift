@@ -24,7 +24,8 @@ public struct UserIdPasswordPrimaryView: View {
                     Spacer()
 
                     VStack {
-                        UserIdPasswordEmbeddedView(using: service)
+                        // TODO: UserIdPasswordEmbeddedView(using: service)
+                        EmptyView()
                     }
                         .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                         .frame(maxWidth: ViewSizing.maxFrameWidth)
@@ -55,9 +56,7 @@ struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
         NavigationStack {
             UserIdPasswordPrimaryView(using: accountService)
                 .previewWith {
-                    AccountConfiguration {
-                        accountService
-                    }
+                    AccountConfiguration(service: accountService)
                 }
         }
     }

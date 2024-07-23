@@ -20,6 +20,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     private let accountDetails: AccountDetails
     
     private var service: any AccountService {
+        // TODO: no longer tied to the accountDetails, but still fine to stay any!
         accountDetails.accountService
     }
     
@@ -95,7 +96,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.logout()
+                    try await service.logout() // TODO: logout is probably fine to be mandated?
                     dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
@@ -109,7 +110,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.delete()
+                    try await service.delete() // TODO: delete is special, as the app would need to delete all associated data!
                     dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
@@ -126,6 +127,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
+            // TODO: security related modifier is a bit weird!
             .anyViewModifier(service.viewStyle.securityRelatedViewModifier) // for delete action
 
         defaultSections

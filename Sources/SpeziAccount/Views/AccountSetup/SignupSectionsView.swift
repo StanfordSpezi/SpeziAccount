@@ -20,7 +20,6 @@ import SwiftUI
 /// - The ``SwiftUI/EnvironmentValues/accountServiceConfiguration`` environment variable.
 /// - The ``SwiftUI/EnvironmentValues/accountViewType`` environment variable.
 struct SignupSectionsView<Storage: AccountValues>: View {
-    private let service: any AccountService
     private let sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
     private let storageType: Storage.Type
 
@@ -42,36 +41,29 @@ struct SignupSectionsView<Storage: AccountValues>: View {
                 }
             } footer: {
                 if category == .credentials && account.configuration[PasswordKey.self] != nil {
-                    PasswordValidationRuleFooter(configuration: service.configuration)
+                    PasswordValidationRuleFooter(configuration: account.accountService.configuration)
                 }
             }
         }
     }
 
-    init(for storageType: Storage.Type, service: any AccountService, sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
-        self.service = service
-        self.sections = sections
+    init(for storageType: Storage.Type, sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
         self.storageType = storageType
+        self.sections = sections
     }
 }
 
 
 #if DEBUG
-struct SignupSectionsView_Previews: PreviewProvider {
-    private static let service = MockUserIdPasswordAccountService()
-
-    static var previews: some View {
-        Form {
-            SignupSectionsView(for: SignupDetails.self, service: service, sections: [
-                .credentials: [UserIdKey.self, PasswordKey.self],
-                .name: [PersonNameKey.self]
-            ])
-        }
-            .previewWith {
-                AccountConfiguration {
-                    service
-                }
-            }
+#Preview {
+    Form {
+        SignupSectionsView(for: SignupDetails.self, sections: [
+            .credentials: [UserIdKey.self, PasswordKey.self],
+            .name: [PersonNameKey.self]
+        ])
+    }
+    .previewWith {
+        AccountConfiguration(service: MockUserIdPasswordAccountService())
     }
 }
 #endif

@@ -16,22 +16,23 @@ private enum LoginFocusState {
     case password
 }
 
+public struct UserIdPasswordCredential: Sendable { // TODO: new credentials hierarchy?
+    public let userId: String
+    public let password: String
+}
+
 
 /// A default implementation for the embedded view of a ``UserIdPasswordAccountService``.
 ///
 /// Every ``EmbeddableAccountService`` might provide a view that is directly integrated into the ``AccountSetup``
 /// view for more easy navigation. This view implements such a view for ``UserIdPasswordAccountService``-based
 /// account service implementations.
-public struct UserIdPasswordEmbeddedView: View {
-    private let service: any UserIdPasswordAccountService
-    private var userIdConfiguration: UserIdConfiguration {
-        service.configuration.userIdConfiguration
-    }
+public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: View {
+    private let signupForm: Signup
+    private let passwordReset: PasswordReset
+    private let loginClosure: (UserIdPasswordCredential) async throws -> Void
 
     @Environment(Account.self) private var account
-
-    // for login we do all checks server-side. Except that we don't pass empty values.
-    @ValidationState private var validation
 
     @State private var userId: String = ""
     @State private var password: String = ""
@@ -39,8 +40,15 @@ public struct UserIdPasswordEmbeddedView: View {
     @State private var state: ViewState = .idle
     @FocusState private var focusedField: LoginFocusState?
 
+    // for login we do all checks server-side. Except that we don't pass empty values.
+    @ValidationState private var validation
+
     @State private var presentingSignupSheet = false
     @State private var presentingPasswordForgetSheet = false
+
+    private var userIdConfiguration: UserIdConfiguration {
+        account.accountService.configuration.userIdConfiguration
+    }
 
     public var body: some View {
         VStack {
@@ -59,29 +67,29 @@ public struct UserIdPasswordEmbeddedView: View {
                 .padding(.top)
 
 
-            HStack {
-                Text("UP_NO_ACCOUNT_YET", bundle: .module)
-                Button(action: {
-                    presentingSignupSheet = true
-                }) {
-                    Text("UP_SIGNUP", bundle: .module)
+            if !(signupForm is EmptyView) {
+                HStack {
+                    Text("UP_NO_ACCOUNT_YET", bundle: .module)
+                    Button(action: {
+                        presentingSignupSheet = true
+                    }) {
+                        Text("UP_SIGNUP", bundle: .module)
+                    }
                 }
+                    .font(.footnote)
             }
-                .font(.footnote)
+            // TODO: otherwise add some padding?
         }
             .disableDismissiveActions(isProcessing: state)
             .viewStateAlert(state: $state)
             .receiveValidation(in: $validation)
             .sheet(isPresented: $presentingSignupSheet) {
-                NavigationStack {
-                    service.viewStyle.makeAnySignupForm(service)
-                }
+                // TODO: we previously placed an NavigationStack automatically
+                signupForm
             }
             .sheet(isPresented: $presentingPasswordForgetSheet) {
-                NavigationStack {
-                    service.viewStyle.makeAnyPasswordResetView(service)
-                        .navigationBarTitleDisplayMode(.inline)
-                }
+                // TODO: we previously placed an NavigationStack automatically, plus automatically bade title bar .inline!
+                passwordReset
             }
             .onTapGesture {
                 focusedField = nil
@@ -100,18 +108,25 @@ public struct UserIdPasswordEmbeddedView: View {
                     .padding(.bottom, 0.5)
 
                 VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
-                    Button(action: {
-                        presentingPasswordForgetSheet = true
-                    }) {
-                        Text("UP_FORGOT_PASSWORD", bundle: .module)
-                            .font(.caption)
-                            .bold()
-                            .foregroundColor(Color(uiColor: .systemGray))
+                    if !(passwordReset is EmptyView) {
+                        Button(action: {
+                            presentingPasswordForgetSheet = true
+                        }) {
+                            Text("UP_FORGOT_PASSWORD", bundle: .module)
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(Color(uiColor: .systemGray))
+                        }
                     }
                 }
                     .validate(input: password, rules: .nonEmpty)
                     .focused($focusedField, equals: .userId)
                     .textContentType(.password)
+
+                if passwordReset is EmptyView {
+                    Spacer()
+                        .frame(maxWidth: .infinity, maxHeight: 10)
+                }
             }
                 .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
                 .disableFieldAssistants()
@@ -123,9 +138,22 @@ public struct UserIdPasswordEmbeddedView: View {
 
     /// Create a new embedded view.
     /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
-    public init(using service: any UserIdPasswordAccountService) {
-        self.service = service
+    public init( // TODO: update docs!
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },
+        @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }  // TODO: default should be the default SignupForm?
+    ) {
+        self.loginClosure = login
+
+        // TODO: instead of passing view, just pass a optional binding?
+        self.signupForm = signupForm()
+        self.passwordReset = passwordReset()
     }
+
+    // TODO: shorthand to pass signup closure to automatically use signup form?
+    // TODO: all permutations!
+
+    // TODO: another init to not have the dangling closure warning!
 
 
     @MainActor
@@ -136,36 +164,45 @@ public struct UserIdPasswordEmbeddedView: View {
 
         focusedField = nil
 
-        let userId = userId
-        let password = password
-        try await service.login(userId: userId, password: password)
-    }
-}
-
-
-extension UserIdPasswordAccountSetupViewStyle {
-    @MainActor
-    fileprivate func makeAnySignupForm(_ service: any UserIdPasswordAccountService) -> AnyView {
-        AnyView(makeSignupView(service))
-    }
-
-    @MainActor
-    fileprivate func makeAnyPasswordResetView(_ service: any UserIdPasswordAccountService) -> AnyView {
-        AnyView(makePasswordResetView(service))
+        let credential = UserIdPasswordCredential(userId: userId, password: password)
+        try await loginClosure(credential)
     }
 }
 
 
 #if DEBUG
 #Preview {
-    let accountService = MockUserIdPasswordAccountService()
-    return NavigationStack {
-        UserIdPasswordEmbeddedView(using: accountService)
+    let service = MockUserIdPasswordAccountService()
+    return NavigationStack { // TODO: let's see where we go from here on!
+        UserIdPasswordEmbeddedView { credential in
+            print("Login \(credential)")
+        } signup: {
+            NavigationStack {
+                SignupForm() { details in
+                    print("Signup \(details)")
+                }
+            }
+        } passwordReset: {
+            NavigationStack {
+                UserIdPasswordResetView { userId in
+                    print("Reset password for \(userId)")
+                }
+            }
+        }
     }
         .previewWith {
-            AccountConfiguration {
-                accountService
-            }
+            AccountConfiguration(service: service)
+        }
+}
+
+#Preview {
+    NavigationStack {
+        UserIdPasswordEmbeddedView { credential in
+            print("Login \(credential)")
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
         }
 }
 #endif

@@ -11,7 +11,7 @@ import Spezi
 
 /// A result builder to build a collection of ``AccountService``s.
 @resultBuilder
-public enum AccountServiceBuilder: DependencyCollectionBuilder {
+public enum AccountServiceBuilder: DependencyCollectionBuilder { // TODO: remove?
     /// Build a single ``AccountService`` expression.
     public static func buildExpression(_ service: @escaping @autoclosure () -> some AccountService) -> DependencyCollection {
         DependencyCollection(singleEntry: service)

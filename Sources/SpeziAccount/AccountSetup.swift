@@ -64,21 +64,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var setupState: _AccountSetupState = .generic
     @State private var followUpSheet = false
 
-    private var services: [any AccountService] {
-        account.registeredAccountServices
-            .filter { !($0 is any IdentityProvider) }
-    }
-
-    private var identityProviders: [any IdentityProvider] {
-        account.registeredAccountServices
-            .compactMap { $0 as? any IdentityProvider }
-    }
-
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    if !services.isEmpty || !identityProviders.isEmpty {
+                    if !account.setupViews.isEmpty {
                         header
                             .environment(\._accountSetupState, setupState)
                     }
@@ -128,10 +118,15 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     @ViewBuilder private var accountSetupView: some View {
-        if services.isEmpty && identityProviders.isEmpty {
+        if account.setupViews.isEmpty {
             EmptyServicesWarning()
         } else {
             VStack {
+                ForEach(account.setupViews.indices, id: \.self) { index in
+                    let view = account.setupViews[index]
+                    view
+                }
+                /*
                 AccountServicesSection(services: services)
 
                 if !services.isEmpty && !identityProviders.isEmpty {
@@ -139,6 +134,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 }
 
                 IdentityProviderSection(providers: identityProviders)
+                 */
             }
                 .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
@@ -235,16 +231,19 @@ struct AccountView_Previews: PreviewProvider {
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
 
     @MainActor static var previews: some View {
-        ForEach(accountServicePermutations.indices, id: \.self) { index in
+        /*ForEach(accountServicePermutations.indices, id: \.self) { index in
             AccountSetup()
-                .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
+                // TODO: .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
         }
+        */
+        AccountSetup()
+            .previewWith {
+                AccountConfiguration(service: MockUserIdPasswordAccountService())
+            }
 
         AccountSetup()
             .previewWith {
-                AccountConfiguration {
-                    MockSignInWithAppleProvider()
-                }
+                AccountConfiguration(service: MockSignInWithAppleProvider())
             }
 
         AccountSetup()

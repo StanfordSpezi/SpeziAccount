@@ -12,29 +12,37 @@ import SpeziViews
 import SwiftUI
 
 
-struct DefaultSignupFormHeader: View {
-    var body: some View {
+public struct DefaultSignupFormHeader: View { // TODO: generalize this view?
+    public var body: some View { // TODO: rename or however we want to make it public!
         VStack {
-            Image(systemName: "person.fill.badge.plus")
-                .foregroundColor(.accentColor)
-                .symbolRenderingMode(.multicolor)
-                .font(.custom("XXL", size: 50, relativeTo: .title))
-                .accessibilityHidden(true)
-            Text("UP_SIGNUP_HEADER", bundle: .module)
-                .accessibilityAddTraits(.isHeader)
-                .font(.title)
-                .bold()
-                .padding(.bottom, 4)
+            VStack {
+                Image(systemName: "person.fill.badge.plus")
+                    .foregroundColor(.accentColor)
+                    .symbolRenderingMode(.multicolor)
+                    .font(.custom("XXL", size: 50, relativeTo: .title))
+                    .accessibilityHidden(true)
+                Text("UP_SIGNUP_HEADER", bundle: .module)
+                    .accessibilityAddTraits(.isHeader)
+                    .font(.title)
+                    .bold()
+                    .padding(.bottom, 4)
+            }
+                .accessibilityElement(children: .combine)
             Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
                 .padding([.leading, .trailing], 25)
         }
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .listRowBackground(Color.clear)
-            .padding(.top, -3)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
     }
+
+    public init() {}
 }
+
+#if DEBUG
+#Preview {
+    DefaultSignupFormHeader() // TODO: move into its own file!
+}
+#endif
 
 
 /// A generalized signup form used with arbitrary ``AccountService`` implementations.
@@ -44,8 +52,8 @@ struct DefaultSignupFormHeader: View {
 ///
 /// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
 public struct SignupForm<Header: View>: View {
-    private let service: any AccountService
     private let header: Header
+    private let signupClosure: (SignupDetails) async throws -> Void
 
     @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
@@ -62,7 +70,7 @@ public struct SignupForm<Header: View>: View {
         var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
 
         // patch the user configured account values with account values additionally required by
-        for entry in service.configuration.requiredAccountKeys {
+        for entry in account.accountService.configuration.requiredAccountKeys {
             let key = entry.key
             if !result[key.category, default: []].contains(where: { $0 == key }) {
                 result[key.category, default: []].append(key)
@@ -110,9 +118,12 @@ public struct SignupForm<Header: View>: View {
     @MainActor @ViewBuilder var form: some View {
         Form {
             header
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .listRowBackground(Color.clear)
+                .padding(.top, -3)
 
-            SignupSectionsView(for: SignupDetails.self, service: service, sections: accountKeyByCategory)
-                .environment(\.accountServiceConfiguration, service.configuration)
+            SignupSectionsView(for: SignupDetails.self, sections: accountKeyByCategory)
+                .environment(\.accountServiceConfiguration, account.accountService.configuration) // TODO: try to replace all account service access just for configuration
                 .environment(\.accountViewType, .signup)
                 .environment(signupDetailsBuilder)
 
@@ -131,15 +142,9 @@ public struct SignupForm<Header: View>: View {
             .receiveValidation(in: $validation)
     }
 
-
-    init(using service: any AccountService) where Header == DefaultSignupFormHeader {
-        self.service = service
-        self.header = DefaultSignupFormHeader()
-    }
-
-    init(service: any AccountService, @ViewBuilder header: () -> Header) {
-        self.service = service
+    public init(signup: @escaping (SignupDetails) async throws -> Void, @ViewBuilder header: () -> Header = { DefaultSignupFormHeader() }) {
         self.header = header()
+        self.signupClosure = signup
     }
 
 
@@ -151,29 +156,25 @@ public struct SignupForm<Header: View>: View {
 
         isFocused = false
 
+        // TODO: can we split that into the credentials and user details?
         let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
 
-        try await service.signUp(signupDetails: details)
+        try await signupClosure(details)
 
-        // go back if the view doesn't update anyway
         dismiss()
     }
 }
 
 
 #if DEBUG
-struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
-    static let accountService = MockUserIdPasswordAccountService()
-
-    static var previews: some View {
-        NavigationStack {
-            SignupForm(using: accountService)
+#Preview {
+    NavigationStack {
+        SignupForm { signupDetails in
+            print("Signup Details: \(signupDetails)")
         }
-            .previewWith {
-                AccountConfiguration {
-                    accountService
-                }
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
+        }
 }
 #endif

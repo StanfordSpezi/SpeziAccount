@@ -9,6 +9,7 @@
 import SpeziFoundation
 import SwiftUI
 
+// TODO: those should be able to get removed?
 
 /// A SwiftUI `Image` to visualize an ``AccountService``.
 ///
@@ -17,7 +18,7 @@ import SwiftUI
 /// Access the configuration via the ``AccountServiceConfiguration/image`` property.
 public struct AccountServiceImage: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource, Sendable {
     public static var defaultValue: AccountServiceImage {
-        AccountServiceImage(Image(systemName: "person.crop.circle.fill")
+        AccountServiceImage(Image(systemName: "person.crop.square")
             .symbolRenderingMode(.hierarchical))
     }
 

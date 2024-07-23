@@ -47,7 +47,7 @@ struct DefaultAccountSetupHeader_Previews: PreviewProvider {
     static var previews: some View {
         DefaultAccountSetupHeader()
             .previewWith {
-                AccountConfiguration()
+                AccountConfiguration(service: MockUserIdPasswordAccountService())
             }
 
         DefaultAccountSetupHeader()

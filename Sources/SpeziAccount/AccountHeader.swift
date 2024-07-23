@@ -104,9 +104,7 @@ public struct AccountHeader: View {
 #Preview {
     AccountHeader(caption: Text(verbatim: "Email, Password, Preferences"))
         .previewWith {
-            AccountConfiguration {
-                MockUserIdPasswordAccountService()
-            }
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
         }
 }
 
@@ -164,9 +162,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration {
-                MockUserIdPasswordAccountService()
-            }
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
         }
 }
 #endif

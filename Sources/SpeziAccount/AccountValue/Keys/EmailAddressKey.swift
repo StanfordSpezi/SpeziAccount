@@ -22,6 +22,7 @@ public struct EmailAddressKey: AccountKey, OptionalComputedKnowledgeSource {
 
 
     public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
+        // TODO: remove that, we never used that! or maybe keep?
         if let email = repository.get(Self.self) {
             // if we have manually stored a value for this key we return it
             return email

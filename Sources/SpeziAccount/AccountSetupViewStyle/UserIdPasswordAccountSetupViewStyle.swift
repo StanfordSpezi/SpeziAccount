@@ -45,20 +45,25 @@ extension UserIdPasswordAccountSetupViewStyle {
         guard let service = service as? any UserIdPasswordAccountService else {
             preconditionFailure("Received account service of type \(type(of: service)) when expecting one of type \((any UserIdPasswordAccountService).self)")
         }
-        return UserIdPasswordEmbeddedView(using: service)
+        // TODO: return UserIdPasswordEmbeddedView(using: service)
+        return EmptyView()
     }
 
     /// Default signup view using ``SignupForm``.
     @MainActor
     public func makeSignupView(_ service: any UserIdPasswordAccountService) -> some View {
-        SignupForm(using: service)
+        // TODO: SignupForm(using: service)
+        return EmptyView()
     }
 
     /// Default password reset view using ``UserIdPasswordResetView`` and ``SuccessfulPasswordResetView``.
     @MainActor
     public func makePasswordResetView(_ service: any UserIdPasswordAccountService) -> some View {
-        UserIdPasswordResetView(using: service) {
-            SuccessfulPasswordResetView()
-        }
+        /*
+         TODO: UserIdPasswordResetView(using: service) {
+         SuccessfulPasswordResetView()
+         }
+         */
+        return EmptyView()
     }
 }

@@ -88,7 +88,7 @@ struct FollowUpInfoSheet: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
 
-            SignupSectionsView(for: ModifiedAccountDetails.self, service: service, sections: accountKeyByCategory)
+            SignupSectionsView(for: ModifiedAccountDetails.self, sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, service.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(detailsBuilder)

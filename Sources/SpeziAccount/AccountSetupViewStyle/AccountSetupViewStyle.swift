@@ -57,7 +57,7 @@ extension AccountSetupViewStyle {
     /// Default service button label using the ``AccountServiceName`` and ``AccountServiceImage`` configurations.
     @MainActor
     public func makeServiceButtonLabel(_ service: any AccountService) -> some View {
-        Group {
+        HStack {
             service.configuration.image
                 .font(.title2)
                 .accessibilityHidden(true)

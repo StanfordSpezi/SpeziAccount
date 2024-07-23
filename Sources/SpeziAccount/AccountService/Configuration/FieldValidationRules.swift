@@ -9,8 +9,10 @@
 import SpeziFoundation
 import SpeziValidation
 
+// TODO: would be great if this is user-configurable??? (maybe not?)
 
-/// A list of `ValidationRule` to validate the input for String-based ``AccountKey``s.
+
+/// A list of `ValidationRule` to validate the input for String-based `AccountKey`s.
 ///
 /// You can use this configuration to set up [ValidationRule](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule)
 /// used for validation for any string-based ``AccountKey``. Input fields (e.g., placed in signup or edit forms) use those rules to validate the received string input

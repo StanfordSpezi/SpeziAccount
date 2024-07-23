@@ -65,6 +65,9 @@ public final class Account {
         LoggerKey.defaultValue
     }
 
+    /// The user-defined configuration of account values that all user accounts need to support.
+    public let configuration: AccountValueConfiguration
+
     /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
     ///
     /// You might use the projected value `$signedIn` to get access to the corresponding publisher.
@@ -84,31 +87,42 @@ public final class Account {
     ///     using the ``AccountDetails/accountService`` property.
     @MainActor public private(set) var details: AccountDetails?
 
-    /// The user-defined configuration of account values that all user accounts need to support.
-    public let configuration: AccountValueConfiguration
-
     ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
     ///
     /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    @MainActor public private(set) var registeredAccountServices: [any AccountService]
+
+
+    @MainActor public private(set) var accountService: (any AccountService)
+    @MainActor private(set) var setupViews: [AnyView] // TODO: create on demand! (should we provide access to that?
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
+    @MainActor
     init(
-        services: [any AccountService],
+        service: some AccountService, // TODO: allow any AccountService?
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
-        // we have to initialize the macro generated properties directly to stay non-isolated.
-        self._signedIn = details != nil
-        self._details = details
+        self.signedIn = details != nil
+        self.details = details
+        self.accountService = service
 
         self.configuration = supportedConfiguration
-        self._registeredAccountServices = services
+
+        let mirror = Mirror(reflecting: service)
+
+        self.setupViews = mirror.children.reduce(into: []) { partialResult, property in
+            // TODO: support nesting with ViewProviding!
+            guard let provider = property.value as? SomeIdentityProvider else {
+                return
+            }
+
+            partialResult.append(provider.anyView) // TODO: if we create on demand we can remove @MainActor again!
+        }
 
         if supportedConfiguration[UserIdKey.self] == nil {
             logger.warning(
@@ -121,58 +135,18 @@ public final class Account {
         }
     }
 
-    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init(
-        services: [any AccountService],
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: services, supportedConfiguration: configuration)
-    }
-
-    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init(
-        _ services: any AccountService...,
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: services, supportedConfiguration: configuration)
-    }
-
-    /// Initializes a new `Account` object with a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - builder: A  ``AccountValuesBuilder`` for ``AccountDetails`` with all account details for the logged in user.
-    ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init<Service: AccountService>(
-        building builder: AccountDetails.Builder,
-        active accountService: Service,
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
-    }
-
-    /// Initialize an empty Account module.
-    public convenience init() {
-        self.init(services: [], supportedConfiguration: .default)
+    public required init() {
+        // TODO: account services would need to make them all optional?
+        preconditionFailure("Cannot default initialize. This is to workaround an issue with the @Dependency property wrapper in Spezi account!")
     }
 
     @MainActor
-    func configureServices(_ services: [any AccountService]) {
-        registeredAccountServices.append(contentsOf: services)
+    func reconfigureService(_ service: any AccountService) {
+        assert(
+            service === accountService || (service as? any _StandardBacked)?.underlyingService === accountService,
+            "Cannot arbitrarily change the account service implementation."
+        )
+        self.accountService = service
     }
 
     /// Supply the ``AccountDetails`` of the currently logged in user.
@@ -207,12 +181,9 @@ public final class Account {
 
         // Account details will always get built by the respective Account Service. Therefore, we need to patch it
         // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
-        for service in registeredAccountServices {
-            if let standardBacked = service as? any _StandardBacked,
-               standardBacked.isBacking(service: details.accountService) {
-                details.patchAccountService(service)
-                break
-            }
+        if let standardBacked = self.accountService as? any _StandardBacked,
+           standardBacked.isBacking(service: details.accountService) {
+            details.patchAccountService(self.accountService) // TODO: no need to do this anymore?
         }
 
         if let existingDetails = self.details,

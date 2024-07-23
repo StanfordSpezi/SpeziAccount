@@ -13,13 +13,10 @@ import SwiftUI
 
 /// A password reset view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordResetView<SuccessView: View>: View {
-    private let service: any UserIdPasswordAccountService
     private let successView: SuccessView
+    private let resetPasswordClosure: (String) async throws -> Void // TODO: make a wrapper type that encapsulate semantics
 
-    private var userIdConfiguration: UserIdConfiguration {
-        service.configuration.userIdConfiguration
-    }
-
+    @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
 
     @ValidationState private var validation
@@ -29,6 +26,10 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
 
     @State private var state: ViewState = .idle
     @FocusState private var isFocused: Bool
+
+    private var userIdConfiguration: UserIdConfiguration {
+        account.accountService.configuration.userIdConfiguration
+    }
 
 
     public var body: some View {
@@ -43,6 +44,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
                     }
                 }
                     .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
+                    .toolbarTitleDisplayMode(.inline)
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height)
                     .disableDismissiveActions(isProcessing: state)
                     .receiveValidation(in: $validation)
@@ -64,6 +66,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
                 .padding()
                 .padding(.bottom, 30)
 
+            // TODO: shall we generally try to be much more generalizable (e.g., don't assume that userId is the identifier for password reset?)
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                 .validate(input: userId, rules: .nonEmpty)
                 .focused($isFocused)
@@ -88,11 +91,11 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
     }
 
     fileprivate init(
-        using service: any UserIdPasswordAccountService,
         requestSubmitted: Bool,
-        @ViewBuilder success successViewBuilder: () -> SuccessView
+        resetPassword: @escaping (String) async throws -> Void,
+        @ViewBuilder success successViewBuilder: () -> SuccessView = { SuccessfulPasswordResetView() }
     ) {
-        self.service = service
+        self.resetPasswordClosure = resetPassword
         self.successView = successViewBuilder()
         self._requestSubmitted = State(wrappedValue: requestSubmitted)
     }
@@ -102,8 +105,11 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
     /// - Parameters:
     ///   - service: The ``UserIdPasswordAccountService`` instance.
     ///   - successViewBuilder: A view to display on successful password reset.
-    public init(using service: any UserIdPasswordAccountService, @ViewBuilder success successViewBuilder: @escaping () -> SuccessView) {
-        self.init(using: service, requestSubmitted: false, success: successViewBuilder)
+    public init(
+        resetPassword: @escaping (String) async throws -> Void,
+        @ViewBuilder success successViewBuilder: @escaping () -> SuccessView = { SuccessfulPasswordResetView() }
+    ) {
+        self.init(requestSubmitted: false, resetPassword: resetPassword, success: successViewBuilder)
     }
 
 
@@ -116,7 +122,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
         isFocused = false
 
         let userId = userId
-        try await service.resetPassword(userId: userId)
+        try await resetPasswordClosure(userId)
 
         withAnimation(.easeOut(duration: 0.5)) {
             requestSubmitted = true
@@ -133,31 +139,24 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
 
 
 #if DEBUG
-struct DefaultUserIdPasswordResetView_Previews: PreviewProvider {
-    static let accountService = MockUserIdPasswordAccountService()
-
-
-    static var previews: some View {
-        NavigationStack {
-            UserIdPasswordResetView(using: accountService) {
-                SuccessfulPasswordResetView()
-            }
-                .previewWith {
-                    AccountConfiguration {
-                        accountService
-                    }
-                }
+#Preview {
+    NavigationStack {
+        UserIdPasswordResetView { userId in
+            print("Reset password for \(userId)")
         }
+        .previewWith {
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
+        }
+    }
+}
 
-        NavigationStack {
-            UserIdPasswordResetView(using: accountService, requestSubmitted: true) {
-                SuccessfulPasswordResetView()
-            }
-                .previewWith {
-                    AccountConfiguration {
-                        accountService
-                    }
-                }
+#Preview {
+    NavigationStack {
+        UserIdPasswordResetView(requestSubmitted: true) { userId in
+            print("Reset password for \(userId)")
+        }
+        .previewWith {
+            AccountConfiguration(service: MockUserIdPasswordAccountService())
         }
     }
 }
