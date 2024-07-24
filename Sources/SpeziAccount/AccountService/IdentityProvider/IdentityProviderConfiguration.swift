@@ -10,21 +10,20 @@ import Atomics
 import Spezi
 import SwiftUI
 
+public struct Placement { // TODO: rename
+    public static let embedded = Placement(rawValue: 0) // TODO: docs: only one embedded view allowed!
+    public static let `default` = Placement(rawValue: 100) // TODO: rename?
+    public static let external = Placement(rawValue: 200)
+
+    public let rawValue: UInt8
+
+    public init(rawValue: UInt8) {
+        self.rawValue = rawValue
+    }
+}
 
 @Observable
 public final class IdentityProviderConfiguration {
-    public struct Placement {
-        public static let embedded = Placement(rawValue: 0) // TODO: docs: only one embedded view allowed!
-        public static let `default` = Placement(rawValue: 100) // TODO: rename?
-        public static let external = Placement(rawValue: 200)
-
-        public let rawValue: UInt8
-
-        public init(rawValue: UInt8) {
-            self.rawValue = rawValue
-        }
-    }
-
     private let _isEnabled: ManagedAtomic<Bool>
     private let _placement: ManagedAtomic<Placement>
 
@@ -59,11 +58,11 @@ public final class IdentityProviderConfiguration {
 }
 
 
-extension IdentityProviderConfiguration.Placement: Sendable, Hashable, RawRepresentable, AtomicValue {}
+extension Placement: Sendable, Hashable, RawRepresentable, AtomicValue {}
 
 
-extension IdentityProviderConfiguration.Placement: Comparable {
-    public static func < (lhs: IdentityProviderConfiguration.Placement, rhs: IdentityProviderConfiguration.Placement) -> Bool {
+extension Placement: Comparable {
+    public static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue < rhs.rawValue
     }
 }

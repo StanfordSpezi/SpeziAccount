@@ -46,7 +46,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
     @State private var presentingSignupSheet = false
     @State private var presentingPasswordForgetSheet = false
 
-    private var userIdConfiguration: UserIdConfiguration {
+    @MainActor private var userIdConfiguration: UserIdConfiguration {
         account.accountService.configuration.userIdConfiguration
     }
 
@@ -97,7 +97,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
     }
 
 
-    @ViewBuilder private var fields: some View {
+    @ViewBuilder @MainActor private var fields: some View {
         VStack {
             Group {
                 VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
@@ -149,6 +149,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
         self.passwordReset = passwordReset()
     }
 
+
     public init( // TODO: update docs
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() }
@@ -158,6 +159,8 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
         }
     }
 
+
+    @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         signup: @escaping (SignupDetails) async throws -> Void,
@@ -203,7 +206,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
             print("Login \(credential)")
         } signup: {
             NavigationStack {
-                SignupForm() { details in
+                SignupForm { details in
                     print("Signup \(details)")
                 }
             }

@@ -50,7 +50,7 @@ public struct IdentityProvider<V: View> { // TODO: document MainActor workaround
     public init(
         wrappedValue: @autoclosure @escaping @Sendable () -> V,
         enabled isEnabled: Bool = true,
-        placement: IdentityProviderConfiguration.Placement = .default
+        placement: Placement = .default
     ) {
         self.viewClosure = { @MainActor in
             wrappedValue()

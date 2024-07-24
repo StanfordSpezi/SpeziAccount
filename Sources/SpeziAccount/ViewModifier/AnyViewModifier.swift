@@ -25,7 +25,7 @@ extension View {
     }
 
     func anyModifiers(_ modifiers: [any ViewModifier]) -> some View {
-        var anyView = AnyView(self) // TODO: avoid first anyView?
+        var anyView = AnyView(self)
         for modifier in modifiers {
             anyView = modifier.inject(into: anyView)
         }

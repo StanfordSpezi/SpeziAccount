@@ -88,7 +88,7 @@ struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test th
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
 @MainActor // TODO: review
 public final class MockAccountService: AccountService {
-    public struct ConfiguredIdentityProvider: OptionSet {
+    public struct ConfiguredIdentityProvider: OptionSet, Sendable {
         public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
         public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
         public static let signInWithApple = ConfiguredIdentityProvider(rawValue: 1 << 2)
@@ -107,7 +107,7 @@ public final class MockAccountService: AccountService {
     @IdentityProvider private var testButton2 = CustomServiceButton()
     @IdentityProvider(placement: .external) private var signInWithApple = MockSignInWithAppleButton()
 
-    @SecurityRelatedModifier private var securityAlert = NoopModifier()
+    // TODO: @SecurityRelatedModifier private var securityAlert = NoopModifier()
 
     public let configuration: AccountServiceConfiguration
     private var userIdToAccountId: [String: UUID] = [:]

@@ -18,9 +18,7 @@ import SwiftUI
 ///
 /// Access the configuration via the ``AccountServiceConfiguration/userIdConfiguration`` property.
 public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
-    public static var defaultValue: UserIdConfiguration {
-        UserIdConfiguration(type: .emailAddress, contentType: .username, keyboardType: .emailAddress)
-    }
+    public static let defaultValue: UserIdConfiguration = .emailAddress
 
     /// The type of user id stored in ``UserIdKey``.
     /// You can use this property to provide a localized textual representation of the user id.
@@ -44,6 +42,12 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
         self.textContentType = contentType
         self.keyboardType = keyboardType
     }
+}
+
+
+extension UserIdConfiguration {
+    public static let emailAddress = UserIdConfiguration(type: .emailAddress, contentType: .username, keyboardType: .emailAddress)
+    public static let username = UserIdConfiguration(type: .username, contentType: .username)
 }
 
 

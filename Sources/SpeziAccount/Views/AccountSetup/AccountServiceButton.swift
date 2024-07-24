@@ -8,9 +8,6 @@
 
 import SwiftUI
 
-// TODO: rename file and move!
-
-// TODO: just remove?
 
 public struct AccountServiceButton<Label: View>: View {
     private let action: () -> Void
@@ -57,8 +54,11 @@ public struct AccountServiceButton<Label: View>: View {
     }
 }
 
+
+#if DEBUG
 #Preview {
     AccountServiceButton("E-Mail and Password") {
         print("Pressed")
     }
 }
+#endif

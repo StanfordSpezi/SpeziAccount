@@ -27,7 +27,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
     @State private var state: ViewState = .idle
     @FocusState private var isFocused: Bool
 
-    private var userIdConfiguration: UserIdConfiguration {
+    @MainActor private var userIdConfiguration: UserIdConfiguration {
         account.accountService.configuration.userIdConfiguration
     }
 

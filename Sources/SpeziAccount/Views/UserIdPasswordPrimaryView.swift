@@ -12,7 +12,7 @@ import SwiftUI
 
 /// A primary view implementation for a ``UserIdPasswordAccountService``.
 public struct UserIdPasswordPrimaryView: View { // TODO: probably remove that one here?
-    public var body: some View {
+    public var body: some View { // TODO: is that the base for the AccountSetup view?
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
