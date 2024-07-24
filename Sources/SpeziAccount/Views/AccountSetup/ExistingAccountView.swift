@@ -13,12 +13,9 @@ import SwiftUI
 // TODO: redesign this view, maybe just the a continue closure and primary/secondary button design?
 struct ExistingAccountView<Continue: View>: View {
     private let accountDetails: AccountDetails
-
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
     private let continueButton: Continue
+
+    @Environment(Account.self) private var account
 
     @State private var viewState: ViewState = .idle
 
@@ -28,6 +25,7 @@ struct ExistingAccountView<Continue: View>: View {
                 AccountSummaryBox(details: accountDetails) // TODO: how to keep that customizable?
 
                 AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
+                    let service = account.accountService
                     try await service.logout()
                 }
                     .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
@@ -66,18 +64,19 @@ struct ExistingAccountView<Continue: View>: View {
 
 
 #if DEBUG
-@MainActor private let details = AccountDetails.Builder()
-    .set(\.userId, value: "andi.bauer@tum.de")
-    .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-    .build(owner: MockAccountService())
-
 #Preview {
-    ExistingAccountView(details: details)
+    ExistingAccountView(details: AccountDetails.build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    })
 }
 
 #Preview {
     NavigationStack {
-        ExistingAccountView(details: details) {
+        ExistingAccountView(details: AccountDetails.build { details in
+            details.userId = "lelandstanford@stanford.edu"
+            details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        }) {
             Button {
                 print("Pressed")
             } label: {

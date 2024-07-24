@@ -57,12 +57,11 @@ public final class AccountConfiguration<Service: AccountService>: Module {
     @_spi(TestingSupport)
     @MainActor
     public convenience init(
-        building builder: AccountDetails.Builder,
-        active accountService: Service,
-        configuration: AccountValueConfiguration = .default
+        service: Service,
+        configuration: AccountValueConfiguration = .default,
+        activeDetails: AccountDetails
     ) {
-        let details = builder.build(owner: accountService)
-        self.init(accountService: accountService, configuration: configuration, defaultActiveDetails: details)
+        self.init(accountService: service, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
     @MainActor

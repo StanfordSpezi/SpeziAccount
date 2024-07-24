@@ -17,11 +17,7 @@ struct SingleEditView<Key: AccountKey>: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
-
+    @Environment(Account.self) private var account
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
@@ -43,7 +39,7 @@ struct SingleEditView<Key: AccountKey>: View {
                     .focused($isFocused)
             }
                 .environment(\.accountViewType, .overview(mode: .existing))
-                .injectEnvironmentObjects(service: service, model: model)
+                .injectEnvironmentObjects(service: account.accountService, model: model)
         }
             .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
@@ -76,16 +72,17 @@ struct SingleEditView<Key: AccountKey>: View {
 
         logger.debug("Saving updated \(Key.self) value!")
 
-        try await model.updateAccountDetails(details: accountDetails)
+        try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()
     }
 }
 
 #if DEBUG
 struct SingleEditView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+    static let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
 
     static var previews: some View {
         NavigationStack {
@@ -94,7 +91,7 @@ struct SingleEditView_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
     }
 }

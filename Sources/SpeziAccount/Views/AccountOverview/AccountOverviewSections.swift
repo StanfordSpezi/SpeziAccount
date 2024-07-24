@@ -18,14 +18,9 @@ import SwiftUI
 struct AccountOverviewSections<AdditionalSections: View>: View {
     let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
-    
-    private var service: any AccountService {
-        // TODO: no longer tied to the accountDetails, but still fine to stay any!
-        accountDetails.accountService
-    }
+
     
     @Environment(Account.self) private var account
-
     @Environment(\.logger) private var logger
     @Environment(\.editMode) private var editMode
     @Environment(\.dismiss) private var dismiss
@@ -96,7 +91,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.logout() // TODO: logout is probably fine to be mandated?
+                    try await account.accountService.logout()
                     dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
@@ -110,7 +105,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.delete() // TODO: delete is special, as the app would need to delete all associated data!
+                    try await account.accountService.delete()
                     dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
@@ -132,7 +127,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         defaultSections
         
         sectionsView
-            .injectEnvironmentObjects(service: service, model: model)
+            .injectEnvironmentObjects(service: account.accountService, model: model)
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
@@ -244,7 +239,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         
         logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         
-        try await model.updateAccountDetails(details: accountDetails, editMode: editMode)
+        try await model.updateAccountDetails(details: accountDetails, using: account, editMode: editMode)
     }
     
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing
@@ -265,11 +260,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
 #if DEBUG
 struct AccountOverviewSections_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
-    
+    static let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        details.genderIdentity = .male
+    }
+
     static var previews: some View {
         NavigationStack {
             AccountOverview {
@@ -288,7 +284,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
     }
 }

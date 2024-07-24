@@ -187,27 +187,16 @@ public final class Account {
             details.patchIsNewUser(true)
         }
 
-
-        // Account details will always get built by the respective Account Service. Therefore, we need to patch it
-        // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
-        if let standardBacked = self.accountService as? any _StandardBacked,
-           standardBacked.isBacking(service: details.accountService) {
-            details.patchAccountService(self.accountService) // TODO: no need to do this anymore?
-        }
-
-        if let existingDetails = self.details,
-           existingDetails.accountService.id != details.accountService.id {
-            logger.warning("The AccountService \(details.accountService.description) is overwriting `AccountDetails` from \(existingDetails.accountService.description)!")
-        }
+        details.patchAccountServiceConfiguration(accountService.configuration)
 
         // Check if the account service is wrapped with a storage standard. If that's the case, contact them about the signup!
-        if let standardBacked = details.accountService as? any _StandardBacked,
+        if let standardBacked = accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 
             try await standardBacked.preUserDetailsSupply(recordId: recordId)
 
-            let unsupportedKeys = details.accountService.configuration
+            let unsupportedKeys = accountService.configuration
                 .unsupportedAccountKeys(basedOn: configuration)
                 .map { $0.key }
 
@@ -231,7 +220,7 @@ public final class Account {
     public func removeUserDetails() async {
         // TODO: remove standard interaction, remove async!
         if let details,
-           let standardBacked = details.accountService as? any _StandardBacked,
+           let standardBacked = accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
             let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
 

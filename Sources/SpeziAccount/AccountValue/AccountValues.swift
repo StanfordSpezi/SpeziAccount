@@ -50,9 +50,37 @@ public protocol AccountValues: AccountValuesCollection {
 }
 
 
+@dynamicMemberLookup
+public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thing somewhere!
+    private let builder = Values.Builder()
+
+    init() {}
+
+    subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
+        get {
+            builder.get(Key.self)
+        }
+        nonmutating set {
+            builder.set(Key.self, value: newValue)
+        }
+    }
+
+    fileprivate func build() -> Values {
+        builder.build()
+    }
+}
+
+
 extension AccountValues {
     /// Builder pattern to build a container of this type.
     public typealias Builder = AccountValuesBuilder<Self>
+
+    public static func build(_ build: (SimpleBuilder<Self>) throws -> Void) rethrows -> Self {
+        let builder = SimpleBuilder<Self>()
+        try build(builder)
+        // TODO: make other building thins private/internal!
+        return builder.build() // TODO: only for account values that support it?
+    }
 }
 
 

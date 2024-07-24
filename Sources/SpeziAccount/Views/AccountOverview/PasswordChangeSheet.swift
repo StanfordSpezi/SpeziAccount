@@ -31,7 +31,7 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        accountDetails.accountServiceConfiguration.fieldValidationRules(for: \.password) ?? []
+        account.accountService.configuration.fieldValidationRules(for: \.password) ?? []
     }
 
     var body: some View {
@@ -111,7 +111,7 @@ struct PasswordChangeSheet: View {
 
         logger.debug("Saving updated password to AccountService!")
 
-        try await model.updateAccountDetails(details: accountDetails)
+        try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()
     }
 
@@ -128,21 +128,20 @@ struct PasswordChangeSheet: View {
 
 
 #if DEBUG
-struct PasswordChangeSheet_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
-
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
-        }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
-            }
+#Preview {
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        details.genderIdentity = .male
     }
+
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account), details: details)
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

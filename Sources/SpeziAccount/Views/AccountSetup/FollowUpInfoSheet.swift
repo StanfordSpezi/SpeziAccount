@@ -18,9 +18,6 @@ struct FollowUpInfoSheet: View {
     private let accountDetails: AccountDetails
     private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
 
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
@@ -89,7 +86,7 @@ struct FollowUpInfoSheet: View {
                 .frame(maxWidth: .infinity)
 
             SignupSectionsView(for: ModifiedAccountDetails.self, sections: accountKeyByCategory)
-                .environment(\.accountServiceConfiguration, service.configuration)
+                .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(detailsBuilder)
                 .focused($isFocused)
@@ -132,6 +129,7 @@ struct FollowUpInfoSheet: View {
 
         logger.debug("Finished additional account setup. Saving \(detailsBuilder.count) changes!")
 
+        let service = account.accountService
         try await service.updateAccountDetails(modifications)
 
         dismiss()
@@ -141,8 +139,9 @@ struct FollowUpInfoSheet: View {
 
 #if DEBUG
 struct FollowUpInfoSheet_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "lelandstanford@stanford.edu")
+    static let details = AccountDetails.build { details in
+        details.userId = "lelandstanford@stanford.edu"
+    }
 
     static var previews: some View {
         NavigationStack {
@@ -151,7 +150,7 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
     }
 }

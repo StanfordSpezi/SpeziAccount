@@ -63,20 +63,20 @@ struct AccountSummary_Previews: PreviewProvider {
     static let emailDetails = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockAccountService())
+        .build()
 
     static let usernameDetails = AccountDetails.Builder()
         .set(\.userId, value: "andreas.bauer")
         .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockAccountService(.username))
+        .build()
 
     static let usernameWithoutNameDetails = AccountDetails.Builder()
         .set(\.userId, value: "andreas.bauer")
-        .build(owner: MockAccountService(.username))
+        .build()
 
     static let emailOnlyDetails = AccountDetails.Builder()
         .set(\.userId, value: "andi.bauer@tum.de")
-        .build(owner: MockAccountService())
+        .build()
 
     static var previews: some View {
         AccountSummaryBox(details: emailDetails)

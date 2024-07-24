@@ -26,6 +26,7 @@ class AccountOverviewFormViewModel {
     /// defined ``AccountKeyRequirement``s defined by the user. Using those classifications we can easily allow to model
     /// "shadow" account keys that are present but never shown to the user to allow to manage additional state.
     private let categorizedAccountKeys: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
+    private let accountServiceConfiguration: AccountServiceConfiguration
 
 
     let modifiedDetailsBuilder = ModifiedAccountDetails.Builder()
@@ -48,6 +49,7 @@ class AccountOverviewFormViewModel {
 
     init(account: Account) {
         self.categorizedAccountKeys = account.configuration.allCategorized()
+        self.accountServiceConfiguration = account.accountService.configuration
     }
 
 
@@ -55,7 +57,7 @@ class AccountOverviewFormViewModel {
         var result = categorizedAccountKeys[category, default: []]
             .sorted(using: AccountOverviewValuesComparator(details: details, added: addedAccountKeys, removed: removedAccountKeys))
 
-        for describedKey in details.accountService.configuration.requiredAccountKeys
+        for describedKey in accountServiceConfiguration.requiredAccountKeys
             where describedKey.key.category == category {
             if !result.contains(where: { $0 == describedKey.key }) {
                 result.append(describedKey.key)
@@ -68,7 +70,7 @@ class AccountOverviewFormViewModel {
     private func baseSortedAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         var results = categorizedAccountKeys
 
-        for describedKey in accountDetails.accountService.configuration.requiredAccountKeys {
+        for describedKey in accountServiceConfiguration.requiredAccountKeys {
             results[describedKey.key.category, default: []] += [describedKey.key]
         }
 
@@ -159,7 +161,7 @@ class AccountOverviewFormViewModel {
         resetModelState(editMode: editMode)
     }
 
-    func updateAccountDetails(details: AccountDetails, editMode: Binding<EditMode>? = nil) async throws {
+    func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>? = nil) async throws {
         let removedDetailsBuilder = RemovedAccountDetails.Builder()
         removedDetailsBuilder.merging(with: removedAccountKeys.keys, from: details)
 
@@ -168,7 +170,7 @@ class AccountOverviewFormViewModel {
             removedAccountDetails: removedDetailsBuilder.build()
         )
 
-        try await details.accountService.updateAccountDetails(modifications)
+        try await account.accountService.updateAccountDetails(modifications)
         Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
 
         resetModelState(editMode: editMode) // this reset the edit mode as well

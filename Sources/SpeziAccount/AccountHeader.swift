@@ -91,13 +91,14 @@ public struct AccountHeader: View {
 
 #if DEBUG
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-    
+    let details = AccountDetails.build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
+
     return AccountHeader()
         .previewWith {
-            AccountConfiguration(building: details, active: MockAccountService())
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
         }
 }
 
@@ -109,9 +110,10 @@ public struct AccountHeader: View {
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+    let details = AccountDetails.build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
 
     return NavigationStack {
         Form {
@@ -125,13 +127,14 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockAccountService())
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
+    let details = AccountDetails.build { details in
+        details.userId = "lelandstanford@stanford.edu"
+    }
 
     return NavigationStack {
         Form {
@@ -145,7 +148,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockAccountService())
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
         }
 }
 

@@ -51,7 +51,7 @@ struct NameOverview: View {
         }
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
             .navigationBarTitleDisplayMode(.inline)
-            .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
+            .injectEnvironmentObjects(service: account.accountService, model: model)
             .environment(\.accountViewType, .overview(mode: .display))
     }
 
@@ -64,32 +64,34 @@ struct NameOverview: View {
 
 
 #if DEBUG
-struct NameOverview_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-
-    static let detailsWithoutName = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
-        }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
-            }
-
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
-        }
-            .previewWith {
-                AccountConfiguration(building: detailsWithoutName, active: MockAccountService())
-            }
+#Preview {
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
     }
+
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    let detailsWithoutName: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+    }
+
+    NavigationStack {
+        AccountDetailsReader { account, details in
+            NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: detailsWithoutName)
+        }
 }
 #endif

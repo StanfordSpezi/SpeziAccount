@@ -29,10 +29,13 @@ public struct EmailAddressKey: AccountKey, OptionalComputedKnowledgeSource {
         }
 
 
+        /*
+         // TODO: how to bring back this check?
         guard let activeService = repository[ActiveAccountServiceKey.self],
             activeService.configuration.userIdConfiguration.idType == .emailAddress else {
             return nil
         }
+         */
 
         // return the userId if it's a email address
         return repository[UserIdKey.self]

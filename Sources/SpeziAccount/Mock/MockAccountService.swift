@@ -149,7 +149,7 @@ public final class MockAccountService: AccountService {
             .set(\.accountId, value: userIdToAccountId[userId, default: UUID()].uuidString)
             .set(\.userId, value: userId)
             .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-            .build(owner: self)
+            .build()
         let account = account
         try await account.supplyUserDetails(details)
     }
@@ -164,7 +164,7 @@ public final class MockAccountService: AccountService {
         let details = AccountDetails.Builder(from: signupDetails)
             .set(\.accountId, value: id.uuidString)
             .remove(\.password)
-            .build(owner: self)
+            .build()
         let account = account
         try await account.supplyUserDetails(details)
     }
@@ -203,6 +203,6 @@ public final class MockAccountService: AccountService {
             .merging(modifications.modifiedDetails, allowOverwrite: true)
             .remove(all: modifications.removedAccountDetails.keys)
 
-        try await account.supplyUserDetails(builder.build(owner: self))
+        try await account.supplyUserDetails(builder.build())
     }
 }

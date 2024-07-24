@@ -15,10 +15,6 @@ struct SecurityOverview: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
 
     @Environment(Account.self) private var account
 
@@ -54,7 +50,7 @@ struct SecurityOverview: View {
                     }
                 }
             }
-                .injectEnvironmentObjects(service: service, model: model)
+                .injectEnvironmentObjects(service: account.accountService, model: model)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
@@ -75,10 +71,11 @@ struct SecurityOverview: View {
 
 #if DEBUG
 struct SecurityOverview_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+    static let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        details.genderIdentity = .male
+    }
 
     static var previews: some View {
         NavigationStack {
@@ -87,7 +84,7 @@ struct SecurityOverview_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
     }
 }

@@ -256,29 +256,32 @@ extension EnvironmentValues {
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "lelandstanford@stanford.edu")
-        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
     return AccountSetup()
         .previewWith {
-            AccountConfiguration(building: details, active: MockAccountService())
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "lelandstanford@stanford.edu")
-        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
     return AccountSetup(state: .loadingExistingAccount)
         .previewWith {
-            AccountConfiguration(building: details, active: MockAccountService())
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "lelandstanford@stanford.edu")
-        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
     return NavigationStack {
         AccountSetup(continue: {
             Button {
@@ -290,7 +293,7 @@ extension EnvironmentValues {
             .buttonStyle(.borderedProminent)
         })
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
     }
 }

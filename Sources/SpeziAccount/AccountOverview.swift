@@ -105,10 +105,11 @@ public struct AccountOverview<AdditionalSections: View>: View {
 
 #if DEBUG
 struct AccountOverView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+    static let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        details.genderIdentity = .male
+    }
     
     static var previews: some View {
         NavigationStack {
@@ -128,7 +129,7 @@ struct AccountOverView_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockAccountService())
+                AccountConfiguration(service: MockAccountService(), activeDetails: details)
             }
 
         NavigationStack {
