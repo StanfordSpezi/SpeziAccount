@@ -287,6 +287,9 @@
         }
       }
     },
+    "Already got an Account?" : {
+
+    },
     "CANCEL" : {
       "localizations" : {
         "de" : {
@@ -663,9 +666,6 @@
         }
       }
     },
-    "E-Mail and Password" : {
-
-    },
     "EDIT" : {
       "localizations" : {
         "de" : {
@@ -885,6 +885,9 @@
           }
         }
       }
+    },
+    "Login" : {
+
     },
     "MISSING_ACCOUNT_DETAILS" : {
       "localizations" : {
@@ -1218,6 +1221,9 @@
           }
         }
       }
+    },
+    "Signup" : {
+
     },
     "Stanford SUNet" : {
 

@@ -22,15 +22,86 @@ public struct UserIdPasswordCredential: Sendable { // TODO: new credentials hier
 }
 
 
+// TODO: environment variable that controls default layout (also applies to the sign in with apple button?)
+public struct SignupSetupView<Signup: View, PasswordReset: View>: View {
+    private let loginClosure: (UserIdPasswordCredential) async throws -> Void
+    private let signupForm: Signup
+    private let passwordReset: PasswordReset
+
+    @State private var presentingSignupSheet = false
+    @State private var presentingLoginSheet = false
+
+    public var body: some View {
+        VStack {
+            AccountServiceButton("Signup") {
+                presentingSignupSheet = true
+            }
+                .padding(.bottom, 12)
+
+            HStack {
+                Text("Already got an Account?", bundle: .module)
+                Button(action: {
+                    presentingLoginSheet = true
+                }) {
+                    Text("Login", bundle: .module)
+                }
+            }
+                .font(.footnote)
+        }
+            .sheet(isPresented: $presentingSignupSheet) {
+                signupForm
+            }
+            .sheet(isPresented: $presentingLoginSheet) {
+                // TODO: instead of popping sheet, just transform the whole thing into the UserIdPasswordEmbeeddedView?
+                NavigationStack {
+                    UserIdPasswordEmbeddedView(login: loginClosure, passwordReset: { passwordReset })
+                }
+                    .presentationDetents([.medium])
+            }
+    }
+
+    /// Create a new embedded view.
+    /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
+    public init( // TODO: update docs!
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        @ViewBuilder signup signupForm: () -> Signup,
+        @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }
+    ) {
+        self.loginClosure = login
+        self.signupForm = signupForm()
+        self.passwordReset = passwordReset()
+    }
+
+
+    @MainActor
+    public init(
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        signup: @escaping (SignupDetails) async throws -> Void,
+        resetPassword: @escaping (String) async throws -> Void
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
+            PasswordReset == NavigationStack<NavigationPath, UserIdPasswordResetView<SuccessfulPasswordResetView>> {
+        self.init(login: login) {
+            NavigationStack {
+                SignupForm(signup: signup)
+            }
+        } passwordReset: {
+            NavigationStack {
+                UserIdPasswordResetView(resetPassword: resetPassword)
+            }
+        }
+    }
+}
+
+
 /// A default implementation for the embedded view of a ``UserIdPasswordAccountService``.
 ///
 /// Every ``EmbeddableAccountService`` might provide a view that is directly integrated into the ``AccountSetup``
 /// view for more easy navigation. This view implements such a view for ``UserIdPasswordAccountService``-based
 /// account service implementations.
 public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: View {
+    private let loginClosure: (UserIdPasswordCredential) async throws -> Void
     private let signupForm: Signup
     private let passwordReset: PasswordReset
-    private let loginClosure: (UserIdPasswordCredential) async throws -> Void
 
     @Environment(Account.self) private var account
 
@@ -84,11 +155,9 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
             .viewStateAlert(state: $state)
             .receiveValidation(in: $validation)
             .sheet(isPresented: $presentingSignupSheet) {
-                // TODO: we previously placed an NavigationStack automatically
                 signupForm
             }
             .sheet(isPresented: $presentingPasswordForgetSheet) {
-                // TODO: we previously placed an NavigationStack automatically, plus automatically bade title bar .inline!
                 passwordReset
             }
             .onTapGesture {
@@ -141,10 +210,9 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
     public init( // TODO: update docs!
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },
-        @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }  // TODO: default should be the default SignupForm?
+        @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }
     ) {
         self.loginClosure = login
-        // TODO: instead of passing view, just pass a optional binding?
         self.signupForm = signupForm()
         self.passwordReset = passwordReset()
     }
@@ -178,11 +246,6 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
         }
     }
 
-    // TODO: shorthand to pass signup closure to automatically use signup form?
-    // TODO: all permutations!
-
-    // TODO: another init to not have the dangling closure warning!
-
 
     @MainActor
     private func loginButtonAction() async throws {
@@ -201,21 +264,27 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
 #if DEBUG
 #Preview {
     let service = MockAccountService()
-    return NavigationStack { // TODO: let's see where we go from here on!
+    return SignupSetupView { credential in
+        print("Login \(credential)")
+    } signup: { details in
+        print("Signup \(details)")
+    } resetPassword: { userId in
+        print("Reset password for \(userId)")
+    }
+        .previewWith {
+            AccountConfiguration(service: service)
+        }
+}
+
+#Preview {
+    let service = MockAccountService()
+    return NavigationStack {
         UserIdPasswordEmbeddedView { credential in
             print("Login \(credential)")
-        } signup: {
-            NavigationStack {
-                SignupForm { details in
-                    print("Signup \(details)")
-                }
-            }
-        } passwordReset: {
-            NavigationStack {
-                UserIdPasswordResetView { userId in
-                    print("Reset password for \(userId)")
-                }
-            }
+        } signup: { details in
+            print("Signup \(details)")
+        } resetPassword: { userId in
+            print("Reset password for \(userId)")
         }
     }
         .previewWith {
