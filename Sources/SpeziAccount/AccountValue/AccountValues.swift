@@ -56,17 +56,17 @@ public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thi
 
     init() {}
 
-    subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
+    fileprivate func build() -> Values {
+        builder.build()
+    }
+
+    public subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
         get {
             builder.get(Key.self)
         }
         nonmutating set {
             builder.set(Key.self, value: newValue)
         }
-    }
-
-    fileprivate func build() -> Values {
-        builder.build()
     }
 }
 
