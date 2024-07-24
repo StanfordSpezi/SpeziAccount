@@ -58,10 +58,6 @@ extension _StandardBacked {
 
 
 extension _StandardBacked {
-    func signUp(signupDetails: SignupDetails) async throws {
-        try await accountService.signUp(signupDetails: signupDetails)
-    }
-
     func logout() async throws {
         try await accountService.logout()
     }

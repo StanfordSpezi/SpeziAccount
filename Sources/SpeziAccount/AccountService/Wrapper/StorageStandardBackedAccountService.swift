@@ -49,7 +49,8 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
         // save the details until the accountId is available. This will be in preUserDetailsSupply
         self.pendingSignupDetails = details.standard
 
-        try await accountService.signUp(signupDetails: details.service)
+        preconditionFailure("signup is not supported anymore using backed storage!")
+        // TODO: try await accountService.signUp(signupDetails: details.service)
     }
 
     func preUserDetailsSupply(recordId: AdditionalRecordId) async throws {

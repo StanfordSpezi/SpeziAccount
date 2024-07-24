@@ -41,16 +41,6 @@ public protocol AccountService: Module, Hashable, CustomStringConvertible, Senda
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }
 
-
-    /// Create a new user account for the provided ``SignupDetails``.
-    ///
-    /// - Note: You must call ``Account/supplyUserDetails(_:isNewUser:)`` eventually once the user context was established after this call.
-    /// - Parameter signupDetails: The signup details
-    /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the signup operation was unsuccessful,
-    ///     inorder to present a localized description to the user.
-    ///     Make sure to remain in a state where the user can easily retry the signup operation.
-    func signUp(signupDetails: SignupDetails) async throws
-
     /// This method implements account logout functionality.
     ///
     /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the logout was unsuccessful,
