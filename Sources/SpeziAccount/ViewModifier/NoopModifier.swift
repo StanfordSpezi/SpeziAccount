@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct NoopModifier: ViewModifier {
+struct NoopModifier: ViewModifier { // TODO: remove?
     func body(content: Content) -> some View {
         content
     }

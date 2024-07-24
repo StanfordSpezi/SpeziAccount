@@ -151,7 +151,7 @@ struct FollowUpInfoSheet_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
     }
 }

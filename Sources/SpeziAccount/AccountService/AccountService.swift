@@ -7,43 +7,6 @@
 //
 
 import Spezi
-import SwiftUI
-
-
-
-protocol SomeIdentityProvider { // TODO: naming is not great!
-    @MainActor var anyView: AnyView { get }
-}
-
-
-
-@propertyWrapper
-public struct IdentityProviderNEW<V: View> { // TODO: needs a different name?
-    public enum Placement: UInt8 { // TODO: not placement, but "Type"? this has an generic type now?
-        case embedded = 0 // TODO: only one embedded view allowed!
-        case `default` = 100
-        case externalIdentityProvider = 200 // TODO: make sections extenable (no names, just identifiers imposing an order?)
-    }
-
-    private let viewClosure: @MainActor () -> V
-    private let placement: Placement
-
-    @MainActor public var wrappedValue: V {
-        viewClosure()
-    }
-
-    public init(wrappedValue: @autoclosure @escaping () -> V, placement: Placement = .default) {
-        self.viewClosure = wrappedValue
-        self.placement = placement
-    }
-}
-
-
-extension IdentityProviderNEW: SomeIdentityProvider {
-    var anyView: AnyView { // TODO: this should ideally return a managable object! (also the placement is relevant!)
-        AnyView(viewClosure())
-    }
-}
 
 
 /// A `AccountService` is a set of components that is capable of setting up and managing the ``AccountDetails`` for the global ``Account`` context.
@@ -66,9 +29,6 @@ extension IdentityProviderNEW: SomeIdentityProvider {
 /// ### Result Builder
 /// - ``AccountServiceBuilder``
 public protocol AccountService: Module, Hashable, CustomStringConvertible, Sendable, EnvironmentAccessible {
-    /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
-    associatedtype ViewStyle: AccountSetupViewStyle
-
     /// An identifier to uniquely identify an `AccountService`.
     ///
     /// This identifier is used to uniquely identify an account service that persists across process instances.
@@ -80,11 +40,6 @@ public protocol AccountService: Module, Hashable, CustomStringConvertible, Senda
 
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }
-
-    /// A ``AccountSetupViewStyle`` that is capable of rendering UI elements associated with the account service.
-    ///
-    /// - Note: Define this as a computed property to resolve the cyclic type dependence.
-    var viewStyle: ViewStyle { get }
 
 
     /// Create a new user account for the provided ``SignupDetails``.

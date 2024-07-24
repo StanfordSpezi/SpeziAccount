@@ -76,17 +76,6 @@ extension _StandardBacked {
 }
 
 
-extension _StandardBacked where Self: UserIdPasswordAccountService, Service: UserIdPasswordAccountService {
-    func login(userId: String, password: String) async throws {
-        try await accountService.login(userId: userId, password: password)
-    }
-
-    func resetPassword(userId: String) async throws {
-        try await accountService.resetPassword(userId: userId)
-    }
-}
-
-
 extension AccountService {
     @MainActor
     func backedBy(standard: any AccountStorageConstraint) -> any AccountService {

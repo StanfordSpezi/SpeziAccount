@@ -127,8 +127,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // sync the edit mode with the outer view
                 isEditing = newValue
             }
-            // TODO: security related modifier is a bit weird!
-            .anyViewModifier(service.viewStyle.securityRelatedViewModifier) // for delete action
+            .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
 
         defaultSections
         
@@ -289,7 +288,7 @@ struct AccountOverviewSections_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
     }
 }

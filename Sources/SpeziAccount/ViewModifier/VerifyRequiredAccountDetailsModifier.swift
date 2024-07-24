@@ -59,7 +59,7 @@ extension View {
     /// Used this modifier to ensure that all user accounts in your app are up to date with your
     /// SpeziAccount configuration.
     ///
-    /// Withing your ``AccountConfiguration`` you define your app-global ``AccountValueConfiguration`` that defines
+    /// Within your ``AccountConfiguration`` you define your app-global ``AccountValueConfiguration`` that defines
     /// what ``AccountKey`` are required and collected at signup. You can use this modifier to collect additional information
     /// form existing users, should your configuration of **required** account keys change between one of your releases.
     ///

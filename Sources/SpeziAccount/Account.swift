@@ -94,35 +94,43 @@ public final class Account {
 
 
     @MainActor public private(set) var accountService: (any AccountService)
-    @MainActor private(set) var setupViews: [AnyView] // TODO: create on demand! (should we provide access to that?
+
+    let accountSetupComponents: [AnyAccountSetupComponent] // TODO: should that be public?
+    let securityRelatedModifiers: [AnySecurityModifier]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
     ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
-    @MainActor
     init(
         service: some AccountService, // TODO: allow any AccountService?
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
-        self.signedIn = details != nil
-        self.details = details
-        self.accountService = service
-
         self.configuration = supportedConfiguration
 
-        let mirror = Mirror(reflecting: service)
+        self._signedIn = details != nil
+        self._details = details
+        self._accountService = service
 
-        self.setupViews = mirror.children.reduce(into: []) { partialResult, property in
+
+        let mirror = Mirror(reflecting: service)
+        self.accountSetupComponents = mirror.children.reduce(into: []) { partialResult, property in
             // TODO: support nesting with ViewProviding!
-            guard let provider = property.value as? SomeIdentityProvider else {
+            guard let provider = property.value as? AnyIdentityProvider else {
                 return
             }
 
-            partialResult.append(provider.anyView) // TODO: if we create on demand we can remove @MainActor again!
-        }
+            partialResult.append(provider.component)
+        } // TODO: sort by placement (only if we disallow to enable that?)
+        self.securityRelatedModifiers = mirror.children.reduce(into: [], { partialResult, property in
+            guard let modifier = property.value as? AnySecurityRelatedModifier else {
+                return
+            }
+
+            partialResult.append(modifier.securityModifier)
+        })
 
         if supportedConfiguration[UserIdKey.self] == nil {
             logger.warning(
@@ -163,6 +171,7 @@ public final class Account {
     ///     if you using the builtin ``SignupForm``!
     @MainActor
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
+        // TODO: remove Standard interaction, make non-async
         precondition(
             details.contains(AccountIdKey.self),
             """
@@ -220,6 +229,7 @@ public final class Account {
     /// signed in user and notify others that the user logged out (or the account was removed).
     @MainActor
     public func removeUserDetails() async {
+        // TODO: remove standard interaction, remove async!
         if let details,
            let standardBacked = details.accountService as? any _StandardBacked,
            let storageStandard = standardBacked.standard as? any AccountStorageConstraint {

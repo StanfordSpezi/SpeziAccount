@@ -123,7 +123,8 @@ public struct SignupForm<Header: View>: View {
                 .padding(.top, -3)
 
             SignupSectionsView(for: SignupDetails.self, sections: accountKeyByCategory)
-                .environment(\.accountServiceConfiguration, account.accountService.configuration) // TODO: try to replace all account service access just for configuration
+                // TODO: try to replace all account service access just for configuration
+                .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(signupDetailsBuilder)
 
@@ -174,7 +175,7 @@ public struct SignupForm<Header: View>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: MockAccountService())
         }
 }
 #endif

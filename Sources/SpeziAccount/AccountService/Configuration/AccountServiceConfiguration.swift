@@ -56,37 +56,32 @@ public struct AccountServiceConfiguration: Sendable {
 
     /// Initialize a new configuration by just providing the required ones.
     /// - Parameters:
-    ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
     ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
     ///     that is capable of handling all non-supported ``AccountKey``s.
-    public init(name: LocalizedStringResource, supportedKeys: SupportedAccountKeys) {
-        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys)
+    public init(supportedKeys: SupportedAccountKeys) {
+        self.storage = Self.createStorage(supportedKeys: supportedKeys)
     }
 
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
-    ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
     ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
-        name: LocalizedStringResource,
         supportedKeys: SupportedAccountKeys,
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
     ) {
-        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys, configuration: configuration())
+        self.storage = Self.createStorage(supportedKeys: supportedKeys, configuration: configuration())
     }
 
 
     private static func createStorage(
-        name: LocalizedStringResource,
         supportedKeys: SupportedAccountKeys,
         configuration: [any AccountServiceConfigurationKey] = []
     ) -> AccountServiceConfigurationStorage {
         var storage = AccountServiceConfigurationStorage()
-        storage[AccountServiceName.self] = AccountServiceName(name)
         storage[SupportedAccountKeys.self] = supportedKeys
 
         for configuration in configuration {

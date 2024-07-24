@@ -14,6 +14,7 @@ enum AccountServiceType: String, ExpressibleByArgument {
     case mail
     case both
     case withIdentityProvider
+    case empty
 }
 
 

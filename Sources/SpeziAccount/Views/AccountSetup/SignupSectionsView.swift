@@ -63,7 +63,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
         ])
     }
     .previewWith {
-        AccountConfiguration(service: MockUserIdPasswordAccountService())
+        AccountConfiguration(service: MockAccountService())
     }
 }
 #endif

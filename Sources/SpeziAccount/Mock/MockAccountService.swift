@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AuthenticationServices
 import Foundation
 import Spezi
 
@@ -28,60 +29,88 @@ public struct ViewProvider<Element: ViewProviding> { // TODO: this is our backup
 
 
 public struct ServiceViews: ViewProviding {
-    @IdentityProviderNEW(placement: .embedded) private var testButton = UserIdPasswordEmbeddedView { credential in
-        // TODO: cannot get self
-        print("Login \(credential)")
-    } signup: {
-        NavigationStack {
-            Text("Signup View")
-        }
-    } passwordReset: {
-        Text("Password Reset")
-    }
+    @IdentityProvider(placement: .embedded) private var testButton = EmptyView()
 
     public init() {}
 }
 
 
 struct MockUserIdPasswordEmbeddedView: View {
-    @Environment(MockUserIdPasswordAccountService.self) private var service
+    @Environment(MockAccountService.self) private var service
 
     var body: some View {
         UserIdPasswordEmbeddedView { credential in
+            let service = service
             try await service.login(userId: credential.userId, password: credential.password)
-        } signup: {
-            NavigationStack {
-                SignupForm { signupDetails in
-                    try await service.signUp(signupDetails: signupDetails)
-                }
-            }
-        } passwordReset: {
-            NavigationStack {
-                UserIdPasswordResetView { userId in
-                    try await service.resetPassword(userId: userId)
-                }
-            }
+        } signup: { signupDetails in
+            let service = service
+            try await service.signUp(signupDetails: signupDetails)
+        } resetPassword: { userId in
+            let service = service
+            try await service.resetPassword(userId: userId)
         }
+    }
+
+    nonisolated init() {}
+}
+
+
+struct CustomServiceButton: View {
+    private let cardinalRed = Color(red: 140 / 255.0, green: 21 / 255.0, blue: 21 / 255.0)
+    private let cardinalRedDark = Color(red: 130 / 255.0, green: 0, blue: 0)
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        AccountServiceButton("Stanford SUNet", systemImage: "graduationcap.fill") {
+            print("Pressed SUNet Account Service")
+        }
+            .tint(colorScheme == .light ? cardinalRed : cardinalRedDark)
+    }
+}
+
+
+struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test that in the simulator?)
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        SignInWithAppleButton { _ in
+            // request
+        } onCompletion: { _ in
+            // result
+        }
+            .frame(height: 55)
+            .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
     }
 }
 
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
-public final class MockUserIdPasswordAccountService: UserIdPasswordAccountService {
+@MainActor // TODO: review
+public final class MockAccountService: AccountService {
+    public struct ConfiguredIdentityProvider: OptionSet {
+        public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
+        public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
+        public static let signInWithApple = ConfiguredIdentityProvider(rawValue: 1 << 2)
+        public static let all: ConfiguredIdentityProvider = [.userIdPassword, .customIdentityProvider, .signInWithApple]
+
+        public let rawValue: UInt8
+
+        public init(rawValue: UInt8) {
+            self.rawValue = rawValue
+        }
+    }
+
     @Dependency private var account: Account
 
-    @IdentityProviderNEW(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
+    @IdentityProvider(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
+    @IdentityProvider private var testButton2 = CustomServiceButton()
+    @IdentityProvider(placement: .external) private var signInWithApple = MockSignInWithAppleButton()
 
-    @IdentityProviderNEW(placement: .externalIdentityProvider) private var testButton2 = Button {
-        print("AAAH")
-    } label: {
-        Text("Example Button")
-    }
-    // TODO: we probably need a way to deactivate these on demand! (e.g., atomic but observable?)
+    @SecurityRelatedModifier private var securityAlert = NoopModifier()
 
     public let configuration: AccountServiceConfiguration
-    @MainActor private var userIdToAccountId: [String: UUID] = [:]
-
+    private var userIdToAccountId: [String: UUID] = [:]
 
 
     // TODO: @ViewProvider private var views: ServiceViews // TODO: this might be a concept we can use even in actors?
@@ -90,13 +119,24 @@ public final class MockUserIdPasswordAccountService: UserIdPasswordAccountServic
 
     /// Create a new userId- and password-based account service.
     /// - Parameter type: The ``UserIdType`` to use for the account service.
-    public init(_ type: UserIdType = .emailAddress) {
-        self.configuration = AccountServiceConfiguration(name: "Mock AccountService", supportedKeys: .arbitrary) {
+    public init(_ type: UserIdType = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
+        self.configuration = AccountServiceConfiguration(supportedKeys: .arbitrary) {
             UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
             RequiredAccountKeys {
                 \.userId
                 \.password
             }
+        }
+
+        // TODO: this is a problem with actor isolation?
+        if !configured.contains(.userIdPassword) {
+            $loginView.isEnabled = false
+        }
+        if !configured.contains(.customIdentityProvider) {
+            $testButton2.isEnabled = false
+        }
+        if !configured.contains(.signInWithApple) {
+            $signInWithApple.isEnabled = false
         }
     }
 
@@ -148,6 +188,7 @@ public final class MockUserIdPasswordAccountService: UserIdPasswordAccountServic
         await account.removeUserDetails()
     }
 
+    @MainActor
     public func updateAccountDetails(_ modifications: AccountModifications) async throws {
         let account = account
         guard let details = account.details else {

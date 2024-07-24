@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import OrderedCollections
 import SwiftUI
 
 
@@ -53,7 +54,7 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
 ///     }
 /// }
 /// ```
-@MainActor
+@MainActor // TODO: remove navigation link in the example!
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header
@@ -64,11 +65,15 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var setupState: _AccountSetupState = .generic
     @State private var followUpSheet = false
 
+    private var hasSetupComponents: Bool {
+        !account.accountSetupComponents.isEmpty && account.accountSetupComponents.allSatisfy({ $0.configuration.isEnabled })
+    }
+
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    if !account.setupViews.isEmpty {
+                    if hasSetupComponents {
                         header
                             .environment(\._accountSetupState, setupState)
                     }
@@ -118,23 +123,27 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     @ViewBuilder private var accountSetupView: some View {
-        if account.setupViews.isEmpty {
+        if !hasSetupComponents {
             EmptyServicesWarning()
         } else {
             VStack {
-                ForEach(account.setupViews.indices, id: \.self) { index in
-                    let view = account.setupViews[index]
-                    view
-                }
-                /*
-                AccountServicesSection(services: services)
-
-                if !services.isEmpty && !identityProviders.isEmpty {
-                    ServicesDivider()
+                // TODO: verify that we only have one embeedded view
+                let categorized = account.accountSetupComponents.reduce(into: OrderedDictionary()) { partialResult, component in
+                    guard component.configuration.isEnabled else {
+                        return
+                    }
+                    partialResult[component.configuration.placement] = component
                 }
 
-                IdentityProviderSection(providers: identityProviders)
-                 */
+                ForEach(categorized.keys.sorted(), id: \.self) { placement in
+                    if let component = categorized[placement] {
+                        component.anyView
+
+                        if categorized.keys.last != placement {
+                            ServicesDivider()
+                        }
+                    }
+                }
             }
                 .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
@@ -211,62 +220,77 @@ extension EnvironmentValues {
 
 
 #if DEBUG
-struct AccountView_Previews: PreviewProvider {
-    static var accountServicePermutations: [[any AccountService]] = {
-       [
-           [MockUserIdPasswordAccountService()],
-           [MockSimpleAccountService()],
-           [MockUserIdPasswordAccountService(), MockSimpleAccountService()],
-           [
-               MockUserIdPasswordAccountService(),
-               MockSimpleAccountService(),
-               MockUserIdPasswordAccountService()
-           ],
-           []
-       ]
-    }()
-
-    static let detailsBuilder = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-
-    @MainActor static var previews: some View {
-        /*ForEach(accountServicePermutations.indices, id: \.self) { index in
-            AccountSetup()
-                // TODO: .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(configure: .all))
         }
-        */
-        AccountSetup()
-            .previewWith {
-                AccountConfiguration(service: MockUserIdPasswordAccountService())
-            }
+}
 
-        AccountSetup()
-            .previewWith {
-                AccountConfiguration(service: MockSignInWithAppleProvider())
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(configure: .userIdPassword))
+        }
+}
 
-        AccountSetup()
-            .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(configure: [.userIdPassword, .signInWithApple]))
+        }
+}
 
-        AccountSetup(state: .setupShown)
-            .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(configure: .customIdentityProvider))
+        }
+}
 
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(configure: .signInWithApple))
+        }
+}
+
+#Preview {
+    let details = AccountDetails.Builder()
+        .set(\.userId, value: "lelandstanford@stanford.edu")
+        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    return AccountSetup()
+        .previewWith {
+            AccountConfiguration(building: details, active: MockAccountService())
+        }
+}
+
+#Preview {
+    let details = AccountDetails.Builder()
+        .set(\.userId, value: "lelandstanford@stanford.edu")
+        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    return AccountSetup(state: .loadingExistingAccount)
+        .previewWith {
+            AccountConfiguration(building: details, active: MockAccountService())
+        }
+}
+
+#Preview {
+    let details = AccountDetails.Builder()
+        .set(\.userId, value: "lelandstanford@stanford.edu")
+        .set(\.name, value: .init(givenName: "Leland", familyName: "Stanford"))
+    return NavigationStack {
         AccountSetup(continue: {
-            Button(action: {
+            Button {
                 print("Continue")
-            }, label: {
+            } label: {
                 Text(verbatim: "Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
-            })
+            }
             .buttonStyle(.borderedProminent)
         })
             .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
     }
 }

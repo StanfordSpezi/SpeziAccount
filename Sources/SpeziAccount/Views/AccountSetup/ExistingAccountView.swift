@@ -10,6 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
+// TODO: redesign this view, maybe just the a continue closure and primary/secondary button design?
 struct ExistingAccountView<Continue: View>: View {
     private let accountDetails: AccountDetails
 
@@ -24,7 +25,7 @@ struct ExistingAccountView<Continue: View>: View {
     var body: some View {
         VStack {
             VStack {
-                service.viewStyle.makeAnyAccountSummary(service, details: accountDetails)
+                AccountSummaryBox(details: accountDetails) // TODO: how to keep that customizable?
 
                 AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
                     try await service.logout()
@@ -39,9 +40,9 @@ struct ExistingAccountView<Continue: View>: View {
                     if Continue.self != EmptyView.self {
                         VStack {
                             continueButton
-                                .padding()
+                                .padding(.horizontal)
                             Spacer()
-                                .frame(height: 30)
+                                .frame(height: 20)
                         }
                     } else {
                         EmptyView()
@@ -64,36 +65,26 @@ struct ExistingAccountView<Continue: View>: View {
 }
 
 
-extension AccountSetupViewStyle {
-    @MainActor
-    fileprivate func makeAnyAccountSummary(_ service: any AccountService, details: AccountDetails) -> AnyView {
-        AnyView(self.makeAccountSummary(service, details: details))
-    }
+#if DEBUG
+@MainActor private let details = AccountDetails.Builder()
+    .set(\.userId, value: "andi.bauer@tum.de")
+    .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+    .build(owner: MockAccountService())
+
+#Preview {
+    ExistingAccountView(details: details)
 }
 
-
-#if DEBUG
-struct ExistingAccountView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
-
-    static var previews: some View {
-        ExistingAccountView(details: details)
-
-        NavigationStack {
-            ExistingAccountView(details: details)
-        }
-
-        NavigationStack {
-            ExistingAccountView(details: details) {
-                Button(action: {}, label: {
-                    Text(verbatim: "Continue")
-                        .frame(maxWidth: .infinity, minHeight: 38)
-                })
-                .buttonStyle(.borderedProminent)
+#Preview {
+    NavigationStack {
+        ExistingAccountView(details: details) {
+            Button {
+                print("Pressed")
+            } label: {
+                Text(verbatim: "Continue")
+                    .frame(maxWidth: .infinity, minHeight: 38)
             }
+            .buttonStyle(.borderedProminent)
         }
     }
 }

@@ -97,14 +97,14 @@ public struct AccountHeader: View {
     
     return AccountHeader()
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(building: details, active: MockAccountService())
         }
 }
 
 #Preview {
     AccountHeader(caption: Text(verbatim: "Email, Password, Preferences"))
         .previewWith {
-            AccountConfiguration(service: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: MockAccountService())
         }
 }
 
@@ -125,7 +125,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(building: details, active: MockAccountService())
         }
 }
 
@@ -145,7 +145,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(building: details, active: MockAccountService())
         }
 }
 
@@ -162,7 +162,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: MockAccountService())
         }
 }
 #endif

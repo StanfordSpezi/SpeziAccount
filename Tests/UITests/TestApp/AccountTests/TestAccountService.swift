@@ -6,20 +6,58 @@
 // SPDX-License-Identifier: MIT
 //
 
+import AuthenticationServices
 import Spezi
 import SpeziAccount
 import SwiftUI
 
 
-struct TestViewStyle: UserIdPasswordAccountSetupViewStyle {
-    var securityRelatedViewModifier: any ViewModifier {
-        TestAlertModifier()
+private struct EmbeddedView: View {
+    @Environment(TestAccountService.self) private var service
+
+    var body: some View {
+        UserIdPasswordEmbeddedView { credential in
+            let service = service
+            try await service.login(userId: credential.userId, password: credential.password)
+        } signup: { signupDetails in
+            let service = service
+            try await service.signUp(signupDetails: signupDetails)
+        } resetPassword: { userId in
+            let service = service
+            try await service.resetPassword(userId: userId)
+        }
+    }
+
+    nonisolated init() {}
+}
+
+private struct CustomServiceButton: View {
+    var body: some View {
+        AccountServiceButton("OpenID Connect", systemImage: "o.circle") {
+            print("Pressed Account Service")
+        }
+            .tint(Color(red: 235/255.0, green: 124/255.0, blue: 4/255.0))
+    }
+}
+
+
+private struct MockSignInWithAppleButton: View {
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        SignInWithAppleButton { _ in
+            // request
+        } onCompletion: { _ in
+            // result
+        }
+            .frame(height: 55)
+            .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
     }
 }
 
 
 @MainActor
-final class TestAccountService: UserIdPasswordAccountService {
+final class TestAccountService: AccountService { // TODO: just use the MockAccountService? we duplicate a lot!
     nonisolated let configuration: AccountServiceConfiguration
 
     private let defaultUserId: String
@@ -28,16 +66,17 @@ final class TestAccountService: UserIdPasswordAccountService {
 
     var registeredUser: UserStorage // simulates the backend
 
-    let viewStyle = TestViewStyle()
-
     @Dependency var account: Account
     @Model var model = TestAlertModel()
 
-    init(_ type: UserIdType, defaultAccount: Bool = false, noName: Bool = false) {
-        configuration = AccountServiceConfiguration(
-            name: "\(type.localizedStringResource) and Password",
-            supportedKeys: .exactly(UserStorage.supportedKeys)
-        ) {
+    @IdentityProvider(placement: .embedded) private var loginView = EmbeddedView()
+    @IdentityProvider(enabled: false) private var customProvider = CustomServiceButton()
+    @IdentityProvider(enabled: false, placement: .external) private var signInWithApple = MockSignInWithAppleButton()
+
+    @SecurityRelatedModifier private var testAlert = TestAlertModifier()
+
+    init(_ type: UserIdType, features: Features) {
+        configuration = AccountServiceConfiguration(supportedKeys: .exactly(UserStorage.supportedKeys)) {
             RequiredAccountKeys {
                 \.userId
                 \.password
@@ -46,9 +85,20 @@ final class TestAccountService: UserIdPasswordAccountService {
         }
 
         self.defaultUserId = type == .emailAddress ? UserStorage.defaultEmail : UserStorage.defaultUsername
-        self.defaultAccountOnConfigure = defaultAccount
-        self.excludeName = noName
+        self.defaultAccountOnConfigure = features.defaultCredentials
+        self.excludeName = features.noName
         self.registeredUser = UserStorage(userId: defaultUserId)
+
+        switch features.serviceType {
+        case .mail:
+            break
+        case .both:
+            $customProvider.isEnabled = true
+        case .withIdentityProvider:
+            $signInWithApple.isEnabled = true
+        case .empty:
+            $loginView.isEnabled = false
+        }
     }
 
     @MainActor

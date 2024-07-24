@@ -144,10 +144,35 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
         @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }  // TODO: default should be the default SignupForm?
     ) {
         self.loginClosure = login
-
         // TODO: instead of passing view, just pass a optional binding?
         self.signupForm = signupForm()
         self.passwordReset = passwordReset()
+    }
+
+    public init( // TODO: update docs
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        @ViewBuilder signup signupForm: () -> Signup = { EmptyView() }
+    ) where PasswordReset == EmptyView {
+        self.init(login: login, signup: signupForm) {
+            EmptyView()
+        }
+    }
+
+    public init(
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        signup: @escaping (SignupDetails) async throws -> Void,
+        resetPassword: @escaping (String) async throws -> Void
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
+            PasswordReset == NavigationStack<NavigationPath, UserIdPasswordResetView<SuccessfulPasswordResetView>> {
+        self.init(login: login) {
+            NavigationStack {
+                SignupForm(signup: signup)
+            }
+        } passwordReset: {
+            NavigationStack {
+                UserIdPasswordResetView(resetPassword: resetPassword)
+            }
+        }
     }
 
     // TODO: shorthand to pass signup closure to automatically use signup form?
@@ -172,7 +197,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
 
 #if DEBUG
 #Preview {
-    let service = MockUserIdPasswordAccountService()
+    let service = MockAccountService()
     return NavigationStack { // TODO: let's see where we go from here on!
         UserIdPasswordEmbeddedView { credential in
             print("Login \(credential)")
@@ -202,7 +227,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: MockAccountService())
         }
 }
 #endif

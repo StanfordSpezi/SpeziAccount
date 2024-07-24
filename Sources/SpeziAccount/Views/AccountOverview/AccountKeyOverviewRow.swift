@@ -93,7 +93,7 @@ struct AccountKeyEditRow_Previews: PreviewProvider {
                 .injectEnvironmentObjects(service: details.accountService, model: model)
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
     }
 }

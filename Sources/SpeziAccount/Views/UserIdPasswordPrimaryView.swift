@@ -11,10 +11,7 @@ import SwiftUI
 
 
 /// A primary view implementation for a ``UserIdPasswordAccountService``.
-public struct UserIdPasswordPrimaryView: View {
-    private let service: any UserIdPasswordAccountService
-
-
+public struct UserIdPasswordPrimaryView: View { // TODO: probably remove that one here?
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
@@ -41,24 +38,17 @@ public struct UserIdPasswordPrimaryView: View {
     }
 
 
-    init(using service: any UserIdPasswordAccountService) {
-        self.service = service
-    }
+    init() {}
 }
 
 
 #if DEBUG
-struct DefaultUserIdPasswordPrimaryView_Previews: PreviewProvider {
-    static let accountService = MockUserIdPasswordAccountService()
-
-
-    static var previews: some View {
-        NavigationStack {
-            UserIdPasswordPrimaryView(using: accountService)
-                .previewWith {
-                    AccountConfiguration(service: accountService)
-                }
-        }
+#Preview {
+    NavigationStack {
+        UserIdPasswordPrimaryView()
+            .previewWith {
+                AccountConfiguration(service: MockAccountService())
+            }
     }
 }
 #endif

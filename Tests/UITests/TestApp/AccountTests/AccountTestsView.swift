@@ -137,12 +137,12 @@ struct AccountTestsView_Previews: PreviewProvider {
     static var previews: some View {
         AccountTestsView()
             .previewWith {
-                AccountConfiguration(service: TestAccountService(.emailAddress))
+                AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
             }
 
         AccountTestsView()
             .previewWith {
-                AccountConfiguration(building: details, active: TestAccountService(.emailAddress))
+                AccountConfiguration(building: details, active: TestAccountService(.emailAddress, features: Features()))
             }
 
         AccountTestsView()

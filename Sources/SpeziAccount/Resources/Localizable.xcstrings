@@ -575,6 +575,7 @@
     },
     "Default Account Service Configuration Environment Key" : {
       "comment" : "Internal use only, no need to translate.",
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -683,9 +684,6 @@
           }
         }
       }
-    },
-    "Example Button" : {
-
     },
     "FOLLOW_UP_INFORMATION_COMPLETE" : {
       "localizations" : {
@@ -930,6 +928,7 @@
       }
     },
     "Mock AccountService" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -952,6 +951,7 @@
       }
     },
     "Mock SignIn with Apple" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -974,6 +974,7 @@
       }
     },
     "Mock Simple AccountService" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1127,9 +1128,6 @@
         }
       }
     },
-    "Password Reset" : {
-
-    },
     "REMOVE_DEFAULT_ERROR" : {
       "localizations" : {
         "de" : {
@@ -1218,7 +1216,7 @@
         }
       }
     },
-    "Signup View" : {
+    "Stanford SUNet" : {
 
     },
     "The internal account identifier is meant to be generated!" : {

@@ -19,10 +19,6 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
         accountService.configuration
     }
 
-    nonisolated var viewStyle: Service.ViewStyle {
-        accountService.viewStyle
-    }
-
 
     init(service accountService: Service, standard: Standard) {
         self.accountService = accountService
@@ -35,10 +31,3 @@ actor NotifyStandardBackedAccountService<Service: AccountService, Standard: Acco
         try await accountService.delete()
     }
 }
-
-
-extension NotifyStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
-
-extension NotifyStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}
-
-extension NotifyStandardBackedAccountService: IdentityProvider where Service: IdentityProvider {}

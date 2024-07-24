@@ -55,20 +55,7 @@ class TestAppDelegate: SpeziAppDelegate {
 
     override var configuration: Configuration {
         Configuration(standard: TestStandard()) {
-            let defaultCredentials = features.defaultCredentials
-            let noName = features.noName
-            let service = switch features.serviceType {
-            case .mail:
-                TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-            case .both:
-                TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-                // TODO: TestAccountService(.username)
-            case .withIdentityProvider:
-                TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-                // TODO: MockSignInWithAppleProvider()
-            }
-
-            AccountConfiguration(service: service, configuration: configuredValues)
+            AccountConfiguration(service: TestAccountService(.emailAddress, features: features), configuration: configuredValues)
         }
     }
 }

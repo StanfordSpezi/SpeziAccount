@@ -47,12 +47,12 @@ struct DefaultAccountSetupHeader_Previews: PreviewProvider {
     static var previews: some View {
         DefaultAccountSetupHeader()
             .previewWith {
-                AccountConfiguration(service: MockUserIdPasswordAccountService())
+                AccountConfiguration(service: MockAccountService())
             }
 
         DefaultAccountSetupHeader()
             .previewWith {
-                AccountConfiguration(building: .init().set(\.userId, value: "myUser"), active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: .init().set(\.userId, value: "myUser"), active: MockAccountService())
             }
     }
 }

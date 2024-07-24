@@ -35,16 +35,9 @@ struct PasswordValidationRuleFooter: View {
 
 
 #if DEBUG
-struct PasswordValidationRuleFooter_Previews: PreviewProvider {
-    static var previews: some View {
-        PasswordValidationRuleFooter(
-            configuration: AccountServiceConfiguration(
-                name: LocalizedStringResource("Preview Service", comment: "No need to translate, only used in Previews ..."),
-                supportedKeys: .arbitrary
-            ) {
-            FieldValidationRules(for: \.password, rules: .minimalPassword, .strongPassword) // doesn't make sense, but useful for preview
-            }
-        )
-    }
+#Preview {
+    PasswordValidationRuleFooter(configuration: AccountServiceConfiguration(supportedKeys: .arbitrary) {
+        FieldValidationRules(for: \.password, rules: .minimalPassword, .strongPassword) // doesn't make sense, but useful for preview
+    })
 }
 #endif

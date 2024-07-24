@@ -14,10 +14,6 @@ struct NameOverview: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
     @Environment(Account.self) private var account
 
 
@@ -30,7 +26,7 @@ struct NameOverview: View {
                 Section {
                     NavigationLink {
                         wrapper.accountKey.singleEditView(model: model, details: accountDetails)
-                            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
+                            .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
                     } label: {
                         if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                             view
@@ -83,7 +79,7 @@ struct NameOverview_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
 
         NavigationStack {
@@ -92,7 +88,7 @@ struct NameOverview_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: detailsWithoutName, active: MockAccountService())
             }
     }
 }

@@ -17,11 +17,8 @@ struct PasswordChangeSheet: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
 
-
+    @Environment(Account.self) private var account
     @Environment(\.logger) private var logger
     @Environment(\.dismiss) private var dismiss
 
@@ -41,13 +38,12 @@ struct PasswordChangeSheet: View {
         NavigationStack {
             Form {
                 passwordFieldsSection
-                    .injectEnvironmentObjects(service: service, model: model)
+                    .injectEnvironmentObjects(service: account.accountService, model: model) // TODO: necessity of service?
                     .focused($isFocused)
                     .environment(\.accountViewType, .overview(mode: .new))
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
                 .viewStateAlert(state: $viewState)
-                .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -67,6 +63,7 @@ struct PasswordChangeSheet: View {
                 .onDisappear {
                     model.resetModelState() // clears modified details
                 }
+                .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
         }
     }
 
@@ -95,7 +92,7 @@ struct PasswordChangeSheet: View {
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
-            PasswordValidationRuleFooter(configuration: service.configuration)
+            PasswordValidationRuleFooter(configuration: account.accountService.configuration)
         }
     }
 
@@ -144,7 +141,7 @@ struct PasswordChangeSheet_Previews: PreviewProvider {
             }
         }
             .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(building: details, active: MockAccountService())
             }
     }
 }

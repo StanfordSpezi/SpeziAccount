@@ -24,10 +24,6 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
         accountService.configuration
     }
 
-    nonisolated var viewStyle: Service.ViewStyle {
-        accountService.viewStyle
-    }
-
 
     private var currentAccountId: String? {
         get async {
@@ -116,10 +112,3 @@ actor StorageStandardBackedAccountService<Service: AccountService, Standard: Acc
         return (serviceBuilder.build(), standardBuilder.build())
     }
 }
-
-
-extension StorageStandardBackedAccountService: EmbeddableAccountService where Service: EmbeddableAccountService {}
-
-extension StorageStandardBackedAccountService: UserIdPasswordAccountService where Service: UserIdPasswordAccountService {}
-
-extension StorageStandardBackedAccountService: IdentityProvider where Service: IdentityProvider {}
