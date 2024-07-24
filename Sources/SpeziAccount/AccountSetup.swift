@@ -66,7 +66,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var followUpSheet = false
 
     private var hasSetupComponents: Bool {
-        !account.accountSetupComponents.isEmpty && account.accountSetupComponents.allSatisfy { $0.configuration.isEnabled }
+        account.accountSetupComponents.contains { $0.configuration.isEnabled }
     }
 
     public var body: some View {
