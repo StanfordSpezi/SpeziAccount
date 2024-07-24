@@ -157,21 +157,19 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     }
 
     func updateUser() async throws {
-        let builder = AccountDetails.Builder()
-            .set(\.accountId, value: registeredUser.accountId.uuidString)
-            .set(\.userId, value: registeredUser.userId)
-            .set(\.genderIdentity, value: registeredUser.genderIdentity)
-            .set(\.dateOfBirth, value: registeredUser.dateOfBirth)
-            .set(\.biography, value: registeredUser.biography)
+        let details: AccountDetails = .build { details in
+            details.accountId = registeredUser.accountId.uuidString
+            details.userId = registeredUser.userId
+            details.genderIdentity = registeredUser.genderIdentity
+            details.dateOfBirth = registeredUser.dateOfBirth
+            details.biography = registeredUser.biography
 
-        if !self.excludeName {
-            builder.set(\.name, value: registeredUser.name)
-        } else {
-            excludeName = false
+            if !excludeName {
+                details.name = registeredUser.name
+            } else {
+                excludeName = false // reset
+            }
         }
-
-        let details = builder
-            .build(owner: self)
 
         let account = account
         try await account.supplyUserDetails(details)

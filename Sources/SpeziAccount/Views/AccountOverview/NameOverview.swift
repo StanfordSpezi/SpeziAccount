@@ -85,7 +85,7 @@ struct NameOverview: View {
         details.userId = "lelandstanford@stanford.edu"
     }
 
-    NavigationStack {
+    return NavigationStack {
         AccountDetailsReader { account, details in
             NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
         }

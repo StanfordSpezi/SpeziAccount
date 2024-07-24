@@ -24,7 +24,7 @@ public struct AccountDetails: Sendable, AccountValues {
             // patch the storage to make sure we make sure to not expose the plaintext password
             storage[PasswordKey.self] = nil
         }
-        self.storage = consume storage
+        self.storage = storage
     }
 
     mutating func patchAccountServiceConfiguration(_ configuration: AccountServiceConfiguration) {

@@ -37,7 +37,7 @@ struct AccountTestsView: View {
                 }
                 Button("Account Logout", role: .destructive) {
                     Task {
-                        try? await account.details?.accountService.logout()
+                        try? await account.accountService.logout()
                     }
                 }
                     .disabled(!account.signedIn)
@@ -129,10 +129,11 @@ struct AccountTestsView: View {
 
 #if DEBUG
 struct AccountTestsView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+    static let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+        details.genderIdentity = .male
+    }
     
     static var previews: some View {
         AccountTestsView()
@@ -142,7 +143,7 @@ struct AccountTestsView_Previews: PreviewProvider {
 
         AccountTestsView()
             .previewWith {
-                AccountConfiguration(building: details, active: TestAccountService(.emailAddress, features: Features()))
+                AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()), activeDetails: details)
             }
 
         AccountTestsView()
