@@ -131,7 +131,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     guard component.configuration.isEnabled else {
                         return
                     }
-                    partialResult[component.configuration.placement] = component
+                    partialResult[component.configuration.section] = component
                 }
 
                 ForEach(categorized.keys.sorted(), id: \.self) { placement in

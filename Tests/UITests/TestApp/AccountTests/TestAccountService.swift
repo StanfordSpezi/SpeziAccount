@@ -69,7 +69,7 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     @Dependency var account: Account
     @Model var model = TestAlertModel()
 
-    @IdentityProvider(placement: .embedded) private var loginView = EmbeddedView()
+    @IdentityProvider(placement: .primary) private var loginView = EmbeddedView()
     @IdentityProvider(enabled: false) private var customProvider = CustomServiceButton()
     @IdentityProvider(enabled: false, placement: .external) private var signInWithApple = MockSignInWithAppleButton()
 

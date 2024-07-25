@@ -82,9 +82,9 @@ public final class MockAccountService: AccountService { // TODO: just write an f
     @Dependency private var notifications: AccountNotifications
     @Dependency private var externalStorage: ExternalAccountStorage
 
-    @IdentityProvider(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
+    @IdentityProvider(section: .primary) private var loginView = MockUserIdPasswordEmbeddedView()
     @IdentityProvider private var testButton2 = CustomServiceButton() // TODO: anonymous login?
-    @IdentityProvider(placement: .external) private var signInWithApple = MockSignInWithAppleButton()
+    @IdentityProvider(section: .singleSignOn) private var signInWithApple = MockSignInWithAppleButton()
 
     // TODO: @SecurityRelatedModifier private var securityAlert = NoopModifier()
 
@@ -162,7 +162,7 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         print("Mock Logout")
         try await Task.sleep(for: .seconds(1))
         let account = account
-        await account.removeUserDetails()
+        account.removeUserDetails()
     }
 
     public func delete() async throws {
@@ -176,7 +176,7 @@ public final class MockAccountService: AccountService { // TODO: just write an f
 
         try await Task.sleep(for: .seconds(1))
         let account = account
-        await account.removeUserDetails()
+        account.removeUserDetails()
     }
 
     @MainActor

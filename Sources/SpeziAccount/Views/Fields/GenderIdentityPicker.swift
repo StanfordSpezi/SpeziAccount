@@ -8,7 +8,13 @@
 
 import SwiftUI
 
-public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable & Identifiable
+
+/// A account value that can be rendered as a picker (like enum values).
+///
+/// In order to provide an Automatic Picker ``DataEntryView``, conform your enum to `CaseIterable` to enumerate all cases,
+/// `CustomLocalizedStringResourceConvertible` to provide a localizable representation for each case and `Hashable`
+/// to differentiate cases.
+public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
 
 
 public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
@@ -19,7 +25,7 @@ public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Va
 
     public var body: some View {
         Picker(selection: $value) {
-            ForEach(Value.allCases) { value in
+            ForEach(Value.allCases, id: \.hashValue) { value in
                 Text(value.localizedStringResource)
                     .tag(value)
             }
@@ -29,7 +35,7 @@ public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Va
     }
 
     public init(value: Binding<Value>, @ViewBuilder label: () -> Label) {
-        self._value = value // TODO: value: label name?
+        self._value = value
         self.label = label()
     }
 
@@ -63,17 +69,7 @@ public struct GenderIdentityPicker: View {
     @Binding private var genderIdentity: GenderIdentity
     
     public var body: some View {
-        Picker(
-            selection: $genderIdentity,
-            content: {
-                ForEach(GenderIdentity.allCases) { genderIdentity in
-                    Text(genderIdentity.localizedStringResource)
-                        .tag(genderIdentity)
-                }
-            }, label: {
-                Text(titleLocalization)
-            }
-        )
+        CaseIterablePicker(titleLocalization, value: $genderIdentity)
     }
 
     /// Initialize a new `GenderIdentityPicker`.

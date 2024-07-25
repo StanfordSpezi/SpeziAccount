@@ -54,6 +54,8 @@ public protocol AccountValues: AccountValuesCollection {
 public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thing somewhere!
     // TODO: why do we have the builder thing, if we can just mutate the details themselves?
     // TODO: => if we do the subscript thing, we could do an @Entry like macro! (bit weird from a docs perspective but okay!)
+
+    // TODO: if we make AccountDetails do @dynamicMemberLookup, we could do an @Entry like macro! (bit weird from a docs perspective but okay!)
     private let builder: Values.Builder
 
     init() {

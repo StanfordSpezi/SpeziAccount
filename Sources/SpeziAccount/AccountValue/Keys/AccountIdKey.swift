@@ -25,7 +25,7 @@ import SwiftUI
 /// As an ``AccountService`` you are required to supply the `accountId` for every ``AccountDetails`` you provide
 /// to ``Account/supplyUserDetails(_:isNewUser:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
 /// configuration as part of your ``AccountServiceConfiguration``, make sure to include the `accountId` there as well.
-public struct AccountIdKey: RequiredAccountKey {
+public struct AccountIdKey: RequiredAccountKey { // TODO: just remove RequiredAccountKey and move assertion into accountId access!
     public typealias Value = String
 
     public static let name = LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module))

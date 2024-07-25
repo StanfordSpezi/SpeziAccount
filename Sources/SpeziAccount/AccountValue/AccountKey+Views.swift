@@ -22,6 +22,7 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 
 
 extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessCollection {
+    /// Default DataEntry view for Values that conform to ``PickerValue`` (typically useful with enums)
     public typealias DataEntry = CaseIterablePickerEntryView<Self>
 }
 

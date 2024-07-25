@@ -8,7 +8,6 @@
 
 import SwiftUI
 
-// TODO: review file placement and naming!
 
 protocol AnyIdentityProvider {
     var component: any AnyAccountSetupComponent { get }
@@ -65,16 +64,16 @@ public struct IdentityProvider<V: View> { // TODO: code example. + configuration
     /// - Parameters:
     ///   - wrappedValue: The View provided as an auto-closure.
     ///   - enabled: Flag indicating if this Identity Provider should be used at all.
-    ///   - placement: A hint on how to place, group and order multiple Identity Providers.
+    ///   - section: The section this identity provider is displayed in.
     public init(
         wrappedValue: @autoclosure @escaping @Sendable () -> V,
         enabled isEnabled: Bool = true,
-        placement: Placement = .default
+        section: AccountSetupSection = .default
     ) {
         self.viewClosure = { @MainActor in
             wrappedValue()
         }
-        self.configuration = IdentityProviderConfiguration(isEnabled: isEnabled, placement: placement)
+        self.configuration = IdentityProviderConfiguration(isEnabled: isEnabled, section: section)
     }
 }
 

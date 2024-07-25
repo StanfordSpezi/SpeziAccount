@@ -13,17 +13,17 @@ import SpeziFoundation
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
 public struct AccountDetails {
-    public typealias Element = AnyRepositoryValue // compiler is confused otherwise
-
+    // TODO: if we remove the protocol AccountValues infrastructure, we can make this internal again (init as well!)
     public private(set) var storage: AccountStorage
 
 
+    /// Initialize empty account details.
     public init() {
         self.init(from: AccountStorage())
     }
 
 
-    public init(from storage: AccountStorage) {
+    public init(from storage: AccountStorage) { // TODO: why is this public?
         self.storage = storage
     }
 
@@ -37,4 +37,6 @@ public struct AccountDetails {
 }
 
 
-extension AccountDetails: AccountValues, Sendable {}
+extension AccountDetails: AccountValues, Sendable {
+    public typealias Element = AnyRepositoryValue // compiler is confused otherwise
+}
