@@ -76,6 +76,10 @@ public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thi
         builder.merging(values, allowOverwrite: merge)
     }
 
+    public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) {
+        builder.set(key, value: value)
+    }
+
     public func removeAll(_ keys: [any AccountKey.Type]) {
         builder.remove(all: keys)
     }

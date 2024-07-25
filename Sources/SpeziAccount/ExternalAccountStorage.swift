@@ -136,4 +136,4 @@ public final class ExternalAccountStorage {
 extension ExternalAccountStorage: Module, DefaultInitializable, Sendable {}
 
 
-extension ExternalAccountStorage.ExternallyStoredDetails: Sendable, Hashable {}
+extension ExternalAccountStorage.ExternallyStoredDetails: Sendable {}
