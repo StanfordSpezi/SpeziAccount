@@ -52,6 +52,8 @@ public protocol AccountValues: AccountValuesCollection {
 
 @dynamicMemberLookup
 public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thing somewhere!
+    // TODO: why do we have the builder thing, if we can just mutate the details themselves?
+    // TODO: => if we do the subscript thing, we could do an @Entry like macro! (bit weird from a docs perspective but okay!)
     private let builder: Values.Builder
 
     init() {
@@ -71,7 +73,6 @@ public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thi
         }
     }
 
-    // TODO: add(contentsOf:merge:)??
     public func add<V: AccountValues>(contentsOf values: V, merge: Bool = false) {
         builder.merging(values, allowOverwrite: merge)
     }

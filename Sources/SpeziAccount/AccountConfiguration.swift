@@ -138,6 +138,8 @@ public final class AccountConfiguration<Service: AccountService> {
     ) {
         logger.debug("Checking \(service.description) against the configured account keys.")
 
+        // TODO: the only place where we check for supportedAccountKeys => remove it an move this check into the responsible account service?
+
         // if account service states exact supported keys, AccountIdKey must be one of them
         if case let .exactly(keys) = service.configuration.supportedAccountKeys {
             precondition(
