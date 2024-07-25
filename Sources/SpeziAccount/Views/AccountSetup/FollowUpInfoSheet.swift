@@ -24,7 +24,7 @@ struct FollowUpInfoSheet: View {
 
     @Environment(Account.self) private var account
 
-    @State private var detailsBuilder = AccountDetails.Builder()
+    @State private var detailsBuilder = AccountValuesBuilder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle

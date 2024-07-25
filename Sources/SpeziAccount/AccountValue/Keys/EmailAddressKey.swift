@@ -46,7 +46,7 @@ extension AccountKeys {
 }
 
 
-extension AccountValues {
+extension AccountDetails {
     /// Access the email address of a user.
     public var email: String? {
         storage[EmailAddressKey.self]

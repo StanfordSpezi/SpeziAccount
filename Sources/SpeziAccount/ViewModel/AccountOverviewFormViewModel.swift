@@ -29,7 +29,7 @@ class AccountOverviewFormViewModel {
     private let accountServiceConfiguration: AccountServiceConfiguration
 
 
-    let modifiedDetailsBuilder = AccountDetails.Builder()
+    let modifiedDetailsBuilder = AccountValuesBuilder()
 
     var presentingCancellationDialog = false
     var presentingLogoutAlert = false
@@ -162,7 +162,7 @@ class AccountOverviewFormViewModel {
     }
 
     func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>? = nil) async throws {
-        let removedDetailsBuilder = AccountDetails.Builder()
+        let removedDetailsBuilder = AccountValuesBuilder()
         removedDetailsBuilder.merging(keys: removedAccountKeys.keys, from: details)
 
         let modifications = try AccountModifications(

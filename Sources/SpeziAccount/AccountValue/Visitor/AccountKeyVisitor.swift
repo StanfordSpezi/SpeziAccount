@@ -8,7 +8,7 @@
 
 
 /// A collection type that is capable of accepting an ``AccountKeyVisitor``.
-public protocol AcceptingAccountKeyVisitor {
+public protocol AcceptingAccountKeyVisitor { // TODO: no need for protocol, just add to AccountDetails?
     /// Accepts an ``AccountKeyVisitor`` for all elements of the collection.
     /// - Parameter visitor: The visitor to accept.
     /// - Returns: The ``AccountKeyVisitor/Final`` result or `Void`.

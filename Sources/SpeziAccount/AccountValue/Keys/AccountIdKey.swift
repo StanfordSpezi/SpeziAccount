@@ -42,7 +42,7 @@ extension AccountKeys {
 }
 
 
-extension AccountValues {
+extension AccountDetails {
     /// Access the account id of a user (see ``AccountIdKey``).
     public var accountId: String {
         storage[AccountIdKey.self]

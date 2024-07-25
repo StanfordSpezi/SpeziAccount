@@ -54,14 +54,12 @@ struct AccountOverviewHeader: View {
 
 
 #if DEBUG
-struct AccountOverviewHeader_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build()
-
-    static var previews: some View {
-        AccountOverviewHeader(details: details)
+#Preview {
+    let details: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
     }
+
+    return AccountOverviewHeader(details: details)
 }
 #endif

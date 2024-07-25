@@ -13,8 +13,7 @@ import SpeziFoundation
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
 public struct AccountDetails {
-    // TODO: if we remove the protocol AccountValues infrastructure, we can make this internal again (init as well!)
-    public private(set) var storage: AccountStorage
+    private(set) var storage: AccountStorage
 
 
     /// Initialize empty account details.
@@ -23,7 +22,7 @@ public struct AccountDetails {
     }
 
 
-    public init(from storage: AccountStorage) { // TODO: why is this public?
+    init(from storage: AccountStorage) {
         self.storage = storage
     }
 
@@ -37,6 +36,76 @@ public struct AccountDetails {
 }
 
 
-extension AccountDetails: AccountValues, Sendable {
-    public typealias Element = AnyRepositoryValue // compiler is confused otherwise
+extension AccountDetails: Sendable {}
+
+
+extension AccountDetails: AcceptingAccountValueVisitor {
+}
+
+
+extension AccountDetails: Collection {
+    public typealias Index = AccountStorage.Index
+
+    /// Default `Collection` implementation.
+    public var startIndex: Index {
+        storage.startIndex
+    }
+
+    /// Default `Collection` implementation.
+    public var endIndex: Index {
+        storage.endIndex
+    }
+
+    /// Default `Collection` implementation.
+    public func index(after index: Index) -> Index {
+        storage.index(after: index)
+    }
+
+
+    /// Default `Collection` implementation.
+    public subscript(position: Index) -> AccountStorage.Element {
+        storage[position]
+    }
+}
+
+
+extension AccountDetails {
+    /// Retrieve all keys stored in this collection.
+    public var keys: [any AccountKey.Type] {
+        self.compactMap { element in
+            element.anySource as? any AccountKey.Type
+        }
+    }
+
+    /// Checks if the provided `AccountKey` is stored in the collection.
+    /// - Parameter key: The account key to check existence for.
+    /// - Returns: Returns `true` if the a value is stored for the given `AccountKey`.
+    public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
+        storage.contains(key)
+    }
+
+    /// Check if the provided type-erased `AccountKey` is stored in the collection.
+    /// - Parameter key: The account key to check existence for.
+    /// - Returns: Returns `true` if the a value is stored for the given `AccountKey`.
+    public func contains(_ key: any AccountKey.Type) -> Bool {
+        key.anyContains(in: self)
+    }
+
+    /// Add the contents from another account details collection.
+    /// - Parameters:
+    ///   - values: The account details to add.
+    ///   - merge: If `true` values contained in `values` will overwrite values already stored in `self`.
+    /// - Returns: The resulting values containing the combination of both collections.
+    public func add(contentsOf values: AccountDetails, merge: Bool = false) -> Self {
+        let build = AccountValuesBuilder(from: storage)
+        build.merging(values, allowOverwrite: merge) // TODO: rename as well!
+        return build.build()
+    }
+}
+
+
+extension AccountKey {
+    fileprivate static func anyContains(in details: AccountDetails) -> Bool {
+        details.contains(Self.self)
+    }
 }

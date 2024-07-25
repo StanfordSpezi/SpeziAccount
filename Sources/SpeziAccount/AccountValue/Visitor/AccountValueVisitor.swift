@@ -10,7 +10,7 @@ import SpeziFoundation
 
 
 /// A collection type that is capable of accepting an ``AccountValueVisitor``.
-public protocol AcceptingAccountValueVisitor {
+public protocol AcceptingAccountValueVisitor { // TODO: no need for protocol, just add to AccountDetails?
     /// Accepts an ``AccountValueVisitor`` for all elements of the collection.
     /// - Parameter visitor: The visitor to accept.
     /// - Returns: The ``AccountValueVisitor/Final`` result or `Void`.
@@ -85,7 +85,7 @@ extension AccountKey {
 }
 
 
-extension AccountValuesCollection {
+extension AccountDetails { // TODO: doesn't apply to the builder now?
     /// Default acceptAll visitor.
     public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
         for entry in self {

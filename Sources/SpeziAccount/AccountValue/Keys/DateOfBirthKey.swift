@@ -32,7 +32,7 @@ extension AccountKeys {
 }
 
 
-extension AccountValues {
+extension AccountDetails {
     /// Access the date of birth of a user.
     public var dateOfBrith: Date? {
         storage[DateOfBirthKey.self]

@@ -10,10 +10,10 @@ import Foundation
 import SpeziFoundation
 
 
-private class RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
-    let builder: AccountValuesBuilder<Values>
+private class RemoveVisitor: AccountKeyVisitor {
+    let builder: AccountValuesBuilder
 
-    init(builder: AccountValuesBuilder<Values>) {
+    init(builder: AccountValuesBuilder) {
         self.builder = builder
     }
 
@@ -23,11 +23,11 @@ private class RemoveVisitor<Values: AccountValues>: AccountKeyVisitor {
 }
 
 
-private class CopyVisitor<Values: AccountValues>: AccountValueVisitor {
-    let builder: AccountValuesBuilder<Values>
+private class CopyVisitor: AccountValueVisitor {
+    let builder: AccountValuesBuilder
     let allowOverwrite: Bool
 
-    init(builder: AccountValuesBuilder<Values>, allowOverwrite: Bool) {
+    init(builder: AccountValuesBuilder, allowOverwrite: Bool) {
         self.builder = builder
         self.allowOverwrite = allowOverwrite
     }
@@ -40,11 +40,11 @@ private class CopyVisitor<Values: AccountValues>: AccountValueVisitor {
 }
 
 
-private class CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>: AccountKeyVisitor {
-    let destination: AccountValuesBuilder<Destination>
-    let source: Source
+private class CopyKeyVisitor: AccountKeyVisitor {
+    let destination: AccountValuesBuilder
+    let source: AccountDetails
 
-    init(destination: AccountValuesBuilder<Destination>, source: Source) {
+    init(destination: AccountValuesBuilder, source: AccountDetails) {
         self.destination = destination
         self.source = source
     }
@@ -87,7 +87,12 @@ private class CopyKeyVisitor<Destination: AccountValues, Source: AccountValues>:
 /// - ``AccountValuesBuilder/build(owner:)``
 /// - ``AccountValuesBuilder/build(checking:)``
 @Observable
-public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollection {
+public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
+    public func contains(_ key: any AccountKey.Type) -> Bool {
+        // TODO: implement?
+        preconditionFailure("Not implemented!")
+    }
+    
     var storage: AccountStorage
     var defaultValues: AccountStorage
 
@@ -99,12 +104,12 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
 
     /// Initialize a new empty builder.
     public convenience init() {
-        self.init(from: .init())
+        self.init(from: AccountStorage())
     }
 
     /// Initialize a new builder by copying the contents of a ``AccountValues`` instance.
     /// - Parameter storage: The storage to copy all values from.
-    public convenience init<Source: AccountValues>(from storage: Source) {
+    public convenience init(from storage: AccountDetails) {
         self.init(from: storage.storage)
     }
 
@@ -154,7 +159,7 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
     ///   - allowOverwrite: Flag controls if the supplied values might overwrite values in the builder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func merging<OtherValues: AccountValues>(_ values: OtherValues, allowOverwrite: Bool) -> Self {
+    public func merging(_ values: AccountDetails, allowOverwrite: Bool) -> Self {
         values.acceptAll(CopyVisitor(builder: self, allowOverwrite: allowOverwrite))
         return self
     }
@@ -165,9 +170,9 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
     ///   - values: The container from where to retrieve the values.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func merging<Keys: AcceptingAccountKeyVisitor, OtherValues: AccountValues>(
+    public func merging<Keys: AcceptingAccountKeyVisitor>(
         keys: Keys,
-        from values: OtherValues
+        from values: AccountDetails
     ) -> Self {
         keys.acceptAll(CopyKeyVisitor(destination: self, source: values))
         return self
@@ -217,41 +222,37 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
 
     /// Build a new storage instance.
     /// - Returns: The built ``AccountValues``.
-    public func build() -> Values {
+    public func build() -> AccountDetails {
         if !defaultValues.isEmpty {
             // .merge(with:allowOverwrite:) is implemented using account values builder.
             // without this isEmpty check we would run an infinite recursion.
             // Calling merge on the built container ensures that this build() method doesn't have any side effects.
-            return Values(from: storage)
-                .merge(with: Values(from: defaultValues), allowOverwrite: false)
+            return AccountDetails(from: storage)
+                .add(contentsOf: AccountDetails(from: defaultValues), merge: false)
         } else {
-            return Values(from: storage)
+            return AccountDetails(from: storage)
         }
     }
 }
 
 
-extension AccountValuesBuilder {
-    /// Default `Collection` implementation.
+extension AccountValuesBuilder: Collection {
     public typealias Index = AccountStorage.Index
 
-    /// Default `Collection` implementation.
     public var startIndex: Index {
         storage.startIndex
     }
 
-    /// Default `Collection` implementation.
     public var endIndex: Index {
         storage.endIndex
     }
 
-    /// Default `Collection` implementation.
+
     public func index(after index: Index) -> Index {
         storage.index(after: index)
     }
 
 
-    /// Default `Collection` implementation.
     public subscript(position: Index) -> AnyRepositoryValue {
         storage[position]
     }
@@ -267,7 +268,7 @@ extension AccountValuesBuilder {
 
 
 extension AccountKey {
-    fileprivate static func setEmpty<Values: AccountValues>(in builder: AccountValuesBuilder<Values>) {
+    fileprivate static func setEmpty(in builder: AccountValuesBuilder) {
         builder.set(Self.self, value: initialValue.value)
     }
 }

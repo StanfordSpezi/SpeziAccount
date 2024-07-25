@@ -59,30 +59,37 @@ public struct AccountSummaryBox: View {
 
 
 #if DEBUG
-struct AccountSummary_Previews: PreviewProvider {
-    static let emailDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build()
-
-    static let usernameDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andreas.bauer")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build()
-
-    static let usernameWithoutNameDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andreas.bauer")
-        .build()
-
-    static let emailOnlyDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .build()
-
-    static var previews: some View {
-        AccountSummaryBox(details: emailDetails)
-        AccountSummaryBox(details: usernameDetails)
-        AccountSummaryBox(details: usernameWithoutNameDetails)
-        AccountSummaryBox(details: emailOnlyDetails)
+#Preview {
+    let emailDetails: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
     }
+
+    return AccountSummaryBox(details: emailDetails)
+}
+
+#Preview {
+    let usernameDetails: AccountDetails = .build { details in
+        details.userId = "leland.stanford"
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    }
+
+    return AccountSummaryBox(details: usernameDetails)
+}
+
+#Preview {
+    let usernameWithoutNameDetails: AccountDetails = .build { details in
+        details.userId = "leland.stanford"
+    }
+
+    return AccountSummaryBox(details: usernameWithoutNameDetails)
+}
+
+#Preview {
+    let emailOnlyDetails: AccountDetails = .build { details in
+        details.userId = "lelandstanford@stanford.edu"
+    }
+
+    return AccountSummaryBox(details: emailOnlyDetails)
 }
 #endif

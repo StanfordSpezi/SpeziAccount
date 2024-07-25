@@ -51,7 +51,7 @@ extension AccountKeys {
 }
 
 
-extension AccountValues {
+extension AccountDetails {
     /// Access the user id of a user (see ``UserIdKey``).
     public var userId: String {
         storage[UserIdKey.self]

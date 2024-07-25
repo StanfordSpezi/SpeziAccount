@@ -30,7 +30,7 @@ extension AccountKeys {
 }
 
 
-extension AccountValues {
+extension AccountDetails {
     /// Access the name of a user.
     public var name: PersonNameComponents? {
         storage[PersonNameKey.self]

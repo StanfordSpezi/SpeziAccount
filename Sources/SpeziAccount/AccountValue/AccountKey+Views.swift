@@ -22,7 +22,7 @@ extension AccountKey {
     }
 
     static func dataEntryViewFromBuilder(
-        builder: AccountDetails.Builder
+        builder: AccountValuesBuilder
     ) -> AnyView? {
         guard let value = builder.get(Self.self) else {
             return nil
