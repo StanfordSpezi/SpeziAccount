@@ -11,7 +11,32 @@ import Spezi
 
 
 public final class ExternalAccountStorage {
+    public struct ExternallyStoredDetails {
+        public let accountId: String
+        public let details: AccountDetails
+    }
+
     private nonisolated(unsafe) weak var storageProvider: (any AccountStorageProvider)?
+
+    private nonisolated(unsafe) var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
+    private let lock = NSLock()
+
+    public var detailUpdates: AsyncStream<ExternallyStoredDetails> { // TODO: think about name!
+        AsyncStream { continuation in
+            let id = UUID()
+            lock.withLock {
+                subscriptions[id] = continuation
+            }
+            continuation.onTermination = { [weak self] _ in
+                guard let self else {
+                    return
+                }
+                lock.withLock {
+                    self.subscriptions[id] = nil // TODO: no need to finish right?
+                }
+            }
+        }
+    }
 
     init(_ storageProvider: (any AccountStorageProvider)?) {
         self.storageProvider = storageProvider
@@ -20,6 +45,16 @@ public final class ExternalAccountStorage {
 
     public convenience init() {
         self.init(nil)
+    }
+
+    public func notifyAboutUpdatedDetails(for accountId: String, _ details: AccountDetails) { // TODO: think about name!
+        let update = ExternallyStoredDetails(accountId: accountId, details: details)
+
+        lock.withLock {
+            for continuation in subscriptions.values {
+                continuation.yield(update)
+            }
+        }
     }
 
     // Service -> Storage
@@ -99,3 +134,6 @@ public final class ExternalAccountStorage {
 
 
 extension ExternalAccountStorage: Module, DefaultInitializable, Sendable {}
+
+
+extension ExternalAccountStorage.ExternallyStoredDetails: Sendable, Hashable {}
