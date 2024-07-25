@@ -42,7 +42,6 @@ public final class AccountNotifications {
 
     // TODO: can we somehow enforce that the account services reports the deletingAccount event?
 
-    @_spi(AccountService)
     @MainActor
     public func reportEvent(_ event: Event, for accountId: String) async throws {
         try await notifyStandard?.respondToEvent(event)

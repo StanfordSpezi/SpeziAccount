@@ -34,7 +34,6 @@ public final class ExternalAccountStorage {
     // Storage -> Service
     // TODO: notification about updated user details!
 
-    @_spi(AccountService)
     public func requestExternalStorage(of details: AccountDetails, for accountId: String) async throws {
 
         // TODO: store additional details after signup
@@ -51,7 +50,6 @@ public final class ExternalAccountStorage {
     }
 
 
-    @_spi(AccountService)
     public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) throws -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
@@ -77,7 +75,6 @@ public final class ExternalAccountStorage {
     }
 
 
-    @_spi(AccountService)
     public func updateExternalStorage(with modifications: AccountModifications, for accountId: String) async throws {
         guard let storageProvider else {
             // TODO: any earlier point to tell them about misconfiguration?

@@ -167,7 +167,6 @@ public final class Account {
     ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
     ///     This is primarily helpful for identity providers. You might not want to set this flag
     ///     if you using the builtin ``SignupForm``!
-    @_spi(AccountService)
     @MainActor
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
         precondition(
@@ -211,7 +210,6 @@ public final class Account {
     ///
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
-    @_spi(AccountService) // TODO: that just removes it form the docs?
     @MainActor
     public func removeUserDetails() {
         if let details {
