@@ -20,7 +20,7 @@ public struct DateOfBirthKey: AccountKey {
     public static let category: AccountKeyCategory = .personalDetails
     
     public static var initialValue: InitialValue<Value> {
-        .empty(Date())
+        .empty(Date()) // instantiate a fresh .now date all the time
     }
 }
 

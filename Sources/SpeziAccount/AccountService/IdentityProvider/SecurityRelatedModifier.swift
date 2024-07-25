@@ -37,8 +37,6 @@ public struct SecurityRelatedModifier<V: ViewModifier> {
         modifierClosure()
     }
 
-    // TODO: generalize as @Modifier-like with "usage" property?
-
     public init(wrappedValue: @autoclosure @escaping @Sendable () -> V) {
         self.modifierClosure = { @MainActor in
             wrappedValue()

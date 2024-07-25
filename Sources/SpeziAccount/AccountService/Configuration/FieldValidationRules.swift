@@ -9,8 +9,6 @@
 import SpeziFoundation
 import SpeziValidation
 
-// TODO: would be great if this is user-configurable??? (maybe not?)
-
 
 /// A list of `ValidationRule` to validate the input for String-based `AccountKey`s.
 ///

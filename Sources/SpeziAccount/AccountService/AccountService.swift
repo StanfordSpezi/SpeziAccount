@@ -28,7 +28,7 @@ import Spezi
 ///
 /// ### Result Builder
 /// - ``AccountServiceBuilder``
-public protocol AccountService: Module, Hashable, CustomStringConvertible, Sendable, EnvironmentAccessible {
+public protocol AccountService: Module, CustomStringConvertible, Sendable, EnvironmentAccessible {
     /// An identifier to uniquely identify an `AccountService`.
     ///
     /// This identifier is used to uniquely identify an account service that persists across process instances.
@@ -72,22 +72,8 @@ extension AccountService {
         description
     }
 
-    var objId: ObjectIdentifier {
-        ObjectIdentifier(self)
-    }
-
     /// Default `CustomStringConvertible` returning the type name.
     public var description: String {
         "\(Self.self)"
-    }
-
-    /// Default `Equatable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    /// Default `Hashable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
-    public func hash(into hasher: inout Hasher) {
-        id.hash(into: &hasher)
     }
 }

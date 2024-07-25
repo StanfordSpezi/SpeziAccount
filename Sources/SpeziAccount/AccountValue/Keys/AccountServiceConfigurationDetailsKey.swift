@@ -11,7 +11,7 @@ import SpeziFoundation
 
 struct AccountServiceConfigurationDetailsKey: DefaultProvidingKnowledgeSource {
     typealias Anchor = AccountAnchor
-    typealias Value = AccountServiceConfiguration // TODO: no check that this is Sendable!
+    typealias Value = AccountServiceConfiguration
 
     static let defaultValue = AccountServiceConfiguration(supportedKeys: .exactly(AccountKeyCollection()))
 }
@@ -24,12 +24,10 @@ extension AccountDetails {
     }
 
 
+    /// The type of user id stored in `UserIdKey`.
+    ///
+    /// This is a short-hand access to the value stored in the ``UserIdConfiguration`` which is part of the ``accountServiceConfiguration``.
     public var userIdType: UserIdType {
-/*
- // TODO: reuse old-docs
- -    /// Short-hand access to the ``UserIdType`` stored in the ``UserIdConfiguration`` of
- -    /// the ``AccountServiceConfiguration`` of the currently active ``AccountService``.
- */
         accountServiceConfiguration.userIdConfiguration.idType
     }
 }

@@ -9,30 +9,7 @@
 import AuthenticationServices
 import Foundation
 import Spezi
-
-// TODO: remove
 import SwiftUI
-
-public protocol ViewProviding {
-    @MainActor
-    init()
-}
-
-@propertyWrapper
-public struct ViewProvider<Element: ViewProviding> { // TODO: this is our backup plan for actors!
-    @MainActor public var wrappedValue: Element {
-        Element()
-    }
-
-    public init() {}
-}
-
-
-public struct ServiceViews: ViewProviding {
-    @IdentityProvider(placement: .embedded) private var testButton = EmptyView()
-
-    public init() {}
-}
 
 
 struct MockUserIdPasswordEmbeddedView: View {
@@ -86,7 +63,7 @@ struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test th
 
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
-@MainActor // TODO: review
+@MainActor
 public final class MockAccountService: AccountService {
     public struct ConfiguredIdentityProvider: OptionSet, Sendable {
         public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
@@ -113,10 +90,6 @@ public final class MockAccountService: AccountService {
     private var userIdToAccountId: [String: UUID] = [:]
 
 
-    // TODO: @ViewProvider private var views: ServiceViews // TODO: this might be a concept we can use even in actors?
-    // TODO: these modifier make the view automatically @MainActor (funny)!
-
-
     /// Create a new userId- and password-based account service.
     /// - Parameter type: The ``UserIdType`` to use for the account service.
     public init(_ type: UserIdType = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
@@ -128,7 +101,6 @@ public final class MockAccountService: AccountService {
             }
         }
 
-        // TODO: this is a problem with actor isolation?
         if !configured.contains(.userIdPassword) {
             $loginView.isEnabled = false
         }

@@ -17,9 +17,7 @@ public struct PersonNameKey: AccountKey {
     public typealias Value = PersonNameComponents
 
     public static let name = LocalizedStringResource("NAME", bundle: .atURL(from: .module))
-
     public static let category: AccountKeyCategory = .name
-
     public static let initialValue: InitialValue<Value> = .empty(PersonNameComponents())
 }
 
@@ -50,10 +48,9 @@ extension PersonNameKey {
 
         public var body: some View {
             ListRow(Key.name) {
-                Text(value.formatted(.name(style: .long)))
+                Text(value.formatted(.name(style: .long))) // TODO: similar to Date, that it just needs formatting!
             }
         }
-
 
         public init(_ value: PersonNameComponents) {
             self.value = value

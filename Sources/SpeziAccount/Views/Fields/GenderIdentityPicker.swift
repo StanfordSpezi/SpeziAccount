@@ -8,7 +8,54 @@
 
 import SwiftUI
 
+public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable & Identifiable
 
+
+public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
+    private let label: Label
+
+    @Binding private var value: Value
+
+
+    public var body: some View {
+        Picker(selection: $value) {
+            ForEach(Value.allCases) { value in
+                Text(value.localizedStringResource)
+                    .tag(value)
+            }
+        } label: {
+            label
+        }
+    }
+
+    public init(value: Binding<Value>, @ViewBuilder label: () -> Label) {
+        self._value = value // TODO: value: label name?
+        self.label = label()
+    }
+
+    public init(_ titleKey: LocalizedStringResource, value: Binding<Value>) where Label == Text {
+        self.init(value: value) {
+            Text(titleKey)
+        }
+    }
+}
+
+
+import SpeziFoundation
+public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
+    @Binding private var value: Key.Value
+
+    public var body: some View {
+        CaseIterablePicker(Key.name, value: $value)
+    }
+
+    public init(_ value: Binding<Key.Value>) {
+        self._value = value
+    }
+}
+
+
+// TODO: replae GenderIdentityPicker with the picker above!
 /// A simple `Picker` implementation for ``GenderIdentity`` entry.
 public struct GenderIdentityPicker: View {
     private let titleLocalization: LocalizedStringResource
@@ -20,7 +67,7 @@ public struct GenderIdentityPicker: View {
             selection: $genderIdentity,
             content: {
                 ForEach(GenderIdentity.allCases) { genderIdentity in
-                    Text(String(localized: genderIdentity.localizedStringResource))
+                    Text(genderIdentity.localizedStringResource)
                         .tag(genderIdentity)
                 }
             }, label: {

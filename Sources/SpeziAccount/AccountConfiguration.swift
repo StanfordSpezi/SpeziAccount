@@ -56,7 +56,7 @@ public final class AccountConfiguration<Service: AccountService>: Module {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     @_spi(TestingSupport)
     @MainActor
-    public convenience init(
+    public convenience init( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,
         configuration: AccountValueConfiguration = .default,
         activeDetails: AccountDetails
@@ -91,11 +91,7 @@ public final class AccountConfiguration<Service: AccountService>: Module {
 
         // Verify account service can store all configured account keys.
         // If applicable, wraps the service into an StandardBackedAccountService
-        var service = verify(configurationRequirements: account.configuration, against: accountService)
-
-        if let notifyStandard = standard as? any AccountNotifyConstraint {
-            service = service.backedBy(standard: notifyStandard)
-        }
+        let service = verify(configurationRequirements: account.configuration, against: accountService)
 
         account.reconfigureService(service)
 

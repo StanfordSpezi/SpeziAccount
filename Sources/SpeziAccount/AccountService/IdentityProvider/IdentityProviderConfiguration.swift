@@ -10,7 +10,9 @@ import Atomics
 import Spezi
 import SwiftUI
 
-public struct Placement { // TODO: rename
+public struct Placement { // TODO: AccountSetupSection, Group?
+    // TODO: the concept of embedded doesn't exist anymore => primary, default, singleSignOn
+
     public static let embedded = Placement(rawValue: 0) // TODO: docs: only one embedded view allowed!
     public static let `default` = Placement(rawValue: 100) // TODO: rename?
     public static let external = Placement(rawValue: 200)

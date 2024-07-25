@@ -26,7 +26,6 @@ public struct PasswordKey: AccountKey {
     public typealias Value = String
 
     public static let name = LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module))
-
     public static let category: AccountKeyCategory = .credentials
 }
 

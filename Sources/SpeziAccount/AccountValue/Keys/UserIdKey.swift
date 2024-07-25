@@ -43,8 +43,6 @@ public struct UserIdKey: AccountKey, ComputedKnowledgeSource {
 }
 
 
-// TODO: AccountKeys desparately need a macro!
-
 extension AccountKeys {
     /// The userid ``UserIdKey`` metatype.
     public var userId: UserIdKey.Type {

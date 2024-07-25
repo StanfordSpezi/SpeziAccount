@@ -127,7 +127,6 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             EmptyServicesWarning()
         } else {
             VStack {
-                // TODO: verify that we only have one embeedded view
                 let categorized = account.accountSetupComponents.reduce(into: OrderedDictionary()) { partialResult, component in
                     guard component.configuration.isEnabled else {
                         return

@@ -17,12 +17,9 @@ import SwiftUI
 /// - ``GenderIdentity``
 public struct GenderIdentityKey: AccountKey {
     public typealias Value = GenderIdentity
-    public typealias DataEntry = GenderIdentityPicker
 
     public static let name = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
-
     public static let category: AccountKeyCategory = .personalDetails
-
     public static let initialValue: InitialValue<Value> = .default(.preferNotToState)
 }
 
@@ -39,15 +36,5 @@ extension AccountValues {
     /// Access the gender identity of a user.
     public var genderIdentity: GenderIdentity? {
         storage[GenderIdentityKey.self]
-    }
-}
-
-
-// MARK: - UI
-extension GenderIdentityPicker: DataEntryView {
-    public typealias Key = GenderIdentityKey
-
-    public init(_ value: Binding<GenderIdentity>) {
-        self.init(genderIdentity: value)
     }
 }

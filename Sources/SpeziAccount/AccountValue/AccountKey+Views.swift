@@ -21,10 +21,15 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 }
 
 
+extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessCollection {
+    public typealias DataEntry = CaseIterablePickerEntryView<Self>
+}
+
+
 @MainActor
 extension AccountKey {
     static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
-        AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: initialValue.value))
+        AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: initialValue.value))
     }
 
     static func dataEntryViewWithStoredValueOrInitial<Values: AccountValues>(
@@ -32,7 +37,7 @@ extension AccountKey {
         for values: Values.Type
     ) -> AnyView {
         let value = details.storage.get(Self.self) ?? initialValue.value
-        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: value))
     }
 
     static func dataEntryViewFromBuilder<Values: AccountValues>(
@@ -43,7 +48,7 @@ extension AccountKey {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: value))
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {

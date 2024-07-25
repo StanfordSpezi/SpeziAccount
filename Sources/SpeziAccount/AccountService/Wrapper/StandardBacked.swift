@@ -45,7 +45,7 @@ extension _StandardBacked {
 
     /// An ObjectIdentifier-based check if they underlying account service equals the provided one.
     public func isBacking(service: any AccountService) -> Bool {
-        underlyingService.objId == service.objId
+        underlyingService === service
     }
 
     /// Default implementation.
@@ -77,11 +77,6 @@ extension AccountService {
     func backedBy(standard: any AccountStorageConstraint) -> any AccountService {
         standard.backedService(with: self)
     }
-
-    @MainActor
-    func backedBy(standard: any AccountNotifyConstraint) -> any AccountService {
-        standard.backedService(with: self)
-    }
 }
 
 
@@ -89,13 +84,5 @@ extension AccountStorageConstraint {
     @MainActor
     fileprivate func backedService<Service: AccountService>(with service: Service) -> any AccountService {
         StorageStandardBackedAccountService(service: service, standard: self)
-    }
-}
-
-
-extension AccountNotifyConstraint {
-    @MainActor
-    fileprivate func backedService<Service: AccountService>(with service: Service) -> any AccountService {
-        NotifyStandardBackedAccountService(service: service, standard: self)
     }
 }

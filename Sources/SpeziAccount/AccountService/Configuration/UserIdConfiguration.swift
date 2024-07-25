@@ -10,7 +10,7 @@ import SpeziFoundation
 import SwiftUI
 
 
-/// The user id configuration of an ``AccountService``.
+/// The user id configuration of an `AccountService`.
 ///
 /// This configuration comes with the assumption that every ``AccountService`` exposes some sort of primary and unique user identifier.
 /// UI components may use this configuration to get more information about the shape of such a user identifier
@@ -20,8 +20,9 @@ import SwiftUI
 public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
     public static let defaultValue: UserIdConfiguration = .emailAddress
 
-    /// The type of user id stored in ``UserIdKey``.
-    /// You can use this property to provide a localized textual representation of the user id.
+    /// The type of user id stored in `UserIdKey`.
+    ///
+    /// You can use this property to provide a localized textual representation of the user id (see ``UserIdKey``).
     public let idType: UserIdType
     /// The `UITextContentType` used for a field that is used to input the user id.
     ///
@@ -46,7 +47,9 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
 
 
 extension UserIdConfiguration {
+    /// E-Mail-Address-based user id.
     public static let emailAddress = UserIdConfiguration(type: .emailAddress, contentType: .username, keyboardType: .emailAddress)
+    /// Arbitrary username-based user id.
     public static let username = UserIdConfiguration(type: .username, contentType: .username)
 }
 
