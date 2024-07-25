@@ -22,7 +22,7 @@ struct ExistingAccountView<Continue: View>: View {
     var body: some View {
         VStack {
             VStack {
-                AccountSummaryBox(details: accountDetails) // TODO: how to keep that customizable?
+                AccountSummaryBox(details: accountDetails)
 
                 AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
                     let service = account.accountService

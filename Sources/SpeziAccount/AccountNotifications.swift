@@ -10,7 +10,7 @@ import Foundation
 import Spezi
 
 
-public final class AccountNotifications { // TODO: environment accessible?
+public final class AccountNotifications {
     public struct Event {
         public let rawValue: String
 
@@ -21,7 +21,7 @@ public final class AccountNotifications { // TODO: environment accessible?
 
     @StandardActor private var standard: any Standard
 
-    @Dependency private var storage: AccountStorage2
+    @Dependency private var storage: ExternalAccountStorage
 
     private var notifyStandard: (any AccountNotifyConstraint)? {
         standard as? any AccountNotifyConstraint
@@ -42,11 +42,10 @@ public final class AccountNotifications { // TODO: environment accessible?
 
     // TODO: can we somehow enforce that the account services reports the deletingAccount event?
 
+    @_spi(AccountService)
     @MainActor
-    public func reportEvent(_ event: Event, for accountId: String) async throws { // TODO: AccountService SPI?
-        // TODO: should be able to be try throwing? => e.g. ensure something is cleanup before something else happens?
+    public func reportEvent(_ event: Event, for accountId: String) async throws {
         try await notifyStandard?.respondToEvent(event)
-
 
         switch event {
         case .deletingAccount:
@@ -110,4 +109,4 @@ extension AccountNotifications.Event: ExpressibleByStringLiteral {
 }
 
 
-extension AccountNotifications: Module, DefaultInitializable, @unchecked Sendable {}
+extension AccountNotifications: Module, DefaultInitializable, EnvironmentAccessible, @unchecked Sendable {}

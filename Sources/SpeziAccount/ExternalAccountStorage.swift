@@ -10,8 +10,7 @@ import Foundation
 import Spezi
 
 
-// TODO: call external account storage!
-public final class AccountStorage2 { // TODO: rename the other to AccountRepository
+public final class ExternalAccountStorage {
     private nonisolated(unsafe) weak var storageProvider: (any AccountStorageProvider)?
 
     init(_ storageProvider: (any AccountStorageProvider)?) {
@@ -35,6 +34,7 @@ public final class AccountStorage2 { // TODO: rename the other to AccountReposit
     // Storage -> Service
     // TODO: notification about updated user details!
 
+    @_spi(AccountService)
     public func requestExternalStorage(of details: AccountDetails, for accountId: String) async throws {
 
         // TODO: store additional details after signup
@@ -51,6 +51,7 @@ public final class AccountStorage2 { // TODO: rename the other to AccountReposit
     }
 
 
+    @_spi(AccountService)
     public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) throws -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
@@ -76,6 +77,7 @@ public final class AccountStorage2 { // TODO: rename the other to AccountReposit
     }
 
 
+    @_spi(AccountService)
     public func updateExternalStorage(with modifications: AccountModifications, for accountId: String) async throws {
         guard let storageProvider else {
             // TODO: any earlier point to tell them about misconfiguration?
@@ -92,11 +94,11 @@ public final class AccountStorage2 { // TODO: rename the other to AccountReposit
     }
 
     func userWillDisassociate(for accountId: String) {
-        storageProvider?.clear(accountId)
+        storageProvider?.disassociate(accountId)
     }
 
     // TODO: we can call disassociation ourselves! (we need to know before to preserve the account id!) => events? but then we cannot throw?
 }
 
 
-extension AccountStorage2: Module, DefaultInitializable, Sendable {}
+extension ExternalAccountStorage: Module, DefaultInitializable, Sendable {}

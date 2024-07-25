@@ -93,7 +93,14 @@ public final class Account {
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
 
 
-    @MainActor public let accountService: (any AccountService) // TODO: this should be weak, (just make it private?)
+    @MainActor private weak var _accountService: (any AccountService)?
+
+    @MainActor public var accountService: any AccountService { // TODO: try to remove this access!
+        guard let service = _accountService else {
+            preconditionFailure("Tried to access account service that was deallocated!")
+        }
+        return service
+    }
 
     let accountSetupComponents: [AnyAccountSetupComponent] // TODO: should that be public?
     let securityRelatedModifiers: [AnySecurityModifier]
@@ -112,7 +119,7 @@ public final class Account {
 
         self._signedIn = details != nil
         self._details = details
-        self.accountService = service
+        self.__accountService = service
 
 
         let mirror = Mirror(reflecting: service)
@@ -160,9 +167,9 @@ public final class Account {
     ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
     ///     This is primarily helpful for identity providers. You might not want to set this flag
     ///     if you using the builtin ``SignupForm``!
+    @_spi(AccountService)
     @MainActor
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
-        // TODO: remove Standard interaction, make non-async
         precondition(
             details.contains(AccountIdKey.self),
             """
@@ -171,6 +178,11 @@ public final class Account {
             will result in those components breaking.
             """
         )
+
+        guard let accountService = _accountService else {
+            assertionFailure("The account service was deallocated.")
+            return
+        }
 
         var details = details
         details.patchAccountServiceConfiguration(accountService.configuration)
@@ -187,6 +199,7 @@ public final class Account {
             signedIn = true
         }
 
+        // TODO: can events just capture state, => capture details here, then we can make it detached task, method sync!
         if isUpdating {
             try await notifications.reportEvent(.detailsChanged, for: details.accountId)
         } else {
@@ -198,10 +211,13 @@ public final class Account {
     ///
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
+    @_spi(AccountService) // TODO: that just removes it form the docs?
     @MainActor
-    public func removeUserDetails() async {
+    public func removeUserDetails() {
         if let details {
-            try? await notifications.reportEvent(.disassociatingAccount, for: details.accountId)
+            Task { @MainActor in
+                try? await notifications.reportEvent(.disassociatingAccount, for: details.accountId)
+            }
         }
 
 

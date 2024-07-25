@@ -80,10 +80,10 @@ public final class MockAccountService: AccountService { // TODO: just write an f
 
     @Dependency private var account: Account
     @Dependency private var notifications: AccountNotifications
-    @Dependency private var externalStorage: AccountStorage2
+    @Dependency private var externalStorage: ExternalAccountStorage
 
     @IdentityProvider(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
-    @IdentityProvider private var testButton2 = CustomServiceButton()
+    @IdentityProvider private var testButton2 = CustomServiceButton() // TODO: anonymous login?
     @IdentityProvider(placement: .external) private var signInWithApple = MockSignInWithAppleButton()
 
     // TODO: @SecurityRelatedModifier private var securityAlert = NoopModifier()

@@ -69,7 +69,7 @@ public protocol AccountStorageProvider: Module {
     /// This method is useful to clear any data of the currently cached user.
     ///
     /// - Parameter identifier: The primary identifier for stored record.
-    func clear(_ accountId: String) // TODO: update naming!
+    func disassociate(_ accountId: String)
 
     /// Delete all associated account data.
     ///

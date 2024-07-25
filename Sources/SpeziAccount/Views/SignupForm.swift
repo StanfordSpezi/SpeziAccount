@@ -53,7 +53,7 @@ public struct DefaultSignupFormHeader: View { // TODO: generalize this view?
 /// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
 public struct SignupForm<Header: View>: View {
     private let header: Header
-    private let signupClosure: (AccountDetails) async throws -> Void // TODO: provide credentials as a separate struct?
+    private let signupClosure: (AccountDetails) async throws -> Void
 
     @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
