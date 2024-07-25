@@ -9,11 +9,49 @@
 import SpeziFoundation
 
 
+private struct RemoveVisitor: AccountKeyVisitor {
+    private var details: AccountDetails
+
+    init(_ details: AccountDetails) {
+        self.details = details
+    }
+
+    mutating func visit<Key: AccountKey>(_ key: Key.Type) {
+        details.remove(key)
+    }
+
+    func final() -> AccountDetails {
+        details
+    }
+}
+
+
+private struct CopyVisitor: AccountValueVisitor {
+    private var details: AccountDetails
+    private let allowOverwrite: Bool
+
+    init(_ details: AccountDetails, allowOverwrite: Bool) {
+        self.details = details
+        self.allowOverwrite = allowOverwrite
+    }
+
+    mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
+        if allowOverwrite || !details.contains(Key.self) {
+            details.storage.set(key, value: value)
+        }
+    }
+
+    func final() -> AccountDetails {
+        details
+    }
+}
+
+
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
 public struct AccountDetails {
-    private(set) var storage: AccountStorage
+    var storage: AccountStorage // TODO: fileprivate?
 
 
     /// Initialize empty account details.
@@ -87,6 +125,7 @@ extension AccountDetails {
     /// Check if the provided type-erased `AccountKey` is stored in the collection.
     /// - Parameter key: The account key to check existence for.
     /// - Returns: Returns `true` if the a value is stored for the given `AccountKey`.
+    @_disfavoredOverload
     public func contains(_ key: any AccountKey.Type) -> Bool {
         key.anyContains(in: self)
     }
@@ -96,10 +135,31 @@ extension AccountDetails {
     ///   - values: The account details to add.
     ///   - merge: If `true` values contained in `values` will overwrite values already stored in `self`.
     /// - Returns: The resulting values containing the combination of both collections.
-    public func add(contentsOf values: AccountDetails, merge: Bool = false) -> Self {
-        let build = AccountValuesBuilder(from: storage)
-        build.merging(values, allowOverwrite: merge) // TODO: rename as well!
-        return build.build()
+    public mutating func add(contentsOf values: AccountDetails, merge: Bool = false) {
+        var visitor = CopyVisitor(self, allowOverwrite: merge)
+        storage = values.acceptAll(&visitor).storage
+    }
+
+    public mutating func remove<Key: AccountKey>(_ key: Key.Type) { // TODO: remove any key?
+        storage[key] = nil // TODO: KeyPath based one? (or just dynamicMemberLookup nil?
+    }
+
+    // TODO: public func remove<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> Self {
+
+    @_disfavoredOverload
+    public mutating func remove(_ key: any AccountKey.Type) {
+        key.anyRemove(in: &self)
+    }
+
+    @_disfavoredOverload
+    public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
+        var visitor = RemoveVisitor(self)
+        storage = keys.acceptAll(&visitor).storage
+    }
+
+    public mutating func removeAll(_ keys: [any AccountKey.Type]) {
+        var visitor = RemoveVisitor(self)
+        storage = keys.acceptAll(&visitor).storage
     }
 }
 
@@ -107,5 +167,9 @@ extension AccountDetails {
 extension AccountKey {
     fileprivate static func anyContains(in details: AccountDetails) -> Bool {
         details.contains(Self.self)
+    }
+
+    fileprivate static func anyRemove(in details: inout AccountDetails) {
+        details.remove(Self.self)
     }
 }

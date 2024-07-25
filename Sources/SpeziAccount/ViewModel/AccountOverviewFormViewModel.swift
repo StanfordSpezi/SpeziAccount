@@ -130,7 +130,7 @@ class AccountOverviewFormViewModel {
                 addedAccountKeys.remove(at: addedValueIndex, for: value.category)
 
                 // make sure we discard potential changes
-                modifiedDetailsBuilder.remove(any: value)
+                modifiedDetailsBuilder.remove(value)
             } else {
                 // a removed account key that is still present in the current account details
                 removedAccountKeys.append(value)

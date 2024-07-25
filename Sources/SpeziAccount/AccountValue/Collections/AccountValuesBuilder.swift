@@ -10,36 +10,6 @@ import Foundation
 import SpeziFoundation
 
 
-private class RemoveVisitor: AccountKeyVisitor {
-    let builder: AccountValuesBuilder
-
-    init(builder: AccountValuesBuilder) {
-        self.builder = builder
-    }
-
-    func visit<Key: AccountKey>(_ key: Key.Type) {
-        builder.remove(key)
-    }
-}
-
-
-private class CopyVisitor: AccountValueVisitor {
-    let builder: AccountValuesBuilder
-    let allowOverwrite: Bool
-
-    init(builder: AccountValuesBuilder, allowOverwrite: Bool) {
-        self.builder = builder
-        self.allowOverwrite = allowOverwrite
-    }
-
-    func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
-        if allowOverwrite || !builder.contains(Key.self) {
-            builder.set(key, value: value)
-        }
-    }
-}
-
-
 private class CopyKeyVisitor: AccountKeyVisitor {
     let destination: AccountValuesBuilder
     let source: AccountDetails
@@ -88,29 +58,19 @@ private class CopyKeyVisitor: AccountKeyVisitor {
 /// - ``AccountValuesBuilder/build(checking:)``
 @Observable
 public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
-    public func contains(_ key: any AccountKey.Type) -> Bool {
-        // TODO: implement?
-        preconditionFailure("Not implemented!")
-    }
-    
-    var storage: AccountStorage
-    var defaultValues: AccountStorage
-
-
-    init(from storage: AccountStorage) {
-        self.storage = storage
-        self.defaultValues = AccountStorage()
-    }
+    var storage: AccountDetails
+    var defaultValues: AccountDetails
 
     /// Initialize a new empty builder.
     public convenience init() {
-        self.init(from: AccountStorage())
+        self.init(from: AccountDetails())
     }
 
     /// Initialize a new builder by copying the contents of a ``AccountValues`` instance.
     /// - Parameter storage: The storage to copy all values from.
-    public convenience init(from storage: AccountDetails) {
-        self.init(from: storage.storage)
+    public init(from storage: AccountDetails) {
+        self.storage = AccountDetails()
+        self.defaultValues = AccountDetails()
     }
 
 
@@ -123,7 +83,7 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Parameter key: The ``AccountKey`` metatype.
     /// - Returns: The value is present.
     public func get<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
-        storage.get(key)
+        storage.storage.get(key) // TODO: naming
     }
 
     /// Store a new value in the builder.
@@ -133,13 +93,13 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        storage[Key.self] = value
+        storage.storage[Key.self] = value // TODO: naming
         return self
     }
 
     @discardableResult
     func set<Key: AccountKey>(_ key: Key.Type, defaultValue: Key.Value) -> Self {
-        defaultValues[Key.self] = defaultValue
+        defaultValues.storage[Key.self] = defaultValue
         return self
     }
 
@@ -156,11 +116,11 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// Merge all values from a ``AccountValues`` instance into this builder.
     /// - Parameters:
     ///   - values: The values.
-    ///   - allowOverwrite: Flag controls if the supplied values might overwrite values in the builder
+    ///   - merge: Flag controls if the supplied values might overwrite values in the builder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func merging(_ values: AccountDetails, allowOverwrite: Bool) -> Self {
-        values.acceptAll(CopyVisitor(builder: self, allowOverwrite: allowOverwrite))
+    public func add(contentsOf values: AccountDetails, merge: Bool = false) -> Self {
+        storage.add(contentsOf: values, merge: merge)
         return self
     }
 
@@ -183,7 +143,7 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     public func remove<Key: AccountKey>(_ key: Key.Type) -> Self {
-        storage[key] = nil
+        storage.remove(key)
         return self
     }
 
@@ -199,8 +159,9 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Parameter accountKey: The type-erased ``AccountKey``.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func remove(any accountKey: any AccountKey.Type) -> Self {
-        accountKey.accept(RemoveVisitor(builder: self))
+    @_disfavoredOverload
+    public func remove(_ key: any AccountKey.Type) -> Self {
+        storage.remove(key)
         return self
     }
 
@@ -208,8 +169,13 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Parameter keys: The collection of metatypes (e.g., an array or ``AccountKeyCollection``).
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func remove<Keys: AcceptingAccountKeyVisitor>(all keys: Keys) -> Self {
-        keys.acceptAll(RemoveVisitor(builder: self))
+    public func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) -> Self {
+        storage.removeAll(keys)
+        return self
+    }
+
+    public func removeAll(_ keys: [any AccountKey.Type]) -> Self {
+        storage.removeAll(keys)
         return self
     }
 
@@ -217,20 +183,22 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Parameter key: The ``AccountKey`` metatype to check if a value exists.
     /// - Returns: Returns `true` if present, otherwise `false`.
     public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
-        storage.contains(Key.self)
+        storage.contains(Key.self) // TODO: contains visitor?
+    }
+
+    public func contains(_ key: any AccountKey.Type) -> Bool {
+        // TODO: implement?
+        preconditionFailure("Not implemented!")
     }
 
     /// Build a new storage instance.
     /// - Returns: The built ``AccountValues``.
     public func build() -> AccountDetails {
         if !defaultValues.isEmpty {
-            // .merge(with:allowOverwrite:) is implemented using account values builder.
-            // without this isEmpty check we would run an infinite recursion.
-            // Calling merge on the built container ensures that this build() method doesn't have any side effects.
-            return AccountDetails(from: storage)
-                .add(contentsOf: AccountDetails(from: defaultValues), merge: false)
+            storage.add(contentsOf: defaultValues, merge: false)
+            return storage
         } else {
-            return AccountDetails(from: storage)
+            return storage
         }
     }
 }

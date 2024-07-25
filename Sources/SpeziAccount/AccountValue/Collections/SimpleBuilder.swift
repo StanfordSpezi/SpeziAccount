@@ -9,40 +9,42 @@
 
 
 @dynamicMemberLookup
-public struct SimpleBuilder { // TODO: move the whole thing somewhere!
+public class SimpleBuilder { // TODO: move the whole thing somewhere!
     // TODO: why do we have the builder thing, if we can just mutate the details themselves?
     // TODO: => if we do the subscript thing, we could do an @Entry like macro! (bit weird from a docs perspective but okay!)
 
     // TODO: if we make AccountDetails do @dynamicMemberLookup, we could do an @Entry like macro! (bit weird from a docs perspective but okay!)
-    private let builder: AccountValuesBuilder
+    private var details: AccountDetails
 
     init() {
-        self.builder = AccountValuesBuilder()
+        self.details = AccountDetails()
     }
 
+    // TODO: are builders even even still required? moving dynamic member lookup to details, it should not be required (except for visitor pattern?)
+
     fileprivate func build() -> AccountDetails {
-        builder.build()
+        details
     }
 
     public subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
         get {
-            builder.get(Key.self)
+            details.storage.get(Key.self)
         }
-        nonmutating set {
-            builder.set(Key.self, value: newValue)
+        set {
+            details.storage.set(Key.self, value: newValue)
         }
     }
 
     public func add(contentsOf values: AccountDetails, merge: Bool = false) {
-        builder.merging(values, allowOverwrite: merge)
+        details.add(contentsOf: values, merge: merge)
     }
 
     public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) {
-        builder.set(key, value: value)
+        details.storage.set(key, value: value)
     }
 
     public func removeAll(_ keys: [any AccountKey.Type]) {
-        builder.remove(all: keys)
+        details.removeAll(keys)
     }
 }
 
