@@ -11,6 +11,9 @@ import Spezi
 import SwiftUI
 
 
+// TODO: can we somehow enforce that the account services reports the deletingAccount event?
+
+
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
 /// The `Account` object is responsible to manage the state of the currently logged in user.
@@ -111,7 +114,7 @@ public final class Account {
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
     init(
-        service: some AccountService, // TODO: allow any AccountService?
+        service: some AccountService,
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
@@ -124,13 +127,12 @@ public final class Account {
 
         let mirror = Mirror(reflecting: service)
         self.accountSetupComponents = mirror.children.reduce(into: []) { partialResult, property in
-            // TODO: support nesting with ViewProviding!
             guard let provider = property.value as? AnyIdentityProvider else {
                 return
             }
 
             partialResult.append(provider.component)
-        } // TODO: sort by placement (only if we disallow to enable that?)
+        }
         self.securityRelatedModifiers = mirror.children.reduce(into: [], { partialResult, property in
             guard let modifier = property.value as? AnySecurityRelatedModifier else {
                 return
@@ -168,7 +170,7 @@ public final class Account {
     ///     This is primarily helpful for identity providers. You might not want to set this flag
     ///     if you using the builtin ``SignupForm``!
     @MainActor
-    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
+    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) {
         precondition(
             details.contains(AccountIdKey.self),
             """
@@ -190,7 +192,7 @@ public final class Account {
             details.patchIsNewUser(true)
         }
 
-        let isUpdating = self.details != nil
+        let previousDetails = self.details
 
         self.details = details
 
@@ -198,11 +200,16 @@ public final class Account {
             signedIn = true
         }
 
-        // TODO: can events just capture state, => capture details here, then we can make it detached task, method sync!
-        if isUpdating {
-            try await notifications.reportEvent(.detailsChanged, for: details.accountId)
-        } else {
-            try await notifications.reportEvent(.associatedAccount, for: details.accountId)
+        Task { @MainActor [notifications, previousDetails, details] in
+            do {
+                if let previousDetails {
+                    try await notifications.reportEvent(.detailsChanged(previousDetails, details))
+                } else {
+                    try await notifications.reportEvent(.associatedAccount(details))
+                }
+            } catch {
+                logger.error("Account Association event failed unexpectedly: \(error)")
+            }
         }
     }
 
@@ -213,8 +220,12 @@ public final class Account {
     @MainActor
     public func removeUserDetails() {
         if let details {
-            Task { @MainActor in
-                try? await notifications.reportEvent(.disassociatingAccount, for: details.accountId)
+            Task { @MainActor [notifications, details] in
+                do {
+                    try await notifications.reportEvent(.disassociatingAccount(details))
+                } catch {
+                    logger.error("Account Disassociation event failed unexpectedly: \(error)")
+                }
             }
         }
 

@@ -115,6 +115,7 @@ public final class AccountConfiguration<Service: AccountService> {
         self._externalStorage = Dependency(wrappedValue: ExternalAccountStorage(storageProvider))
     }
 
+    /// Configure the module.
     @MainActor
     public func configure() {
         // assemble the final array of account services

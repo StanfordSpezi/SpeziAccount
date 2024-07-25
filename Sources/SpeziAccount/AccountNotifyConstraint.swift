@@ -14,5 +14,5 @@ public protocol AccountNotifyConstraint: Standard {
     /// Notifies the Standard that an event for the currently associated user occurred.
     ///
     /// For more information refer to ``AccountNotifications/Event``.
-    func respondToEvent(_ event: AccountNotifications.Event) async throws
+    func respondToEvent(_ event: AccountNotifications.Event) async
 }

@@ -10,23 +10,6 @@ import SpeziFoundation
 import SwiftUI
 
 
-extension AccountKey where Value: StringProtocol {
-    /// Default DataDisplay for String-based values using ``StringBasedDisplayView``.
-    public typealias DataDisplay = StringBasedDisplayView<Self>
-}
-
-extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
-    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values using ``LocalizableStringBasedDisplayView``.
-    public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
-}
-
-
-extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessCollection {
-    /// Default DataEntry view for Values that conform to ``PickerValue`` (typically useful with enums)
-    public typealias DataEntry = CaseIterablePickerEntryView<Self>
-}
-
-
 @MainActor
 extension AccountKey {
     static func emptyDataEntryView() -> AnyView {

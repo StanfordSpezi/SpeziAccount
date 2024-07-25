@@ -10,9 +10,19 @@ import Foundation
 import Spezi
 
 
-public final class ExternalAccountStorage {
+/// Interact with an external storage provider.
+///
+/// Some ``AccountService`` implementations might not support storing arbitrary ``AccountDetails``. Therefore, it is required to store these additional account details using an
+/// external ``AccountStorageProvider``.
+/// This module is used to interact with an external storage provider.
+public final class ExternalAccountStorage { // TODO: docs example + topics!
+    /// Capture details that are externally stored, associated with their account id.
     public struct ExternallyStoredDetails {
+        /// The account id the storage details are associated with.
+        ///
+        /// Fore more information refer to ``AccountIdKey``.
         public let accountId: String
+        /// The details that are stored externally.
         public let details: AccountDetails
     }
 
@@ -21,7 +31,12 @@ public final class ExternalAccountStorage {
     private nonisolated(unsafe) var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
     private let lock = NSLock()
 
-    public var detailUpdates: AsyncStream<ExternallyStoredDetails> { // TODO: think about name!
+
+    /// Subscribe to updated details received from the storage provider.
+    ///
+    /// A storage provider might notify the storage module of externally modified account details (e.g., a user modifying their details from another system).
+    /// This async stream yields all updated details received from the external storage provider via ``notifyAboutUpdatedDetails(for:_:)``.
+    public var updatedDetails: AsyncStream<ExternallyStoredDetails> {
         AsyncStream { continuation in
             let id = UUID()
             lock.withLock {
@@ -32,7 +47,7 @@ public final class ExternalAccountStorage {
                     return
                 }
                 lock.withLock {
-                    self.subscriptions[id] = nil // TODO: no need to finish right?
+                    self.subscriptions[id] = nil
                 }
             }
         }
@@ -43,11 +58,22 @@ public final class ExternalAccountStorage {
     }
 
 
+    /// Initialize the external account storage module.
     public convenience init() {
         self.init(nil)
     }
 
-    public func notifyAboutUpdatedDetails(for accountId: String, _ details: AccountDetails) { // TODO: think about name!
+    /// Notify the account service about changes in the external record.
+    ///
+    /// This method is called by the ``AccountStorageProvider`` to notify the ``AccountService`` that the externally stored records changed, e.g., due to a change
+    /// in an external system.
+    ///
+    /// - Note: The `AccountService` can use the ``updatedDetails`` stream to subscribe to receiving updated account details.
+    ///
+    /// - Parameters:
+    ///   - accountId: The account id for which details changed.
+    ///   - details: All externally stored account details with updated values.
+    public func notifyAboutUpdatedDetails(for accountId: String, _ details: AccountDetails) {
         let update = ExternallyStoredDetails(accountId: accountId, details: details)
 
         lock.withLock {
@@ -57,34 +83,29 @@ public final class ExternalAccountStorage {
         }
     }
 
-    // Service -> Storage
-    // TODO: signal disassociation of user (clear cache and snapshot listener?)
-    // TODO: loadAll (e.g., login => locally cache data and register snapshot listener)
-    //    => load should be sync! either you have something cached or you tell use later what the details are (all account keys are optional anyways?)
-    //    => do we need to mark the account details incomplete?
-    // TODO: create: signal fresh creation (maybe default implementation that overloads to modify? or maybe not, you can do that yourself)
-    // TODO: modification: (e.g., removed vs updated details)
-    // TODO: delete: delete the whole user record
-
-    // Storage -> Service
-    // TODO: notification about updated user details!
-
+    /// Request external storage of account details.
+    ///
+    /// - Parameters:
+    ///   - details: The set of account values that need to be stored externally.
+    ///   - accountId: The account id with which the details are associated.
     public func requestExternalStorage(of details: AccountDetails, for accountId: String) async throws {
-
-        // TODO: store additional details after signup
         guard !details.isEmpty else {
             return
         }
 
         guard let storageProvider else {
-            // TODO: any earlier point to tell them about misconfiguration?
-            preconditionFailure("Requested to store stuff, but nothing found!")
+            preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
         try await storageProvider.create(accountId, details)
     }
 
 
+    /// Retrieve externally stored account details.
+    ///
+    /// - Parameters:
+    ///   - accountId: The account id for which account details should be retrieved from the external storage.
+    ///   - keys: The list of keys that are known to be stored externally.
     public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
@@ -97,8 +118,7 @@ public final class ExternalAccountStorage {
          .map { $0.key }
          */
         guard let storageProvider else {
-            // TODO: any earlier point to tell them about misconfiguration?
-            preconditionFailure("Requested to store stuff, but nothing found!")
+            preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
         guard let details = try await storageProvider.load(accountId, keys) else {
@@ -110,10 +130,14 @@ public final class ExternalAccountStorage {
     }
 
 
+    /// Update an externally stored record.
+    ///
+    /// - Parameters:
+    ///   - modifications: The modifications that need to be applied to the existing record.
+    ///   - accountId: The account id with which the details are associated with.
     public func updateExternalStorage(with modifications: AccountModifications, for accountId: String) async throws {
         guard let storageProvider else {
-            // TODO: any earlier point to tell them about misconfiguration?
-            preconditionFailure("Requested to store stuff, but nothing found!")
+            preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
         try await storageProvider.modify(accountId, modifications)
@@ -122,14 +146,11 @@ public final class ExternalAccountStorage {
     @MainActor
     func willDeleteAccount(for accountId: String) async throws {
         try await storageProvider?.delete(accountId)
-
     }
 
     func userWillDisassociate(for accountId: String) async {
         await storageProvider?.disassociate(accountId)
     }
-
-    // TODO: we can call disassociation ourselves! (we need to know before to preserve the account id!) => events? but then we cannot throw?
 }
 
 

@@ -30,6 +30,12 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 }
 
 
+extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
+    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values using ``LocalizableStringBasedDisplayView``.
+    public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
+}
+
+
 #if compiler(<6)
 extension Swift.Bool: Foundation.CustomLocalizedStringResourceConvertible {}
 #else

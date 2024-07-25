@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziFoundation
 import SwiftUI
 
 
@@ -15,6 +16,19 @@ import SwiftUI
 /// `CustomLocalizedStringResourceConvertible` to provide a localizable representation for each case and `Hashable`
 /// to differentiate cases.
 public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
+
+
+public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
+    @Binding private var value: Key.Value
+
+    public var body: some View {
+        CaseIterablePicker(Key.name, value: $value)
+    }
+
+    public init(_ value: Binding<Key.Value>) {
+        self._value = value
+    }
+}
 
 
 public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
@@ -47,62 +61,30 @@ public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Va
 }
 
 
-import SpeziFoundation
-public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
-    @Binding private var value: Key.Value
-
-    public var body: some View {
-        CaseIterablePicker(Key.name, value: $value)
-    }
-
-    public init(_ value: Binding<Key.Value>) {
-        self._value = value
-    }
-}
-
-
-// TODO: replae GenderIdentityPicker with the picker above!
-/// A simple `Picker` implementation for ``GenderIdentity`` entry.
-public struct GenderIdentityPicker: View {
-    private let titleLocalization: LocalizedStringResource
-
-    @Binding private var genderIdentity: GenderIdentity
-    
-    public var body: some View {
-        CaseIterablePicker(titleLocalization, value: $genderIdentity)
-    }
-
-    /// Initialize a new `GenderIdentityPicker`.
-    /// - Parameters:
-    ///   - genderIdentity: A binding to the ``GenderIdentity`` state.
-    ///   - customTitle: Optionally provide a custom label text.
-    public init(
-        genderIdentity: Binding<GenderIdentity>,
-        title customTitle: LocalizedStringResource? = nil
-    ) {
-        self._genderIdentity = genderIdentity
-        self.titleLocalization = customTitle ?? GenderIdentityKey.name
-    }
+extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessCollection {
+    /// Default DataEntry view for Values that conform to ``PickerValue`` (typically useful with enums)
+    public typealias DataEntry = CaseIterablePickerEntryView<Self>
 }
 
 
 #if DEBUG
-struct GenderIdentityPicker_Previews: PreviewProvider {
-    @State private static var genderIdentity: GenderIdentity = .male
-    
-    
-    static var previews: some View {
-        Form {
-            Grid {
-                GenderIdentityPicker(genderIdentity: $genderIdentity)
-            }
-        }
+#Preview {
+    @State var genderIdentity: GenderIdentity = .male
 
+    return Form {
         Grid {
-            GenderIdentityPicker(genderIdentity: $genderIdentity)
+            CaseIterablePickerEntryView<GenderIdentityKey>($genderIdentity)
         }
-            .padding(32)
-            .background(Color(.systemGroupedBackground))
     }
+}
+
+#Preview {
+    @State var genderIdentity: GenderIdentity = .male
+
+    return Grid {
+        CaseIterablePickerEntryView<GenderIdentityKey>($genderIdentity)
+    }
+        .padding(32)
+        .background(Color(.systemGroupedBackground))
 }
 #endif

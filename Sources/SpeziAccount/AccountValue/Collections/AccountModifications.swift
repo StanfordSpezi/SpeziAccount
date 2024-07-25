@@ -14,6 +14,9 @@ public struct AccountModifications {
     /// The set of removed ``AccountKey``s.
     public let removedAccountDetails: AccountDetails
 
+    /// The list of removed account keys.
+    ///
+    /// This property is derived from ``removedAccountDetails`` which also provides access to the removed values.
     public var removedAccountKeys: [any AccountKey.Type] {
         removedAccountDetails.keys
     }

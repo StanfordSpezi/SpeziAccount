@@ -128,10 +128,9 @@ public final class MockAccountService: AccountService { // TODO: just write an f
             let externallyStored = try await externalStorage.retrieveExternalStorage(for: accountId, [])
             details.add(contentsOf: externallyStored)
         }
-        // TODO: use new builder here and everywhere!
 
         let account = account
-        try await account.supplyUserDetails(details)
+        account.supplyUserDetails(details)
     }
 
     public func signUp(signupDetails: AccountDetails) async throws {
@@ -150,7 +149,7 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         // TODO: simulate external storage?
 
         let account = account
-        try await account.supplyUserDetails(details)
+        account.supplyUserDetails(details)
     }
 
     public func resetPassword(userId: String) async throws {
@@ -172,7 +171,7 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         print("Mock Remove Account")
 
         let notifications = notifications
-        try await notifications.reportEvent(.deletingAccount, for: details.accountId)
+        try await notifications.reportEvent(.deletingAccount(details.accountId))
 
         try await Task.sleep(for: .seconds(1))
         let account = account
@@ -197,6 +196,6 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         }
 
         // TODO: split out and notify external storage!
-        try await account.supplyUserDetails(updatedDetails)
+        account.supplyUserDetails(updatedDetails)
     }
 }

@@ -10,13 +10,34 @@ import Foundation
 import Spezi
 
 
+/// Manage Account events and notifications.
+///
+/// This module implements a notification system for Account-related events.
+///
+/// ## Topics
+///
+/// ### Subscribing to events
+/// - ``events``
+/// - ``Event``b
+///
+/// ### Reporting events
+/// - ``reportEvent(_:)``
 public final class AccountNotifications {
-    public struct Event {
-        public let rawValue: String
-
-        public init(rawValue: String) {
-            self.rawValue = rawValue
-        }
+    /// Describes an Account event.
+    public enum Event {
+        /// The currently associated user account is about to be deleted.
+        ///
+        /// This event signals that the user requested to have their account deleted and the user's data is about to be deleted.
+        ///
+        /// - Note: Make sure to report this event before the account is deleted. Deletion might be forwarded to an external ``AccountStorageProvider`` which
+        ///     might report an error if it fails to fully delete the associated user data.
+        case deletingAccount(_ accountId: String)
+        /// A new account was associated due to a login or signup operation.
+        case associatedAccount(_ details: AccountDetails)
+        /// The details of the currently associated Account changed.
+        case detailsChanged(_ previous: AccountDetails, _ new: AccountDetails)
+        /// The account with the given details is being disassociated (e.g., logout or deletion).
+        case disassociatingAccount(_ details: AccountDetails)
     }
 
     @StandardActor private var standard: any Standard
@@ -32,25 +53,32 @@ public final class AccountNotifications {
     private let lock = NSLock()
 
 
+    /// Subscribe to event notifications.
+    ///
+    /// Use the async stream to await all future events.
     public var events: AsyncStream<Event> {
         newSubscription()
     }
 
-    
+
+    /// Initialize the notifications subsystem.
     public init() {}
 
 
-    // TODO: can we somehow enforce that the account services reports the deletingAccount event?
-
+    /// Report an event to the account subsystem.
+    ///
+    /// This method is used by an ``AccountService`` to report an event.
+    /// - Note: The ``Event/deletingAccount(_:)`` is the only event that an ``AccountService`` has to manually report to the Account module.
+    /// - Parameter event: The event that occurred.
     @MainActor
-    public func reportEvent(_ event: Event, for accountId: String) async throws {
-        try await notifyStandard?.respondToEvent(event)
+    public func reportEvent(_ event: Event) async throws {
+        await notifyStandard?.respondToEvent(event)
 
         switch event {
-        case .deletingAccount:
+        case let .deletingAccount(accountId):
             try await storage.willDeleteAccount(for: accountId)
-        case .disassociatingAccount:
-            await storage.userWillDisassociate(for: accountId)
+        case let .disassociatingAccount(details):
+            await storage.userWillDisassociate(for: details.accountId)
         default:
             break
         }
@@ -83,29 +111,7 @@ public final class AccountNotifications {
 }
 
 
-extension AccountNotifications.Event {
-    /// The currently associated user account is about to be deleted.
-    ///
-    /// This event signals that the user requested to have their account deleted and the user's data is about to be deleted.
-    /// This event is reported before the ``AccountService`` deletes any user data and therefore the user ``Account/details`` are still accessible.
-    public static let deletingAccount: Self = "deletingAccount"
-
-    public static let associatedAccount: Self = "associatedAccount"
-
-    public static let detailsChanged: Self = "detailsChanged"
-
-    public static let disassociatingAccount: Self = "disassociatedAccount"
-}
-
-
-extension AccountNotifications.Event: Sendable, Hashable, RawRepresentable {}
-
-
-extension AccountNotifications.Event: ExpressibleByStringLiteral {
-    public init(stringLiteral value: StringLiteralType) {
-        self.init(rawValue: value)
-    }
-}
+extension AccountNotifications.Event: Sendable {}
 
 
 extension AccountNotifications: Module, DefaultInitializable, EnvironmentAccessible, @unchecked Sendable {}

@@ -27,6 +27,12 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
 }
 
 
+extension AccountKey where Value: StringProtocol {
+    /// Default DataDisplay for String-based values using ``StringBasedDisplayView``.
+    public typealias DataDisplay = StringBasedDisplayView<Self>
+}
+
+
 #if DEBUG
 #Preview {
     List {
