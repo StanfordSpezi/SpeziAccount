@@ -70,7 +70,7 @@ public struct AccountServiceConfiguration: Sendable {
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
-        supportedKeys: SupportedAccountKeys,
+        supportedKeys: SupportedAccountKeys, // TODO: might be able to remove supportedKeys?
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
     ) {
         self.storage = Self.createStorage(supportedKeys: supportedKeys, configuration: configuration())

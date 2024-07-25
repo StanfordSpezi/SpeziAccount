@@ -52,9 +52,11 @@ public protocol AccountValues: AccountValuesCollection {
 
 @dynamicMemberLookup
 public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thing somewhere!
-    private let builder = Values.Builder()
+    private let builder: Values.Builder
 
-    init() {}
+    init() {
+        self.builder = Values.Builder()
+    }
 
     fileprivate func build() -> Values {
         builder.build()
@@ -67,6 +69,15 @@ public struct SimpleBuilder<Values: AccountValues> { // TODO: move the whole thi
         nonmutating set {
             builder.set(Key.self, value: newValue)
         }
+    }
+
+    // TODO: add(contentsOf:merge:)??
+    public func add<V: AccountValues>(contentsOf values: V, merge: Bool = false) {
+        builder.merging(values, allowOverwrite: merge)
+    }
+
+    public func removeAll(_ keys: [any AccountKey.Type]) {
+        builder.remove(all: keys)
     }
 }
 

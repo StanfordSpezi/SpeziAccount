@@ -22,13 +22,15 @@ import XCTRuntimeAssertions
 ///
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration<Service: AccountService>: Module {
+public final class AccountConfiguration<Service: AccountService> {
     @Application(\.logger) private var logger
-    @Application(\.spezi) private var spezi
 
     // TODO: find a way to make the @Dependency work again with non-optional but initializer supplied values!
     @Dependency private var account: Account?
+    @Dependency private var externalStorage: AccountStorage2
+
     @Dependency private var accountService: Service?
+    @Dependency private var storageProvider: [any Module] // we store the storage provider in a type erased way! it is optional to supply!
 
     @StandardActor private var standard: any Standard
 
@@ -40,12 +42,19 @@ public final class AccountConfiguration<Service: AccountService>: Module {
     /// - Parameters:
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
-    @MainActor
     public convenience init(
         service: Service,
         configuration: AccountValueConfiguration = .default
     ) {
         self.init(accountService: service, configuration: configuration, defaultActiveDetails: nil)
+    }
+
+    public convenience init<Storage: AccountStorageProvider>(
+        service: Service,
+        storageProvider: Storage,
+        configuration: AccountValueConfiguration = .default
+    ) {
+        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: nil)
     }
 
     /// Configure the Account Module for previewing purposes with default `AccountDetails`.
@@ -55,7 +64,6 @@ public final class AccountConfiguration<Service: AccountService>: Module {
     ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     @_spi(TestingSupport)
-    @MainActor
     public convenience init( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,
         configuration: AccountValueConfiguration = .default,
@@ -64,7 +72,16 @@ public final class AccountConfiguration<Service: AccountService>: Module {
         self.init(accountService: service, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
-    @MainActor
+    @_spi(TestingSupport)
+    public convenience init<Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
+        service: Service,
+        storageProvider: Storage,
+        configuration: AccountValueConfiguration = .default,
+        activeDetails: AccountDetails
+    ) {
+        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: activeDetails)
+    }
+
     init(
         accountService: Service,
         configuration: AccountValueConfiguration = .default,
@@ -79,6 +96,26 @@ public final class AccountConfiguration<Service: AccountService>: Module {
         ))
     }
 
+    init<Storage: AccountStorageProvider>(
+        accountService: Service,
+        storageProvider: Storage,
+        configuration: AccountValueConfiguration = .default,
+        defaultActiveDetails: AccountDetails? = nil
+    ) {
+        self._accountService = Dependency(wrappedValue: accountService)
+        self._storageProvider = Dependency {
+            storageProvider
+        }
+
+        self._account = Dependency(wrappedValue: Account(
+            service: accountService,
+            supportedConfiguration: configuration,
+            details: defaultActiveDetails
+        ))
+        self._externalStorage = Dependency(wrappedValue: AccountStorage2(storageProvider))
+    }
+
+    @MainActor
     public func configure() {
         // assemble the final array of account services
         guard let account else {
@@ -91,36 +128,14 @@ public final class AccountConfiguration<Service: AccountService>: Module {
 
         // Verify account service can store all configured account keys.
         // If applicable, wraps the service into an StandardBackedAccountService
-        let service = verify(configurationRequirements: account.configuration, against: accountService)
-
-        account.reconfigureService(service)
-
-        var servicesYetToLoad: [any AccountService] = []
-        guard var standardBacked = service as? any _StandardBacked else {
-            return
-        }
-        servicesYetToLoad.append(standardBacked)
-
-        while let nestedBacked = standardBacked.accountService as? any _StandardBacked {
-            servicesYetToLoad.append(nestedBacked)
-            standardBacked = nestedBacked
-        }
-
-        if !servicesYetToLoad.isEmpty {
-            Task.detached { @MainActor in
-                // we cannot load additional modules within configure() so delay module loading a bit
-                for service in servicesYetToLoad {
-                    self.spezi.loadModule(service)
-                }
-            }
-        }
+        verify(configurationRequirements: account.configuration, against: accountService)
     }
 
     @MainActor
     private func verify(
         configurationRequirements configuration: AccountValueConfiguration,
         against service: Service
-    ) -> any AccountService {
+    ) {
         logger.debug("Checking \(service.description) against the configured account keys.")
 
         // if account service states exact supported keys, AccountIdKey must be one of them
@@ -141,18 +156,18 @@ public final class AccountConfiguration<Service: AccountService>: Module {
             .unsupportedAccountKeys(basedOn: configuration)
 
         guard !unmappedAccountKeys.isEmpty else {
-            return service // we are fine, nothing unsupported
+            return // we are fine, nothing unsupported
         }
 
 
-        if let accountStandard = standard as? any AccountStorageConstraint {
+        if let storageProvider = storageProvider.first {
             // we are also fine, we have a standard that can store any unsupported account values
             logger.debug("""
-                         The standard \(type(of: accountStandard)) is used to store the following account values that \
+                         The standard \(type(of: storageProvider)) is used to store the following account values that \
                          are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
 
                          """)
-            return service.backedBy(standard: accountStandard)
+            return
         }
 
         // When we reach here, we have no way to store the configured account value
@@ -171,3 +186,6 @@ public final class AccountConfiguration<Service: AccountService>: Module {
         )
     }
 }
+
+
+extension AccountConfiguration: Module {}

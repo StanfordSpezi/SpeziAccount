@@ -24,7 +24,7 @@ struct FollowUpInfoSheet: View {
 
     @Environment(Account.self) private var account
 
-    @State private var detailsBuilder = ModifiedAccountDetails.Builder()
+    @State private var detailsBuilder = AccountDetails.Builder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -85,7 +85,7 @@ struct FollowUpInfoSheet: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
 
-            SignupSectionsView(for: ModifiedAccountDetails.self, sections: accountKeyByCategory)
+            SignupSectionsView(sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(detailsBuilder)
@@ -122,10 +122,9 @@ struct FollowUpInfoSheet: View {
 
         isFocused = false
 
-        let modifiedDetails = try detailsBuilder.build(validation: true)
-        let removedDetails = RemovedAccountDetails.Builder().build()
+        let modifiedDetails = detailsBuilder.build()
 
-        let modifications = AccountModifications(modifiedDetails: modifiedDetails, removedAccountDetails: removedDetails)
+        let modifications = try AccountModifications(modifiedDetails: modifiedDetails)
 
         logger.debug("Finished additional account setup. Saving \(detailsBuilder.count) changes!")
 

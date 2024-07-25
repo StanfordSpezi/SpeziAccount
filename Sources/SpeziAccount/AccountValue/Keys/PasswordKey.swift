@@ -40,15 +40,11 @@ extension AccountKeys {
 }
 
 
-extension SignupDetails {
-    /// Access the password of a user in the ``SignupDetails``.
-    public var password: String? {
-        storage[PasswordKey.self]
-    }
-}
-
-extension ModifiedAccountDetails {
-    /// Access the changed password of a user in the ``ModifiedAccountDetails``.
+extension AccountDetails {
+    /// Access the password of a user.
+    ///
+    /// - Note: The password is generally not accessible and stored in plaintext. This property is only populated when the ``AccountDetails``
+    ///   contain signup details or modified details.
     public var password: String? {
         storage[PasswordKey.self]
     }

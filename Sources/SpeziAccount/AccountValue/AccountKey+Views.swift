@@ -28,27 +28,23 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 
 @MainActor
 extension AccountKey {
-    static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
-        AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: initialValue.value))
+    static func emptyDataEntryView() -> AnyView {
+        AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: initialValue.value))
     }
 
-    static func dataEntryViewWithStoredValueOrInitial<Values: AccountValues>(
-        details: AccountDetails,
-        for values: Values.Type
-    ) -> AnyView {
+    static func dataEntryViewWithStoredValueOrInitial(details: AccountDetails) -> AnyView {
         let value = details.storage.get(Self.self) ?? initialValue.value
-        return AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: value))
     }
 
-    static func dataEntryViewFromBuilder<Values: AccountValues>(
-        builder: ModifiedAccountDetails.Builder,
-        for values: Values.Type
+    static func dataEntryViewFromBuilder(
+        builder: AccountDetails.Builder
     ) -> AnyView? {
         guard let value = builder.get(Self.self) else {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<Self.DataEntry, Values>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: value))
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {

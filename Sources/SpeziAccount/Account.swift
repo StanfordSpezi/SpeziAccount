@@ -61,9 +61,9 @@ import SwiftUI
 /// - ``init(building:active:configuration:)``
 @Observable
 public final class Account {
-    private var logger: Logger {
-        LoggerKey.defaultValue
-    }
+    @Application(\.logger) @ObservationIgnored private var logger
+
+    @Dependency @ObservationIgnored private var notifications: AccountNotifications
 
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
@@ -93,7 +93,7 @@ public final class Account {
     ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
 
 
-    @MainActor public private(set) var accountService: (any AccountService)
+    @MainActor public let accountService: (any AccountService) // TODO: this should be weak, (just make it private?)
 
     let accountSetupComponents: [AnyAccountSetupComponent] // TODO: should that be public?
     let securityRelatedModifiers: [AnySecurityModifier]
@@ -112,7 +112,7 @@ public final class Account {
 
         self._signedIn = details != nil
         self._details = details
-        self._accountService = service
+        self.accountService = service
 
 
         let mirror = Mirror(reflecting: service)
@@ -148,15 +148,6 @@ public final class Account {
         preconditionFailure("Cannot default initialize. This is to workaround an issue with the @Dependency property wrapper in Spezi account!")
     }
 
-    @MainActor
-    func reconfigureService(_ service: any AccountService) {
-        assert(
-            service === accountService || (service as? any _StandardBacked)?.underlyingService === accountService,
-            "Cannot arbitrarily change the account service implementation."
-        )
-        self.accountService = service
-    }
-
     /// Supply the ``AccountDetails`` of the currently logged in user.
     ///
     /// This method is called by the ``AccountService`` every time the state of the user account changes.
@@ -182,33 +173,24 @@ public final class Account {
         )
 
         var details = details
+        details.patchAccountServiceConfiguration(accountService.configuration)
 
         if isNewUser { // mark the account details to be from a new user
             details.patchIsNewUser(true)
         }
 
-        details.patchAccountServiceConfiguration(accountService.configuration)
+        let isUpdating = self.details != nil
 
-        // Check if the account service is wrapped with a storage standard. If that's the case, contact them about the signup!
-        if let standardBacked = accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
-
-            try await standardBacked.preUserDetailsSupply(recordId: recordId)
-
-            let unsupportedKeys = accountService.configuration
-                .unsupportedAccountKeys(basedOn: configuration)
-                .map { $0.key }
-
-            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys)
-
-            self.details = details.merge(with: partialDetails, allowOverwrite: false)
-        } else {
-            self.details = details
-        }
+        self.details = details
 
         if !signedIn {
             signedIn = true
+        }
+
+        if isUpdating {
+            try await notifications.reportEvent(.detailsChanged, for: details.accountId)
+        } else {
+            try await notifications.reportEvent(.associatedAccount, for: details.accountId)
         }
     }
 
@@ -218,14 +200,10 @@ public final class Account {
     /// signed in user and notify others that the user logged out (or the account was removed).
     @MainActor
     public func removeUserDetails() async {
-        // TODO: remove standard interaction, remove async!
-        if let details,
-           let standardBacked = accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
-
-            await storageStandard.clear(recordId)
+        if let details {
+            try? await notifications.reportEvent(.disassociatingAccount, for: details.accountId)
         }
+
 
         if signedIn {
             signedIn = false
@@ -235,7 +213,7 @@ public final class Account {
 }
 
 
-extension Account: Sendable {}
+extension Account: @unchecked Sendable {} // unchecked because of the property wrapper storage
 
 
 extension Account: Module, EnvironmentAccessible, DefaultInitializable {}

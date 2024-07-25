@@ -24,14 +24,14 @@ private protocol GeneralizedStringEntryView {
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
 ///     ``DataEntryView/Key``, a [validate(input:rules:)](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/swiftui/view/validate(input:rules:)-5dac4)
 ///      modifier is automatically injected.
-public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
+public struct GeneralizedDataEntryView<Wrapped: DataEntryView>: View {
     private var dataHookId: String {
         "DataHook-\(Wrapped.Key.self)"
     }
 
     @Environment(Account.self) private var account
 
-    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
+    @Environment(AccountDetails.Builder.self) private var detailsBuilder
 
     @Environment(\.accountServiceConfiguration) private var configuration
     @Environment(\.accountViewType) private var viewType
@@ -53,7 +53,7 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
                 // if there isn't a validation engine already in the subview!
                 Wrapped($value)
                     // checks that non-string values are supplied if configured to be `.required`
-                    .requiredValidation(for: Wrapped.Key.self, storage: Values.self, $value)
+                    .validateRequired(for: Wrapped.Key.self, $value)
             } else {
                 Wrapped($value)
             }

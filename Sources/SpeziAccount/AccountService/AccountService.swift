@@ -29,15 +29,6 @@ import Spezi
 /// ### Result Builder
 /// - ``AccountServiceBuilder``
 public protocol AccountService: Module, CustomStringConvertible, Sendable, EnvironmentAccessible {
-    /// An identifier to uniquely identify an `AccountService`.
-    ///
-    /// This identifier is used to uniquely identify an account service that persists across process instances.
-    ///
-    /// - Important: A default implementation is defined that relies on the type name. If you rename the account service
-    ///     type without supplying a manual `id` implementation, components like a ``AccountStorageConstraint`` won't
-    ///     be able to associate existing user details with this account service.
-    var id: String { get }
-
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }
 
@@ -67,13 +58,8 @@ public protocol AccountService: Module, CustomStringConvertible, Sendable, Envir
 
 
 extension AccountService {
-    /// Default implementation that uses the type name as an unique identifier.
-    public var id: String {
-        description
-    }
-
     /// Default `CustomStringConvertible` returning the type name.
-    public var description: String {
+    public var description: String { // TODO: do we need the conformance?
         "\(Self.self)"
     }
 }

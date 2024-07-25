@@ -128,9 +128,7 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        if let value {
-            storage[Key.self] = value
-        }
+        storage[Key.self] = value
         return self
     }
 
@@ -168,7 +166,7 @@ public class AccountValuesBuilder<Values: AccountValues>: AccountValuesCollectio
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     public func merging<Keys: AcceptingAccountKeyVisitor, OtherValues: AccountValues>(
-        with keys: Keys,
+        keys: Keys,
         from values: OtherValues
     ) -> Self {
         keys.acceptAll(CopyKeyVisitor(destination: self, source: values))

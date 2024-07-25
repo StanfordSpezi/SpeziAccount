@@ -10,8 +10,8 @@ import SpeziValidation
 import SwiftUI
 
 
-private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
-    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
+private struct RequiredValidationModifier<Key: AccountKey>: ViewModifier {
+    @Environment(AccountDetails.Builder.self) private var detailsBuilder
 
     @ValidationState private var validation
     @ValidationState private var innerValidation
@@ -57,11 +57,7 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
 
 extension View {
     @ViewBuilder
-    func requiredValidation<Key: AccountKey, Values: AccountValues>(
-        for key: Key.Type,
-        storage values: Values.Type,
-        _ value: Binding<Key.Value>
-    ) -> some View {
-        modifier(RequiredValidationModifier<Key, Values>(value))
+    func validateRequired<Key: AccountKey>(for key: Key.Type, _ value: Binding<Key.Value>) -> some View {
+        modifier(RequiredValidationModifier<Key>(value))
     }
 }

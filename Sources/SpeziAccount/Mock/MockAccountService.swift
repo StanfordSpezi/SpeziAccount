@@ -64,7 +64,7 @@ struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test th
 
 /// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
 @MainActor
-public final class MockAccountService: AccountService {
+public final class MockAccountService: AccountService { // TODO: just write an feature complete in memory account service we can use also in tests!
     public struct ConfiguredIdentityProvider: OptionSet, Sendable {
         public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
         public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
@@ -79,6 +79,8 @@ public final class MockAccountService: AccountService {
     }
 
     @Dependency private var account: Account
+    @Dependency private var notifications: AccountNotifications
+    @Dependency private var externalStorage: AccountStorage2
 
     @IdentityProvider(placement: .embedded) private var loginView = MockUserIdPasswordEmbeddedView()
     @IdentityProvider private var testButton2 = CustomServiceButton()
@@ -117,26 +119,36 @@ public final class MockAccountService: AccountService {
         print("Mock Login: \(userId) \(password)")
         try await Task.sleep(for: .seconds(1))
 
-        let details = AccountDetails.Builder()
-            .set(\.accountId, value: userIdToAccountId[userId, default: UUID()].uuidString)
-            .set(\.userId, value: userId)
-            .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-            .build()
+        let accountId = userIdToAccountId[userId, default: UUID()].uuidString
+        let details: AccountDetails = try .build { details in
+            details.accountId = accountId
+            details.userId = userId
+            details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+            let externallyStored = try externalStorage.retrieveExternalStorage(for: accountId, [])
+            details.add(contentsOf: externallyStored)
+        }
+        // TODO: use new builder here and everywhere!
+
         let account = account
         try await account.supplyUserDetails(details)
     }
 
-    public func signUp(signupDetails: SignupDetails) async throws {
+    public func signUp(signupDetails: AccountDetails) async throws {
         print("Mock Signup: \(signupDetails)")
         try await Task.sleep(for: .seconds(1))
 
         let id = UUID()
         userIdToAccountId[signupDetails.userId] = id
 
-        let details = AccountDetails.Builder(from: signupDetails)
-            .set(\.accountId, value: id.uuidString)
-            .remove(\.password)
-            .build()
+        let details: AccountDetails = .build { details in
+            details.add(contentsOf: signupDetails)
+            details.accountId = id.uuidString
+            details.password = nil // make sure we don't store the plaintext password
+        }
+
+        // TODO: simulate external storage?
+
         let account = account
         try await account.supplyUserDetails(details)
     }
@@ -154,7 +166,14 @@ public final class MockAccountService: AccountService {
     }
 
     public func delete() async throws {
+        guard let details = account.details else {
+            return
+        }
         print("Mock Remove Account")
+
+        let notifications = notifications
+        try await notifications.reportEvent(.deletingAccount, for: details.accountId)
+
         try await Task.sleep(for: .seconds(1))
         let account = account
         await account.removeUserDetails()
@@ -163,7 +182,7 @@ public final class MockAccountService: AccountService {
     @MainActor
     public func updateAccountDetails(_ modifications: AccountModifications) async throws {
         let account = account
-        guard let details = account.details else {
+        guard let currentDetails = account.details else {
             return
         }
 
@@ -171,10 +190,13 @@ public final class MockAccountService: AccountService {
 
         try await Task.sleep(for: .seconds(1))
 
-        let builder = AccountDetails.Builder(from: details)
-            .merging(modifications.modifiedDetails, allowOverwrite: true)
-            .remove(all: modifications.removedAccountDetails.keys)
+        let updatedDetails: AccountDetails = .build { details in
+            details.add(contentsOf: currentDetails)
+            details.add(contentsOf: modifications.modifiedDetails, merge: true)
+            details.removeAll(modifications.removedAccountKeys)
+        }
 
-        try await account.supplyUserDetails(builder.build())
+        // TODO: split out and notify external storage!
+        try await account.supplyUserDetails(updatedDetails)
     }
 }

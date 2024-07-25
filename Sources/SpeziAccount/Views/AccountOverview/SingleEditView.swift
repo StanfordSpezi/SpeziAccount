@@ -35,7 +35,7 @@ struct SingleEditView<Key: AccountKey>: View {
     var body: some View {
         Form {
             VStack {
-                Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails)
                     .focused($isFocused)
             }
                 .environment(\.accountViewType, .overview(mode: .existing))

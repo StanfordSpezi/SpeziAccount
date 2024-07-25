@@ -24,15 +24,15 @@ struct AccountKeyOverviewRow: View {
             let hStack = VStack {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
                     Group {
-                        if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
+                        if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder) {
                             view
                         } else {
-                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails)
                         }
                     }
                         .environment(\.accountViewType, .overview(mode: .existing))
                 } else if model.addedAccountKeys.contains(accountKey) { // no need to repeat the removedAccountKeys condition
-                    accountKey.emptyDataEntryView(for: ModifiedAccountDetails.self)
+                    accountKey.emptyDataEntryView()
                         .deleteDisabled(false)
                         .environment(\.accountViewType, .overview(mode: .new))
                 } else {

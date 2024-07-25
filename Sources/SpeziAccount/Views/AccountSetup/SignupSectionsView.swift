@@ -19,9 +19,8 @@ import SwiftUI
 /// - An ``ValidationEngines`` object.
 /// - The ``SwiftUI/EnvironmentValues/accountServiceConfiguration`` environment variable.
 /// - The ``SwiftUI/EnvironmentValues/accountViewType`` environment variable.
-struct SignupSectionsView<Storage: AccountValues>: View {
+struct SignupSectionsView: View {
     private let sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
-    private let storageType: Storage.Type
 
     @Environment(Account.self) private var account
 
@@ -32,7 +31,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
                 ForEach(accountKeys.indices, id: \.self) { index in
                     VStack {
-                        accountKeys[index].emptyDataEntryView(for: storageType)
+                        accountKeys[index].emptyDataEntryView()
                     }
                 }
             } header: {
@@ -47,8 +46,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
         }
     }
 
-    init(for storageType: Storage.Type, sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
-        self.storageType = storageType
+    init(sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
         self.sections = sections
     }
 }
@@ -57,7 +55,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
 #if DEBUG
 #Preview {
     Form {
-        SignupSectionsView(for: SignupDetails.self, sections: [
+        SignupSectionsView(sections: [
             .credentials: [UserIdKey.self, PasswordKey.self],
             .name: [PersonNameKey.self]
         ])

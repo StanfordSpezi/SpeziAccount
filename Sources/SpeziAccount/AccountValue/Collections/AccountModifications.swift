@@ -8,14 +8,25 @@
 
 
 /// A container that bundles added or modified ``AccountKey``s and removed ``AccountKey``s.
-public struct AccountModifications: Sendable {
+public struct AccountModifications {
     /// The set of modified (or added) ``AccountKey``s.
-    public let modifiedDetails: ModifiedAccountDetails
+    public let modifiedDetails: AccountDetails
     /// The set of removed ``AccountKey``s.
-    public let removedAccountDetails: RemovedAccountDetails
+    public let removedAccountDetails: AccountDetails
 
-    init(modifiedDetails: ModifiedAccountDetails, removedAccountDetails: RemovedAccountDetails) {
+    public var removedAccountKeys: [any AccountKey.Type] {
+        removedAccountDetails.keys
+    }
+
+    public init(modifiedDetails: AccountDetails, removedAccountDetails: AccountDetails = AccountDetails()) throws {
         self.modifiedDetails = modifiedDetails
         self.removedAccountDetails = removedAccountDetails
+
+        if modifiedDetails.contains(AccountIdKey.self) || removedAccountDetails.contains(AccountIdKey.self) {
+            throw AccountOperationError.accountIdChanged
+        }
     }
 }
+
+
+extension AccountModifications: Sendable {}

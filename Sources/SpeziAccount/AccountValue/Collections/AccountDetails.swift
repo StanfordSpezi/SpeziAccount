@@ -12,18 +12,18 @@ import SpeziFoundation
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
-public struct AccountDetails: Sendable, AccountValues {
+public struct AccountDetails {
     public typealias Element = AnyRepositoryValue // compiler is confused otherwise
 
     public private(set) var storage: AccountStorage
 
 
+    public init() {
+        self.init(from: AccountStorage())
+    }
+
+
     public init(from storage: AccountStorage) {
-        var storage = consume storage
-        if storage.contains(PasswordKey.self) {
-            // patch the storage to make sure we make sure to not expose the plaintext password
-            storage[PasswordKey.self] = nil
-        }
         self.storage = storage
     }
 
@@ -35,3 +35,6 @@ public struct AccountDetails: Sendable, AccountValues {
         storage[IsNewUserKey.self] = isNewUser
     }
 }
+
+
+extension AccountDetails: AccountValues, Sendable {}

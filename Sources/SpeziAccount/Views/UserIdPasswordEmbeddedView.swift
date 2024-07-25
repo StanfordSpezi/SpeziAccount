@@ -76,7 +76,7 @@ public struct SignupSetupView<Signup: View, PasswordReset: View>: View {
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
-        signup: @escaping (SignupDetails) async throws -> Void,
+        signup: @escaping (AccountDetails) async throws -> Void,
         resetPassword: @escaping (String) async throws -> Void
     ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
             PasswordReset == NavigationStack<NavigationPath, UserIdPasswordResetView<SuccessfulPasswordResetView>> {
@@ -231,7 +231,7 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
-        signup: @escaping (SignupDetails) async throws -> Void,
+        signup: @escaping (AccountDetails) async throws -> Void,
         resetPassword: @escaping (String) async throws -> Void
     ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
             PasswordReset == NavigationStack<NavigationPath, UserIdPasswordResetView<SuccessfulPasswordResetView>> {

@@ -8,6 +8,8 @@
 
 import Spezi
 
+// TODO: update all docs!
+
 
 /// A `Spezi` Standard that manages data flow of additional account values.
 ///
@@ -22,7 +24,7 @@ import Spezi
 ///
 /// ### Access Account
 /// - ``Spezi/Standard/AccountReference``
-public protocol AccountStorageConstraint: Standard {
+public protocol AccountStorageProvider: Module {
     /// Create new associated account data.
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
@@ -31,7 +33,7 @@ public protocol AccountStorageConstraint: Standard {
     ///   - identifier: The primary identifier for stored record.
     ///   - details: The signup details that need to be stored.
     /// - Throws: A `LocalizedError`.
-    func create(_ identifier: AdditionalRecordId, _ details: SignupDetails) async throws
+    func create(_ accountId: String, _ details: AccountDetails) async throws
 
     /// Load associated account data.
     ///
@@ -48,7 +50,7 @@ public protocol AccountStorageConstraint: Standard {
     /// - Parameter userId: The userId to load data for.
     /// - Returns: The assembled ``PartialAccountDetails`` (see ``AccountValuesBuilder``).
     /// - Throws: A `LocalizedError`.
-    func load(_ identifier: AdditionalRecordId, _ keys: [any AccountKey.Type]) async throws -> PartialAccountDetails
+    func load(_ accountId: String, _ keys: [any AccountKey.Type]) throws -> AccountDetails?
 
     /// Modify the associated account data of an existing user account.
     ///
@@ -60,14 +62,14 @@ public protocol AccountStorageConstraint: Standard {
     ///   - identifier: The primary identifier for stored record.
     ///   - modifications: The account modifications.
     /// - Throws: A `LocalizedError`.
-    func modify(_ identifier: AdditionalRecordId, _ modifications: AccountModifications) async throws
+    func modify(_ accountId: String, _ modifications: AccountModifications) async throws
 
     /// Signals the standard the the currently logged in user was removed.
     ///
     /// This method is useful to clear any data of the currently cached user.
     ///
     /// - Parameter identifier: The primary identifier for stored record.
-    func clear(_ identifier: AdditionalRecordId) async
+    func clear(_ accountId: String) // TODO: update naming!
 
     /// Delete all associated account data.
     ///
@@ -75,20 +77,5 @@ public protocol AccountStorageConstraint: Standard {
     ///     this method.
     /// - Parameter identifier: The primary identifier for stored record.
     /// - Throws: A `LocalizedError`.
-    func delete(_ identifier: AdditionalRecordId) async throws
-}
-
-
-extension Standard {
-    /// A property wrapper that can be used within `Standard` instances to request
-    /// access to the global ``Account`` instance.
-    ///
-    /// Below is a short code example on how to use this property wrapper:
-    /// ```swift
-    /// public actor MyStandard: AccountStorageConstraint {
-    ///     @AccountReference var account
-    /// }
-    /// ```
-    @available(*, deprecated, renamed: "Dependency", message: "Account is now a module. Please use the @Dependency property wrapper from Spezi.")
-    public typealias AccountReference = Dependency<Account>
+    func delete(_ accountId: String) async throws
 }

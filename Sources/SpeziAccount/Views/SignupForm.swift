@@ -53,12 +53,12 @@ public struct DefaultSignupFormHeader: View { // TODO: generalize this view?
 /// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
 public struct SignupForm<Header: View>: View {
     private let header: Header
-    private let signupClosure: (SignupDetails) async throws -> Void
+    private let signupClosure: (AccountDetails) async throws -> Void // TODO: provide credentials as a separate struct?
 
     @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
 
-    @State private var signupDetailsBuilder = SignupDetails.Builder()
+    @State private var signupDetailsBuilder = AccountDetails.Builder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -122,7 +122,7 @@ public struct SignupForm<Header: View>: View {
                 .listRowBackground(Color.clear)
                 .padding(.top, -3)
 
-            SignupSectionsView(for: SignupDetails.self, sections: accountKeyByCategory)
+            SignupSectionsView(sections: accountKeyByCategory)
                 // TODO: try to replace all account service access just for configuration
                 .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
@@ -143,7 +143,7 @@ public struct SignupForm<Header: View>: View {
             .receiveValidation(in: $validation)
     }
 
-    public init(signup: @escaping (SignupDetails) async throws -> Void, @ViewBuilder header: () -> Header = { DefaultSignupFormHeader() }) {
+    public init(signup: @escaping (AccountDetails) async throws -> Void, @ViewBuilder header: () -> Header = { DefaultSignupFormHeader() }) {
         self.header = header()
         self.signupClosure = signup
     }
@@ -158,7 +158,8 @@ public struct SignupForm<Header: View>: View {
         isFocused = false
 
         // TODO: can we split that into the credentials and user details?
-        let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
+        let details = signupDetailsBuilder.build()
+        try details.validateAgainstSignupRequirements(account.configuration)
 
         try await signupClosure(details)
 

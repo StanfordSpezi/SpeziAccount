@@ -10,14 +10,9 @@ import Spezi
 
 
 /// A `Spezi` Standard that allows to react to certain Account-based events.
-///
-/// ## Topics
-///
-/// ### Access Account
-/// - ``Spezi/Standard/AccountReference``
 public protocol AccountNotifyConstraint: Standard {
-    /// Notifies the Standard that the associated account was requested to be deleted by the user.
+    /// Notifies the Standard that an event for the currently associated user occurred.
     ///
-    /// Use this method to cleanup any account related data that might be associated with the account.
-    func deletedAccount() async throws
+    /// For more information refer to ``AccountNotifications/Event``.
+    func respondToEvent(_ event: AccountNotifications.Event) async throws
 }
