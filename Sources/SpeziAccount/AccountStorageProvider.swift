@@ -50,7 +50,8 @@ public protocol AccountStorageProvider: Module {
     /// - Parameter userId: The userId to load data for.
     /// - Returns: The assembled ``PartialAccountDetails`` (see ``AccountValuesBuilder``).
     /// - Throws: A `LocalizedError`.
-    func load(_ accountId: String, _ keys: [any AccountKey.Type]) throws -> AccountDetails?
+    func load(_ accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails?
+    // TODO: doc that async should only be used for synchronization not for waiting for data!
 
     /// Modify the associated account data of an existing user account.
     ///
@@ -69,7 +70,8 @@ public protocol AccountStorageProvider: Module {
     /// This method is useful to clear any data of the currently cached user.
     ///
     /// - Parameter identifier: The primary identifier for stored record.
-    func disassociate(_ accountId: String)
+    func disassociate(_ accountId: String) async
+    // TODO: doc that async should only be used for synchronization not for waiting for data!
 
     /// Delete all associated account data.
     ///

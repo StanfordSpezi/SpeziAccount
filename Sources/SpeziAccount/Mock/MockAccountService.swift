@@ -120,12 +120,12 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         try await Task.sleep(for: .seconds(1))
 
         let accountId = userIdToAccountId[userId, default: UUID()].uuidString
-        let details: AccountDetails = try .build { details in
+        let details: AccountDetails = try await .build { details in
             details.accountId = accountId
             details.userId = userId
             details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-            let externallyStored = try externalStorage.retrieveExternalStorage(for: accountId, [])
+            let externallyStored = try await externalStorage.retrieveExternalStorage(for: accountId, [])
             details.add(contentsOf: externallyStored)
         }
         // TODO: use new builder here and everywhere!

@@ -50,7 +50,7 @@ public final class ExternalAccountStorage {
     }
 
 
-    public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) throws -> AccountDetails {
+    public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
         }
@@ -66,7 +66,7 @@ public final class ExternalAccountStorage {
             preconditionFailure("Requested to store stuff, but nothing found!")
         }
 
-        guard let details = try storageProvider.load(accountId, keys) else {
+        guard let details = try await storageProvider.load(accountId, keys) else {
             // TODO: storage provider doesn't have a local copy, they will notify use with update details later on!
             return AccountDetails() // TODO: set a property or something?
         }
@@ -90,8 +90,8 @@ public final class ExternalAccountStorage {
 
     }
 
-    func userWillDisassociate(for accountId: String) {
-        storageProvider?.disassociate(accountId)
+    func userWillDisassociate(for accountId: String) async {
+        await storageProvider?.disassociate(accountId)
     }
 
     // TODO: we can call disassociation ourselves! (we need to know before to preserve the account id!) => events? but then we cannot throw?

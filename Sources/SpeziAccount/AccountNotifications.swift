@@ -50,7 +50,7 @@ public final class AccountNotifications {
         case .deletingAccount:
             try await storage.willDeleteAccount(for: accountId)
         case .disassociatingAccount:
-            storage.userWillDisassociate(for: accountId)
+            await storage.userWillDisassociate(for: accountId)
         default:
             break
         }

@@ -90,7 +90,14 @@ extension AccountValues {
         let builder = SimpleBuilder<Self>()
         try build(builder)
         // TODO: make other building thins private/internal!
-        return builder.build() // TODO: only for account values that support it?
+        return builder.build()
+    }
+
+    public static func build(_ build: @Sendable (SimpleBuilder<Self>) async throws -> Void) async rethrows -> Self {
+        // TODO: swift 6 syntax avoids sendable problems!: isolation: isolated (any Actor)? = #isolation,
+        let builder = SimpleBuilder<Self>()
+        try await build(builder)
+        return builder.build()
     }
 }
 
