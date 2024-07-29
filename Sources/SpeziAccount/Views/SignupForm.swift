@@ -58,7 +58,7 @@ public struct SignupForm<Header: View>: View {
     @Environment(Account.self) private var account
     @Environment(\.dismiss) private var dismiss
 
-    @State private var signupDetailsBuilder = AccountValuesBuilder()
+    @State private var signupDetailsBuilder = AccountDetailsBuilder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle

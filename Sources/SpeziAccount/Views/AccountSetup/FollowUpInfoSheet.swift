@@ -24,7 +24,7 @@ struct FollowUpInfoSheet: View {
 
     @Environment(Account.self) private var account
 
-    @State private var detailsBuilder = AccountValuesBuilder()
+    @State private var detailsBuilder = AccountDetailsBuilder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
@@ -137,20 +137,17 @@ struct FollowUpInfoSheet: View {
 
 
 #if DEBUG
-struct FollowUpInfoSheet_Previews: PreviewProvider {
-    static let details = AccountDetails.build { details in
-        details.userId = "lelandstanford@stanford.edu"
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { _, details in
-                FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
-            }
+    return NavigationStack {
+        AccountDetailsReader { _, details in
+            FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
         }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

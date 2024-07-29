@@ -120,14 +120,15 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         try await Task.sleep(for: .seconds(1))
 
         let accountId = userIdToAccountId[userId, default: UUID()].uuidString
-        let details: AccountDetails = try await .build { details in
-            details.accountId = accountId
-            details.userId = userId
-            details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-            let externallyStored = try await externalStorage.retrieveExternalStorage(for: accountId, [])
-            details.add(contentsOf: externallyStored)
-        }
+        var details = AccountDetails()
+        details.accountId = accountId
+        details.userId = userId
+        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+        let externalStorage = externalStorage
+        let externallyStored = try await externalStorage.retrieveExternalStorage(for: accountId, [])
+        details.add(contentsOf: externallyStored)
 
         let account = account
         account.supplyUserDetails(details)
@@ -140,11 +141,10 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         let id = UUID()
         userIdToAccountId[signupDetails.userId] = id
 
-        let details: AccountDetails = .build { details in
-            details.add(contentsOf: signupDetails)
-            details.accountId = id.uuidString
-            details.password = nil // make sure we don't store the plaintext password
-        }
+        var details = AccountDetails()
+        details.add(contentsOf: signupDetails)
+        details.accountId = id.uuidString
+        details.password = nil // make sure we don't store the plaintext password
 
         // TODO: simulate external storage?
 
@@ -189,11 +189,10 @@ public final class MockAccountService: AccountService { // TODO: just write an f
 
         try await Task.sleep(for: .seconds(1))
 
-        let updatedDetails: AccountDetails = .build { details in
-            details.add(contentsOf: currentDetails)
-            details.add(contentsOf: modifications.modifiedDetails, merge: true)
-            details.removeAll(modifications.removedAccountKeys)
-        }
+        var updatedDetails = AccountDetails()
+        updatedDetails.add(contentsOf: currentDetails)
+        updatedDetails.add(contentsOf: modifications.modifiedDetails, merge: true)
+        updatedDetails.removeAll(modifications.removedAccountKeys)
 
         // TODO: split out and notify external storage!
         account.supplyUserDetails(updatedDetails)

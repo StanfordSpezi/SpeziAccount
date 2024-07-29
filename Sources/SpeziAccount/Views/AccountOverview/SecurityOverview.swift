@@ -70,22 +70,19 @@ struct SecurityOverview: View {
 
 
 #if DEBUG
-struct SecurityOverview_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                SecurityOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            SecurityOverview(model: AccountOverviewFormViewModel(account: account), details: details)
         }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

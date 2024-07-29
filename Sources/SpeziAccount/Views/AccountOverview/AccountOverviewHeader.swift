@@ -55,10 +55,9 @@ struct AccountOverviewHeader: View {
 
 #if DEBUG
 #Preview {
-    let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountOverviewHeader(details: details)
 }

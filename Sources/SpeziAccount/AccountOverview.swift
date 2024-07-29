@@ -104,38 +104,37 @@ public struct AccountOverview<AdditionalSections: View>: View {
 
 
 #if DEBUG
-struct AccountOverView_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
-    
-    static var previews: some View {
-        NavigationStack {
-            AccountOverview {
-                NavigationLink {
-                    Text(verbatim: "")
-                        .navigationTitle(Text(verbatim: "Settings"))
-                } label: {
-                    Text(verbatim: "General Settings")
-                }
-                NavigationLink {
-                    Text(verbatim: "")
-                        .navigationTitle(Text(verbatim: "Package Dependencies"))
-                } label: {
-                    Text(verbatim: "License Information")
-                }
-            }
-        }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-        NavigationStack {
-            AccountOverview()
+    return NavigationStack {
+        AccountOverview {
+            NavigationLink {
+                Text(verbatim: "")
+                    .navigationTitle(Text(verbatim: "Settings"))
+            } label: {
+                Text(verbatim: "General Settings")
+            }
+            NavigationLink {
+                Text(verbatim: "")
+                    .navigationTitle(Text(verbatim: "Package Dependencies"))
+            } label: {
+                Text(verbatim: "License Information")
+            }
         }
-            .environment(Account())
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    NavigationStack {
+        AccountOverview()
+    }
+        .environment(Account())
 }
 #endif

@@ -79,23 +79,20 @@ struct AccountKeyOverviewRow: View {
 }
 
 #if DEBUG
-struct AccountKeyEditRow_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        AccountDetailsReader { account, details in
-            let model = AccountOverviewFormViewModel(account: account)
-            
-            AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
-                .injectEnvironmentObjects(service: account.accountService, model: model)
-        }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
+    return AccountDetailsReader { account, details in
+        let model = AccountOverviewFormViewModel(account: account)
+
+        AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
+            .injectEnvironmentObjects(service: account.accountService, model: model)
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

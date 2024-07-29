@@ -80,7 +80,7 @@ struct PasswordChangeSheet: View {
                             validation.validateSubviews(switchFocus: false) // Must not switch focus here!
                         }
 
-                        model.modifiedDetailsBuilder.set(\.password, value: newPassword)
+                        model.modifiedDetailsBuilder.set(PasswordKey.self, value: newPassword)
                     }
 
                 Divider()
@@ -129,11 +129,10 @@ struct PasswordChangeSheet: View {
 
 #if DEBUG
 #Preview {
-    let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
     return NavigationStack {
         AccountDetailsReader { account, details in

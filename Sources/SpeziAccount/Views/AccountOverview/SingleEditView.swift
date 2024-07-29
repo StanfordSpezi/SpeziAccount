@@ -78,21 +78,18 @@ struct SingleEditView<Key: AccountKey>: View {
 }
 
 #if DEBUG
-struct SingleEditView_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                SingleEditView<PersonNameKey>(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            SingleEditView<PersonNameKey>(model: AccountOverviewFormViewModel(account: account), details: details)
         }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

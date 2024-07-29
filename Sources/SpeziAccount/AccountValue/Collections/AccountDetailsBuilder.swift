@@ -13,7 +13,7 @@ import SpeziFoundation
 /// A builder interface for any ``AccountValues`` conforming types.
 ///
 /// This type allows to easily build and modify an instance of ``AccountValues``.
-/// Use the ``AccountValues/Builder`` typealias to instantiate a builder for any given ``AccountValues`` implementation.
+/// Use the ``AccountValues/Builder`` type-alias to instantiate a builder for any given ``AccountValues`` implementation.
 ///
 /// ## Topics
 ///
@@ -40,7 +40,7 @@ import SpeziFoundation
 /// - ``AccountValuesBuilder/build(owner:)``
 /// - ``AccountValuesBuilder/build(checking:)``
 @Observable
-public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
+public class AccountDetailsBuilder {
     var storage: AccountDetails
     var defaultValues: AccountDetails
 
@@ -76,24 +76,14 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
-        storage.storage[Key.self] = value // TODO: naming
+        storage.set(key, value: value)
         return self
     }
 
     @discardableResult
-    func set<Key: AccountKey>(_ key: Key.Type, defaultValue: Key.Value) -> Self {
-        defaultValues.storage[Key.self] = defaultValue
+    func set<Key: AccountKey>(_ key: Key.Type, defaultValue value: Key.Value) -> Self {
+        defaultValues.set(key, value: value)
         return self
-    }
-
-    /// Store a new value in the builder using `KeyPath` notation.
-    /// - Parameters:
-    ///   - keyPath: The ``AccountKey`` metatype referenced by a `KeyPath`.
-    ///   - value: The value to store.
-    /// - Returns: The builder reference for method chaining.
-    @discardableResult
-    public func set<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>, value: Key.Value?) -> Self {
-        set(Key.self, value: value)
     }
 
     /// Merge all values from a ``AccountValues`` instance into this builder.
@@ -107,21 +97,6 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
         return self
     }
 
-    /// Merge all values specified by a collections of ``AccountKey``s which values are stored in some ``AccountValues`` instance.
-    /// - Parameters:
-    ///   - keys: The keys for which to copy account values.
-    ///   - values: The container from where to retrieve the values.
-    /// - Returns: The builder reference for method chaining.
-    @discardableResult
-    public func merging<Keys: AcceptingAccountKeyVisitor>(
-        keys: Keys,
-        from values: AccountDetails,
-        merge: Bool = false
-    ) -> Self {
-        storage.add(contentsOf: values, filterFor: keys, merge: merge)
-        return self
-    }
-
     /// Remove a value from the builder.
     /// - Parameter key: The ``AccountKey`` metatype.
     /// - Returns: The builder reference for method chaining.
@@ -129,14 +104,6 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     public func remove<Key: AccountKey>(_ key: Key.Type) -> Self {
         storage.remove(key)
         return self
-    }
-
-    /// Remove a value from the builder using `KeyPath` notation.
-    /// - Parameter keyPath: The ``AccountKey`` metatype reference by a `KeyPath`.
-    /// - Returns: The builder reference for method chaining.
-    @discardableResult
-    public func remove<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> Self {
-        remove(Key.self)
     }
 
     /// Remove a value from the builder using a type-erased ``AccountKey`` metatype.
@@ -158,6 +125,9 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
         return self
     }
 
+    /// Remove a set of values from the builder given an array of ``AccountKey`` metatypes.
+    /// - Parameter keys: The collection of metatypes (e.g., an array or ``AccountKeyCollection``).
+    /// - Returns: The builder reference for method chaining.
     public func removeAll(_ keys: [any AccountKey.Type]) -> Self {
         storage.removeAll(keys)
         return self
@@ -167,9 +137,12 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     /// - Parameter key: The ``AccountKey`` metatype to check if a value exists.
     /// - Returns: Returns `true` if present, otherwise `false`.
     public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
-        storage.contains(Key.self) // TODO: contains visitor?
+        storage.contains(Key.self)
     }
 
+    /// Checks if a value for a ``AccountKey`` is present in the builder.
+    /// - Parameter key: The ``AccountKey`` metatype to check if a value exists.
+    /// - Returns: Returns `true` if present, otherwise `false`.
     public func contains(_ key: any AccountKey.Type) -> Bool {
         storage.contains(key)
     }
@@ -187,7 +160,7 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
 }
 
 
-extension AccountValuesBuilder: Collection {
+extension AccountDetailsBuilder: Collection {
     public typealias Index = AccountStorage.Index
 
     public var startIndex: Index {
@@ -209,7 +182,7 @@ extension AccountValuesBuilder: Collection {
     }
 }
 
-extension AccountValuesBuilder {
+extension AccountDetailsBuilder {
     @discardableResult
     func setEmptyValue(for accountKey: any AccountKey.Type) -> Self {
         accountKey.setEmpty(in: self)
@@ -219,7 +192,7 @@ extension AccountValuesBuilder {
 
 
 extension AccountKey {
-    fileprivate static func setEmpty(in builder: AccountValuesBuilder) {
+    fileprivate static func setEmpty(in builder: AccountDetailsBuilder) {
         builder.set(Self.self, value: initialValue.value)
     }
 }

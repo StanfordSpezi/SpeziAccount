@@ -29,7 +29,7 @@ class AccountOverviewFormViewModel {
     private let accountServiceConfiguration: AccountServiceConfiguration
 
 
-    let modifiedDetailsBuilder = AccountValuesBuilder()
+    let modifiedDetailsBuilder = AccountDetailsBuilder()
 
     var presentingCancellationDialog = false
     var presentingLogoutAlert = false
@@ -162,12 +162,12 @@ class AccountOverviewFormViewModel {
     }
 
     func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>? = nil) async throws {
-        let removedDetailsBuilder = AccountValuesBuilder()
-        removedDetailsBuilder.merging(keys: removedAccountKeys.keys, from: details)
+        var removedDetails = AccountDetails()
+        removedDetails.add(contentsOf: details, filterFor: removedAccountKeys.keys)
 
         let modifications = try AccountModifications(
             modifiedDetails: modifiedDetailsBuilder.build(),
-            removedAccountDetails: removedDetailsBuilder.build()
+            removedAccountDetails: removedDetails
         )
 
         try await account.accountService.updateAccountDetails(modifications)
@@ -181,7 +181,7 @@ class AccountOverviewFormViewModel {
         removedAccountKeys = CategorizedAccountKeys()
 
         // clearing the builder before switching the edit mode
-        modifiedDetailsBuilder.clear() // it's okay that this doesn't trigger a UI update
+        modifiedDetailsBuilder.clear()
 
         editMode?.wrappedValue = .inactive
     }

@@ -91,10 +91,9 @@ public struct AccountHeader: View {
 
 #if DEBUG
 #Preview {
-    let details = AccountDetails.build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountHeader()
         .previewWith {
@@ -110,10 +109,9 @@ public struct AccountHeader: View {
 }
 
 #Preview {
-    let details = AccountDetails.build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return NavigationStack {
         Form {
@@ -132,9 +130,8 @@ public struct AccountHeader: View {
 }
 
 #Preview {
-    let details = AccountDetails.build { details in
-        details.userId = "lelandstanford@stanford.edu"
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
 
     return NavigationStack {
         Form {

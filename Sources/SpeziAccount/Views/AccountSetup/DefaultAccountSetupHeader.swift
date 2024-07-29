@@ -43,19 +43,20 @@ public struct DefaultAccountSetupHeader: View {
 
 
 #if DEBUG
-struct DefaultAccountSetupHeader_Previews: PreviewProvider {
-    static var previews: some View {
-        DefaultAccountSetupHeader()
-            .previewWith {
-                AccountConfiguration(service: MockAccountService())
-            }
+#Preview {
+    DefaultAccountSetupHeader()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService())
+        }
+}
 
-        DefaultAccountSetupHeader()
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: .build { details in
-                    details.userId = "myUser"
-                })
-            }
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "myUser"
+
+    return DefaultAccountSetupHeader()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

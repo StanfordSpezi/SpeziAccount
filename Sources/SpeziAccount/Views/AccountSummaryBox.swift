@@ -60,35 +60,31 @@ public struct AccountSummaryBox: View {
 
 #if DEBUG
 #Preview {
-    let emailDetails: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var emailDetails = AccountDetails()
+    emailDetails.userId = "lelandstanford@stanford.edu"
+    emailDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountSummaryBox(details: emailDetails)
 }
 
 #Preview {
-    let usernameDetails: AccountDetails = .build { details in
-        details.userId = "leland.stanford"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var usernameDetails = AccountDetails()
+    usernameDetails.userId = "leland.stanford"
+    usernameDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountSummaryBox(details: usernameDetails)
 }
 
 #Preview {
-    let usernameWithoutNameDetails: AccountDetails = .build { details in
-        details.userId = "leland.stanford"
-    }
+    var usernameWithoutNameDetails = AccountDetails()
+    usernameWithoutNameDetails.userId = "leland.stanford"
 
     return AccountSummaryBox(details: usernameWithoutNameDetails)
 }
 
 #Preview {
-    let emailOnlyDetails: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-    }
+    var emailOnlyDetails = AccountDetails()
+    emailOnlyDetails.userId = "lelandstanford@stanford.edu"
 
     return AccountSummaryBox(details: emailOnlyDetails)
 }

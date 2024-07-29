@@ -65,18 +65,20 @@ struct ExistingAccountView<Continue: View>: View {
 
 #if DEBUG
 #Preview {
-    ExistingAccountView(details: AccountDetails.build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    })
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+    return ExistingAccountView(details: details)
 }
 
 #Preview {
-    NavigationStack {
-        ExistingAccountView(details: AccountDetails.build { details in
-            details.userId = "lelandstanford@stanford.edu"
-            details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        }) {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+    return NavigationStack {
+        ExistingAccountView(details: details) {
             Button {
                 print("Pressed")
             } label: {

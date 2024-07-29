@@ -111,9 +111,31 @@ public struct AccountDetails {
 extension AccountDetails: Sendable {}
 
 
-extension AccountDetails: AcceptingAccountValueVisitor {
+extension AccountDetails: AcceptingAccountValueVisitor {}
+
+// MARK: - Signup
+
+extension AccountDetails {
+    /// Checking account details against the user-defined requirements of the `AccountValueConfiguration`.
+    ///
+    /// Refer to the ``AccountValueConfiguration`` for more information.
+    /// - Parameter configuration: The configured provided by the user (see ``Account/configuration``).
+    /// - Throws: Throws potential ``AccountOperationError`` if requirements are not fulfilled.
+    public func validateAgainstSignupRequirements(_ configuration: AccountValueConfiguration) throws {
+        let missing = configuration.filter { configuration in
+            configuration.requirement == .required && !self.contains(configuration.key)
+        }
+
+        if !missing.isEmpty {
+            let keyNames = missing.map { $0.keyPathDescription }
+
+            LoggerKey.defaultValue.warning("\(keyNames) was/were required to be provided but wasn't/weren't provided!")
+            throw AccountOperationError.missingAccountValue(keyNames)
+        }
+    }
 }
 
+// MARK: - Collection
 
 extension AccountDetails: Collection {
     public typealias Index = AccountStorage.Index
@@ -195,11 +217,13 @@ extension AccountDetails {
         storage = keys.acceptAll(&visitor)
     }
 
-    public mutating func remove<Key: AccountKey>(_ key: Key.Type) { // TODO: remove any key?
-        storage[key] = nil // TODO: KeyPath based one? (or just dynamicMemberLookup nil?
+    public mutating func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) {
+        storage.set(key, value: value)
     }
 
-    // TODO: public func remove<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> Self {
+    public mutating func remove<Key: AccountKey>(_ key: Key.Type) {
+        storage[key] = nil
+    }
 
     @_disfavoredOverload
     public mutating func remove(_ key: any AccountKey.Type) {

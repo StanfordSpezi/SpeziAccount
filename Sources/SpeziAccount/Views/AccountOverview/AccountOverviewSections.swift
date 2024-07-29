@@ -259,33 +259,30 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
 
 #if DEBUG
-struct AccountOverviewSections_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        NavigationStack {
-            AccountOverview {
-                Section(header: Text(verbatim: "App")) {
-                    NavigationLink {
-                        Text(String())
-                    } label: {
-                        Text(verbatim: "General Settings")
-                    }
-                    NavigationLink {
-                        Text(String())
-                    } label: {
-                        Text(verbatim: "License Information")
-                    }
+    return NavigationStack {
+        AccountOverview {
+            Section(header: Text(verbatim: "App")) {
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "General Settings")
+                }
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "License Information")
                 }
             }
         }
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

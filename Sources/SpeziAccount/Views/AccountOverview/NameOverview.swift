@@ -65,10 +65,9 @@ struct NameOverview: View {
 
 #if DEBUG
 #Preview {
-    let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    }
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return NavigationStack {
         AccountDetailsReader { account, details in
@@ -81,9 +80,8 @@ struct NameOverview: View {
 }
 
 #Preview {
-    let detailsWithoutName: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-    }
+    var detailsWithoutName = AccountDetails()
+    detailsWithoutName.userId = "lelandstanford@stanford.edu"
 
     return NavigationStack {
         AccountDetailsReader { account, details in
