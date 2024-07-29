@@ -17,7 +17,7 @@ extension AccountDetails {
     /// This transports the plain-text password of a user account.
     /// - Note: This account value is only ever present in the ``SignupDetails`` and ``ModifiedAccountDetails`` and
     ///     never present in any of the other ``AccountValues``.
-    @AccountKey(name: LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module)), category: .credentials, initial: .empty(""))
+    @AccountKey(name: LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module)), category: .credentials, as: String.self)
     public var password: String?
 }
 

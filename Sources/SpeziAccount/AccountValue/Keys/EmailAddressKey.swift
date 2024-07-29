@@ -13,7 +13,7 @@ import SwiftUI
 
 extension AccountDetails {
     /// The email address of a user.
-    @AccountKey(name: LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module)), category: .contactDetails, initial: .empty(""))
+    @AccountKey(name: LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module)), category: .contactDetails, as: String.self)
     public var email: String?
 }
 

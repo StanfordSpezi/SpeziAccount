@@ -408,6 +408,7 @@ identifier_name:
     - at
     - to
     - in
+    - as
 
 large_tuple: # Tuples shouldn't have too many members. Create a custom type instead.
   - 2 # warning - default: 2

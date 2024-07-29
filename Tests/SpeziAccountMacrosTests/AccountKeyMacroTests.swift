@@ -23,7 +23,7 @@ final class AccountKeyMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Gender Identity", category: .personalDetails, initial: .default(GenderIdentity.preferNotToState))
+                @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
                 var genderIdentity: GenderIdentity?
             }
             """,
@@ -45,7 +45,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     static let name: LocalizedStringResource = "Gender Identity"
                     static let category: AccountKeyCategory = .personalDetails
                     static var initialValue: InitialValue<Value> {
-                        .default(GenderIdentity.preferNotToState)
+                        .default(.preferNotToState)
                     }
                 }
             }
@@ -58,7 +58,7 @@ final class AccountKeyMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Gender Identity", category: .personalDetails, initial: .default(GenderIdentity.preferNotToState))
+                @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
                 public var genderIdentity: GenderIdentity?
             }
             """,
@@ -80,7 +80,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     public static let name: LocalizedStringResource = "Gender Identity"
                     public static let category: AccountKeyCategory = .personalDetails
                     public static var initialValue: InitialValue<Value> {
-                        .default(GenderIdentity.preferNotToState)
+                        .default(.preferNotToState)
                     }
                 }
             }
@@ -90,10 +90,10 @@ final class AccountKeyMacroTests: XCTestCase {
     }
 
     func testRequiredAccountKey() {
-        assertMacroExpansion( // TODO: test with leaving out initial!
+        assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Account Id", category: .credentials, initial: .empty(""))
+                @AccountKey(name: "Account Id", category: .credentials, as: String.self)
                 var accountId: String
             }
             """,
@@ -114,12 +114,37 @@ final class AccountKeyMacroTests: XCTestCase {
             
                     static let name: LocalizedStringResource = "Account Id"
                     static let category: AccountKeyCategory = .credentials
-                    static var initialValue: InitialValue<Value> {
-                        .empty("")
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func testNotMatchingTypes() {
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Account Id", category: .credentials, as: Int.self)
+                var accountId: String
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var accountId: String {
+                    get {
+                        self [__Key_accountId.self]
+                    }
+                    set {
+                        self [__Key_accountId.self] = newValue
                     }
                 }
             }
             """,
+            diagnostics: [
+                DiagnosticSpec(message: "Argument type 'Int' did not match expected variable type 'String'", line: 2, column: 5)
+            ],
             macros: testMacros
         )
     }
@@ -138,24 +163,13 @@ final class AccountKeyMacroTests: XCTestCase {
                 var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
                     AccountDetails.__Key_genderIdentity.self
                 }
+            
+                static var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
+                    AccountDetails.__Key_genderIdentity.self
+                }
             }
             """,
             macros: testMacros
-        )
-    }
-
-    func testFreestandingAccountKey() {
-        assertMacroExpansion(
-            """
-            #AccountKey(\\.genderIdentity)
-            """,
-            expandedSource:
-            """
-            AccountDetails.__Key_genderIdentity
-            """,
-            macros: [
-                "AccountKey": FreeStandingAccountKeyMacro.self
-            ]
         )
     }
 }

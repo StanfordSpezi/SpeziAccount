@@ -14,7 +14,6 @@ import SwiftSyntaxMacros
 struct SpeziAccountMacros: CompilerPlugin {
     var providingMacros: [any Macro.Type] = [
         AccountKeyMacro.self,
-        KeyEntryMacro.self,
-        FreeStandingAccountKeyMacro.self
+        KeyEntryMacro.self
     ]
 }

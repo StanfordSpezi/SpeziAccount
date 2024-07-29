@@ -17,7 +17,7 @@ extension AccountKey {
     }
 
     static func dataEntryViewWithStoredValueOrInitial(details: AccountDetails) -> AnyView {
-        let value = details.storage.get(Self.self) ?? initialValue.value
+        let value = details[Self.self] ?? initialValue.value
         return AnyView(GeneralizedDataEntryView<Self>(initialValue: value))
     }
 
@@ -32,7 +32,7 @@ extension AccountKey {
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {
-        guard let value = details.storage.get(Self.self) else {
+        guard let value = details[Self.self] else {
             return nil
         }
 

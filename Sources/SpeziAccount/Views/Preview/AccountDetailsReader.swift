@@ -12,8 +12,8 @@ import SwiftUI
 
 struct AccountDetailsReader<Content: View>: View {
     private let bodyClosure: (Account, AccountDetails) -> Content
+    
     @Environment(Account.self)
-
     private var account
 
     var body: some View {

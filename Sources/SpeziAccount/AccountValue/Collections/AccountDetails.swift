@@ -82,7 +82,7 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
 public struct AccountDetails {
-    var storage: AccountStorage // TODO: fileprivate?
+    fileprivate var storage: AccountStorage
 
 
     /// Initialize empty account details.
@@ -95,7 +95,7 @@ public struct AccountDetails {
         self.storage = storage
     }
 
-    public subscript<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
+    public subscript<Key: KnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value? {
         get {
             storage[Key.self] // TODO: add other knoweldge source overloads
         }
@@ -105,7 +105,7 @@ public struct AccountDetails {
     }
 
 
-    public subscript<Key: AccountKey & DefaultProvidingKnowledgeSource>(_ key: Key.Type) -> Key.Value {
+    public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value {
         get {
             storage[Key.self]
         }

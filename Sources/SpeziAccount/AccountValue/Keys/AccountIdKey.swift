@@ -27,7 +27,7 @@ extension AccountDetails {
     /// As an ``AccountService`` you are required to supply the `accountId` for every ``AccountDetails`` you provide
     /// to ``Account/supplyUserDetails(_:isNewUser:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
     /// configuration as part of your ``AccountServiceConfiguration``, make sure to include the `accountId` there as well.
-    @AccountKey(name: LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module)), category: .credentials, initial: .empty(""))
+    @AccountKey(name: LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module)), category: .credentials, as: String.self)
     public var accountId: String
     // TODO: remove empty initial!
 }

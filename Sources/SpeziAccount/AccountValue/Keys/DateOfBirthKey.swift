@@ -15,6 +15,7 @@ extension AccountDetails {
     @AccountKey(
         name: LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module)),
         category: .personalDetails,
+        as: Date.self,
         initial: .empty(Date())
     )
     public var dateOfBirth: Date?
@@ -26,7 +27,7 @@ public extension AccountKeys {} // swiftlint:disable:this no_extension_access_mo
 
 // MARK: - UI
 
-extension AccountDetails.__Key_dateOfBirth {
+extension AccountDetails.__Key_dateOfBirth { // TODO: make that cooler!
     public struct DataDisplay: DataDisplayView {
         private let value: Date
 

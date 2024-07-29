@@ -14,7 +14,8 @@ struct NameOverview: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
 
     var body: some View {

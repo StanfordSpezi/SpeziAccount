@@ -16,8 +16,7 @@ import SwiftUI
 ///
 /// - Note: The ``AccountKey/initialValue-6h1oo`` is used in views like the ``SignupForm`` as the initial value for this view.
 public protocol DataEntryView<Value>: View {
-    /// The ``AccountKey`` this view receives a value for.
-    // associatedtype Key: AccountKey
+    /// The type of value this view receives a value for.
     associatedtype Value
 
     /// Creates a new data entry view.

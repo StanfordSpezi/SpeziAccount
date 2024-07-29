@@ -14,7 +14,12 @@ import SwiftUI
 
 extension AccountDetails {
     /// The name of a user.
-    @AccountKey(name: LocalizedStringResource("NAME", bundle: .atURL(from: .module)), category: .name, initial: .empty(PersonNameComponents()))
+    @AccountKey(
+        name: LocalizedStringResource("NAME", bundle: .atURL(from: .module)),
+        category: .name,
+        as: PersonNameComponents.self,
+        initial: .empty(PersonNameComponents())
+    )
     public var name: PersonNameComponents?
 }
 

@@ -66,7 +66,7 @@ public class AccountDetailsBuilder {
     /// - Parameter key: The ``AccountKey`` metatype.
     /// - Returns: The value is present.
     public func get<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
-        storage.storage.get(key) // TODO: naming
+        storage[Key.self]
     }
 
     /// Store a new value in the builder.

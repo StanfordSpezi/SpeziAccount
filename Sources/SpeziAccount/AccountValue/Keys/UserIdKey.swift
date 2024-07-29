@@ -26,7 +26,7 @@ extension AccountDetails {
     /// using the ``UserIdType`` configuration.
     ///
     /// - Note: You may also refer to the ``email`` to query the email address of an account.
-    @AccountKey(name: LocalizedStringResource("USER_ID", bundle: .atURL(from: .module)), category: .credentials, initial: .empty(""))
+    @AccountKey(name: LocalizedStringResource("USER_ID", bundle: .atURL(from: .module)), category: .credentials, as: String.self)
     public var userId: String
 }
 

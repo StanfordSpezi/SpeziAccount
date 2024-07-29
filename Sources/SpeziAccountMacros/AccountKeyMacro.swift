@@ -20,18 +20,11 @@ extension AccountKeyMacro: AccessorMacro {
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [AccessorDeclSyntax] {
-        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self) else {
-            return [] // TODO: todo!
+        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
+              let binding = variableDeclaration.bindings.first,
+              let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
+            throw AccountKeyMacroError.couldNotDetermineIdentifier
         }
-
-        guard let binding = variableDeclaration.bindings.first else {
-            return [] // TODO: multiple bindings?
-        }
-
-        guard let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            return []
-        }
-
 
         let getAccessor: AccessorDeclSyntax =
         """
@@ -57,99 +50,95 @@ extension AccountKeyMacro: PeerMacro {
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        // TODO: check that the macro is only used in AccountKeys extensions?
-
-        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self) else {
-            return [] // TODO: todo!
+        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
+              let binding = variableDeclaration.bindings.first,
+              let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
+            throw AccountKeyMacroError.couldNotDetermineIdentifier
         }
 
-        guard case let .argumentList(argumentList) = node.arguments else {
-            return [] // TODO: error!
-        }
-
-        // TODO: best way to retrieve arguments?
-        guard let name = argumentList.first(where: { $0.label?.text == "name" }), // TODO: e.g., StringLiteralExprSyntax
-              let category = argumentList.first(where: { $0.label?.text == "category" }), // TODO: MemberAccessExprSyntax
-              // let valueType = argumentList.first(where: { $0.label?.text == "as" }), // TODO: MemberAccessExprSyntax
-              let initial = argumentList.first(where: { $0.label?.text == "initial" }) else {
-            return [] // TODO: error
-        }
-/*
-        guard let valueTypeExpression = valueType.expression.as(MemberAccessExprSyntax.self) else {
-            return []
-        }
-        */
-
-        guard let binding = variableDeclaration.bindings.first else {
-            return [] // TODO: multiple bindings?
-        }
-
-        guard let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            return []
+        guard case let .argumentList(argumentList) = node.arguments,
+              let name = argumentList.first(where: { $0.label?.text == "name" }),
+              let category = argumentList.first(where: { $0.label?.text == "category" }),
+              let valueType = argumentList.first(where: { $0.label?.text == "as" }) else {
+            throw AccountKeyMacroError.argumentListInconsistency
         }
 
         guard let typeAnnotation = binding.typeAnnotation else {
-            // TODO: import SwiftDiagnostics
-            return [] // TODO: we require a type annoitation
+            throw AccountKeyMacroError.propertyIsMissingTypeAnnotation
         }
 
 
-        let valueType: TypeSyntax
+        let valueTypeInitializer: TypeSyntax
         let accountKeyProtocol: TokenSyntax
 
         if let optionalType = typeAnnotation.type.as(OptionalTypeSyntax.self) {
-            valueType = optionalType.wrappedType
+            valueTypeInitializer = optionalType.wrappedType
             accountKeyProtocol = "AccountKey"
-        } else { // TODO: double check the whatever!
-            valueType = typeAnnotation.type
+        } else {
+            valueTypeInitializer = typeAnnotation.type
             accountKeyProtocol = "RequiredAccountKey"
         }
 
-        /*
-        guard valueTypeExpression.declName.baseName.tokenKind == .keyword(.`self`) else {
-            return [] // TODO: error!
+        guard let valueTypeExpression = valueType.expression.as(MemberAccessExprSyntax.self),
+              valueTypeExpression.declName.baseName.tokenKind == .keyword(.`self`),
+              let valueTypeName = valueTypeExpression.base?.as(DeclReferenceExprSyntax.self)?.baseName else {
+            throw AccountKeyMacroError.unableToDetermineValueArgument
         }
 
-        guard let baseExpr = valueTypeExpression.base?.as(DeclReferenceExprSyntax.self)?.baseName else {
-            return []
+        guard valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text == valueTypeName.text else {
+            throw AccountKeyMacroError.typesNotMatching(
+                argument: valueTypeName.text,
+                variable: valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>"
+            )
         }
 
-        let swiftValueType = valueTypeExpression.base
-*/
-        // TODO: also support private? filepirvate etc?
-        var isPublic = variableDeclaration.modifiers.contains { modifier in
-            modifier.name.tokenKind == .keyword(.public)
-        }
+
+        let modifier: TokenSyntax? = variableDeclaration.modifiers
+            .compactMap { modifier in
+                guard case let .keyword(keyword) = modifier.name.tokenKind else {
+                    return nil
+                }
+
+                switch keyword {
+                case .internal, .private, .fileprivate, .public:
+                    return .keyword(keyword)
+                default:
+                    return nil
+                }
+            }
+            .first // there is only ever one
+
+        let rawModifier = modifier.map { $0.text + " " } ?? ""
 
         let key = StructDeclSyntax(
-            modifiers: isPublic
-                ? [
-                    DeclModifierSyntax(name: .keyword(.public))
-                ]
-                : [],
+            modifiers: modifier.map { [DeclModifierSyntax(name: $0)] } ?? [],
             name: "__Key_\(identifier)",
             inheritanceClause: InheritanceClauseSyntax(inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: IdentifierTypeSyntax(name: accountKeyProtocol))
             })
         ) {
             TypeAliasDeclSyntax(
-                modifiers: isPublic
-                ? [
-                    DeclModifierSyntax(name: .keyword(.public))
-                ]
-                : [],
+                modifiers: modifier.map { [DeclModifierSyntax(name: $0)] } ?? [],
                 name: "Value",
-                initializer: TypeInitializerClauseSyntax(value: valueType),
+                initializer: TypeInitializerClauseSyntax(value: valueTypeInitializer),
                 trailingTrivia: .newlines(2)
             )
 
             """
-            \(raw: isPublic ? "public " : "")static let name: LocalizedStringResource = \(name.expression)
-            \(raw: isPublic ? "public " : "")static let category: AccountKeyCategory = \(category.expression)
-            \(raw: isPublic ? "public " : "")static var initialValue: InitialValue<Value> {
-            \(initial.expression)
-            }
+            \(raw: rawModifier)static let name: LocalizedStringResource = \(name.expression)
             """
+
+            """
+            \(raw: rawModifier)static let category: AccountKeyCategory = \(category.expression)
+            """
+
+            if let initial = argumentList.first(where: { $0.label?.text == "initial" }) {
+                """
+                \(raw: rawModifier)static var initialValue: InitialValue<Value> {
+                \(initial.expression)
+                }
+                """
+            }
         }
 
         return [

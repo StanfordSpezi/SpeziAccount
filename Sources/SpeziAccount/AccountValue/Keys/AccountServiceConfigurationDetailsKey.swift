@@ -21,10 +21,10 @@ extension AccountDetails {
     /// The configuration of the account service that manages these account details.
     public var accountServiceConfiguration: AccountServiceConfiguration {
         get {
-            storage[AccountServiceConfigurationDetailsKey.self]
+            self[AccountServiceConfigurationDetailsKey.self]
         }
         set {
-            storage[AccountServiceConfigurationDetailsKey.self] = newValue
+            self[AccountServiceConfigurationDetailsKey.self] = newValue
         }
     }
 

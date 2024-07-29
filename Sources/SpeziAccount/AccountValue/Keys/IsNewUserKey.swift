@@ -9,18 +9,19 @@
 import SpeziFoundation
 
 
-private struct IsNewUserKey: KnowledgeSource {
-    typealias Anchor = AccountAnchor
-    typealias Value = Bool
-}
-
 extension AccountDetails {
+    private struct IsNewUserKey: KnowledgeSource {
+        typealias Anchor = AccountAnchor
+        typealias Value = Bool
+    }
+
+    /// Determine if the user was freshly created.
     public var isNewUser: Bool {
         get {
-            storage[IsNewUserKey.self] ?? false
+            self[IsNewUserKey.self] ?? false
         }
         set {
-            storage[IsNewUserKey.self] = newValue
+            self[IsNewUserKey.self] = newValue
         }
     }
 }
