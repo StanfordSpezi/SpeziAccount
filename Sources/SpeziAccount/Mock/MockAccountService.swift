@@ -13,7 +13,8 @@ import SwiftUI
 
 
 struct MockUserIdPasswordEmbeddedView: View {
-    @Environment(MockAccountService.self) private var service
+    @Environment(MockAccountService.self)
+    private var service
 
     var body: some View {
         UserIdPasswordEmbeddedView { credential in
@@ -36,7 +37,8 @@ struct CustomServiceButton: View {
     private let cardinalRed = Color(red: 140 / 255.0, green: 21 / 255.0, blue: 21 / 255.0)
     private let cardinalRedDark = Color(red: 130 / 255.0, green: 0, blue: 0)
 
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.colorScheme)
+    private var colorScheme
 
     var body: some View {
         AccountServiceButton("Stanford SUNet", systemImage: "graduationcap.fill") {
@@ -48,7 +50,8 @@ struct CustomServiceButton: View {
 
 
 struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test that in the simulator?)
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme)
+    private var colorScheme
 
     var body: some View {
         SignInWithAppleButton { _ in
@@ -82,9 +85,11 @@ public final class MockAccountService: AccountService { // TODO: just write an f
     @Dependency private var notifications: AccountNotifications
     @Dependency private var externalStorage: ExternalAccountStorage
 
-    @IdentityProvider(section: .primary) private var loginView = MockUserIdPasswordEmbeddedView()
+    @IdentityProvider(section: .primary)
+    private var loginView = MockUserIdPasswordEmbeddedView()
     @IdentityProvider private var testButton2 = CustomServiceButton() // TODO: anonymous login?
-    @IdentityProvider(section: .singleSignOn) private var signInWithApple = MockSignInWithAppleButton()
+    @IdentityProvider(section: .singleSignOn)
+    private var signInWithApple = MockSignInWithAppleButton()
 
     // TODO: @SecurityRelatedModifier private var securityAlert = NoopModifier()
 
@@ -94,9 +99,9 @@ public final class MockAccountService: AccountService { // TODO: just write an f
 
     /// Create a new userId- and password-based account service.
     /// - Parameter type: The ``UserIdType`` to use for the account service.
-    public init(_ type: UserIdType = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
+    public init(_ type: UserIdConfiguration = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
         self.configuration = AccountServiceConfiguration(supportedKeys: .arbitrary) {
-            UserIdConfiguration(type: type, keyboardType: type == .emailAddress ? .emailAddress : .default)
+            type
             RequiredAccountKeys {
                 \.userId
                 \.password

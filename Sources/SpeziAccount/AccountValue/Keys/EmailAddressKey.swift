@@ -11,15 +11,19 @@ import SpeziValidation
 import SwiftUI
 
 
-/// The email address of a user.
-public struct EmailAddressKey: AccountKey, OptionalComputedKnowledgeSource {
+extension AccountDetails {
+    /// The email address of a user.
+    @AccountKey(name: LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module)), category: .contactDetails, initial: .empty(""))
+    public var email: String?
+}
+
+
+@KeyEntry(\.email)
+public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier
+
+
+extension AccountDetails.__Key_email: OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
-    public typealias Value = String
-
-    public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
-
-    public static let category: AccountKeyCategory = .contactDetails
-
 
     public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
         if let email = repository.get(Self.self) {
@@ -33,32 +37,14 @@ public struct EmailAddressKey: AccountKey, OptionalComputedKnowledgeSource {
         }
 
         // return the userId if it's a email address
-        return repository[UserIdKey.self]
-    }
-}
-
-
-extension AccountKeys {
-    /// The email ``EmailAddressKey`` metatype.
-    public var email: EmailAddressKey.Type {
-        EmailAddressKey.self
-    }
-}
-
-
-extension AccountDetails {
-    /// Access the email address of a user.
-    public var email: String? {
-        storage[EmailAddressKey.self]
+        return repository[AccountKeys.userId]
     }
 }
 
 
 // MARK: - UI
-extension EmailAddressKey {
+extension AccountDetails.__Key_email {
     public struct DataEntry: DataEntryView {
-        public typealias Key = EmailAddressKey
-
         @Binding private var email: Value
 
         public init(_ value: Binding<Value>) {
@@ -66,7 +52,7 @@ extension EmailAddressKey {
         }
 
         public var body: some View {
-            VerifiableTextField(Key.name, text: $email)
+            VerifiableTextField(AccountKeys.email.name, text: $email)
                 .textContentType(.emailAddress)
                 .disableFieldAssistants()
         }

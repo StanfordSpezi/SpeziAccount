@@ -24,7 +24,9 @@ struct AccountOverviewHeader: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-                        .foregroundColor(Color(.systemGray3))
+                    #if !os(macOS)
+                        .foregroundColor(Color(.systemGray3)) // TODO: macOS + dark mode?
+                    #endif
                         .accessibilityHidden(true)
                 }
             }

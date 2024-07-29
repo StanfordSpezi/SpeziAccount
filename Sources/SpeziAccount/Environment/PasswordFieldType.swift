@@ -25,7 +25,7 @@ public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConv
     public var localizedStringResource: LocalizedStringResource {
         switch self {
         case .password:
-            return PasswordKey.name
+            return AccountKeys.password.name
         case .new:
             return .init("NEW_PASSWORD", bundle: .atURL(from: .module))
         case .repeat:
@@ -36,7 +36,7 @@ public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConv
     public var localizedPrompt: LocalizedStringResource {
         switch self {
         case .password:
-            return PasswordKey.name
+            return AccountKeys.password.name
         case .new:
             return .init("NEW_PASSWORD_PROMPT", bundle: .atURL(from: .module))
         case .repeat:

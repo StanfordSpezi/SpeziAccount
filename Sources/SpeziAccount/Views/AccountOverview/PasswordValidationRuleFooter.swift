@@ -14,7 +14,7 @@ struct PasswordValidationRuleFooter: View {
     private let configuration: AccountServiceConfiguration
 
     var body: some View {
-        let rules = (configuration.fieldValidationRules(for: PasswordKey.self) ?? [])
+        let rules = (configuration.fieldValidationRules(for: AccountKeys.password) ?? [])
             .filter { $0.id != ValidationRule.nonEmpty.id }
 
         VStack {

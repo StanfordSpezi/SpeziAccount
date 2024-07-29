@@ -7,6 +7,7 @@
 //
 
 import SpeziFoundation
+import SpeziViews
 import SwiftUI
 
 
@@ -20,6 +21,7 @@ import SwiftUI
 public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvidingKnowledgeSource {
     public static let defaultValue: UserIdConfiguration = .emailAddress
 
+
     /// The type of user id stored in `UserIdKey`.
     ///
     /// You can use this property to provide a localized textual representation of the user id (see ``UserIdKey``).
@@ -29,26 +31,46 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
     /// - Note: Even if the user id is an email address you will want to use `UITextContentType/username` and set
     ///     the ``keyboardType`` to `UIKeyboardType/emailAddress`. For more information refer to
     ///     [Enabling Password AutoFill on a text input view](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_a_text_input_view).
-    public let textContentType: UITextContentType?
+    public let textContentType: TextContentType?
+    #if !os(macOS)
     /// The `UIKeyboardType` used for a field that is used to input the user id.
     public let keyboardType: UIKeyboardType
+    #endif
 
+    #if !os(macOS)
     /// Initialize a new `UserIdConfiguration`.
     /// - Parameters:
     ///   - type: The user id type.
-    ///   - contentType: The `UITextContentType` used for a field that is used to input the user id.
+    ///   - contentType: The ``TextContentType`` used for a field that is used to input the user id.
     ///   - keyboardType: The `UIKeyboardType` used for a field that is used to input the user id.
-    public init(type: UserIdType, contentType: UITextContentType? = .username, keyboardType: UIKeyboardType = .default) {
+    public init(type: UserIdType, contentType: TextContentType? = .username, keyboardType: UIKeyboardType = .default) {
         self.idType = type
         self.textContentType = contentType
         self.keyboardType = keyboardType
     }
+    #else
+    /// Initialize a new `UserIdConfiguration`.
+    /// - Parameters:
+    ///   - type: The user id type.
+    ///   - contentType: The ``TextContentType`` used for a field that is used to input the user id.
+    ///   - keyboardType: The `UIKeyboardType` used for a field that is used to input the user id.
+    public init(type: UserIdType, contentType: TextContentType? = .username) {
+        self.idType = type
+        self.textContentType = contentType
+    }
+    #endif
 }
 
 
 extension UserIdConfiguration {
+#if !os(macOS)
     /// E-Mail-Address-based user id.
     public static let emailAddress = UserIdConfiguration(type: .emailAddress, contentType: .username, keyboardType: .emailAddress)
+#else
+    /// E-Mail-Address-based user id.
+    public static let emailAddress = UserIdConfiguration(type: .emailAddress, contentType: .username)
+#endif
+    
     /// Arbitrary username-based user id.
     public static let username = UserIdConfiguration(type: .username, contentType: .username)
 }

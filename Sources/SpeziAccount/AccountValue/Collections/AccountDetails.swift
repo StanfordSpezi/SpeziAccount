@@ -81,7 +81,6 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
-@dynamicMemberLookup
 public struct AccountDetails {
     var storage: AccountStorage // TODO: fileprivate?
 
@@ -96,10 +95,19 @@ public struct AccountDetails {
         self.storage = storage
     }
 
-
-    public subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
+    public subscript<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
         get {
-            storage[Key.self] // TODO: we need a overload for all the different knowledge source
+            storage[Key.self] // TODO: add other knoweldge source overloads
+        }
+        set {
+            storage[Key.self] = newValue
+        }
+    }
+
+
+    public subscript<Key: AccountKey & DefaultProvidingKnowledgeSource>(_ key: Key.Type) -> Key.Value {
+        get {
+            storage[Key.self]
         }
         set {
             storage[Key.self] = newValue

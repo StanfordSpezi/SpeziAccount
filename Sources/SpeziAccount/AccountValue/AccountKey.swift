@@ -42,14 +42,14 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.
     /// - Note: This View implementation is automatically provided if the `Value` is a String or the `Value`
     ///     conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
-    associatedtype DataDisplay: DataDisplayView<Self>
+    associatedtype DataDisplay: DataDisplayView<Value>
 
     /// The ``DataEntryView`` that is used to enter a value for this account value.
     ///
     /// This view is wrapped into a ``GeneralizedDataEntryView`` and used in views like the ``SignupForm`` to enter the account value.
     /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField`
     /// or [VerifiableTextField](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/verifiabletextfield).
-    associatedtype DataEntry: DataEntryView<Self>
+    associatedtype DataEntry: DataEntryView<Value>
 
     /// The localized name describing a value of this `AccountKey`.
     static var name: LocalizedStringResource { get }
@@ -99,7 +99,7 @@ extension AccountKey {
     /// A ``AccountKeyCategory/credentials`` key that is not meant to be modified in
     /// the `SecurityOverview` section in the ``AccountOverview``.
     static var isHiddenCredential: Bool {
-        self == AccountIdKey.self || self == UserIdKey.self
+        self == AccountKeys.accountId || self == AccountKeys.userId
     }
 }
 

@@ -13,12 +13,12 @@ import SwiftUI
 @MainActor
 extension AccountKey {
     static func emptyDataEntryView() -> AnyView {
-        AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: initialValue.value))
+        AnyView(GeneralizedDataEntryView<Self>(initialValue: initialValue.value))
     }
 
     static func dataEntryViewWithStoredValueOrInitial(details: AccountDetails) -> AnyView {
         let value = details.storage.get(Self.self) ?? initialValue.value
-        return AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self>(initialValue: value))
     }
 
     static func dataEntryViewFromBuilder(
@@ -28,7 +28,7 @@ extension AccountKey {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<Self.DataEntry>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self>(initialValue: value))
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {

@@ -23,7 +23,8 @@ import XCTRuntimeAssertions
 /// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
 public final class AccountConfiguration<Service: AccountService> {
-    @Application(\.logger) private var logger
+    @Application(\.logger)
+    private var logger
 
     // TODO: find a way to make the @Dependency work again with non-optional but initializer supplied values!
     @Dependency private var account: Account?
@@ -144,7 +145,7 @@ public final class AccountConfiguration<Service: AccountService> {
         // if account service states exact supported keys, AccountIdKey must be one of them
         if case let .exactly(keys) = service.configuration.supportedAccountKeys {
             precondition(
-                keys.contains(AccountIdKey.self),
+                keys.contains(AccountKeys.accountId),
                 """
                 The account service \(type(of: service)) doesn't have the \\.accountId (aka. AccountIdKey) configured \
                 as an supported key. \

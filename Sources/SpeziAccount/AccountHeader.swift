@@ -39,10 +39,10 @@ public struct AccountHeader: View {
         /// Default caption.
         @_documentation(visibility: internal)
         public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
-        // swiftlint:disable:previous attributes
     }
     
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
     private let caption: Text
 
     public var body: some View {
@@ -58,7 +58,9 @@ public struct AccountHeader: View {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(Color(.systemGray3))
+#if !os(macOS)
+                    .foregroundColor(Color(.systemGray3)) // TODO: macOS
+#endif
                     .accessibilityHidden(true)
             }
 
@@ -108,6 +110,7 @@ public struct AccountHeader: View {
         }
 }
 
+#if !os(macOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"
@@ -165,4 +168,5 @@ public struct AccountHeader: View {
             AccountConfiguration(service: MockAccountService())
         }
 }
+#endif
 #endif

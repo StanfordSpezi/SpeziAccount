@@ -19,10 +19,13 @@ struct FollowUpInfoSheet: View {
     private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
 
-    @Environment(\.logger) private var logger
-    @Environment(\.dismiss) private var dismiss
+    @Environment(\.logger)
+    private var logger
+    @Environment(\.dismiss)
+    private var dismiss
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     @State private var detailsBuilder = AccountDetailsBuilder()
     @ValidationState private var validation
@@ -135,19 +138,25 @@ struct FollowUpInfoSheet: View {
     }
 }
 
+@MainActor
+func test() -> some View { // TODO: move?
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    let keys: [any AccountKey.Type] = [AccountKeys.name]
+
+    let asdf = FollowUpInfoSheet(details: details, requiredKeys: keys)
+    return NavigationStack {
+        AccountDetailsReader { _, details in
+            FollowUpInfoSheet(details: details, requiredKeys: keys)
+        }
+    }
+    .previewWith {
+        AccountConfiguration(service: MockAccountService(), activeDetails: details)
+    }
+}
 
 #if DEBUG
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-
-    return NavigationStack {
-        AccountDetailsReader { _, details in
-            FollowUpInfoSheet(details: details, requiredKeys: [PersonNameKey.self])
-        }
-    }
-        .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
-        }
+    test()
 }
 #endif

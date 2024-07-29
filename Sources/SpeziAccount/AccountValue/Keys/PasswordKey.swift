@@ -11,44 +11,30 @@ import SpeziViews
 import SwiftUI
 
 
-/// The password of a user account.
-///
-/// This ``AccountKey`` transports the plain-text password of a user account.
-/// - Note: This account value is only ever present in the ``SignupDetails`` and ``ModifiedAccountDetails`` and
-///     never present in any of the other ``AccountValues``.
-///
-/// ## Topics
-///
-/// ### Password UI
-///
-/// - ``PasswordFieldType``
-public struct PasswordKey: AccountKey {
-    public typealias Value = String
-
-    public static let name = LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module))
-    public static let category: AccountKeyCategory = .credentials
-}
-
-
-extension AccountKeys {
-    /// The password ``AccountKey`` metatype.
+extension AccountDetails {
+    /// The password of a user.
     ///
-    /// - Note: The password is generally not accessible and stored in plaintext. This property is only populated when the ``AccountDetails``
-    ///   contain signup details or modified details.
-    public var password: PasswordKey.Type {
-        PasswordKey.self
-    }
+    /// This transports the plain-text password of a user account.
+    /// - Note: This account value is only ever present in the ``SignupDetails`` and ``ModifiedAccountDetails`` and
+    ///     never present in any of the other ``AccountValues``.
+    @AccountKey(name: LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module)), category: .credentials, initial: .empty(""))
+    public var password: String?
 }
+
+
+@KeyEntry(\.password)
+extension AccountKeys {}
 
 // MARK: - UI
 
-extension PasswordKey {
+extension AccountDetails.__Key_password {
     public struct DataEntry: DataEntryView {
-        public typealias Key = PasswordKey
-
-        @Environment(\.accountViewType) private var accountViewType
-        @Environment(\.passwordFieldType) private var fieldType
-        @Environment(ValidationEngine.self) private var validation
+        @Environment(\.accountViewType)
+        private var accountViewType
+        @Environment(\.passwordFieldType)
+        private var fieldType
+        @Environment(ValidationEngine.self)
+        private var validation
 
         @Binding private var password: Value
 

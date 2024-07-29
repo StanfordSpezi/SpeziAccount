@@ -11,13 +11,9 @@ import SwiftUI
 
 
 /// A simple `DatePicker` implementation tailored towards entry of a date of birth.
-public struct DateOfBirthPicker: DataEntryView {
-    public typealias Key = DateOfBirthKey
-
-    private let titleLocalization: LocalizedStringResource
-
-    @Environment(Account.self) private var account
-    @Environment(\.accountViewType) private var viewType
+public struct DateOfBirthPicker: View { // TODO: generalize
+    private let title: LocalizedStringResource
+    private let isRequired: Bool
 
     @Binding private var date: Date
     @State private var dateAdded = false
@@ -42,16 +38,14 @@ public struct DateOfBirthPicker: DataEntryView {
     ///  - We are NOT entering new date. Showing existing data the user might want to change.
     ///  - If we are entering new data and the user pressed the add button.
     @MainActor private var showPicker: Bool {
-        account.configuration[Key.self]?.requirement == .required
-            || viewType?.enteringNewData == false
-            || dateAdded
+        isRequired || dateAdded
     }
 
 
     public var body: some View {
         HStack {
             DynamicHStack {
-                Text(titleLocalization)
+                Text(title)
                     .multilineTextAlignment(.leading)
 
                 if layout == .horizontal {
@@ -64,7 +58,7 @@ public struct DateOfBirthPicker: DataEntryView {
                         in: dateRange,
                         displayedComponents: .date
                     ) {
-                        Text(titleLocalization)
+                        Text(title)
                     }
                     .labelsHidden()
                 } else {
@@ -77,7 +71,9 @@ public struct DateOfBirthPicker: DataEntryView {
                     }
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color(uiColor: .tertiarySystemFill))
+#if !os(macOS)
+                            .fill(Color(uiColor: .tertiarySystemFill)) // TODO: macOs!
+#endif
                     )
                 }
             }
@@ -90,11 +86,11 @@ public struct DateOfBirthPicker: DataEntryView {
                 // makes sure the accessibility view spans the whole width, including the label.
                 if showPicker {
                     DatePicker(selection: $date, in: dateRange, displayedComponents: .date) {
-                        Text(titleLocalization)
+                        Text(title)
                     }
                 } else {
                     Button(action: addDateAction) {
-                        Text("VALUE_ADD \(titleLocalization)", bundle: .module)
+                        Text("VALUE_ADD \(title)", bundle: .module)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -107,18 +103,16 @@ public struct DateOfBirthPicker: DataEntryView {
 
     /// Initialize a new `DateOfBirthPicker`.
     /// - Parameters:
+    ///   - title: Optionally provide a custom label text.
     ///   - date: A binding to the `Date` state.
-    ///   - customTitle: Optionally provide a custom label text.
     public init(
+        _ title: LocalizedStringResource,
         date: Binding<Date>,
-        title customTitle: LocalizedStringResource? = nil
+        isRequired: Bool = true
     ) {
+        self.title = title
         self._date = date
-        self.titleLocalization = customTitle ?? DateOfBirthKey.name
-    }
-
-    public init(_ value: Binding<Date>) {
-        self.init(date: value)
+        self.isRequired = isRequired
     }
 
 
@@ -129,19 +123,21 @@ public struct DateOfBirthPicker: DataEntryView {
 
 
 #if DEBUG
-struct DateOfBirthPicker_Previews: PreviewProvider {
+struct DateOfBirthPicker_Previews: PreviewProvider { // TODO: refactor that!
     struct Preview: View {
         @State private var date = Date.now
 
         var body: some View {
             Form {
-                DateOfBirthPicker(date: $date)
+                DateOfBirthPicker("Date of Birth", date: $date)
             }
             VStack {
-                DateOfBirthPicker(date: $date)
+                DateOfBirthPicker("Date of Birth", date: $date)
                     .padding(32)
             }
-                .background(Color(.systemGroupedBackground))
+#if !os(macOS)
+                .background(Color(.systemGroupedBackground)) // TODO: macOs
+#endif
         }
     }
 

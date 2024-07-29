@@ -11,8 +11,9 @@
 @resultBuilder
 public enum AccountKeyCollectionBuilder {
     /// Build a single ``AccountKeyWithDescription`` metatype expression using `KeyPath` notation.
-    public static func buildExpression<Key: AccountKey>(_ expression: KeyPath<AccountKeys, Key.Type>) -> [any AccountKeyWithDescription] {
-        [AccountKeyWithKeyPathDescription(expression)]
+    public static func buildExpression<Value>(_ expression: KeyPath<AccountDetails, Value>) -> [any AccountKeyWithDescription] {
+        []
+        // TODO: [AccountKeyWithKeyPathDescription(expression)]
     }
 
     /// Build a block of ``AccountKeyWithDescription`` metatypes.

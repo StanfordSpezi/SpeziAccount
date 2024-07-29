@@ -56,9 +56,11 @@ import SwiftUI
 /// - Note: The ``init(isEditing:additionalSections:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
 ///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
 ///     view is not editing when presenting the AccountOverview in a sheet.
+@available(macOS, unavailable)
 public struct AccountOverview<AdditionalSections: View>: View {
-    @Environment(Account.self) private var account
-    
+    @Environment(Account.self)
+    private var account
+
     @Binding private var isEditing: Bool
     
     let additionalSections: AdditionalSections
@@ -88,7 +90,9 @@ public struct AccountOverview<AdditionalSections: View>: View {
             }
         }
             .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
     }
     
     
@@ -103,7 +107,7 @@ public struct AccountOverview<AdditionalSections: View>: View {
 }
 
 
-#if DEBUG
+#if DEBUG && !os(macOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

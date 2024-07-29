@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SwiftUI
 
 
@@ -26,7 +27,11 @@ struct EmptyServicesWarning: View {
                 .foregroundColor(.secondary)
 
             Button(action: {
+#if os(macOS)
+                NSWorkspace.shared.open(documentationUrl)
+#else
                 UIApplication.shared.open(documentationUrl)
+#endif
             }) {
                 Text("OPEN_DOCUMENTATION", bundle: .module)
             }

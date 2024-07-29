@@ -88,13 +88,15 @@ public struct AccountValueConfiguration {
     public subscript<Key: AccountKey>(_ key: Key.Type) -> (any AccountKeyConfiguration)? {
         configuration[Key.id]
     }
-
+/*
+ // TODO: whatever!
     /// Retrieve the configuration for a given ``AccountKey`` using `KeyPath` notation.
     /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
     /// - Returns: The configuration for a given ``AccountKey`` if it exists.
     public subscript<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> (any AccountKeyConfiguration)? {
         self[Key.self]
     }
+    */
 }
 
 

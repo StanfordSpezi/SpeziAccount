@@ -22,7 +22,8 @@ import SwiftUI
 struct SignupSectionsView: View {
     private let sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     var body: some View {
         // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
@@ -39,7 +40,7 @@ struct SignupSectionsView: View {
                     Text(title)
                 }
             } footer: {
-                if category == .credentials && account.configuration[PasswordKey.self] != nil {
+                if category == .credentials && account.configuration[AccountKeys.password] != nil {
                     PasswordValidationRuleFooter(configuration: account.accountService.configuration)
                 }
             }
@@ -53,11 +54,19 @@ struct SignupSectionsView: View {
 
 
 #if DEBUG
+private let credentials: [any AccountKey.Type] = [
+    AccountKeys.userId,
+    AccountKeys.password
+]
+
+private let name: [any AccountKey.Type] = [
+    AccountKeys.name
+]
 #Preview {
     Form {
         SignupSectionsView(sections: [
-            .credentials: [UserIdKey.self, PasswordKey.self],
-            .name: [PersonNameKey.self]
+            .credentials: credentials,
+            .name: name
         ])
     }
     .previewWith {

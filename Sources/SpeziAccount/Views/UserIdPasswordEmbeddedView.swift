@@ -173,7 +173,9 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
                     .validate(input: userId, rules: .nonEmpty)
                     .focused($focusedField, equals: .userId)
                     .textContentType(userIdConfiguration.textContentType)
+#if !os(macOS)
                     .keyboardType(userIdConfiguration.keyboardType)
+#endif
                     .padding(.bottom, 0.5)
 
                 VerifiableTextField(.init("UP_PASSWORD", bundle: .atURL(from: .module)), text: $password, type: .secure) {
@@ -184,7 +186,9 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
                             Text("UP_FORGOT_PASSWORD", bundle: .module)
                                 .font(.caption)
                                 .bold()
-                                .foregroundColor(Color(uiColor: .systemGray))
+#if !os(macOS)
+                                .foregroundColor(Color(uiColor: .systemGray)) // TODO: macos
+#endif
                         }
                     }
                 }

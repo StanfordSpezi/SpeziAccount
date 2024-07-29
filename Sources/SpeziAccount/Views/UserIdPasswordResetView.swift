@@ -16,8 +16,10 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
     private let successView: SuccessView
     private let resetPasswordClosure: (String) async throws -> Void // TODO: make a wrapper type that encapsulate semantics
 
-    @Environment(Account.self) private var account
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.dismiss)
+    private var dismiss
 
     @ValidationState private var validation
 
@@ -73,7 +75,9 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
                 .textFieldStyle(.roundedBorder)
                 .disableFieldAssistants()
                 .textContentType(userIdConfiguration.textContentType)
+#if !os(macOS)
                 .keyboardType(userIdConfiguration.keyboardType)
+#endif
                 .font(.title3)
 
             Spacer()

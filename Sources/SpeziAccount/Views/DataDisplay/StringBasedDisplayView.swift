@@ -24,6 +24,10 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
     public init(_ value: Key.Value) {
         self.value = value
     }
+
+    fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
+        self.init(value)
+    }
 }
 
 
@@ -36,7 +40,7 @@ extension AccountKey where Value: StringProtocol {
 #if DEBUG
 #Preview {
     List {
-        StringBasedDisplayView<UserIdKey>("andreas.bauer")
+        StringBasedDisplayView(for: \.userId, "leland.stanford")
     }
 }
 #endif

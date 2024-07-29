@@ -141,7 +141,7 @@ public final class Account {
             partialResult.append(modifier.securityModifier)
         })
 
-        if supportedConfiguration[UserIdKey.self] == nil {
+        if supportedConfiguration[AccountKeys.userId] == nil {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
@@ -172,7 +172,7 @@ public final class Account {
     @MainActor
     public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) {
         precondition(
-            details.contains(AccountIdKey.self),
+            details.contains(AccountKeys.accountId),
             """
             The provided `AccountDetails` do not have the \\.accountId (aka. AccountIdKey) set. \
             A primary, unique and stable user identifier is expected with most SpeziAccount components and \
@@ -187,7 +187,7 @@ public final class Account {
 
         var details = details
         details.accountServiceConfiguration = accountService.configuration
-        details.isNewUser = isNewUser
+        details.isNewUser = isNewUser // TODO: you can just specify that yourself?
 
         let previousDetails = self.details
 

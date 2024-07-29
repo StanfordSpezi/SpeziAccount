@@ -12,7 +12,8 @@ import SwiftUI
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     private let setupSheet: SetupSheet
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     @State private var presentingSheet = false
 

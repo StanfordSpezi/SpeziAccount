@@ -15,16 +15,21 @@ import SwiftUI
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 @MainActor
+@available(macOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
     let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
 
     
-    @Environment(Account.self) private var account
-    @Environment(\.logger) private var logger
-    @Environment(\.editMode) private var editMode
-    @Environment(\.dismiss) private var dismiss
-    
+    @Environment(Account.self)
+    private var account
+    @Environment(\.logger)
+    private var logger
+    @Environment(\.editMode)
+    private var editMode
+    @Environment(\.dismiss)
+    private var dismiss
+
     @State private var model: AccountOverviewFormViewModel
     @ValidationState private var validation
 
@@ -258,7 +263,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 }
 
 
-#if DEBUG
+#if DEBUG && !os(macOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

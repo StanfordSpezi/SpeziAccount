@@ -12,34 +12,25 @@ import SpeziViews
 import SwiftUI
 
 
-/// The name of a user.
-public struct PersonNameKey: AccountKey {
-    public typealias Value = PersonNameComponents
-
-    public static let name = LocalizedStringResource("NAME", bundle: .atURL(from: .module))
-    public static let category: AccountKeyCategory = .name
-    public static let initialValue: InitialValue<Value> = .empty(PersonNameComponents())
+extension AccountDetails {
+    /// The name of a user.
+    @AccountKey(name: LocalizedStringResource("NAME", bundle: .atURL(from: .module)), category: .name, initial: .empty(PersonNameComponents()))
+    public var name: PersonNameComponents?
 }
 
 
-extension AccountKeys {
-    /// The name ``AccountKey`` metatype.
-    public var name: PersonNameKey.Type {
-        PersonNameKey.self
-    }
-}
+@KeyEntry(\.name)
+extension AccountKeys {}
 
 // MARK: - UI
 
-extension PersonNameKey {
+extension AccountDetails.__Key_name {
     public struct DataDisplay: DataDisplayView {
-        public typealias Key = PersonNameKey
-
         private let value: PersonNameComponents
 
         public var body: some View {
-            ListRow(Key.name) {
-                Text(value.formatted(.name(style: .long))) // TODO: similar to Date, that it just needs formatting!
+            ListRow(AccountKeys.name.name) {
+                Text(value.formatted(.name(style: .long)))
             }
         }
 
@@ -49,12 +40,10 @@ extension PersonNameKey {
     }
 }
 
-extension PersonNameKey {
+extension AccountDetails.__Key_name {
     public struct DataEntry: DataEntryView {
-        public typealias Key = PersonNameKey
-
-
-        @Environment(Account.self) private var account
+        @Environment(Account.self)
+        private var account
 
         @ValidationState private var givenNameValidation
         @ValidationState private var familyNameValidation
@@ -62,7 +51,7 @@ extension PersonNameKey {
         @Binding private var name: Value
 
         private var nameIsRequired: Bool {
-            account.configuration[Key.self]?.requirement == .required
+            account.configuration[AccountKeys.name.self]?.requirement == .required // TODO: generalize?
         }
         
         private var validationRule: ValidationRule {

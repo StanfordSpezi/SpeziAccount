@@ -42,15 +42,17 @@ struct NameOverview: View {
                         }
                     }
                 } header: {
-                    if wrapper.accountKey == PersonNameKey.self,
-                       let title = PersonNameKey.category.categoryTitle {
+                    if wrapper.accountKey == AccountKeys.name,
+                       let title = AccountKeys.name.category.categoryTitle {
                         Text(title)
                     }
                 }
             }
         }
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .injectEnvironmentObjects(service: account.accountService, model: model)
             .environment(\.accountViewType, .overview(mode: .display))
     }

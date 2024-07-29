@@ -17,12 +17,14 @@ import SwiftUI
 ///  So before implementing one yourself verify if you might be able to rely on the default implementation.
 ///
 /// This view is typically placed as a row in the ``AccountOverview`` view.
-public protocol DataDisplayView<Key>: View {
-    /// The ``AccountKey`` this view displays the value for.
-    associatedtype Key: AccountKey
+public protocol DataDisplayView<Value>: View {
+    /// The value type that is getting displayed
+    associatedtype Value
 
     /// Create a new display view.
-    /// - Parameter value: The current account value.
+    /// - Parameters:
+    ///   - value: The current account value.
+    ///   - key: The ``AccountKey`` for which the value is getting displayed.
     @MainActor
-    init(_ value: Key.Value)
+    init(_ value: Value)
 }

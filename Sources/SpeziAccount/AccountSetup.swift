@@ -60,7 +60,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     private let header: Header
     private let continueButton: Continue
 
-    @Environment(Account.self) var account
+    @Environment(Account.self)
+    private var account
 
     @State private var setupState: _AccountSetupState = .generic
     @State private var followUpSheet = false

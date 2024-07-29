@@ -30,7 +30,7 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
         description
     }
 
-    init(_ keyPath: KeyPath<AccountKeys, Key.Type>) {
+    init(_ keyPath: KeyPath<AccountDetails, Key.Type>) {
         self.key = Key.self
         self.description = keyPath.shortDescription
     }

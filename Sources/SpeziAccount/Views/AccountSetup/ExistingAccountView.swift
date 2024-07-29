@@ -19,6 +19,14 @@ struct ExistingAccountView<Continue: View>: View {
 
     @State private var viewState: ViewState = .idle
 
+    private var continuePlacement: ToolbarItemPlacement {
+        #if os(macOS)
+        .automatic // TODO: review!
+        #else
+        .bottomBar
+        #endif
+    }
+
     var body: some View {
         VStack {
             VStack {
@@ -34,7 +42,7 @@ struct ExistingAccountView<Continue: View>: View {
         }
             .viewStateAlert(state: $viewState)
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
+                ToolbarItem(placement: continuePlacement) {
                     if Continue.self != EmptyView.self {
                         VStack {
                             continueButton

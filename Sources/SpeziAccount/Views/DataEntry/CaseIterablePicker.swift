@@ -68,12 +68,17 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 
 
 #if DEBUG
+@MainActor
+private func view(_ genderIdentity: Binding<GenderIdentity>) -> some View {
+    CaseIterablePickerEntryView<AccountDetails.__Key_genderIdentity>(genderIdentity)
+}
+
 #Preview {
     @State var genderIdentity: GenderIdentity = .male
 
     return Form {
         Grid {
-            CaseIterablePickerEntryView<GenderIdentityKey>($genderIdentity)
+            view($genderIdentity)
         }
     }
 }
@@ -82,9 +87,11 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
     @State var genderIdentity: GenderIdentity = .male
 
     return Grid {
-        CaseIterablePickerEntryView<GenderIdentityKey>($genderIdentity)
+        view($genderIdentity)
     }
         .padding(32)
-        .background(Color(.systemGroupedBackground))
+#if !os(macOS)
+        .background(Color(.systemGroupedBackground)) // TODO: macOS
+#endif
 }
 #endif

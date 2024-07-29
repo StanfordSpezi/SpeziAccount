@@ -55,8 +55,10 @@ public struct SignupForm<Header: View>: View {
     private let header: Header
     private let signupClosure: (AccountDetails) async throws -> Void
 
-    @Environment(Account.self) private var account
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.dismiss)
+    private var dismiss
 
     @State private var signupDetailsBuilder = AccountDetailsBuilder()
     @ValidationState private var validation

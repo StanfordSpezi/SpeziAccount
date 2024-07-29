@@ -10,13 +10,16 @@ import Spezi
 import SwiftUI
 
 
+@available(macOS, unavailable)
 struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
     private let model: AccountOverviewFormViewModel
 
-    @Environment(Account.self) private var account
-    @Environment(\.editMode) private var editMode
+    @Environment(Account.self)
+    private var account
+    @Environment(\.editMode)
+    private var editMode
 
     var body: some View {
         if editMode?.wrappedValue.isEditing == true {
@@ -78,7 +81,7 @@ struct AccountKeyOverviewRow: View {
     }
 }
 
-#if DEBUG
+#if DEBUG && !os(macOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

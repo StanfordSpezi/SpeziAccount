@@ -10,36 +10,28 @@ import SpeziViews
 import SwiftUI
 
 
-/// The date of birth of a user.
-public struct DateOfBirthKey: AccountKey {
-    public typealias Value = Date
-    public typealias DataEntry = DateOfBirthPicker
-
-    public static let name = LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module))
-
-    public static let category: AccountKeyCategory = .personalDetails
-    
-    public static var initialValue: InitialValue<Value> {
-        .empty(Date()) // instantiate a fresh .now date all the time
-    }
+extension AccountDetails {
+    /// The date of birth of a user.
+    @AccountKey(
+        name: LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module)),
+        category: .personalDetails,
+        initial: .empty(Date())
+    )
+    public var dateOfBirth: Date?
 }
 
-extension AccountKeys {
-    /// The date of birth ``AccountKey`` metatype.
-    public var dateOfBirth: DateOfBirthKey.Type {
-        DateOfBirthKey.self
-    }
-}
+
+@KeyEntry(\.dateOfBirth)
+public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier
 
 // MARK: - UI
 
-extension DateOfBirthKey {
+extension AccountDetails.__Key_dateOfBirth {
     public struct DataDisplay: DataDisplayView {
-        public typealias Key = DateOfBirthKey
-
         private let value: Date
 
-        @Environment(\.locale) private var locale
+        @Environment(\.locale)
+        private var locale
 
         private var formatStyle: Date.FormatStyle {
             .init()
@@ -50,14 +42,35 @@ extension DateOfBirthKey {
         }
 
         public var body: some View {
-            ListRow(Key.name) {
+            ListRow(AccountKeys.dateOfBirth.name) {
                 Text(value.formatted(formatStyle))
             }
         }
 
-
         public init(_ value: Date) {
             self.value = value
+        }
+    }
+
+    public struct DataEntry: DataEntryView {
+        @Binding private var value: Date
+
+        @Environment(Account.self)
+        private var account
+        @Environment(\.accountViewType)
+        private var viewType
+
+        public var isRequired: Bool {
+            account.configuration[AccountKeys.dateOfBirth]?.requirement == .required
+            || viewType?.enteringNewData == false
+        }
+
+        public var body: some View {
+            DateOfBirthPicker(AccountKeys.dateOfBirth.name, date: $value, isRequired: isRequired)
+        }
+
+        public init(_ value: Binding<Value>) {
+            self._value = value
         }
     }
 }

@@ -96,8 +96,8 @@ class AccountOverviewFormViewModel {
                 category == .credentials || category == .name
             }
 
-        if result[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true {
-            result[.credentials] = [UserIdKey.self] // ensure userId is the only credential we display
+        if result[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true {
+            result[.credentials] = [AccountKeys.userId] // ensure userId is the only credential we display
         }
 
         return result.reduce(into: []) { result, tuple in
@@ -143,6 +143,7 @@ class AccountOverviewFormViewModel {
         }
     }
 
+    @available(macOS, unavailable)
     func cancelEditAction(editMode: Binding<EditMode>?) {
         Self.logger.debug("Pressed the cancel button!")
         if !hasUnsavedChanges {
@@ -155,13 +156,26 @@ class AccountOverviewFormViewModel {
         Self.logger.debug("Found \(self.modifiedDetailsBuilder.count) modified elements. Asking to discard.")
     }
 
+    @available(macOS, unavailable)
     func discardChangesAction(editMode: Binding<EditMode>?) {
-        Self.logger.debug("Exiting edit mode and discarding changes.")
+        discardChangesAction()
 
-        resetModelState(editMode: editMode)
+        editMode?.wrappedValue = .inactive
     }
 
-    func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>? = nil) async throws {
+    func discardChangesAction() {
+        Self.logger.debug("Exiting edit mode and discarding changes.")
+
+        resetModelState()
+    }
+
+    @available(macOS, unavailable)
+    func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>?) async throws {
+        try await updateAccountDetails(details: details, using: account)
+        editMode?.wrappedValue = .inactive
+    }
+
+    func updateAccountDetails(details: AccountDetails, using account: Account) async throws {
         var removedDetails = AccountDetails()
         removedDetails.add(contentsOf: details, filterFor: removedAccountKeys.keys)
 
@@ -173,25 +187,30 @@ class AccountOverviewFormViewModel {
         try await account.accountService.updateAccountDetails(modifications)
         Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
 
-        resetModelState(editMode: editMode) // this reset the edit mode as well
+        resetModelState()
     }
 
-    func resetModelState(editMode: Binding<EditMode>? = nil) {
+    @available(macOS, unavailable)
+    func resetModelState(editMode: Binding<EditMode>?) {
+        resetModelState()
+
+        editMode?.wrappedValue = .inactive
+    }
+
+    func resetModelState() {
         addedAccountKeys = CategorizedAccountKeys()
         removedAccountKeys = CategorizedAccountKeys()
 
         // clearing the builder before switching the edit mode
         modifiedDetailsBuilder.clear()
-
-        editMode?.wrappedValue = .inactive
     }
 
     func accountIdentifierLabel(configuration: AccountValueConfiguration, userIdType: UserIdType) -> Text {
         let userId = Text(userIdType.localizedStringResource)
 
-        if configuration[PersonNameKey.self] != nil {
+        if configuration[AccountKeys.password] != nil {
             let separator = ", "
-            return Text(PersonNameKey.name)
+            return Text(AccountKeys.password.name)
                 + Text(separator)
                 + userId
         }
@@ -205,7 +224,7 @@ class AccountOverviewFormViewModel {
     }
 
     func displaysNameDetails() -> Bool {
-        categorizedAccountKeys[.credentials]?.contains(where: { $0 == UserIdKey.self }) == true
+        categorizedAccountKeys[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true
             || categorizedAccountKeys[.name]?.isEmpty != true
     }
 }

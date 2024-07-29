@@ -17,9 +17,12 @@ struct SingleEditView<Key: AccountKey>: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    @Environment(Account.self) private var account
-    @Environment(\.logger) private var logger
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.logger)
+    private var logger
+    @Environment(\.dismiss)
+    private var dismiss
 
     @ValidationState private var validation
 
@@ -41,7 +44,7 @@ struct SingleEditView<Key: AccountKey>: View {
                 .environment(\.accountViewType, .overview(mode: .existing))
                 .injectEnvironmentObjects(service: account.accountService, model: model)
         }
-            .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
+            .navigationTitle(Text(Key.self == AccountKeys.userId ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
             .receiveValidation(in: $validation)
             .toolbar {
@@ -60,6 +63,10 @@ struct SingleEditView<Key: AccountKey>: View {
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model
         self.accountDetails = accountDetails
+    }
+
+    init(for keyPath: KeyPath<AccountKeys, Key.Type>, model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
+        self.init(model: model, details: accountDetails)
     }
 
 
@@ -85,7 +92,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            SingleEditView<PersonNameKey>(model: AccountOverviewFormViewModel(account: account), details: details)
+            SingleEditView(for: \.name, model: AccountOverviewFormViewModel(account: account), details: details)
         }
     }
         .previewWith {

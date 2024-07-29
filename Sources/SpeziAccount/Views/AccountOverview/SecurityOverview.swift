@@ -11,12 +11,14 @@ import SpeziViews
 import SwiftUI
 
 
+@available(macOS, unavailable)
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
 
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     @State private var viewState: ViewState = .idle
     @State private var presentingPasswordChangeSheet = false
@@ -32,7 +34,7 @@ struct SecurityOverview: View {
 
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
-                    if wrapper.accountKey == PasswordKey.self {
+                    if wrapper.accountKey == AccountKeys.password {
                         // we have a special case for the PasswordKey, as we currently don't expose the capabilities required to the subviews!
                         Button(action: {
                             presentingPasswordChangeSheet = true
@@ -55,7 +57,9 @@ struct SecurityOverview: View {
         }
             .viewStateAlert(state: $viewState)
             .navigationTitle(Text("SIGN_IN_AND_SECURITY", bundle: .module))
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .onDisappear {
                 model.resetModelState()
             }
@@ -69,7 +73,7 @@ struct SecurityOverview: View {
 }
 
 
-#if DEBUG
+#if DEBUG && !os(macOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

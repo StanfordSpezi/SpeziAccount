@@ -8,6 +8,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import CompilerPluginSupport
 import class Foundation.ProcessInfo
 import PackageDescription
 
@@ -23,7 +24,8 @@ let package = Package(
     name: "SpeziAccount",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v17)
+        .iOS(.v17),
+        .macOS(.v14) // we need to specify that to run macro tests as they only run on the host platform
     ],
     products: [
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
@@ -34,9 +36,17 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.5.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
-        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0")
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
+        .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
     ] + swiftLintPackage(),
     targets: [
+        .macro(
+            name: "SpeziAccountMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ]
+        ),
         .target(
             name: "SpeziAccount",
             dependencies: [
@@ -47,7 +57,8 @@ let package = Package(
                 .product(name: "SpeziValidation", package: "SpeziViews"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
-                .product(name: "Atomics", package: "swift-atomics")
+                .product(name: "Atomics", package: "swift-atomics"),
+                .target(name: "SpeziAccountMacros")
             ],
             resources: [
                 .process("Resources")
@@ -67,6 +78,14 @@ let package = Package(
                 swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
+        ),
+        .testTarget(
+            name: "SpeziAccountMacrosTests",
+            dependencies: [
+                "SpeziAccountMacros",
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
+            ]
         )
     ]
 )

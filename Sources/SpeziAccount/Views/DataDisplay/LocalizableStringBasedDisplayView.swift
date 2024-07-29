@@ -23,9 +23,12 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
         }
     }
 
-
     public init(_ value: Key.Value) {
         self.value = value
+    }
+
+    fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
+        self.init(value)
     }
 }
 
@@ -54,7 +57,7 @@ extension Bool {
 #if DEBUG
 #Preview {
     Form {
-        LocalizableStringBasedDisplayView<GenderIdentityKey>(.preferNotToState)
+        LocalizableStringBasedDisplayView(for: \.genderIdentity, .preferNotToState)
     }
 }
 #endif

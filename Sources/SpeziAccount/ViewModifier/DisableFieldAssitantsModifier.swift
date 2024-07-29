@@ -13,6 +13,8 @@ extension View {
     func disableFieldAssistants() -> some View {
         self
             .autocorrectionDisabled(true)
+#if !os(macOS)
             .textInputAutocapitalization(.never)
+#endif
     }
 }

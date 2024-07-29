@@ -21,12 +21,16 @@ struct MissingAccountDetailsWarning: View {
 
     var body: some View {
         VStack {
-            Text("MISSING_ACCOUNT_DETAILS", bundle: .module)
+            Text("MISSING_ACCOUNT_DETAILS", bundle: .module) // TODO: reuse documentation view!
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
 
             Button(action: {
+#if os(macOS)
+                NSWorkspace.shared.open(documentationUrl)
+#else
                 UIApplication.shared.open(documentationUrl)
+#endif
             }) {
                 Text("OPEN_DOCUMENTATION", bundle: .module)
             }

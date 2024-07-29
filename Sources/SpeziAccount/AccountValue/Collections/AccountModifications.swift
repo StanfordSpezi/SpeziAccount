@@ -25,7 +25,7 @@ public struct AccountModifications {
         self.modifiedDetails = modifiedDetails
         self.removedAccountDetails = removedAccountDetails
 
-        if modifiedDetails.contains(AccountIdKey.self) || removedAccountDetails.contains(AccountIdKey.self) {
+        if modifiedDetails.contains(AccountKeys.accountId) || removedAccountDetails.contains(AccountKeys.accountId) {
             throw AccountOperationError.accountIdChanged
         }
     }

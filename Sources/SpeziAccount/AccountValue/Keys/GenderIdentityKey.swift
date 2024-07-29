@@ -9,24 +9,50 @@
 import SwiftUI
 
 
-/// The gender identity of a user.
-///
-/// ## Topics
-///
-/// ### Model
-/// - ``GenderIdentity``
-public struct GenderIdentityKey: AccountKey {
-    public typealias Value = GenderIdentity
-
-    public static let name = LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module))
-    public static let category: AccountKeyCategory = .personalDetails
-    public static let initialValue: InitialValue<Value> = .default(.preferNotToState)
+extension AccountDetails {
+    /// The gender identity of a user.
+    @AccountKey(
+        name: LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module)),
+        category: .personalDetails,
+        initial: .default(GenderIdentity.preferNotToState)
+        // TODO: as: GenderIdentity.self
+    )
+    public var genderIdentity: GenderIdentity?
 }
 
 
-extension AccountKeys {
-    /// The gender identity ``AccountKey`` metatype.
-    public var genderIdentity: GenderIdentityKey.Type {
-        GenderIdentityKey.self
-    }
+@KeyEntry(\.genderIdentity)
+public extension AccountKeys { // swiftlint:disable:this no_extension_access_modifier
 }
+
+
+
+// TODO: move!
+@attached(accessor, names: named(get), named(set))
+@attached(peer, names: prefixed(__Key_))
+public macro AccountKey<Value>(
+    name: LocalizedStringResource,
+    category: AccountKeyCategory,
+    initial: InitialValue<Value>,
+    as: Value.Type = Value.self // TODO: default doesn't work?
+) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
+
+@attached(accessor, names: named(get), named(set))
+@attached(peer, names: prefixed(__Key_))
+public macro AccountKey<Value: StringProtocol>(
+    name: LocalizedStringResource,
+    category: AccountKeyCategory,
+    initial: InitialValue<Value> = .empty("") // TODO: does that work to have a default value? or will it just be no syntax?
+) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
+
+// TODO: default for AdditiveArithmetic
+
+
+@attached(member, names: arbitrary)
+public macro KeyEntry<Value>(_ key: KeyPath<AccountDetails, Value>) = #externalMacro(module: "SpeziAccountMacros", type: "KeyEntryMacro")
+
+
+@freestanding(expression)
+public macro AccountKey2<Key: AccountKey>(
+    _ key: KeyPath<AccountKeys, Key.Type>
+) -> Key.Type = #externalMacro(module: "SpeziAccountMacros", type: "FreeStandingAccountKeyMacro")

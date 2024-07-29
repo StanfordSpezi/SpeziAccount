@@ -18,9 +18,12 @@ struct PasswordChangeSheet: View {
     private let model: AccountOverviewFormViewModel
 
 
-    @Environment(Account.self) private var account
-    @Environment(\.logger) private var logger
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.logger)
+    private var logger
+    @Environment(\.dismiss)
+    private var dismiss
 
     @ValidationState private var validation
 
@@ -31,7 +34,7 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        account.accountService.configuration.fieldValidationRules(for: \.password) ?? []
+        account.accountService.configuration.fieldValidationRules(for: AccountKeys.password) ?? []
     }
 
     var body: some View {
@@ -45,7 +48,9 @@ struct PasswordChangeSheet: View {
             }
                 .viewStateAlert(state: $viewState)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
+#if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: submitPasswordChange) {
@@ -70,7 +75,7 @@ struct PasswordChangeSheet: View {
     @ViewBuilder private var passwordFieldsSection: some View {
         Section {
             Grid {
-                PasswordKey.DataEntry($newPassword)
+                AccountKeys.password.DataEntry($newPassword)
                     .environment(\.passwordFieldType, .new)
                     .validate(input: newPassword, rules: passwordValidations)
                     .onChange(of: newPassword) {
@@ -80,13 +85,13 @@ struct PasswordChangeSheet: View {
                             validation.validateSubviews(switchFocus: false) // Must not switch focus here!
                         }
 
-                        model.modifiedDetailsBuilder.set(PasswordKey.self, value: newPassword)
+                        model.modifiedDetailsBuilder.set(AccountKeys.password, value: newPassword)
                     }
 
                 Divider()
                     .gridCellUnsizedAxes(.horizontal)
 
-                PasswordKey.DataEntry($repeatPassword)
+                AccountKeys.password.DataEntry($repeatPassword)
                     .environment(\.passwordFieldType, .repeat)
                     .validate(input: repeatPassword, rules: passwordEqualityValidation(new: $newPassword))
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
