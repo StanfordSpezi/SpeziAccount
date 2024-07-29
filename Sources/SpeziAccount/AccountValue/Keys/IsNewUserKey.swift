@@ -9,13 +9,18 @@
 import SpeziFoundation
 
 
-struct IsNewUserKey: KnowledgeSource {
+private struct IsNewUserKey: KnowledgeSource {
     typealias Anchor = AccountAnchor
     typealias Value = Bool
 }
 
 extension AccountDetails {
-    var isNewUser: Bool {
-        storage[IsNewUserKey.self] ?? false
+    public var isNewUser: Bool {
+        get {
+            storage[IsNewUserKey.self] ?? false
+        }
+        set {
+            storage[IsNewUserKey.self] = newValue
+        }
     }
 }

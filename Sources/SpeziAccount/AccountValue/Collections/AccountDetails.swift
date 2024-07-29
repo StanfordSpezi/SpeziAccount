@@ -20,8 +20,8 @@ private struct RemoveVisitor: AccountKeyVisitor {
         details.remove(key)
     }
 
-    func final() -> AccountDetails {
-        details
+    func final() -> AccountStorage {
+        details.storage
     }
 }
 
@@ -36,13 +36,44 @@ private struct CopyVisitor: AccountValueVisitor {
     }
 
     mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
-        if allowOverwrite || !details.contains(Key.self) {
-            details.storage.set(key, value: value)
+        guard allowOverwrite || !details.contains(Key.self) else {
+            return
         }
+
+        details.storage.set(key, value: value)
     }
 
-    func final() -> AccountDetails {
-        details
+    func final() -> AccountStorage {
+        details.storage
+    }
+}
+
+
+private struct CopyKeyVisitor: AccountKeyVisitor {
+    let source: AccountDetails
+    var destination: AccountDetails
+    private let allowOverwrite: Bool
+
+    init(source: AccountDetails, destination: AccountDetails, allowOverwrite: Bool) {
+        self.destination = destination
+        self.source = source
+        self.allowOverwrite = allowOverwrite
+    }
+
+    mutating func visit<Key: AccountKey>(_ key: Key.Type) {
+        guard let value = source.storage.get(key) else {
+            return
+        }
+
+        guard allowOverwrite || !destination.contains(Key.self) else {
+            return
+        }
+
+        destination.storage.set(key, value: value)
+    }
+
+    func final() -> AccountStorage {
+        destination.storage
     }
 }
 
@@ -50,6 +81,7 @@ private struct CopyVisitor: AccountValueVisitor {
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
 /// Refer to ``AccountKey`` for a list of bundled keys.
+@dynamicMemberLookup
 public struct AccountDetails {
     var storage: AccountStorage // TODO: fileprivate?
 
@@ -64,12 +96,14 @@ public struct AccountDetails {
         self.storage = storage
     }
 
-    mutating func patchAccountServiceConfiguration(_ configuration: AccountServiceConfiguration) {
-        storage[AccountServiceConfigurationDetailsKey.self] = configuration
-    }
 
-    mutating func patchIsNewUser(_ isNewUser: Bool) {
-        storage[IsNewUserKey.self] = isNewUser
+    public subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> Key.Value? {
+        get {
+            storage[Key.self] // TODO: we need a overload for all the different knowledge source
+        }
+        set {
+            storage[Key.self] = newValue
+        }
     }
 }
 
@@ -134,10 +168,31 @@ extension AccountDetails {
     /// - Parameters:
     ///   - values: The account details to add.
     ///   - merge: If `true` values contained in `values` will overwrite values already stored in `self`.
-    /// - Returns: The resulting values containing the combination of both collections.
     public mutating func add(contentsOf values: AccountDetails, merge: Bool = false) {
         var visitor = CopyVisitor(self, allowOverwrite: merge)
-        storage = values.acceptAll(&visitor).storage
+        storage = values.acceptAll(&visitor)
+    }
+
+    /// Add the contents from another account details collection but filter for specific keys only.
+    /// - Parameters:
+    ///   - values: The account details to copy from.
+    ///   - keys: The collection of keys to filter the values from`values`.
+    ///   - merge: If `true` values contained in `values` will overwrite values already stored in `self`.
+    @_disfavoredOverload
+    public mutating func add<Keys: AcceptingAccountKeyVisitor>(contentsOf values: AccountDetails, filterFor keys: Keys, merge: Bool = false) {
+        var visitor = CopyKeyVisitor(source: values, destination: self, allowOverwrite: merge)
+        storage = keys.acceptAll(&visitor)
+    }
+
+
+    /// Add the contents from another account details collection but filter for specific keys only.
+    /// - Parameters:
+    ///   - values: The account details to copy from.
+    ///   - keys: The collection of keys to filter the values from`values`.
+    ///   - merge: If `true` values contained in `values` will overwrite values already stored in `self`.
+    public mutating func add(contentsOf values: AccountDetails, filterFor keys: [any AccountKey.Type], merge: Bool = false) {
+        var visitor = CopyKeyVisitor(source: values, destination: self, allowOverwrite: merge)
+        storage = keys.acceptAll(&visitor)
     }
 
     public mutating func remove<Key: AccountKey>(_ key: Key.Type) { // TODO: remove any key?
@@ -154,12 +209,12 @@ extension AccountDetails {
     @_disfavoredOverload
     public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
         var visitor = RemoveVisitor(self)
-        storage = keys.acceptAll(&visitor).storage
+        storage = keys.acceptAll(&visitor)
     }
 
     public mutating func removeAll(_ keys: [any AccountKey.Type]) {
         var visitor = RemoveVisitor(self)
-        storage = keys.acceptAll(&visitor).storage
+        storage = keys.acceptAll(&visitor)
     }
 }
 

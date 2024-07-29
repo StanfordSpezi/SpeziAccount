@@ -10,23 +10,6 @@ import Foundation
 import SpeziFoundation
 
 
-private class CopyKeyVisitor: AccountKeyVisitor {
-    let destination: AccountValuesBuilder
-    let source: AccountDetails
-
-    init(destination: AccountValuesBuilder, source: AccountDetails) {
-        self.destination = destination
-        self.source = source
-    }
-
-    func visit<Key: AccountKey>(_ key: Key.Type) {
-        if let value = source.storage.get(key) {
-            destination.set(key, value: value)
-        }
-    }
-}
-
-
 /// A builder interface for any ``AccountValues`` conforming types.
 ///
 /// This type allows to easily build and modify an instance of ``AccountValues``.
@@ -132,9 +115,10 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     @discardableResult
     public func merging<Keys: AcceptingAccountKeyVisitor>(
         keys: Keys,
-        from values: AccountDetails
+        from values: AccountDetails,
+        merge: Bool = false
     ) -> Self {
-        keys.acceptAll(CopyKeyVisitor(destination: self, source: values))
+        storage.add(contentsOf: values, filterFor: keys, merge: merge)
         return self
     }
 
@@ -187,8 +171,7 @@ public class AccountValuesBuilder { // TODO: rename AccountDetailsBuilder
     }
 
     public func contains(_ key: any AccountKey.Type) -> Bool {
-        // TODO: implement?
-        preconditionFailure("Not implemented!")
+        storage.contains(key)
     }
 
     /// Build a new storage instance.

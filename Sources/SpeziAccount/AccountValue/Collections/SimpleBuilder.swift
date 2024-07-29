@@ -7,7 +7,7 @@
 //
 
 
-
+/*
 @dynamicMemberLookup
 public class SimpleBuilder { // TODO: move the whole thing somewhere!
     // TODO: why do we have the builder thing, if we can just mutate the details themselves?
@@ -47,20 +47,21 @@ public class SimpleBuilder { // TODO: move the whole thing somewhere!
         details.removeAll(keys)
     }
 }
+*/
 
 
 extension AccountDetails {
-    public static func build(_ build: (SimpleBuilder) throws -> Void) rethrows -> Self {
-        let builder = SimpleBuilder()
-        try build(builder) // TODO: we could pass as inout and build with mutating?
+    public static func build(_ build: (inout AccountDetails) throws -> Void) rethrows -> Self {
+        var details = AccountDetails()
+        try build(&details)
         // TODO: make other building things private/internal!
-        return builder.build()
+        return details
     }
 
-    public static func build(_ build: @Sendable (SimpleBuilder) async throws -> Void) async rethrows -> Self {
+    public static func build(_ build: @Sendable (inout AccountDetails) async throws -> Void) async rethrows -> Self {
         // TODO: swift 6 syntax avoids sendable problems!: isolation: isolated (any Actor)? = #isolation,
-        let builder = SimpleBuilder()
-        try await build(builder)
-        return builder.build()
+        var details = AccountDetails()
+        try await build(&details)
+        return details
     }
 }

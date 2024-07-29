@@ -186,11 +186,8 @@ public final class Account {
         }
 
         var details = details
-        details.patchAccountServiceConfiguration(accountService.configuration)
-
-        if isNewUser { // mark the account details to be from a new user
-            details.patchIsNewUser(true)
-        }
+        details.accountServiceConfiguration = accountService.configuration
+        details.isNewUser = isNewUser
 
         let previousDetails = self.details
 

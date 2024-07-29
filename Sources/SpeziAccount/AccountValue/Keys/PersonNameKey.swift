@@ -29,15 +29,6 @@ extension AccountKeys {
     }
 }
 
-
-extension AccountDetails {
-    /// Access the name of a user.
-    public var name: PersonNameComponents? {
-        storage[PersonNameKey.self]
-    }
-}
-
-
 // MARK: - UI
 
 extension PersonNameKey {

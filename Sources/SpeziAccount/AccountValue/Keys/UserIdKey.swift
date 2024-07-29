@@ -54,7 +54,12 @@ extension AccountKeys {
 extension AccountDetails {
     /// Access the user id of a user (see ``UserIdKey``).
     public var userId: String {
-        storage[UserIdKey.self]
+        get {
+            storage[UserIdKey.self]
+        }
+        set {
+            storage[UserIdKey.self] = newValue
+        }
     }
 }
 

@@ -20,7 +20,12 @@ struct AccountServiceConfigurationDetailsKey: DefaultProvidingKnowledgeSource {
 extension AccountDetails {
     /// The configuration of the account service that manages these account details.
     public var accountServiceConfiguration: AccountServiceConfiguration {
-        storage[AccountServiceConfigurationDetailsKey.self]
+        get {
+            storage[AccountServiceConfigurationDetailsKey.self]
+        }
+        set {
+            storage[AccountServiceConfigurationDetailsKey.self] = newValue
+        }
     }
 
 

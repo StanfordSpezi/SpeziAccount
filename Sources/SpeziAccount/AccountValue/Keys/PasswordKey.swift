@@ -33,23 +33,12 @@ public struct PasswordKey: AccountKey {
 extension AccountKeys {
     /// The password ``AccountKey`` metatype.
     ///
-    /// - Note: This account value is only present in the ``SignupDetails``.
+    /// - Note: The password is generally not accessible and stored in plaintext. This property is only populated when the ``AccountDetails``
+    ///   contain signup details or modified details.
     public var password: PasswordKey.Type {
         PasswordKey.self
     }
 }
-
-
-extension AccountDetails {
-    /// Access the password of a user.
-    ///
-    /// - Note: The password is generally not accessible and stored in plaintext. This property is only populated when the ``AccountDetails``
-    ///   contain signup details or modified details.
-    public var password: String? {
-        storage[PasswordKey.self]
-    }
-}
-
 
 // MARK: - UI
 

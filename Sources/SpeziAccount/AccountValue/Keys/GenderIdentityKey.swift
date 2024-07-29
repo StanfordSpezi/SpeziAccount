@@ -30,11 +30,3 @@ extension AccountKeys {
         GenderIdentityKey.self
     }
 }
-
-
-extension AccountDetails {
-    /// Access the gender identity of a user.
-    public var genderIdentity: GenderIdentity? {
-        storage[GenderIdentityKey.self]
-    }
-}

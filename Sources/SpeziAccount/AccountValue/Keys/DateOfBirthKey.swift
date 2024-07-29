@@ -31,15 +31,6 @@ extension AccountKeys {
     }
 }
 
-
-extension AccountDetails {
-    /// Access the date of birth of a user.
-    public var dateOfBrith: Date? {
-        storage[DateOfBirthKey.self]
-    }
-}
-
-
 // MARK: - UI
 
 extension DateOfBirthKey {
