@@ -36,8 +36,6 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 /// ### Retrieving configuration
 /// Below is a list of configuration options built into the ``SpeziAccount`` framework.
 ///
-/// - ``name``
-/// - ``image``
 /// - ``userIdConfiguration``
 /// - ``fieldValidationRules(for:)-28x74``
 /// - ``fieldValidationRules(for:)-w2n2``
@@ -57,7 +55,7 @@ public struct AccountServiceConfiguration: Sendable {
     /// Initialize a new configuration by just providing the required ones.
     /// - Parameters:
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageProvider``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     public init(supportedKeys: SupportedAccountKeys) {
         self.storage = Self.createStorage(supportedKeys: supportedKeys)
@@ -66,7 +64,7 @@ public struct AccountServiceConfiguration: Sendable {
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageProvider``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(

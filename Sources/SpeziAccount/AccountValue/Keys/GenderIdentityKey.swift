@@ -22,5 +22,4 @@ extension AccountDetails {
 
 
 @KeyEntry(\.genderIdentity)
-public extension AccountKeys { // swiftlint:disable:this no_extension_access_modifier
-}
+public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier

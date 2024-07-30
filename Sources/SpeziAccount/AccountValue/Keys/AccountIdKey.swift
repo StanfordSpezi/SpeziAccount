@@ -10,6 +10,28 @@ import SpeziFoundation
 import SwiftUI
 
 
+// TODO: provide default data entry view for Strings?
+// TODO: provide default views for Date?
+// TODO: provide default views for Numerics?
+
+private struct DisplayView: DataDisplayView {
+    var body: some View {
+        Text("The internal account identifier is not meant to be user facing!", comment: "Pure debug message, no need to translate.")
+    }
+
+
+    init(_ value: String) {}
+}
+
+private struct EntryView: DataEntryView {
+    var body: some View {
+        Text("The internal account identifier is meant to be generated!", comment: "Pure debug message, no need to translate.")
+    }
+
+    init(_ value: Binding<String>) {}
+}
+
+
 extension AccountDetails {
     /// The primary, unique, stable and typically internal identifier for an user account.
     ///
@@ -27,33 +49,17 @@ extension AccountDetails {
     /// As an ``AccountService`` you are required to supply the `accountId` for every ``AccountDetails`` you provide
     /// to ``Account/supplyUserDetails(_:isNewUser:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
     /// configuration as part of your ``AccountServiceConfiguration``, make sure to include the `accountId` there as well.
-    @AccountKey(name: LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module)), category: .credentials, as: String.self)
+    @AccountKey(
+        name: LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module)),
+        category: .credentials,
+        as: String.self,
+        displayView: DisplayView.self,
+        entryView: EntryView.self
+    )
     public var accountId: String
-    // TODO: remove empty initial!
 }
 
 
 @KeyEntry(\.accountId)
 public extension AccountKeys { // swiftlint:disable:this no_extension_access_modifier
-}
-
-
-// TODO: find a better way to specify this?
-extension AccountDetails.__Key_accountId {
-    public struct DataDisplay: DataDisplayView {
-        public var body: some View {
-            Text("The internal account identifier is not meant to be user facing!", comment: "Pure debug message, no need to translate.")
-        }
-
-
-        public init(_ value: Value) {}
-    }
-
-    public struct DataEntry: DataEntryView {
-        public var body: some View {
-            Text("The internal account identifier is meant to be generated!", comment: "Pure debug message, no need to translate.")
-        }
-
-        public init(_ value: Binding<String>) {}
-    }
 }

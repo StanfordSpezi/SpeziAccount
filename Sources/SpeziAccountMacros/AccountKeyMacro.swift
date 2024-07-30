@@ -7,10 +7,13 @@
 //
 
 
+import Foundation
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
 
+/// The `@AccountKey` macro.
 public struct AccountKeyMacro {}
 
 
@@ -23,7 +26,7 @@ extension AccountKeyMacro: AccessorMacro {
         guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
               let binding = variableDeclaration.bindings.first,
               let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            throw AccountKeyMacroError.couldNotDetermineIdentifier
+            throw DiagnosticsError(syntax: declaration, message: "'@AccountKey' was unable to determine the property name", id: .invalidSyntax)
         }
 
         let getAccessor: AccessorDeclSyntax =
@@ -45,7 +48,7 @@ extension AccountKeyMacro: AccessorMacro {
 
 
 extension AccountKeyMacro: PeerMacro {
-    public static func expansion(
+    public static func expansion( // swiftlint:disable:this function_body_length cyclomatic_complexity
         of node: AttributeSyntax,
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
@@ -53,19 +56,37 @@ extension AccountKeyMacro: PeerMacro {
         guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
               let binding = variableDeclaration.bindings.first,
               let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            throw AccountKeyMacroError.couldNotDetermineIdentifier
-        }
-
-        guard case let .argumentList(argumentList) = node.arguments,
-              let name = argumentList.first(where: { $0.label?.text == "name" }),
-              let category = argumentList.first(where: { $0.label?.text == "category" }),
-              let valueType = argumentList.first(where: { $0.label?.text == "as" }) else {
-            throw AccountKeyMacroError.argumentListInconsistency
+            throw DiagnosticsError(syntax: declaration, message: "'@AccountKey' was unable to determine the property name", id: .invalidSyntax)
         }
 
         guard let typeAnnotation = binding.typeAnnotation else {
-            throw AccountKeyMacroError.propertyIsMissingTypeAnnotation
+            throw DiagnosticsError(syntax: binding, message: "Variable binding is missing the type annotation", id: .invalidSyntax)
         }
+
+        guard case let .argumentList(argumentList) = node.arguments else {
+            throw DiagnosticsError(syntax: node, message: "Unexpected arguments passed to '@AccountKey'", id: .invalidSyntax)
+        }
+
+        guard let name = argumentList.first(where: { $0.label?.text == "name" }) else {
+            throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'name'", id: .invalidSyntax)
+        }
+
+        guard let category = argumentList.first(where: { $0.label?.text == "category" }) else {
+            throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'category'", id: .invalidSyntax)
+        }
+
+        guard let valueType = argumentList.first(where: { $0.label?.text == "as" }) else {
+            throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'as'", id: .invalidSyntax)
+        }
+
+        // optional arguments
+        let initial = argumentList.first { $0.label?.text == "initial" }
+        let displayViewType = argumentList.first { $0.label?.text == "displayView" }
+        let entryView = argumentList.first { $0.label?.text == "entryView" }
+
+        let valueTypeName = try valueType.metaTypeTypeNameArgument(name: "as")
+        let displayViewTypeName = try displayViewType?.metaTypeTypeNameArgument(name: "displayView")
+        let entryViewTypeName = try entryView?.metaTypeTypeNameArgument(name: "entryView")
 
 
         let valueTypeInitializer: TypeSyntax
@@ -79,17 +100,9 @@ extension AccountKeyMacro: PeerMacro {
             accountKeyProtocol = "RequiredAccountKey"
         }
 
-        guard let valueTypeExpression = valueType.expression.as(MemberAccessExprSyntax.self),
-              valueTypeExpression.declName.baseName.tokenKind == .keyword(.`self`),
-              let valueTypeName = valueTypeExpression.base?.as(DeclReferenceExprSyntax.self)?.baseName else {
-            throw AccountKeyMacroError.unableToDetermineValueArgument
-        }
-
-        guard valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text == valueTypeName.text else {
-            throw AccountKeyMacroError.typesNotMatching(
-                argument: valueTypeName.text,
-                variable: valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>"
-            )
+        // TODO: syntax text bytes to text?
+        guard valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text == valueTypeName.forceToText else {
+            throw DiagnosticsError(syntax: valueType, message: "Value type '\(valueTypeName) is expected to match the property binding type annotation \(valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>")", id: .invalidApplication)
         }
 
 
@@ -116,7 +129,7 @@ extension AccountKeyMacro: PeerMacro {
             inheritanceClause: InheritanceClauseSyntax(inheritedTypes: InheritedTypeListSyntax {
                 InheritedTypeSyntax(type: IdentifierTypeSyntax(name: accountKeyProtocol))
             })
-        ) {
+        ) { // swiftlint:disable:this closure_body_length
             TypeAliasDeclSyntax(
                 modifiers: modifier.map { [DeclModifierSyntax(name: $0)] } ?? [],
                 name: "Value",
@@ -132,17 +145,91 @@ extension AccountKeyMacro: PeerMacro {
             \(raw: rawModifier)static let category: AccountKeyCategory = \(category.expression)
             """
 
-            if let initial = argumentList.first(where: { $0.label?.text == "initial" }) {
+            if let initial {
                 """
                 \(raw: rawModifier)static var initialValue: InitialValue<Value> {
                 \(initial.expression)
                 }
                 """
             }
+
+            if let displayViewTypeName {
+                // TODO: suddenly we need swiftUI?
+                """
+                \(raw: rawModifier)struct DataDisplay: DataDisplayView {
+                    private let value: Value
+                    
+                    \(raw: rawModifier)var body: some View {
+                        \(displayViewTypeName)(value)
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Value) {
+                        self.value = value
+                    }
+                }
+                """
+            }
+
+            if let entryViewTypeName {
+                """
+                \(raw: rawModifier)struct DataEntry: DataEntryView {
+                    @Binding private var value: Value
+                    
+                    \(raw: rawModifier)var body: some View {
+                        \(entryViewTypeName)($value)
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Binding<Value>) {
+                        self._value = value
+                    }
+                }
+                """
+            }
+        }
+
+        if let displayViewTypeName, displayViewTypeName.forceToText == "DataDisplay" {
+            context.diagnose(Diagnostic(
+                syntax: displayViewTypeName,
+                message: "The type name '\(displayViewTypeName)' is ambiguous. Please disambiguate or rename.",
+                id: .invalidApplication
+            ))
+        }
+        if let entryViewTypeName, entryViewTypeName.forceToText == "DataEntry" {
+            context.diagnose(Diagnostic(
+                syntax: entryViewTypeName,
+                message: "The type name '\(entryViewTypeName)' is ambiguous. Please disambiguate or rename.",
+                id: .invalidApplication
+            ))
         }
 
         return [
             DeclSyntax(key)
         ]
+    }
+}
+
+
+extension LabeledExprSyntax {
+    func metaTypeTypeNameArgument(name: String) throws -> any ExprSyntaxProtocol {
+        guard let valueTypeExpression = expression.as(MemberAccessExprSyntax.self),
+              valueTypeExpression.declName.baseName.tokenKind == .keyword(.`self`),
+              let base = valueTypeExpression.base else {
+            throw DiagnosticsError(syntax: self, message: "'@AccountKey' failed to parse the meta type expression in argument '\(name)'", id: .invalidSyntax)
+        }
+
+        if let nestedMemberAccess = base.as(MemberAccessExprSyntax.self) {
+            return nestedMemberAccess
+        } else if let valueTypeName = base.as(DeclReferenceExprSyntax.self) {
+            return valueTypeName
+        } else {
+            throw DiagnosticsError(syntax: self, message: "'@AccountKey' failed to parse the meta type expression in argument '\(name)'", id: .invalidSyntax)
+        }
+    }
+}
+
+
+extension ExprSyntaxProtocol {
+    var forceToText: String? {
+        String(data: Data(syntaxTextBytes), encoding: .utf8)
     }
 }

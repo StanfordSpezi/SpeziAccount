@@ -9,15 +9,21 @@
 import Foundation
 
 
-/// An error that occurs due to restrictions or requirements (e.g., imposed by ``AccountValueConfiguration``).
+/// Error while undergoing an account operation.
+///
+/// An error like that might occur due to restrictions or requirements imposed by ``AccountValueConfiguration``.
 public enum AccountOperationError: LocalizedError {
+    /// Missing account value.
+    ///
     /// A ``AccountKeyRequirement/required`` ``AccountKey`` that was not supplied by the signup view before
     /// being passed to the ``AccountService``.
     ///
     /// - Note: This is an error in the view logic due to missing user-input sanitization or simply the view
-    /// forgot to supply the ``AccountKey`` when building the ``SignupDetails``.
+    /// forgot to supply the ``AccountKey`` when building the ``AccountDetails``.
     case missingAccountValue(_ keyNames: [String])
-    /// The stable ``AccountIdKey`` was tried to be modified.
+    /// The stable user identifier was tired to be modified.
+    ///
+    /// The stable ``AccountDetails/accountId`` was tried to be modified.
     case accountIdChanged
 
 

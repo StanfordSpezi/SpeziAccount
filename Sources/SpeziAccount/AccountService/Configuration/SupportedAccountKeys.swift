@@ -13,8 +13,8 @@
 /// capable of storing.
 ///
 /// Upon startup, `SpeziAccount` automatically verifies that the user-configured account values match what the
-/// ``AccountService`` is capable of storing or that the user provides a ``AccountStorageConstraint`` conforming
-/// `Standard` in their app that is used to handle storage of all unsupported account values.
+/// ``AccountService`` is capable of storing or that the user provides a ``AccountStorageProvider``
+/// to the ``AccountConfiguration`` to handle storage of all unsupported account values.
 ///
 /// Access the configuration via the ``AccountServiceConfiguration/supportedAccountKeys``.
 ///

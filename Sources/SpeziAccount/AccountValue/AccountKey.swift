@@ -22,20 +22,8 @@ import XCTRuntimeAssertions
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
 ///     and validate input.
-///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageConstraint``s
+///     `Codable` conformance is required such that ``AccountStorageProvider``s
 ///     can easily store arbitrarily defined account values.
-///
-/// ## Topics
-///
-/// ### Builtin Account Keys
-/// - ``AccountIdKey``
-/// - ``UserIdKey``
-/// - ``PasswordKey``
-/// - ``PersonNameKey``
-/// - ``EmailAddressKey``
-/// - ``DateOfBirthKey``
-/// - ``GenderIdentityKey``
-/// - ``ActiveAccountServiceKey``
 public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable, Value: Codable {
     /// The ``DataDisplayView`` that is used to display a value for this account value.
     ///

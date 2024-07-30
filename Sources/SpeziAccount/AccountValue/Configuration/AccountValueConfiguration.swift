@@ -15,6 +15,7 @@ import OrderedCollections
 /// collected at signup or generally supported. You configure them by supplying an array of ``ConfiguredAccountKey``s.
 ///
 /// A configuration instance is created using ``AccountConfiguration`` and stored at ``Account/configuration``.
+@dynamicMemberLookup
 public struct AccountValueConfiguration {
     /// The default set of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
     public static let `default` = AccountValueConfiguration(.default)
@@ -88,15 +89,13 @@ public struct AccountValueConfiguration {
     public subscript<Key: AccountKey>(_ key: Key.Type) -> (any AccountKeyConfiguration)? {
         configuration[Key.id]
     }
-/*
- // TODO: whatever!
+
     /// Retrieve the configuration for a given ``AccountKey`` using `KeyPath` notation.
     /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
     /// - Returns: The configuration for a given ``AccountKey`` if it exists.
-    public subscript<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> (any AccountKeyConfiguration)? {
+    public subscript<Key: AccountKey>(dynamicMember keyPath: KeyPath<AccountKeys, Key.Type>) -> (any AccountKeyConfiguration)? {
         self[Key.self]
     }
-    */
 }
 
 

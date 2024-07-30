@@ -11,7 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
-/// The essential `SpeziAccount` view to view and modify the active account details.
+/// View and modify the currently associated user account details.
 ///
 /// This provides an overview of the current account details. Further, it allows the user to modify their
 /// account values.
@@ -20,11 +20,6 @@ import SwiftUI
 ///     to work properly.
 ///
 /// This view requires a currently logged in user (see ``Account/details``).
-/// Further, this view relies on an ``Account`` object in its environment. This is done automatically by providing a
-/// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
-///
-/// - Note: In SwiftUI previews you can easily instantiate your own ``Account``. Use the ``Account/init(building:active:configuration:)``
-///     initializer to create a new `Account` object with active ``AccountDetails``.
 ///
 /// Below is a short code example on how to use the `AccountOverview` view.
 ///

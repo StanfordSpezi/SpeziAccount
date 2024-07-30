@@ -65,7 +65,7 @@ struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test th
 }
 
 
-/// A mock implementation of a ``UserIdPasswordAccountService`` that can be used in your SwiftUI Previews.
+/// A mock `AccountService` that is useful in SwiftUI Previews.
 @MainActor
 public final class MockAccountService: AccountService { // TODO: just write an feature complete in memory account service we can use also in tests!
     public struct ConfiguredIdentityProvider: OptionSet, Sendable {

@@ -9,7 +9,7 @@
 import SpeziFoundation
 
 
-/// A `ValueRepository` that stores `KnowledgeSource`s anchored to the ``AccountAnchor``.
+/// A `ValueRepository` that stores `KnowledgeSource`s anchored to the `AccountAnchor`.
 ///
-/// This is the underlying storage type user in, e.g., ``AccountDetails``, ``SignupDetails`` or ``ModifiedAccountDetails``.
-public typealias AccountStorage = ValueRepository<AccountAnchor>
+/// This is the underlying storage type used ``AccountDetails``. All elements are tied to the ``AccountAnchor``.
+typealias AccountStorage = ValueRepository<AccountAnchor>

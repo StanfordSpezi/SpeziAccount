@@ -19,41 +19,31 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
     public static let defaultValue: _AccountSetupState = .generic
 }
 
-/// The essential `SpeziAccount` view to login into or signup for a user account.
+
+/// Login or signup for a user account.
 ///
-/// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
-/// ``IdentityProvider`` instances to setup an active user account. They might create a new account with a given
-/// ``AccountService`` or log into an existing one.
+/// This view handles account setup for a user. It will show all enabled ``IdentityProvider``s from the configured ``AccountService``.
+/// Account setup or login is then handled through the view components provided by the `AccountService`.
 ///
-/// This view relies on an ``Account`` object in its environment. This is done automatically by providing a
+/// - Note: This view relies on an ``Account`` object in its environment. This is done automatically by providing a
 /// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
-///
-/// - Note: In SwiftUI previews you can easily instantiate your own ``Account``. Use initializers like
-///     ``Account/init(services:configuration:)`` or ``Account/init(building:active:configuration:)``.
-///
 ///
 /// Below is a short code example on how to use the `AccountSetup` view.
 ///
 /// ```swift
 /// struct MyView: View {
-///     @Environment(Account.self) var account
-///
 ///     var body: some View {
 ///         // You may use `account.signedIn` to conditionally render another view if there is already a signed in account
 ///         // or use the `continue` closure as shown below to render a Continue button.
 ///         // The continue button is especially useful in cases like Onboarding Flows such that the user has the chance
 ///         // to review the currently signed in account.
 ///
-///         AccountSetup {
-///            NavigationLink {
-///                // ... next view
-///            } label: {
-///                Text("Continue")
-///            }
-///         }
+///         AccountSetup()
 ///     }
 /// }
 /// ```
+///
+/// - Note: Use the ``Account`` module to access the current user details and check if the is currently a user ``Account/signedIn``.
 @MainActor // TODO: remove navigation link in the example!
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void

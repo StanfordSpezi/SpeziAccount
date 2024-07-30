@@ -34,10 +34,10 @@ import SpeziValidation
 /// The configuration provides the following default validation rules depending on the context:
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
 ///     and [minimalEmail](https://swiftpackageindex.com/stanfordspezi/speziviews/0.6.1/documentation/spezivalidation/validationrule/minimalemail) rules
-///     if the `Key` is of type ``UserIdKey`` and the user id type is ``UserIdType/emailAddress`` or if the `Key` is of type ``EmailAddressKey``.
+///     if the `Key` is the ``AccountDetails/userId`` and the user id type is ``UserIdType/emailAddress`` or if the `Key` is the  ``AccountDetails/email``.
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
 ///     and [minimalPassword](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/minimalpassword)] rules
-///     if the `Key` is of type ``PasswordKey``.
+///     if the `Key` is the ``AccountDetails/password``.
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) rule otherwise.
 public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfigurationKey, OptionalComputedKnowledgeSource where Key.Value == String {
     // We use always compute, as we don't want our computation result to get stored. We don't have a mutable view anyways.

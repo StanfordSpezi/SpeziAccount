@@ -10,62 +10,36 @@ import Foundation
 import SpeziFoundation
 
 
-/// A builder interface for any ``AccountValues`` conforming types.
+/// A class-based builder interface for `AccountDetails` that can be passed around the view hierarchy.
 ///
-/// This type allows to easily build and modify an instance of ``AccountValues``.
-/// Use the ``AccountValues/Builder`` type-alias to instantiate a builder for any given ``AccountValues`` implementation.
-///
-/// ## Topics
-///
-/// ### Creating a new builder
-/// - ``AccountValuesBuilder/init()``
-/// - ``AccountValuesBuilder/init(from:)``
-///
-/// ### Setting a Account Value
-/// - ``AccountValuesBuilder/set(_:value:)-6s8dc``
-/// - ``AccountValuesBuilder/set(_:value:)-1qcx7``
-///
-/// ### Merging
-/// - ``AccountValuesBuilder/merging(_:allowOverwrite:)``
-/// - ``AccountValuesBuilder/merging(with:from:)``
-///
-/// ### Removal
-/// - ``AccountValuesBuilder/remove(_:)-99d1h``
-/// - ``AccountValuesBuilder/remove(_:)-5m271``
-/// - ``AccountValuesBuilder/remove(any:)``
-/// - ``AccountValuesBuilder/remove(all:)``
-///
-/// ### Building
-/// - ``AccountValuesBuilder/build()-pqt5``
-/// - ``AccountValuesBuilder/build(owner:)``
-/// - ``AccountValuesBuilder/build(checking:)``
+/// This type allows to easily build and modify an instance of ``AccountDetails``.
 @Observable
-public class AccountDetailsBuilder {
+class AccountDetailsBuilder {
     var storage: AccountDetails
     var defaultValues: AccountDetails
 
     /// Initialize a new empty builder.
-    public convenience init() {
+    convenience init() {
         self.init(from: AccountDetails())
     }
 
     /// Initialize a new builder by copying the contents of a ``AccountValues`` instance.
     /// - Parameter storage: The storage to copy all values from.
-    public init(from storage: AccountDetails) {
+    init(from storage: AccountDetails) {
         self.storage = AccountDetails()
         self.defaultValues = AccountDetails()
     }
 
 
     /// Clear the builder's contents.
-    public func clear() {
+    func clear() {
         storage = .init()
     }
 
     /// Retrieve the current value stored in the builder.
     /// - Parameter key: The ``AccountKey`` metatype.
     /// - Returns: The value is present.
-    public func get<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
+    func get<Key: AccountKey>(_ key: Key.Type) -> Key.Value? {
         storage[Key.self]
     }
 
@@ -75,7 +49,7 @@ public class AccountDetailsBuilder {
     ///   - value: The value to store.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
+    func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
         storage.set(key, value: value)
         return self
     }
@@ -92,7 +66,7 @@ public class AccountDetailsBuilder {
     ///   - merge: Flag controls if the supplied values might overwrite values in the builder
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func add(contentsOf values: AccountDetails, merge: Bool = false) -> Self {
+    func add(contentsOf values: AccountDetails, merge: Bool = false) -> Self {
         storage.add(contentsOf: values, merge: merge)
         return self
     }
@@ -101,7 +75,7 @@ public class AccountDetailsBuilder {
     /// - Parameter key: The ``AccountKey`` metatype.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func remove<Key: AccountKey>(_ key: Key.Type) -> Self {
+    func remove<Key: AccountKey>(_ key: Key.Type) -> Self {
         storage.remove(key)
         return self
     }
@@ -111,7 +85,7 @@ public class AccountDetailsBuilder {
     /// - Returns: The builder reference for method chaining.
     @discardableResult
     @_disfavoredOverload
-    public func remove(_ key: any AccountKey.Type) -> Self {
+    func remove(_ key: any AccountKey.Type) -> Self {
         storage.remove(key)
         return self
     }
@@ -120,7 +94,7 @@ public class AccountDetailsBuilder {
     /// - Parameter keys: The collection of metatypes (e.g., an array or ``AccountKeyCollection``).
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    public func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) -> Self {
+    func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) -> Self {
         storage.removeAll(keys)
         return self
     }
@@ -128,7 +102,7 @@ public class AccountDetailsBuilder {
     /// Remove a set of values from the builder given an array of ``AccountKey`` metatypes.
     /// - Parameter keys: The collection of metatypes (e.g., an array or ``AccountKeyCollection``).
     /// - Returns: The builder reference for method chaining.
-    public func removeAll(_ keys: [any AccountKey.Type]) -> Self {
+    func removeAll(_ keys: [any AccountKey.Type]) -> Self {
         storage.removeAll(keys)
         return self
     }
@@ -136,20 +110,20 @@ public class AccountDetailsBuilder {
     /// Checks if a value for a ``AccountKey`` is present in the builder.
     /// - Parameter key: The ``AccountKey`` metatype to check if a value exists.
     /// - Returns: Returns `true` if present, otherwise `false`.
-    public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
+    func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
         storage.contains(Key.self)
     }
 
     /// Checks if a value for a ``AccountKey`` is present in the builder.
     /// - Parameter key: The ``AccountKey`` metatype to check if a value exists.
     /// - Returns: Returns `true` if present, otherwise `false`.
-    public func contains(_ key: any AccountKey.Type) -> Bool {
+    func contains(_ key: any AccountKey.Type) -> Bool {
         storage.contains(key)
     }
 
     /// Build a new storage instance.
     /// - Returns: The built ``AccountValues``.
-    public func build() -> AccountDetails {
+    func build() -> AccountDetails {
         if !defaultValues.isEmpty {
             storage.add(contentsOf: defaultValues, merge: false)
             return storage
@@ -161,23 +135,23 @@ public class AccountDetailsBuilder {
 
 
 extension AccountDetailsBuilder: Collection {
-    public typealias Index = AccountStorage.Index
+    typealias Index = AccountStorage.Index
 
-    public var startIndex: Index {
+    var startIndex: Index {
         storage.startIndex
     }
 
-    public var endIndex: Index {
+    var endIndex: Index {
         storage.endIndex
     }
 
 
-    public func index(after index: Index) -> Index {
+    func index(after index: Index) -> Index {
         storage.index(after: index)
     }
 
 
-    public subscript(position: Index) -> AnyRepositoryValue {
+    subscript(position: Index) -> AnyRepositoryValue {
         storage[position]
     }
 }

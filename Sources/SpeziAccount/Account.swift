@@ -58,15 +58,11 @@ import SwiftUI
 ///
 /// - ``supplyUserDetails(_:isNewUser:)``
 /// - ``removeUserDetails()``
-///
-/// ### Initializers for your Preview Provider
-///
-/// - ``init(services:configuration:)``
-/// - ``init(_:configuration:)``
-/// - ``init(building:active:configuration:)``
 @Observable
 public final class Account {
-    @Application(\.logger) @ObservationIgnored private var logger
+    @Application(\.logger)
+    @ObservationIgnored
+    private var logger
 
     @Dependency @ObservationIgnored private var notifications: AccountNotifications
 
@@ -83,23 +79,15 @@ public final class Account {
     ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
     @MainActor public private(set) var signedIn: Bool
 
-    /// Provides access to associated data of the currently associated user account.
+    /// The user details of the currently associated user account.
     ///
-    /// The ``AccountDetails`` acts as a typed collection and is implemented as a
+    /// - Note: The ``AccountDetails`` acts as a typed collection and is implemented as a
     /// [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository).
-    ///
-    /// - Note: The associated ``AccountService`` that is responsible for managing the associated user can be retrieved
-    ///     using the ``AccountDetails/accountService`` property.
     @MainActor public private(set) var details: AccountDetails?
-
-    ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
-    ///
-    /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
-    ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-
 
     @MainActor private weak var _accountService: (any AccountService)?
 
+    /// The account service that was configured.
     @MainActor public var accountService: any AccountService { // TODO: try to remove this access!
         guard let service = _accountService else {
             preconditionFailure("Tried to access account service that was deallocated!")
@@ -107,7 +95,9 @@ public final class Account {
         return service
     }
 
+    /// The account setup components specified via the ``IdentityProvider`` property wrapper that are shown in the ``AccountSetup`` view.
     let accountSetupComponents: [AnyAccountSetupComponent] // TODO: should that be public?
+    /// A security related modifier (see ``SecurityRelatedModifier``).
     let securityRelatedModifiers: [AnySecurityModifier]
 
     /// Initialize a new `Account` object by providing all properties individually.
@@ -143,7 +133,7 @@ public final class Account {
             partialResult.append(modifier.securityModifier)
         })
 
-        if supportedConfiguration[AccountKeys.userId] == nil {
+        if supportedConfiguration.userId == nil {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
@@ -189,7 +179,8 @@ public final class Account {
 
         var details = details
         details.accountServiceConfiguration = accountService.configuration
-        details.isNewUser = isNewUser // TODO: you can just specify that yourself?
+        details.isNewUser = isNewUser // TODO: you can just specify that yourself? no method argument?
+        details.password = nil // ensure password never leaks
 
         let previousDetails = self.details
 

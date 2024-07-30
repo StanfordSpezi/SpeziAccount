@@ -40,7 +40,7 @@ struct SignupSectionsView: View {
                     Text(title)
                 }
             } footer: {
-                if category == .credentials && account.configuration[AccountKeys.password] != nil {
+                if category == .credentials && account.configuration.password != nil {
                     PasswordValidationRuleFooter(configuration: account.accountService.configuration)
                 }
             }

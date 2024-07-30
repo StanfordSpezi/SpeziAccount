@@ -12,8 +12,9 @@ import SwiftUI
 
 /// A account value that can be rendered as a picker (like enum values).
 ///
-/// In order to provide an Automatic Picker ``DataEntryView``, conform your enum to `CaseIterable` to enumerate all cases,
-/// `CustomLocalizedStringResourceConvertible` to provide a localizable representation for each case and `Hashable`
+/// In order to provide an Automatic Picker ``DataEntryView``, conform your enum to [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable)
+/// to enumerate all cases, [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
+/// to provide a localizable representation for each case and [`Hashable`](https://developer.apple.com/documentation/swift/hashable)
 /// to differentiate cases.
 public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
 

@@ -7,10 +7,12 @@
 //
 
 
+import SwiftDiagnostics
 import SwiftSyntax
 import SwiftSyntaxMacros
 
 
+/// The `@KeyEntry` macro.
 public struct KeyEntryMacro {}
 
 
@@ -24,14 +26,18 @@ extension KeyEntryMacro: MemberMacro {
         guard case let .argumentList(arguments) = node.arguments,
               let argument = arguments.first,
               arguments.count == 1 else {
-            throw AccountKeyMacroError.argumentListInconsistency
+            throw DiagnosticsError(syntax: node, message: "Unexpected arguments passed to '@KeyEntry'", id: .invalidSyntax)
         }
 
         guard let keyPathExpression = argument.expression.as(KeyPathExprSyntax.self),
               let component = keyPathExpression.components.last,
               keyPathExpression.components.count == 1,
               let propertyComponent = component.component.as(KeyPathPropertyComponentSyntax.self) else {
-            throw AccountKeyMacroError.failedKeyPathParsing
+            throw DiagnosticsError(
+                syntax: argument.expression,
+                message: "'@KeyEntry' failed to parse the keypath expression in argument 'key'",
+                id: .invalidSyntax
+            )
         }
 
         let name = propertyComponent.declName.baseName

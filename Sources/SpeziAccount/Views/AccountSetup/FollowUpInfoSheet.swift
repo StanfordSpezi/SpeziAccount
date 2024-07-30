@@ -138,25 +138,19 @@ struct FollowUpInfoSheet: View {
     }
 }
 
-@MainActor
-func test() -> some View { // TODO: move?
+#if DEBUG
+private let keys: [any AccountKey.Type] = [AccountKeys.name]
+#Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"
-    let keys: [any AccountKey.Type] = [AccountKeys.name]
 
-    let asdf = FollowUpInfoSheet(details: details, requiredKeys: keys)
     return NavigationStack {
         AccountDetailsReader { _, details in
             FollowUpInfoSheet(details: details, requiredKeys: keys)
         }
     }
-    .previewWith {
-        AccountConfiguration(service: MockAccountService(), activeDetails: details)
-    }
-}
-
-#if DEBUG
-#Preview {
-    test()
+        .previewWith {
+            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+        }
 }
 #endif

@@ -20,7 +20,7 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
     public struct ExternallyStoredDetails {
         /// The account id the storage details are associated with.
         ///
-        /// Fore more information refer to ``AccountIdKey``.
+        /// Fore more information refer to ``AccountDetails/accountId``.
         public let accountId: String
         /// The details that are stored externally.
         public let details: AccountDetails

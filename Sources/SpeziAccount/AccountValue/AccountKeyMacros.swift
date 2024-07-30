@@ -7,52 +7,78 @@
 //
 
 import Foundation
+import SpeziFoundation // TODO: really?
 
 // TODO: add docs for the macros!
 
+// TODO: adding new account values: make sure the snippet works out of the box (maybe provide the HeightKey example?)
+
+import SwiftUI
+
+extension EmptyView: DataDisplayView, DataEntryView { // TODO: use that? or make an custom type for that?
+    public typealias Value = Never
+
+    public init(_ value: Never) {
+        self.init()
+    }
+
+    public init(_ value: Binding<Never>) {
+        self.init()
+    }
+}
 
 @attached(accessor, names: named(get), named(set))
 @attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value>(
+public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     name: LocalizedStringResource,
-    category: AccountKeyCategory,
+    category: AccountKeyCategory = .other, // TODO: support default value with the macro!
     as: Value.Type,
-    initial: InitialValue<Value>
+    initial: InitialValue<Value>,
+    displayView: DataDisplay.Type = EmptyView.self,
+    entryView: DataEntry.Type = EmptyView.self
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 @attached(accessor, names: named(get), named(set))
 @attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value: StringProtocol>(
+public macro AccountKey<Value: StringProtocol, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     name: LocalizedStringResource,
-    category: AccountKeyCategory,
-    as: Value.Type
-) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
-
-
-@attached(accessor, names: named(get), named(set))
-@attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value: AdditiveArithmetic>(
-    name: LocalizedStringResource,
-    category: AccountKeyCategory,
-    as: Value.Type
+    category: AccountKeyCategory = .other,
+    as: Value.Type,
+    displayView: DataDisplay.Type = EmptyView.self,
+    entryView: DataEntry.Type = EmptyView.self
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
 @attached(accessor, names: named(get), named(set))
 @attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value: ExpressibleByArrayLiteral>(
+public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     name: LocalizedStringResource,
-    category: AccountKeyCategory,
-    as: Value.Type
+    category: AccountKeyCategory = .other,
+    as: Value.Type,
+    displayView: DataDisplay.Type = EmptyView.self,
+    entryView: DataEntry.Type = EmptyView.self
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
 @attached(accessor, names: named(get), named(set))
 @attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value: ExpressibleByDictionaryLiteral>(
+public macro AccountKey<Value: ExpressibleByArrayLiteral, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     name: LocalizedStringResource,
-    category: AccountKeyCategory,
-    as: Value.Type
+    category: AccountKeyCategory = .other,
+    as: Value.Type,
+    displayView: DataDisplay.Type = EmptyView.self,
+    entryView: DataEntry.Type = EmptyView.self
+) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
+
+
+@attached(accessor, names: named(get), named(set))
+@attached(peer, names: prefixed(__Key_))
+public macro AccountKey<Value: ExpressibleByDictionaryLiteral, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
+    name: LocalizedStringResource,
+    category: AccountKeyCategory = .other,
+    as: Value.Type,
+    displayView: DataDisplay.Type = EmptyView.self,
+    entryView: DataEntry.Type = EmptyView.self
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 

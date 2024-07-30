@@ -11,17 +11,14 @@ import Spezi
 import XCTRuntimeAssertions
 
 
-/// The Spezi `Component` to configure the ``SpeziAccount`` framework in the `Configuration` section of your app.
+/// Configure the `SpeziAccount` framework.
 ///
-/// This Spezi `Component` is used to configure the ``SpeziAccount`` framework, namely to collect and setup all ``AccountService``
-/// either provided directly or provided by other configured `Component`s. The global ``Account`` object will
-/// be injected as an environment object into the view hierarchy of your app.
+/// This Spezi `Module` is used to configure the `SpeziAccount` framework.
+/// You provide the ``AccountService`` module that should be used with the framework.
+/// The ``Account`` module will be injected as an environment object into the view hierarchy of your app and is accessible
+/// using the `@Dependency` property wrapper from other Spezi `Module`s.
 ///
-/// ``AccountService`` can either be supplied directly via ``init(configuration:_:)`` or might be automatically collected from
-/// other `Component`s that provide ``AccountService`` instances (like the `SpeziFirebase` framework).
-///
-/// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
-///     refer to the <doc:Creating-your-own-Account-Service> article.
+/// - Note: For more information on how to provide an ``AccountService`` refer to the <doc:Creating-your-own-Account-Service> article.
 public final class AccountConfiguration<Service: AccountService> {
     @Application(\.logger)
     private var logger
@@ -35,14 +32,13 @@ public final class AccountConfiguration<Service: AccountService> {
 
     @StandardActor private var standard: any Standard
 
-    /// Initializes a `AccountConfiguration` by directly providing a set of ``AccountService`` instances.
+    /// Configure the `SpeziAccount` framework.
     ///
-    /// In addition to the supplied ``AccountService``s, ``SpeziAccount`` will collect any ``AccountService`` instances
-    /// provided by other Spezi `Component`s.
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
     ///
     /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public convenience init(
         service: Service,
         configuration: AccountValueConfiguration = .default
@@ -50,6 +46,15 @@ public final class AccountConfiguration<Service: AccountService> {
         self.init(accountService: service, configuration: configuration, defaultActiveDetails: nil)
     }
 
+    /// Configure the `SpeziAccount` framework with external storage.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    /// Use this to supply an ``AccountStorageProvider`` that manages external storage of account values unsupported by the account service.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     public convenience init<Storage: AccountStorageProvider>(
         service: Service,
         storageProvider: Storage,
@@ -58,12 +63,12 @@ public final class AccountConfiguration<Service: AccountService> {
         self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: nil)
     }
 
-    /// Configure the Account Module for previewing purposes with default `AccountDetails`.
+    /// Configure the `Account` Module for previewing purposes.
     ///
     /// - Parameters:
-    ///   - builder: The ``AccountDetails`` Builder for the account details that you want to supply.
-    ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
+    ///   - service: The `AccountService` to use with the framework.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
     public convenience init( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,
@@ -73,6 +78,13 @@ public final class AccountConfiguration<Service: AccountService> {
         self.init(accountService: service, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
+    /// Configure the `Account` Module for previewing purposes with external storage.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
     public convenience init<Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,

@@ -1,6 +1,6 @@
-# Adding new Account Values
+# Supporting new Types of Account Details
 
-Support new user account details by defining your own ``AccountKey``.
+Support new user account details by defining your own `AccountKey`.
 
 <!--
                   
@@ -14,145 +14,135 @@ SPDX-License-Identifier: MIT
 
 ## Overview
 
-By defining a custom ``AccountKey`` you can add new data points stored in your user accounts.
-An ``AccountKey`` implementation provides all required UI components both for data entry using a ``DataEntryView`` and data display using a
-``DataDisplayView``. Consequentially, none of the `SpeziAccount` provided UI components nor existing ``AccountService`` implementations need to be modified.
+By defining a custom ``AccountKey`` you can support storing custom data points with your user accounts.
+An `AccountKey` declaration provides useful meta-data information (like name, a category and a initial value) and defines user interface components
+for data entry (see ``DataEntryView``) and displaying data (using ``DataDisplayView``). For some types of account values these views can be automatically
+substituted.
 
-This articles guides you through all the necessary steps of defining a new ``AccountKey``.
+This articles guides you through all the necessary steps to declare your custom `AccountKey`.
 
-### Defining the AccountValue Key
+### Declaring the property
 
-The first step is to create a new type that adopts the ``AccountKey`` protocol.
+You use the ``AccountKey(name:category:as:initial:displayView:entryView:)`` macro to declare a new ``AccountKey``.
 
-> Note: Refer to the ``RequiredAccountKey`` protocol if you require an account value that is always required to be supplied if configured.
+It is mandatory to provide a localizable ``AccountKey/name`` and the `Value` type.
+> Note: Refer to `Value Conformances` section below to learn more of the mandatory conformances for the `Value` type. 
 
-When adopting the protocol, you have to provide the associated [Value](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/knowledgesource/value)
-type, a ``AccountKey/name``, a ``AccountKey/category`` and an ``AccountKey/initialValue-6h1oo``.
-The `Value` defines the type of the account value, the `name` is used to textually refer to the account value and 
-the `category` is used to group the account values in UI components (see ``AccountKeyCategory`` for more information).
-The `initialValue` defines the initial value on signup and how it is used. For some types like String a default ``InitialValue/empty(_:)`` implementation is provided.
+Optionally, you might want to customize the ``AccountKey/category`` in which the account details are shown (see ``AccountKeyCategory``).
+An ``AccountKey/initialValue-6h1oo`` might be required, depending on the `Value` type if `SpeziAccount` cannot derive a sensible default
+(e.g., SpeziAccount automatically provides an ``InitialValue/empty(_:)`` String for String-based account keys).
 
-> Note: The associated type for the value is coming from the underlying 
-    [KnowledgeSource](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/knowledgesource) protocol from the Spezi framework. 
-    Refer to the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/shared-repository)
-    documentation for more information.
+Below is a short code example that adds support to store a string-based biography that a user might show on their profile.
 
-Below is a code example implementing a simple string-based biography that a user might show on their profile.
 ```swift
-public struct BiographyKey: AccountKey {
-    public typealias Value = String // as we have declared a String value, we don't need to specify a `initialValue` manually
-    
-    public static let name: LocalizedStringResource = "Biography" // make sure to translate your name
-    public static let signupCategory: SignupCategory = .other
+extension AccountDetails {
+    @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
+    var biography: String?
 }
 ```
+
+
+In order to be able to refer to your account key, you need to add a entry to the ``AccountKeys`` using the ``KeyEntry(_:)`` macro.
+
+```swift
+@KeyEntry(\.biography)
+extension AccountKeys {}
+```
+
+### Customize User Interfaces
+
+While SpeziAccount tries as best as it can to automatically provide user interfaces to display and edit your custom account keys,
+it might be necessary or improve the user experience to provide your own user interfaces.
+
+This is done by implementing a ``DataDisplayView`` or ``DataEntryView`` respectively.
+
+- Note: The `User Interfaces that are provided by default` section provides an overview when SpeziAccount is able to provide default user interfaces.
+
+The code example below implements a custom `EntryView` and `DisplayView` and updates the `AccountKey` declaration from above to use
+the new views.
+
+```swift
+import SpeziAccount
+import SpeziValidation
+import SpeziViews
+import SwiftUI
+
+
+/// A custom data entry view that disables auto-correction for the biography key.
+private struct EntryView: DataEntryView {
+    @Binding private var biography: Value
+
+    var body: some View {
+        VerifiableTextField("enter biography", text: $biography)
+            .autocorrectionDisabled()
+            .lineLimit(2...5)
+    }
+
+    init(_ value: Binding<Value>) {
+        self._biography = value
+    }
+}
+
+
+/// A custom data display view that allows to display up to 3 lines of the biography.
+private struct DisplayView: DataDisplayView {
+    private let value: String
+
+    var body: some View {
+        Text(value)
+            .lineLimit(...3) // show biography in max 3 lines
+    }
+
+    init(_ value: String) {
+        self.value = value
+    }
+}
+
+
+// the updated @AccountKey macro definition from above
+extension AccountDetails {
+    @AccountKey(
+        name: "Biography",
+        category: .personalDetails,
+        as: String.self,
+        displayView: DisplayView.self,
+        entryView: EntryView.self
+    )
+    var biography: String?
+}
+```
+
+- Note: You may have to manually handle input validation. Refer to the `Input Validation` section below.
 
 ### Value Conformances
 
 Your `Value` type requires several protocol conformances.
 
-* The `Value` type must conform to `Sendable` to be safely passed across actor boundaries.
-* The `Value` type must conform to `Equatable` to be easily notified about changes at data entry.
-* The `Value` type must conform to `Codable` such that ``AccountService``s or a ``AccountStorageConstraint`` can easily store and retrieve
-    arbitrary `Value` types.
+* The `Value` type must conform to [`Sendable`](https://developer.apple.com/documentation/swift/sendable)) to be safely passed across actor boundaries.
+* The `Value` type must conform to [`Equatable`](https://developer.apple.com/documentation/swift/equatable)) to be easily notified about changes at data entry.
+* The `Value` type must conform to [`Codable`](https://developer.apple.com/documentation/swift/codable) such that an ``AccountService``s or an ``AccountStorageProvider``
+can easily store and retrieve arbitrary `Value` types.
 
-### Accessors
+### User Interfaces that are provided by default
 
-In order for our new ``AccountKey`` implementation to work seamlessly with the ``SpeziAccount`` infrastructure,
-we have to declare several extensions, so we can easily access the ``AccountKey`` meta-type or the value stored for a given user. 
+This section briefly highlights the conditions under which SpeziAccount can provide user interface components automatically.
 
-First, an extension to the ``AccountKeys`` type is required, inorder to use a shorthand, `KePath`-based notation to refer to the ``AccountKey`` metatypes.
+A ``AccountKey/DataDisplay`` view is automatically provided if:
+* The `Value` is of type `String`.
+* The `Value` conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible),
+    providing a localized string-representation.
 
-```swift 
-extension AccountKeys {
-    public var biography: BiographyKey.Type {
-        BiographyKey.self
-    }
-}
-```
+// TODO: add other CustomStringConvertible things (also Bool, whatever)
 
-Secondly, an extension to the ``AccountValues`` protocol is required to retrieve the account value from ``AccountValues`` instances like
-``AccountDetails`` or ``SignupDetails``.
+A ``AccountKey/DataEntry`` view is automatically provide if:
+* The `Value` conforms to the ``PickerValue`` protocols. This is provides a Picker UI for enum types.
+    `PickerValue` is shorthand to conform to the [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable),
+    [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
+    and [`Hashable`](https://developer.apple.com/documentation/swift/hashable) protocols. 
 
-```swift
-extension AccountValues {
-    public var biography: String? {
-        storage[BiographyKey.self]
-    }
-}
-```
+TODO: support automatic string entry!
 
-### UI Components
-
-Each ``AccountKey`` has to provide a SwiftUI view that is used during signup or when the user wants to view or edit their current account information.
-Read through the following sections for more information how to provide UI components for your ``AccountKey`` implementation.
-
-### Data Display View
-
-The associated `DataDisplay` type provides the SwiftUI view that handles displaying a value of the ``AccountKey``.
-In cases where the `Value` is `String`-based
-or conforms to the [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
-protocol, an automatic implementation is provided.
-Therefore, you typically do not need to provide a custom view implementation,
-or you might consider adding `CustomLocalizedStringResourceConvertible` protocol
-conformance to your `Value` type.
-
-However, if your `Value` is not `String`-based, you need to implement your own DataDisplayView. Below is a short code example that demonstrates how to implement a DataDisplayView for which the `Value` is `Int`-based for a HeightValue Key.
-```swift
-extension HeightKey {
-    public struct DataDisplay: DataDisplayView {
-        public typealias Key = HeightKey
-        private let height: Int
-        
-        public var body: some View {
-            HStack {
-                Text(HeightKey.name)
-                Spacer()
-                Text("\(height) cm")
-                    .foregroundColor(.secondary)
-            }
-                .accessibilityElement(children: .combine)
-        }
-
-        public init(_ value: Int) {
-            self.height = value
-        }
-    }
-}
-```
-
-> Note: For more information on how to implement your custom data display view, refer to the ``DataDisplayView`` protocol.
-
-#### Data Entry View
-
-The associated ``AccountKey/DataEntry`` type provide the SwiftUI view that handles value entry of the ``AccountKey``. You must always provide a
-``DataEntryView`` type.
-
-This protocol has two requirements: ``DataEntryView/Key`` defines the associated ``AccountKey`` type (what we just implemented) 
-and provides an ``DataEntryView/init(_:)`` to retrieve a `Binding` to the current (or empty) account value
-from the parent view (refer to ``GeneralizedDataEntryView`` for more information).
-
-Below is a short code example on how one could implement the ``DataEntryView`` for our new biography account value.
-```swift
-extension BiographyKey {
-    public struct DataEntry: DataEntryView {
-        public typealias Key = BiographyKey
-
-        @Binding private var biography: Value
-
-        public init(_ value: Binding<Value>) {
-            self._biography = value
-        }
-
-        public var body: some View {
-            VerifiableTextField(Key.name, text: $biography)
-                .autocorrectionDisabled()
-        }
-    }
-}
-```
-
-##### Input Validation
+### Input Validation
 
 Input validation relies on the [SpeziValidation](https://swiftpackageindex.com/StanfordSpezi/SpeziViews/documentation/spezivalidation) package.
 
@@ -180,7 +170,6 @@ Still, you are required to evaluate to which extent validation has to be handled
 - ``AccountKeyCategory``
 - ``InitialValue``
 - ``AccountKeys``
-- ``AccountValues``
 
 ### Data Display View
 

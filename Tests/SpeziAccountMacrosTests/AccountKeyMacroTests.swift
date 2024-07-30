@@ -150,6 +150,70 @@ final class AccountKeyMacroTests: XCTestCase {
         )
     }
 
+    func testCustomUI() { // TODO: test collision of DataEntry and DataDisplay
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(
+                    name: "Gender Identity",
+                    category: .personalDetails,
+                    as: GenderIdentity.self,
+                    initial: .default(.preferNotToState),
+                    displayView: TestDisplayUI.self,
+                    entryView: MyModule.Nested.TestEntryUI.self
+                )
+                var genderIdentity: GenderIdentity?
+            }
+            """,
+            expandedSource: // TODO: maybe test with public modifiers?
+            """
+            extension AccountDetails {
+                var genderIdentity: GenderIdentity? {
+                    get {
+                        self [__Key_genderIdentity.self]
+                    }
+                    set {
+                        self [__Key_genderIdentity.self] = newValue
+                    }
+                }
+
+                struct __Key_genderIdentity: AccountKey {
+                    typealias Value = GenderIdentity
+            
+                    static let name: LocalizedStringResource = "Gender Identity"
+                    static let category: AccountKeyCategory = .personalDetails
+                    static var initialValue: InitialValue<Value> {
+                        .default(.preferNotToState)
+                    }
+                    struct DataDisplay: DataDisplayView {
+                        private let value: Value
+
+                        var body: some View {
+                            TestDisplayUI(value)
+                        }
+
+                        init(_ value: Value) {
+                            self.value = value
+                        }
+                    }
+                    struct DataEntry: DataEntryView {
+                        @Binding private var value: Value
+
+                        var body: some View {
+                            MyModule.Nested.TestEntryUI($value)
+                        }
+
+                        init(_ value: Binding<Value>) {
+                            self._value = value
+                        }
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
     func testAccountKeysEntry() {
         assertMacroExpansion(
             """

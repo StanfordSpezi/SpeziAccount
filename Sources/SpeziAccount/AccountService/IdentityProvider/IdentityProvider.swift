@@ -63,7 +63,7 @@ public struct IdentityProvider<V: View> { // TODO: code example. + configuration
     /// Create a new identity provider declaration.
     /// - Parameters:
     ///   - wrappedValue: The View provided as an auto-closure.
-    ///   - enabled: Flag indicating if this Identity Provider should be used at all.
+    ///   - isEnabled: Flag indicating if this Identity Provider should be used at all.
     ///   - section: The section this identity provider is displayed in.
     public init(
         wrappedValue: @autoclosure @escaping @Sendable () -> V,

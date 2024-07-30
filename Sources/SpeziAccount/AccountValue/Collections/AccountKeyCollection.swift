@@ -9,10 +9,11 @@
 import Foundation
 
 
-/// A ``AccountKey`` refined with a KeyPath-based description.
+/// An `AccountKey` refined with a KeyPath-based description.
 ///
-/// A custom description is derived from the KeyPath name. E.g., for the ``UserIdKey`` we derive a description
-/// like `"\.userId"` (as it's extension defined on ``AccountValues``) for a more user friendly description.
+/// This protocol combines an ``AccountKey`` reference with user-printable information of the KeyPath to ``AccountDetails``.
+/// A custom description is derived from the KeyPath name. E.g., we derive a description
+/// like `"\.userId"` (as it's extension defined on ``AccountDetails``) for a more user friendly description.
 public protocol AccountKeyWithDescription: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
     /// The associated `Key` type.
     associatedtype Key: AccountKey

@@ -105,6 +105,7 @@ public struct AccountDetails {
     }
 
 
+    @_disfavoredOverload
     public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value {
         get {
             storage[Key.self]
@@ -112,6 +113,34 @@ public struct AccountDetails {
         set {
             storage[Key.self] = newValue
         }
+    }
+
+    public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
+        _ key: Key.Type
+    ) -> Key.Value where Key.StoragePolicy == _StoreComputePolicy {
+        mutating get {
+            storage[key]
+        }
+    }
+
+    public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
+        _ key: Key.Type
+    ) -> Key.Value where Key.StoragePolicy == _AlwaysComputePolicy {
+        key.compute(from: storage)
+    }
+
+    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
+        _ key: Key.Type
+    ) -> Key.Value? where Key.StoragePolicy == _StoreComputePolicy {
+        mutating get {
+            storage[key]
+        }
+    }
+
+    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
+        _ key: Key.Type
+    ) -> Key.Value? where Key.StoragePolicy == _AlwaysComputePolicy {
+        key.compute(from: storage)
     }
 }
 
@@ -146,7 +175,7 @@ extension AccountDetails {
 // MARK: - Collection
 
 extension AccountDetails: Collection {
-    public typealias Index = AccountStorage.Index
+    public typealias Index = ValueRepository<AccountAnchor>.Index
 
     /// Default `Collection` implementation.
     public var startIndex: Index {
@@ -165,7 +194,7 @@ extension AccountDetails: Collection {
 
 
     /// Default `Collection` implementation.
-    public subscript(position: Index) -> AccountStorage.Element {
+    public subscript(position: Index) -> ValueRepository<AccountAnchor>.Element {
         storage[position]
     }
 }

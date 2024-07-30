@@ -9,25 +9,19 @@
 import Spezi
 
 
-/// A `AccountService` is a set of components that is capable of setting up and managing the ``AccountDetails`` for the global ``Account`` context.
+/// A component that manages user details.
+///
+/// An `AccountService` is a set of components that is capable of setting up and managing the ``AccountDetails`` for the global ``Account`` context.
 ///
 /// This protocol imposes the minimal requirements for an `AccountService` where most of the account-related procedures
-/// are entirely application defined. This protocol requires functionality for account signup, modifications,
-/// logout and removal.
-///
-/// You may improve the user experience or rely on user interface defaults if you adopt protocols like
-/// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``.
+/// are entirely application defined.
+/// This protocol only imposed requirements for account logout, deletion and modification functionalities.
 ///
 /// - Important: Every user account is expected to have a primary and unique user identifier.
-///     SpeziAccount requires a stable and internal ``AccountIdKey`` unique user identifier and offers
-///     a user visible ``UserIdKey`` which can be customized using the ``UserIdConfiguration``.
+///     SpeziAccount requires a stable and internal ``AccountDetails/accountId`` unique user identifier and offers
+///     a user visible ``AccountDetails/userId`` which can be customized using the ``UserIdConfiguration``.
 ///
 /// You can learn more about creating an account service at: <doc:Creating-your-own-Account-Service>.
-///
-/// ## Topics
-///
-/// ### Result Builder
-/// - ``AccountServiceBuilder``
 public protocol AccountService: Module, CustomStringConvertible, Sendable, EnvironmentAccessible {
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }

@@ -11,8 +11,8 @@ import SpeziViews
 import SwiftUI
 
 
-/// A password reset view implementation for a ``UserIdPasswordAccountService``.
-public struct UserIdPasswordResetView<SuccessView: View>: View {
+/// A password reset view implementation.
+public struct UserIdPasswordResetView<SuccessView: View>: View { // TODO: example docs?
     private let successView: SuccessView
     private let resetPasswordClosure: (String) async throws -> Void // TODO: make a wrapper type that encapsulate semantics
 
@@ -107,13 +107,13 @@ public struct UserIdPasswordResetView<SuccessView: View>: View {
 
     /// Create a new view.
     /// - Parameters:
-    ///   - service: The ``UserIdPasswordAccountService`` instance.
-    ///   - successViewBuilder: A view to display on successful password reset.
+    ///   - resetPassword: A closure that is executed when the user request to reset their password. The closure receives the ``AccountDetails/userId`` as an argument.
+    ///   - success: A view to display on successful password reset.
     public init(
         resetPassword: @escaping (String) async throws -> Void,
-        @ViewBuilder success successViewBuilder: @escaping () -> SuccessView = { SuccessfulPasswordResetView() }
+        @ViewBuilder success: @escaping () -> SuccessView = { SuccessfulPasswordResetView() }
     ) {
-        self.init(requestSubmitted: false, resetPassword: resetPassword, success: successViewBuilder)
+        self.init(requestSubmitted: false, resetPassword: resetPassword, success: success)
     }
 
 

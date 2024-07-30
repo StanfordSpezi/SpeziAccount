@@ -60,8 +60,11 @@ public struct SignupSetupView<Signup: View, PasswordReset: View>: View {
             }
     }
 
-    /// Create a new embedded view.
-    /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
+    /// Create a new setup view.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - signup: A closure that is called if the user tries to signup for an new account.
+    ///   - passwordReset: A closure that is called if the user requests to reset their password.
     public init( // TODO: update docs!
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup,
@@ -209,8 +212,11 @@ public struct UserIdPasswordEmbeddedView<Signup: View, PasswordReset: View>: Vie
     }
 
 
-    /// Create a new embedded view.
-    /// - Parameter service: The ``UserIdPasswordAccountService`` instance.
+    /// Create a new setup view.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - signup: A closure that is called if the user tries to signup for an new account.
+    ///   - passwordReset: A closure that is called if the user requests to reset their password.
     public init( // TODO: update docs!
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },

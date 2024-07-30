@@ -11,44 +11,37 @@ import Spezi
 // TODO: update all docs!
 
 
-/// A `Spezi` Standard that manages data flow of additional account values.
+/// A `Module` manages storage of account details.
 ///
 /// Certain ``AccountService`` implementations might be limited to supported only a specific set of ``AccountKey``s
 /// (see ``SupportedAccountKeys/exactly(_:)``. If you nonetheless want to use ``AccountKey``s that are unsupported
-/// by your ``AccountService``, you may add an implementation of the `AccountStorageConstraint` protocol to your App's `Standard`,
+/// by your ``AccountService``, you can use a `AccountStorageProvider`,
 /// inorder to handle storage and retrieval of these additional account values.
-///
-/// - Note: You can use the ``Spezi/Standard/AccountReference`` property wrapper to get access to the global ``Account`` object if you need it to implement additional functionality.
-///
-/// ## Topics
-///
-/// ### Access Account
-/// - ``Spezi/Standard/AccountReference``
 public protocol AccountStorageProvider: Module {
     /// Create new associated account data.
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
     /// - Parameters:
-    ///   - identifier: The primary identifier for stored record.
+    ///   - accountId: The primary identifier for stored record.
     ///   - details: The signup details that need to be stored.
     /// - Throws: A `LocalizedError`.
     func create(_ accountId: String, _ details: AccountDetails) async throws
 
     /// Load associated account data.
     ///
-    /// This method is called to load all ``AccountDetails`` that are managed by this `Standard`.
+    /// This method is called to load all ``AccountDetails`` that are managed by this `Module`.
+    /// This method should retrieve the details from a local cache. If there is nothing found in the local cache and a network request has to be made,
+    /// return `nil` and update the details later on by calling ``ExternalAccountStorage/notifyAboutUpdatedDetails(for:_:)``.
     ///
-    /// - Note: It is advised to maintain a local cache for the stored ``AccountDetails`` to maintain
-    ///     easy and fast retrieval. Make sure the local data is maintained throughout operations like
-    ///     ``create(_:_:)`` and ``modify(_:_:)`` while also accounting for updates in the remote storage.
-    ///
+    /// - Important: This method call must return immediately. Use `await` suspension only be for synchronization.
+    ///     Return `nil` if you couldn't immediately retrieve the externally stored account details.
     ///
     /// - Parameters:
-    ///   - identifier: The primary identifier for stored record.
+    ///   - accountId: The primary identifier for stored record.
     ///   - keys: The keys to load.
-    /// - Parameter userId: The userId to load data for.
-    /// - Returns: The assembled ``PartialAccountDetails`` (see ``AccountValuesBuilder``).
+    /// - Returns: The externally ``AccountDetails`` if they could be loaded instantly (e.g., local cache). Otherwise, if retrieval requires an external network connection,
+    ///     return `nil` and supply the account details by calling ``ExternalAccountStorage/notifyAboutUpdatedDetails(for:_:)`` once they arrive.
     /// - Throws: A `LocalizedError`.
     func load(_ accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails?
     // TODO: doc that async should only be used for synchronization not for waiting for data!
@@ -60,7 +53,7 @@ public protocol AccountStorageProvider: Module {
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
     /// - Parameters:
-    ///   - identifier: The primary identifier for stored record.
+    ///   - accountId: The primary identifier for stored record.
     ///   - modifications: The account modifications.
     /// - Throws: A `LocalizedError`.
     func modify(_ accountId: String, _ modifications: AccountModifications) async throws
@@ -69,7 +62,7 @@ public protocol AccountStorageProvider: Module {
     ///
     /// This method is useful to clear any data of the currently cached user.
     ///
-    /// - Parameter identifier: The primary identifier for stored record.
+    /// - Parameter accountId: The primary identifier for stored record.
     func disassociate(_ accountId: String) async
     // TODO: doc that async should only be used for synchronization not for waiting for data!
 
@@ -77,7 +70,7 @@ public protocol AccountStorageProvider: Module {
     ///
     /// - Note: Due to the underlying architecture, there might still be a call to ``clear(_:)`` after a call to
     ///     this method.
-    /// - Parameter identifier: The primary identifier for stored record.
+    /// - Parameter accountId: The primary identifier for stored record.
     /// - Throws: A `LocalizedError`.
     func delete(_ accountId: String) async throws
 }

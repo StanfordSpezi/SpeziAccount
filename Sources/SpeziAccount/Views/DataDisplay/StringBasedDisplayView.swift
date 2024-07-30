@@ -25,6 +25,7 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
         self.value = value
     }
 
+    @MainActor
     fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
         self.init(value)
     }

@@ -24,12 +24,12 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
 
     /// The type of user id stored in `UserIdKey`.
     ///
-    /// You can use this property to provide a localized textual representation of the user id (see ``UserIdKey``).
+    /// You can use this property to provide a localized textual representation of the user id (see ``AccountDetails/userId``).
     public let idType: UserIdType
     /// The `UITextContentType` used for a field that is used to input the user id.
     ///
-    /// - Note: Even if the user id is an email address you will want to use `UITextContentType/username` and set
-    ///     the ``keyboardType`` to `UIKeyboardType/emailAddress`. For more information refer to
+    /// - Note: Even if the user id is an email address you will want to use `username` and set
+    ///     the ``keyboardType`` to `emailAddress`. For more information refer to
     ///     [Enabling Password AutoFill on a text input view](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_a_text_input_view).
     public let textContentType: TextContentType?
     #if !os(macOS)
@@ -41,7 +41,7 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
     /// Initialize a new `UserIdConfiguration`.
     /// - Parameters:
     ///   - type: The user id type.
-    ///   - contentType: The ``TextContentType`` used for a field that is used to input the user id.
+    ///   - contentType: The `TextContentType` used for a field that is used to input the user id.
     ///   - keyboardType: The `UIKeyboardType` used for a field that is used to input the user id.
     public init(type: UserIdType, contentType: TextContentType? = .username, keyboardType: UIKeyboardType = .default) {
         self.idType = type
@@ -52,8 +52,7 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
     /// Initialize a new `UserIdConfiguration`.
     /// - Parameters:
     ///   - type: The user id type.
-    ///   - contentType: The ``TextContentType`` used for a field that is used to input the user id.
-    ///   - keyboardType: The `UIKeyboardType` used for a field that is used to input the user id.
+    ///   - contentType: The `TextContentType` used for a field that is used to input the user id.
     public init(type: UserIdType, contentType: TextContentType? = .username) {
         self.idType = type
         self.textContentType = contentType
