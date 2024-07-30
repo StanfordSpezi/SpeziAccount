@@ -28,10 +28,10 @@ public final class AccountConfiguration<Service: AccountService> {
 
     // TODO: find a way to make the @Dependency work again with non-optional but initializer supplied values!
     @Dependency private var account: Account?
-    @Dependency private var externalStorage: ExternalAccountStorage
+    @Dependency private var externalStorage: ExternalAccountStorage?
 
-    @Dependency private var accountService: Service?
     @Dependency private var storageProvider: [any Module] // we store the storage provider in a type erased way! it is optional to supply!
+    @Dependency private var accountService: Service?
 
     @StandardActor private var standard: any Standard
 
@@ -95,6 +95,8 @@ public final class AccountConfiguration<Service: AccountService> {
             supportedConfiguration: configuration,
             details: defaultActiveDetails
         ))
+
+        self._externalStorage = Dependency(wrappedValue: ExternalAccountStorage())
     }
 
     init<Storage: AccountStorageProvider>(

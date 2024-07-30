@@ -66,7 +66,10 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
 
     var registeredUser: UserStorage // simulates the backend
 
-    @Dependency var account: Account
+    @Dependency private var account: Account
+    @Dependency private var notifications: AccountNotifications
+    @Dependency private var externalStorage: ExternalAccountStorage
+
     @Model var model = TestAlertModel()
 
     @IdentityProvider(section: .primary)
@@ -126,6 +129,7 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         }
 
         registeredUser.userId = userId
+
         try await updateUser()
     }
 
@@ -140,6 +144,18 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         registeredUser.name = signupDetails.name
         registeredUser.genderIdentity = signupDetails.genderIdentity
         registeredUser.dateOfBirth = signupDetails.dateOfBirth
+
+        // TODO: make that simpler to do!
+        var externallyStored = AccountDetails()
+        externallyStored.add(contentsOf: signupDetails)
+        externallyStored.removeAll(UserStorage.supportedKeys)
+
+        if !externallyStored.isEmpty {
+            let accountId = registeredUser.accountId.uuidString
+            let externalStorage = externalStorage
+            try await externalStorage.requestExternalStorage(of: externallyStored, for: accountId)
+        }
+
         try await updateUser()
     }
 
@@ -155,6 +171,8 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         }
 
         registeredUser.update(modifications)
+
+        // TODO: Update external storage!
 
         try await updateUser()
     }
@@ -173,6 +191,11 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
             excludeName = false // reset
         }
 
+        // TODO: we hardcode the biography key right now :(
+        let externalStorage = externalStorage
+        let externallyStored = try await externalStorage.retrieveExternalStorage(for: registeredUser.accountId.uuidString, [AccountKeys.biography])
+        details.add(contentsOf: externallyStored)
+
         account.supplyUserDetails(details)
     }
 
@@ -185,6 +208,8 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     }
 
     func delete() async throws {
+        try await notifications.reportEvent(.deletingAccount(registeredUser.accountId.uuidString))
+
         account.removeUserDetails()
         registeredUser = UserStorage(userId: defaultUserId)
     }

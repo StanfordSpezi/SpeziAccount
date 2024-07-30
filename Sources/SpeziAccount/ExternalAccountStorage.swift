@@ -26,7 +26,7 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
         public let details: AccountDetails
     }
 
-    private nonisolated(unsafe) weak var storageProvider: (any AccountStorageProvider)?
+    private nonisolated(unsafe) let storageProvider: (any AccountStorageProvider)? // TODO: weak var
 
     private nonisolated(unsafe) var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
     private let lock = NSLock()

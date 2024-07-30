@@ -42,7 +42,7 @@ public final class AccountNotifications {
 
     @StandardActor private var standard: any Standard
 
-    @Dependency private var storage: ExternalAccountStorage
+    @Dependency private var storage: ExternalAccountStorage?
 
     private var notifyStandard: (any AccountNotifyConstraint)? {
         standard as? any AccountNotifyConstraint
@@ -74,11 +74,12 @@ public final class AccountNotifications {
     public func reportEvent(_ event: Event) async throws {
         await notifyStandard?.respondToEvent(event)
 
+        // TODO: make storage not !
         switch event {
         case let .deletingAccount(accountId):
-            try await storage.willDeleteAccount(for: accountId)
+            try await storage!.willDeleteAccount(for: accountId)
         case let .disassociatingAccount(details):
-            await storage.userWillDisassociate(for: details.accountId)
+            await storage!.userWillDisassociate(for: details.accountId)
         default:
             break
         }

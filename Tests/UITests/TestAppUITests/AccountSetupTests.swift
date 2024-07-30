@@ -325,7 +325,6 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
     @MainActor
     func testFullSignupWithAdditionalStorage() throws {
-        throw XCTSkip("Additional storage is currently not supported!")
         let app = XCUIApplication()
         app.launch(config: .allRequiredWithBio)
 
@@ -415,13 +414,17 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Please fill out the details below to complete your account setup."].exists)
 
-        try app.textFields["Biography"].enter(value: "Hello Stanford")
+        try app.textFields["Biography"].enter(value: "Hello Stanford2")
 
         XCTAssertTrue(app.buttons["Complete"].waitForExistence(timeout: 2.0))
         app.buttons["Complete"].tap()
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+
+        app.openAccountOverview()
+        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford2"].waitForExistence(timeout: 2.0))
+        // TODO: check why this works, we haven't implemented that?
     }
 
     @MainActor

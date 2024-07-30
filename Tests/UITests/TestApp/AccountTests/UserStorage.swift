@@ -59,14 +59,14 @@ struct UserStorage {
         let modifiedDetails = modifications.modifiedDetails
         let removedKeys = modifications.removedAccountDetails
 
-        if modifiedDetails.contains(AccountKeys.accountId) {
+        if modifiedDetails.contains(AccountKeys.userId) {
             self.userId = modifiedDetails.userId
         }
         self.password = modifiedDetails.password ?? password
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
         self.dateOfBirth = modifiedDetails.dateOfBirth ?? dateOfBirth
-        self.biography = modifiedDetails.biography ?? biography
+        self.biography = modifiedDetails.biography ?? biography // TODO: shouldn't that be stored externally?
 
         // user Id cannot be removed!
         if removedKeys.name != nil {

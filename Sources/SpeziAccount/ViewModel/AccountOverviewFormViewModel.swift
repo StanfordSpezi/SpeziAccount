@@ -208,9 +208,9 @@ class AccountOverviewFormViewModel {
     func accountIdentifierLabel(configuration: AccountValueConfiguration, userIdType: UserIdType) -> Text {
         let userId = Text(userIdType.localizedStringResource)
 
-        if configuration[AccountKeys.password] != nil {
+        if configuration[AccountKeys.name] != nil {
             let separator = ", "
-            return Text(AccountKeys.password.name)
+            return Text(AccountKeys.name.name)
                 + Text(separator)
                 + userId
         }
