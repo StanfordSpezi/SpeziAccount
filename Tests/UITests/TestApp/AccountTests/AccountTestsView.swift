@@ -79,7 +79,7 @@ struct AccountTestsView: View {
             }
         }
         let standard = standard
-        if standard.storage.deleteNotified {
+        if standard.deleteNotified {
             Section {
                 Text(verbatim: "Got notified about deletion!")
             }
@@ -128,26 +128,34 @@ struct AccountTestsView: View {
 
 
 #if DEBUG
-struct AccountTestsView_Previews: PreviewProvider {
-    static let details: AccountDetails = .build { details in
-        details.userId = "lelandstanford@stanford.edu"
-        details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-        details.genderIdentity = .male
-    }
-    
-    static var previews: some View {
-        AccountTestsView()
-            .previewWith {
-                AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
-            }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-        AccountTestsView()
-            .previewWith {
-                AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()), activeDetails: details)
-            }
+    return AccountTestsView()
+        .previewWith {
+            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
+        }
+}
 
-        AccountTestsView()
-            .environment(Account())
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
+
+    return AccountTestsView()
+        .previewWith {
+            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()), activeDetails: details)
+        }
+}
+
+#Preview {
+    AccountTestsView()
+        .previewWith {
+            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
+        }
 }
 #endif

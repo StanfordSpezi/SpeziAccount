@@ -82,6 +82,7 @@ struct AccountKeyOverviewRow: View {
 }
 
 #if DEBUG && !os(macOS)
+private let key = AccountKeys.genderIdentity
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"
@@ -91,7 +92,7 @@ struct AccountKeyOverviewRow: View {
     return AccountDetailsReader { account, details in
         let model = AccountOverviewFormViewModel(account: account)
 
-        AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
+        AccountKeyOverviewRow(details: details, for: key, model: model)
             .injectEnvironmentObjects(service: account.accountService, model: model)
     }
         .previewWith {

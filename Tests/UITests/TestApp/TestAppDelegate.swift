@@ -55,7 +55,11 @@ class TestAppDelegate: SpeziAppDelegate {
 
     override var configuration: Configuration {
         Configuration(standard: TestStandard()) {
-            AccountConfiguration(service: TestAccountService(.emailAddress, features: features), configuration: configuredValues)
+            AccountConfiguration(
+                service: TestAccountService(.emailAddress, features: features),
+                storageProvider: MockAccountStorage(),
+                configuration: configuredValues
+            )
         }
     }
 }

@@ -69,9 +69,12 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     @Dependency var account: Account
     @Model var model = TestAlertModel()
 
-    @IdentityProvider(placement: .primary) private var loginView = EmbeddedView()
-    @IdentityProvider(enabled: false) private var customProvider = CustomServiceButton()
-    @IdentityProvider(enabled: false, placement: .external) private var signInWithApple = MockSignInWithAppleButton()
+    @IdentityProvider(section: .primary)
+    private var loginView = EmbeddedView()
+    @IdentityProvider(enabled: false)
+    private var customProvider = CustomServiceButton()
+    @IdentityProvider(enabled: false, section: .singleSignOn)
+    private var signInWithApple = MockSignInWithAppleButton()
 
     @SecurityRelatedModifier private var testAlert = TestAlertModifier()
 
@@ -126,7 +129,7 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         try await updateUser()
     }
 
-    func signUp(signupDetails: SignupDetails) async throws {
+    func signUp(signupDetails: AccountDetails) async throws {
         try await Task.sleep(for: .seconds(1))
 
         guard signupDetails.userId != registeredUser.userId else {
@@ -136,13 +139,13 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         registeredUser.userId = signupDetails.userId
         registeredUser.name = signupDetails.name
         registeredUser.genderIdentity = signupDetails.genderIdentity
-        registeredUser.dateOfBirth = signupDetails.dateOfBrith
+        registeredUser.dateOfBirth = signupDetails.dateOfBirth
         try await updateUser()
     }
 
     func updateAccountDetails(_ modifications: AccountModifications) async throws {
-        if modifications.modifiedDetails.storage.get(UserIdKey.self) != nil
-            || modifications.modifiedDetails.storage.get(PasswordKey.self) != nil {
+        if modifications.modifiedDetails.contains(AccountKeys.userId)
+            || modifications.modifiedDetails.contains(AccountKeys.password) {
             await withCheckedContinuation { continuation in
                 model.presentingAlert = true
                 model.continuation = continuation
@@ -157,22 +160,20 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     }
 
     func updateUser() async throws {
-        let details: AccountDetails = .build { details in
-            details.accountId = registeredUser.accountId.uuidString
-            details.userId = registeredUser.userId
-            details.genderIdentity = registeredUser.genderIdentity
-            details.dateOfBirth = registeredUser.dateOfBirth
-            details.biography = registeredUser.biography
+        var details = AccountDetails()
+        details.accountId = registeredUser.accountId.uuidString
+        details.userId = registeredUser.userId
+        details.genderIdentity = registeredUser.genderIdentity
+        details.dateOfBirth = registeredUser.dateOfBirth
+        details.biography = registeredUser.biography
 
-            if !excludeName {
-                details.name = registeredUser.name
-            } else {
-                excludeName = false // reset
-            }
+        if !excludeName {
+            details.name = registeredUser.name
+        } else {
+            excludeName = false // reset
         }
 
-        let account = account
-        try await account.supplyUserDetails(details)
+        account.supplyUserDetails(details)
     }
 
     func resetPassword(userId: String) async throws {
@@ -180,13 +181,11 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
     }
 
     func logout() async throws {
-        let account = account
-        await account.removeUserDetails()
+        account.removeUserDetails()
     }
 
     func delete() async throws {
-        let account = account
-        await account.removeUserDetails()
+        account.removeUserDetails()
         registeredUser = UserStorage(userId: defaultUserId)
     }
 }

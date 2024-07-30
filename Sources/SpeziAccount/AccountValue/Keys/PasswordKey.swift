@@ -23,7 +23,7 @@ extension AccountDetails {
 
 
 @KeyEntry(\.password)
-extension AccountKeys {}
+public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier
 
 // MARK: - UI
 

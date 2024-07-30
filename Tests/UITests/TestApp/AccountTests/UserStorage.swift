@@ -59,11 +59,13 @@ struct UserStorage {
         let modifiedDetails = modifications.modifiedDetails
         let removedKeys = modifications.removedAccountDetails
 
-        self.userId = modifiedDetails.storage[UserIdKey.self] ?? userId
+        if modifiedDetails.contains(AccountKeys.accountId) {
+            self.userId = modifiedDetails.userId
+        }
         self.password = modifiedDetails.password ?? password
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
-        self.dateOfBirth = modifiedDetails.dateOfBrith ?? dateOfBirth
+        self.dateOfBirth = modifiedDetails.dateOfBirth ?? dateOfBirth
         self.biography = modifiedDetails.biography ?? biography
 
         // user Id cannot be removed!
@@ -73,7 +75,7 @@ struct UserStorage {
         if removedKeys.genderIdentity != nil {
             self.genderIdentity = nil
         }
-        if removedKeys.dateOfBrith != nil {
+        if removedKeys.dateOfBirth != nil {
             self.dateOfBirth = nil
         }
         if removedKeys.biography != nil {

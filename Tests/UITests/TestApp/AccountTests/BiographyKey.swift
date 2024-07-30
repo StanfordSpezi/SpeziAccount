@@ -11,32 +11,18 @@ import SpeziValidation
 import SwiftUI
 
 
-struct BiographyKey: AccountKey {
-    typealias Value = String
-
-    static let name: LocalizedStringResource = "Biography" // we don't bother to translate
-    static let category: AccountKeyCategory = .personalDetails
+extension AccountDetails {
+    @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
+    var biography: String?
 }
 
 
-extension AccountKeys {
-    var biography: BiographyKey.Type {
-        BiographyKey.self
-    }
-}
+@KeyEntry(\.biography)
+extension AccountKeys {}
 
 
-extension AccountValues {
-    var biography: String? {
-        storage[BiographyKey.self]
-    }
-}
-
-
-extension BiographyKey {
-    public struct DataEntry: DataEntryView {
-        public typealias Key = BiographyKey
-
+extension AccountDetails.__Key_biography {
+    public struct DataEntry: DataEntryView { // TODO: provide default UI for string entry?
         @Binding private var biography: Value
 
         public init(_ value: Binding<Value>) {
@@ -44,7 +30,7 @@ extension BiographyKey {
         }
 
         public var body: some View {
-            VerifiableTextField(Key.name, text: $biography)
+            VerifiableTextField(AccountDetails.__Key_biography.name, text: $biography)
                 .autocorrectionDisabled()
         }
     }
