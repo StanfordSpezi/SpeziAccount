@@ -147,7 +147,7 @@ public final class AccountConfiguration<Service: AccountService> {
             precondition(
                 keys.contains(AccountKeys.accountId),
                 """
-                The account service \(type(of: service)) doesn't have the \\.accountId (aka. AccountIdKey) configured \
+                The account service \(type(of: service)) doesn't have the \\.accountId configured \
                 as an supported key. \
                 A primary, unique and stable user identifier is expected with most SpeziAccount components and \
                 will result in those components breaking.

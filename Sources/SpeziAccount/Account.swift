@@ -12,6 +12,8 @@ import SwiftUI
 
 
 // TODO: can we somehow enforce that the account services reports the deletingAccount event?
+// TODO: "Integrated" login/signup view (same for SignInWithApple button?)
+// TODO: show/hide password button from QDG
 
 
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
