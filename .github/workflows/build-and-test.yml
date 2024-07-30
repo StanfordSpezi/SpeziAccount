@@ -24,6 +24,15 @@ jobs:
       scheme: SpeziAccount
       artifactname: SpeziAccount.xcresult
       resultBundle: SpeziAccount.xcresult
+  buildandtest_macos:
+    name: Build and Test Swift Package macOS
+    uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
+    with:
+      runsonlabels: '["macOS", "self-hosted"]'
+      scheme: SpeziAccount
+      destination: 'platform=macOS,arch=arm64'
+      artifactname: SpeziAccount-macOS.xcresult
+      resultBundle: SpeziAccount-macOS.xcresult
   buildandtest_latest:
     name: Build and Test Swift Package iOS Latest
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
@@ -56,9 +65,9 @@ jobs:
       resultBundle: TestApp-Latest.xcresult
   uploadcoveragereport:
     name: Upload Coverage Report
-    needs: [buildandtest, buildandtestuitests]
+    needs: [buildandtest, buildandtest_macos, buildandtestuitests]
     uses: StanfordSpezi/.github/.github/workflows/create-and-upload-coverage-report.yml@v2
     with:
-      coveragereports: SpeziAccount.xcresult TestApp.xcresult
+      coveragereports: SpeziAccount.xcresult SpeziAccount-macOS.xcresult TestApp.xcresult
     secrets:
       token: ${{ secrets.CODECOV_TOKEN }}

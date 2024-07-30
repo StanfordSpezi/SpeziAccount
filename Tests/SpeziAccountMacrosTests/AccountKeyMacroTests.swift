@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+#if os(macOS) // macro tests can only be run on the host machine
 
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
@@ -173,3 +174,5 @@ final class AccountKeyMacroTests: XCTestCase {
         )
     }
 }
+
+#endif
