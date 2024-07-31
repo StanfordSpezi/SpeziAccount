@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SpeziFoundation // TODO: really?
 
 // TODO: add docs for the macros!
 
@@ -31,7 +30,7 @@ extension EmptyView: DataDisplayView, DataEntryView { // TODO: use that? or make
 @attached(peer, names: prefixed(__Key_))
 public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     name: LocalizedStringResource,
-    category: AccountKeyCategory = .other, // TODO: support default value with the macro!
+    category: AccountKeyCategory = .other,
     as: Value.Type,
     initial: InitialValue<Value>,
     displayView: DataDisplay.Type = EmptyView.self,

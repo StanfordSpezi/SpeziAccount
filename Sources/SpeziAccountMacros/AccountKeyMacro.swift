@@ -71,15 +71,12 @@ extension AccountKeyMacro: PeerMacro {
             throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'name'", id: .invalidSyntax)
         }
 
-        guard let category = argumentList.first(where: { $0.label?.text == "category" }) else {
-            throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'category'", id: .invalidSyntax)
-        }
-
         guard let valueType = argumentList.first(where: { $0.label?.text == "as" }) else {
             throw DiagnosticsError(syntax: argumentList, message: "'@AccountKey' is missing required argument 'as'", id: .invalidSyntax)
         }
 
         // optional arguments
+        let category = argumentList.first(where: { $0.label?.text == "category" })
         let initial = argumentList.first { $0.label?.text == "initial" }
         let displayViewType = argumentList.first { $0.label?.text == "displayView" }
         let entryView = argumentList.first { $0.label?.text == "entryView" }
@@ -100,9 +97,12 @@ extension AccountKeyMacro: PeerMacro {
             accountKeyProtocol = "RequiredAccountKey"
         }
 
-        // TODO: syntax text bytes to text?
         guard valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text == valueTypeName.forceToText else {
-            throw DiagnosticsError(syntax: valueType, message: "Value type '\(valueTypeName) is expected to match the property binding type annotation \(valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>")", id: .invalidApplication)
+            throw DiagnosticsError(
+                syntax: valueTypeName,
+                message: "Value type '\(valueTypeName) is expected to match the property binding type annotation '\(valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>")'",
+                id: .invalidApplication
+            )
         }
 
 
@@ -141,8 +141,9 @@ extension AccountKeyMacro: PeerMacro {
             \(raw: rawModifier)static let name: LocalizedStringResource = \(name.expression)
             """
 
+            let categoryExpr = category?.expression ?? ExprSyntax(MemberAccessExprSyntax(declName: .init(baseName: .identifier("other"))))
             """
-            \(raw: rawModifier)static let category: AccountKeyCategory = \(category.expression)
+            \(raw: rawModifier)static let category: AccountKeyCategory = \(categoryExpr)
             """
 
             if let initial {

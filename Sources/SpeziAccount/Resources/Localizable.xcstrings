@@ -576,6 +576,9 @@
         }
       }
     },
+    "Date of Birth" : {
+
+    },
     "Default Account Service Configuration Environment Key" : {
       "comment" : "Internal use only, no need to translate.",
       "extractionState" : "stale",
@@ -665,6 +668,9 @@
           }
         }
       }
+    },
+    "E-Mail and Password" : {
+
     },
     "EDIT" : {
       "localizations" : {

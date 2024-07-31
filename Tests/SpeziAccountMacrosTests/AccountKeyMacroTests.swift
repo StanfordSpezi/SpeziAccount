@@ -94,7 +94,7 @@ final class AccountKeyMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Account Id", category: .credentials, as: String.self)
+                @AccountKey(name: "Account Id", as: String.self)
                 var accountId: String
             }
             """,
@@ -114,7 +114,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     typealias Value = String
             
                     static let name: LocalizedStringResource = "Account Id"
-                    static let category: AccountKeyCategory = .credentials
+                    static let category: AccountKeyCategory = .other
                 }
             }
             """,
@@ -144,13 +144,13 @@ final class AccountKeyMacroTests: XCTestCase {
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: "Argument type 'Int' did not match expected variable type 'String'", line: 2, column: 5)
+                DiagnosticSpec(message: "Value type 'Int is expected to match the property binding type annotation 'String'", line: 2, column: 65)
             ],
             macros: testMacros
         )
     }
 
-    func testCustomUI() { // TODO: test collision of DataEntry and DataDisplay
+    func testCustomUI() {
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -162,10 +162,74 @@ final class AccountKeyMacroTests: XCTestCase {
                     displayView: TestDisplayUI.self,
                     entryView: MyModule.Nested.TestEntryUI.self
                 )
+                public var genderIdentity: GenderIdentity?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                public var genderIdentity: GenderIdentity? {
+                    get {
+                        self [__Key_genderIdentity.self]
+                    }
+                    set {
+                        self [__Key_genderIdentity.self] = newValue
+                    }
+                }
+
+                public struct __Key_genderIdentity: AccountKey {
+                    public typealias Value = GenderIdentity
+            
+                    public static let name: LocalizedStringResource = "Gender Identity"
+                    public static let category: AccountKeyCategory = .personalDetails
+                    public static var initialValue: InitialValue<Value> {
+                        .default(.preferNotToState)
+                    }
+                    public struct DataDisplay: DataDisplayView {
+                        private let value: Value
+
+                        public var body: some View {
+                            TestDisplayUI(value)
+                        }
+
+                        public init(_ value: Value) {
+                            self.value = value
+                        }
+                    }
+                    public struct DataEntry: DataEntryView {
+                        @Binding private var value: Value
+
+                        public var body: some View {
+                            MyModule.Nested.TestEntryUI($value)
+                        }
+
+                        public init(_ value: Binding<Value>) {
+                            self._value = value
+                        }
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func testCustomUINameCollision() {
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(
+                    name: "Gender Identity",
+                    category: .personalDetails,
+                    as: GenderIdentity.self,
+                    initial: .default(.preferNotToState),
+                    displayView: DataDisplay.self,
+                    entryView: DataEntry.self
+                )
                 var genderIdentity: GenderIdentity?
             }
             """,
-            expandedSource: // TODO: maybe test with public modifiers?
+            expandedSource:
             """
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
@@ -176,7 +240,7 @@ final class AccountKeyMacroTests: XCTestCase {
                         self [__Key_genderIdentity.self] = newValue
                     }
                 }
-
+            
                 struct __Key_genderIdentity: AccountKey {
                     typealias Value = GenderIdentity
             
@@ -187,22 +251,22 @@ final class AccountKeyMacroTests: XCTestCase {
                     }
                     struct DataDisplay: DataDisplayView {
                         private let value: Value
-
+            
                         var body: some View {
-                            TestDisplayUI(value)
+                            DataDisplay(value)
                         }
-
+            
                         init(_ value: Value) {
                             self.value = value
                         }
                     }
                     struct DataEntry: DataEntryView {
                         @Binding private var value: Value
-
+            
                         var body: some View {
-                            MyModule.Nested.TestEntryUI($value)
+                            DataEntry($value)
                         }
-
+            
                         init(_ value: Binding<Value>) {
                             self._value = value
                         }
@@ -210,6 +274,10 @@ final class AccountKeyMacroTests: XCTestCase {
                 }
             }
             """,
+            diagnostics: [
+                DiagnosticSpec(message: "The type name 'DataDisplay' is ambiguous. Please disambiguate or rename.", line: 7, column: 22),
+                DiagnosticSpec(message: "The type name 'DataEntry' is ambiguous. Please disambiguate or rename.", line: 8, column: 20)
+            ],
             macros: testMacros
         )
     }

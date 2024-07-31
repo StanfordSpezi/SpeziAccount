@@ -11,27 +11,25 @@ import SpeziValidation
 import SwiftUI
 
 
+private struct EntryView: DataEntryView {
+    @Binding private var biography: String
+
+    var body: some View {
+        VerifiableTextField(AccountKeys.biography.name, text: $biography)
+            .autocorrectionDisabled()
+    }
+
+    init(_ value: Binding<String>) {
+        self._biography = value
+    }
+}
+
+
 extension AccountDetails {
-    @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
+    @AccountKey(name: "Biography", category: .personalDetails, as: String.self, entryView: EntryView.self)
     var biography: String?
 }
 
 
 @KeyEntry(\.biography)
 extension AccountKeys {}
-
-
-extension AccountDetails.__Key_biography {
-    public struct DataEntry: DataEntryView { // TODO: provide default UI for string entry?
-        @Binding private var biography: Value
-
-        public init(_ value: Binding<Value>) {
-            self._biography = value
-        }
-
-        public var body: some View {
-            VerifiableTextField(AccountDetails.__Key_biography.name, text: $biography)
-                .autocorrectionDisabled()
-        }
-    }
-}
