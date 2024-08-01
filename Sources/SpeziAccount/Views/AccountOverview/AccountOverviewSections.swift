@@ -132,7 +132,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         defaultSections
         
         sectionsView
-            .injectEnvironmentObjects(service: account.accountService, model: model)
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
@@ -217,7 +217,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
-        self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account))
+        self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account, details: accountDetails))
         self._isEditing = isEditing
         self.additionalSections = additionalSections()
     }

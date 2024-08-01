@@ -24,8 +24,10 @@ public struct AccountSummaryBox: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-#if !os(macOS)
-                        .foregroundColor(Color(.systemGray3)) // TODO: macOS + darkmode!
+#if os(macOS)
+                        .foregroundColor(Color(.systemGray))
+#else
+                        .foregroundColor(Color(uiColor: .systemGray3))
 #endif
                         .accessibilityHidden(true)
                 }
@@ -67,6 +69,7 @@ public struct AccountSummaryBox: View {
     emailDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountSummaryBox(details: emailDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
@@ -75,6 +78,7 @@ public struct AccountSummaryBox: View {
     usernameDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return AccountSummaryBox(details: usernameDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
@@ -82,6 +86,7 @@ public struct AccountSummaryBox: View {
     usernameWithoutNameDetails.userId = "leland.stanford"
 
     return AccountSummaryBox(details: usernameWithoutNameDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
@@ -89,5 +94,6 @@ public struct AccountSummaryBox: View {
     emailOnlyDetails.userId = "lelandstanford@stanford.edu"
 
     return AccountSummaryBox(details: emailOnlyDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 #endif

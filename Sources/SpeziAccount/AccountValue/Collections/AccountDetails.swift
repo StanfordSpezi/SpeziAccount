@@ -95,9 +95,12 @@ public struct AccountDetails {
         self.storage = storage
     }
 
+    /// Retrieve the value for an account key.
+    /// - Parameter key: The meta-type of the ``AccountKey``.
+    /// - Returns: The value if its currently stored in the collection.
     public subscript<Key: KnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value? {
         get {
-            storage[Key.self] // TODO: add other knoweldge source overloads
+            storage[Key.self]
         }
         set {
             storage[Key.self] = newValue
@@ -105,6 +108,9 @@ public struct AccountDetails {
     }
 
 
+    /// Retrieve the value for an account key.
+    /// - Parameter key: The meta-type of the ``RequiredAccountKey``.
+    /// - Returns: The value if its currently stored in the collection or the default value. Note that retrieving the default value for a ``RequiredAccountKey`` results in a runtime crash.
     @_disfavoredOverload
     public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value {
         get {
@@ -115,6 +121,9 @@ public struct AccountDetails {
         }
     }
 
+    /// Retrieve the value for an computed account key.
+    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
+    /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
     public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
         _ key: Key.Type
     ) -> Key.Value where Key.StoragePolicy == _StoreComputePolicy {
@@ -123,12 +132,18 @@ public struct AccountDetails {
         }
     }
 
+    /// Retrieve the value for an computed account key.
+    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
+    /// - Returns: The computed value of the account key.
     public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
         _ key: Key.Type
     ) -> Key.Value where Key.StoragePolicy == _AlwaysComputePolicy {
         key.compute(from: storage)
     }
 
+    /// Retrieve the value for an computed account key.
+    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
+    /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
     public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
         _ key: Key.Type
     ) -> Key.Value? where Key.StoragePolicy == _StoreComputePolicy {
@@ -137,6 +152,9 @@ public struct AccountDetails {
         }
     }
 
+    /// Retrieve the value for an computed account key.
+    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
+    /// - Returns: The computed value of the account key.
     public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
         _ key: Key.Type
     ) -> Key.Value? where Key.StoragePolicy == _AlwaysComputePolicy {
@@ -254,26 +272,39 @@ extension AccountDetails {
         storage = keys.acceptAll(&visitor)
     }
 
-    public mutating func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) {
+    /// Set the value of an account key.
+    /// - Parameters:
+    ///   - key: The ``AccountKey`` to set the value for.
+    ///   - value: The value that should be set.
+    public mutating func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value) {
         storage.set(key, value: value)
     }
 
+    /// Remove a value for a account key.
+    /// - Parameter key: The key for which the value should be removed.
     public mutating func remove<Key: AccountKey>(_ key: Key.Type) {
         storage[key] = nil
     }
 
+    /// Remove a value for a account key.
+    /// - Parameter key: The key for which the value should be removed.
     @_disfavoredOverload
     public mutating func remove(_ key: any AccountKey.Type) {
         key.anyRemove(in: &self)
     }
 
-    @_disfavoredOverload
-    public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
+    /// Remove the values for a collection of account keys.
+    /// - Parameter keys: The list of keys which values are removed from the account details.
+    public mutating func removeAll(_ keys: [any AccountKey.Type]) {
         var visitor = RemoveVisitor(self)
         storage = keys.acceptAll(&visitor)
     }
 
-    public mutating func removeAll(_ keys: [any AccountKey.Type]) {
+    /// Remove the values for a collection of account keys.
+    /// - Parameter keys: The list of keys which values are removed from the account details.
+    ///     You can use types like the ``AccountKeyCollection`` or a simple `[any AccountKey.Type]` array.
+    @_disfavoredOverload
+    public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
         var visitor = RemoveVisitor(self)
         storage = keys.acceptAll(&visitor)
     }

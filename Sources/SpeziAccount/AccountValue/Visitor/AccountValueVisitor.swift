@@ -10,7 +10,7 @@ import SpeziFoundation
 
 
 /// A collection type that is capable of accepting an ``AccountValueVisitor``.
-public protocol AcceptingAccountValueVisitor { // TODO: no need for protocol, just add to AccountDetails?
+public protocol AcceptingAccountValueVisitor {
     /// Accepts an ``AccountValueVisitor`` for all elements of the collection.
     /// - Parameter visitor: The visitor to accept.
     /// - Returns: The ``AccountValueVisitor/Final`` result or `Void`.

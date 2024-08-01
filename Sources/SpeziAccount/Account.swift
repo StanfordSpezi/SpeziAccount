@@ -60,11 +60,11 @@ import SwiftUI
 /// - ``removeUserDetails()``
 @Observable
 public final class Account {
-    @Application(\.logger)
     @ObservationIgnored
+    @Application(\.logger)
     private var logger
 
-    @Dependency @ObservationIgnored private var notifications: AccountNotifications
+    @Dependency @ObservationIgnored private var notifications = AccountNotifications()
 
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
@@ -88,7 +88,7 @@ public final class Account {
     @MainActor private weak var _accountService: (any AccountService)?
 
     /// The account service that was configured.
-    @MainActor public var accountService: any AccountService { // TODO: try to remove this access!
+    @MainActor public var accountService: any AccountService {
         guard let service = _accountService else {
             preconditionFailure("Tried to access account service that was deallocated!")
         }
@@ -142,11 +142,6 @@ public final class Account {
                 """
             )
         }
-    }
-
-    public required init() {
-        // TODO: account services would need to make them all optional?
-        preconditionFailure("Cannot default initialize. This is to workaround an issue with the @Dependency property wrapper in Spezi account!")
     }
 
     /// Supply the ``AccountDetails`` of the currently logged in user.
@@ -231,4 +226,4 @@ public final class Account {
 extension Account: @unchecked Sendable {} // unchecked because of the property wrapper storage
 
 
-extension Account: Module, EnvironmentAccessible, DefaultInitializable {}
+extension Account: Module, EnvironmentAccessible {}

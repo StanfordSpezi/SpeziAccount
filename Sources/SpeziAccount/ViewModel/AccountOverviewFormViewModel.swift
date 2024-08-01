@@ -47,9 +47,13 @@ class AccountOverviewFormViewModel {
     }
 
 
-    init(account: Account) {
-        self.categorizedAccountKeys = account.configuration.allCategorized()
-        self.accountServiceConfiguration = account.accountService.configuration
+    init(_ valueConfiguration: AccountValueConfiguration, _ serviceConfiguration: AccountServiceConfiguration) {
+        self.categorizedAccountKeys = valueConfiguration.allCategorized()
+        self.accountServiceConfiguration = serviceConfiguration
+    }
+
+    convenience init(account: Account, details: AccountDetails) {
+        self.init(account.configuration, details.accountServiceConfiguration)
     }
 
 

@@ -90,10 +90,10 @@ private let key = AccountKeys.genderIdentity
     details.genderIdentity = .male
 
     return AccountDetailsReader { account, details in
-        let model = AccountOverviewFormViewModel(account: account)
+        let model = AccountOverviewFormViewModel(account: account, details: details)
 
         AccountKeyOverviewRow(details: details, for: key, model: model)
-            .injectEnvironmentObjects(service: account.accountService, model: model)
+            .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
     }
         .previewWith {
             AccountConfiguration(service: MockAccountService(), activeDetails: details)

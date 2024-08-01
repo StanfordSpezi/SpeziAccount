@@ -20,30 +20,16 @@ struct MissingAccountDetailsWarning: View {
     }
 
     var body: some View {
-        VStack {
-            Text("MISSING_ACCOUNT_DETAILS", bundle: .module) // TODO: reuse documentation view!
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-
-            Button(action: {
-#if os(macOS)
-                NSWorkspace.shared.open(documentationUrl)
-#else
-                UIApplication.shared.open(documentationUrl)
-#endif
-            }) {
-                Text("OPEN_DOCUMENTATION", bundle: .module)
-            }
-                .padding()
-        }
+        DocumentationInfoView(
+            infoText: Text("MISSING_ACCOUNT_DETAILS", bundle: .module),
+            url: documentationUrl
+        )
     }
 }
 
 
 #if DEBUG
-struct MissingAccountDetailsWarning_Previews: PreviewProvider {
-    static var previews: some View {
-        MissingAccountDetailsWarning()
-    }
+#Preview {
+    MissingAccountDetailsWarning()
 }
 #endif

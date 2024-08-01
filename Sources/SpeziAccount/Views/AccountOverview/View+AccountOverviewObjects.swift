@@ -10,9 +10,9 @@ import SwiftUI
 
 
 extension View {
-    func injectEnvironmentObjects(service: any AccountService, model: AccountOverviewFormViewModel) -> some View {
+    func injectEnvironmentObjects(configuration: AccountServiceConfiguration, model: AccountOverviewFormViewModel) -> some View {
         self
-            .environment(\.accountServiceConfiguration, service.configuration)
+            .environment(\.accountServiceConfiguration, configuration)
             .environment(model.modifiedDetailsBuilder)
     }
 }

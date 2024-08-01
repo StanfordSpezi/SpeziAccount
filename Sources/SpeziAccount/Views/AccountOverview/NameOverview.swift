@@ -54,7 +54,7 @@ struct NameOverview: View {
 #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
-            .injectEnvironmentObjects(service: account.accountService, model: model)
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .environment(\.accountViewType, .overview(mode: .display))
     }
 
@@ -74,7 +74,7 @@ struct NameOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
+            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {
@@ -88,7 +88,7 @@ struct NameOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
+            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {

@@ -21,30 +21,16 @@ struct EmptyServicesWarning: View {
     }
 
     var body: some View {
-        VStack {
-            Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-
-            Button(action: {
-#if os(macOS)
-                NSWorkspace.shared.open(documentationUrl)
-#else
-                UIApplication.shared.open(documentationUrl)
-#endif
-            }) {
-                Text("OPEN_DOCUMENTATION", bundle: .module)
-            }
-                .padding()
-        }
+        DocumentationInfoView(
+            infoText: Text("MISSING_ACCOUNT_SERVICES", bundle: .module),
+            url: documentationUrl
+        )
     }
 }
 
 
 #if DEBUG
-struct EmptyServicesWarning_Previews: PreviewProvider {
-    static var previews: some View {
-        EmptyServicesWarning()
-    }
+#Preview {
+    EmptyServicesWarning()
 }
 #endif

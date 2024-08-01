@@ -19,7 +19,7 @@ public struct AccountServiceButton<Label: View>: View {
                 label
             }
                 .font(.title3)
-                .padding(.vertical, 12)
+                .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
         }
             .buttonStyle(.borderedProminent)

@@ -10,6 +10,7 @@
 import SwiftUI
 
 
+#if DEBUG
 struct AccountDetailsReader<Content: View>: View {
     private let bodyClosure: (Account, AccountDetails) -> Content
     
@@ -26,3 +27,4 @@ struct AccountDetailsReader<Content: View>: View {
         self.bodyClosure = bodyClosure
     }
 }
+#endif

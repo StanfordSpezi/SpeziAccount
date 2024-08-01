@@ -33,7 +33,7 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
 
 
 extension AccountKey where Value: StringProtocol {
-    /// Default DataDisplay for String-based values using ``StringBasedDisplayView``.
+    /// Default DataDisplay for String-based values.
     public typealias DataDisplay = StringBasedDisplayView<Self>
 }
 

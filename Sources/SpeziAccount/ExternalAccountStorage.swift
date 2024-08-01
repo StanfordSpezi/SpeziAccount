@@ -17,7 +17,7 @@ import Spezi
 /// This module is used to interact with an external storage provider.
 public final class ExternalAccountStorage { // TODO: docs example + topics!
     /// Capture details that are externally stored, associated with their account id.
-    public struct ExternallyStoredDetails {
+    public struct ExternallyStoredDetails: Sendable {
         /// The account id the storage details are associated with.
         ///
         /// Fore more information refer to ``AccountDetails/accountId``.
@@ -26,7 +26,7 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
         public let details: AccountDetails
     }
 
-    private nonisolated(unsafe) let storageProvider: (any AccountStorageProvider)? // TODO: weak var
+    private nonisolated(unsafe) weak var storageProvider: (any AccountStorageProvider)?
 
     private nonisolated(unsafe) var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
     private let lock = NSLock()
@@ -55,12 +55,6 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
 
     init(_ storageProvider: (any AccountStorageProvider)?) {
         self.storageProvider = storageProvider
-    }
-
-
-    /// Initialize the external account storage module.
-    public convenience init() {
-        self.init(nil)
     }
 
     /// Notify the account service about changes in the external record.
@@ -122,7 +116,7 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
         }
 
         guard let details = try await storageProvider.load(accountId, keys) else {
-            // TODO: storage provider doesn't have a local copy, they will notify use with update details later on!
+            // the storage provider currently doesn't have a local copy, they will notify us with updated details later on
             return AccountDetails() // TODO: set a property or something?
         }
 
@@ -154,7 +148,4 @@ public final class ExternalAccountStorage { // TODO: docs example + topics!
 }
 
 
-extension ExternalAccountStorage: Module, DefaultInitializable, Sendable {}
-
-
-extension ExternalAccountStorage.ExternallyStoredDetails: Sendable {}
+extension ExternalAccountStorage: Module, Sendable {}

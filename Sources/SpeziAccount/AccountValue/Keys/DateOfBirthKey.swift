@@ -10,7 +10,7 @@ import SpeziViews
 import SwiftUI
 
 
-private struct DisplayView: DataDisplayView {
+private struct DisplayView: DataDisplayView { // swiftlint:disable:this file_types_order
     private let value: Date
 
     @Environment(\.locale)
@@ -34,6 +34,7 @@ private struct DisplayView: DataDisplayView {
         self.value = value
     }
 }
+
 
 private struct EntryView: DataEntryView {
     @Binding private var value: Date

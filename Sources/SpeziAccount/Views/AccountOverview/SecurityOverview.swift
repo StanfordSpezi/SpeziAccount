@@ -52,7 +52,7 @@ struct SecurityOverview: View {
                     }
                 }
             }
-                .injectEnvironmentObjects(service: account.accountService, model: model)
+                .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
@@ -82,7 +82,7 @@ struct SecurityOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            SecurityOverview(model: AccountOverviewFormViewModel(account: account), details: details)
+            SecurityOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {

@@ -42,7 +42,7 @@ struct SingleEditView<Key: AccountKey>: View {
                     .focused($isFocused)
             }
                 .environment(\.accountViewType, .overview(mode: .existing))
-                .injectEnvironmentObjects(service: account.accountService, model: model)
+                .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
         }
             .navigationTitle(Text(Key.self == AccountKeys.userId ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
@@ -92,7 +92,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            SingleEditView(for: \.name, model: AccountOverviewFormViewModel(account: account), details: details)
+            SingleEditView(for: \.name, model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {

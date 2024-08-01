@@ -23,13 +23,14 @@ public final class AccountConfiguration<Service: AccountService> {
     @Application(\.logger)
     private var logger
 
-    // TODO: find a way to make the @Dependency work again with non-optional but initializer supplied values!
-    @Dependency private var account: Account?
-    @Dependency private var externalStorage: ExternalAccountStorage?
+    @Dependency(Account.self)
+    private var account
+    @Dependency(ExternalAccountStorage.self)
+    private var externalStorage
+    @Dependency(Service.self)
+    private var accountService
 
     @Dependency private var storageProvider: [any Module] // we store the storage provider in a type erased way! it is optional to supply!
-    @Dependency private var accountService: Service?
-
     @StandardActor private var standard: any Standard
 
     /// Configure the `SpeziAccount` framework.
@@ -43,7 +44,7 @@ public final class AccountConfiguration<Service: AccountService> {
         service: Service,
         configuration: AccountValueConfiguration = .default
     ) {
-        self.init(accountService: service, configuration: configuration, defaultActiveDetails: nil)
+        self.init(accountService: service, configuration: configuration)
     }
 
     /// Configure the `SpeziAccount` framework with external storage.
@@ -60,7 +61,7 @@ public final class AccountConfiguration<Service: AccountService> {
         storageProvider: Storage,
         configuration: AccountValueConfiguration = .default
     ) {
-        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: nil)
+        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration)
     }
 
     /// Configure the `Account` Module for previewing purposes.
@@ -95,31 +96,17 @@ public final class AccountConfiguration<Service: AccountService> {
         self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
-    init(
+    init( // swiftlint:disable:this function_default_parameter_at_end
         accountService: Service,
-        configuration: AccountValueConfiguration = .default,
+        storageProvider: (any AccountStorageProvider)? = nil,
+        configuration: AccountValueConfiguration,
         defaultActiveDetails: AccountDetails? = nil
     ) {
-        self._accountService = Dependency(wrappedValue: accountService)
-
-        self._account = Dependency(wrappedValue: Account(
-            service: accountService,
-            supportedConfiguration: configuration,
-            details: defaultActiveDetails
-        ))
-
-        self._externalStorage = Dependency(wrappedValue: ExternalAccountStorage())
-    }
-
-    init<Storage: AccountStorageProvider>(
-        accountService: Service,
-        storageProvider: Storage,
-        configuration: AccountValueConfiguration = .default,
-        defaultActiveDetails: AccountDetails? = nil
-    ) {
-        self._accountService = Dependency(wrappedValue: accountService)
+        self._accountService = Dependency(load: accountService)
         self._storageProvider = Dependency {
-            storageProvider
+            if let storageProvider {
+                storageProvider
+            }
         }
 
         self._account = Dependency(wrappedValue: Account(
@@ -133,15 +120,6 @@ public final class AccountConfiguration<Service: AccountService> {
     /// Configure the module.
     @MainActor
     public func configure() {
-        // assemble the final array of account services
-        guard let account else {
-            preconditionFailure("Failed to initialize Account module as part of Account configuration.")
-        }
-
-        guard let accountService else {
-            preconditionFailure("Failed to initialize \(Service.self) module as part of Account configuration.")
-        }
-
         // Verify account service can store all configured account keys.
         // If applicable, wraps the service into an StandardBackedAccountService
         verify(configurationRequirements: account.configuration, against: accountService)
@@ -181,9 +159,8 @@ public final class AccountConfiguration<Service: AccountService> {
         if let storageProvider = storageProvider.first {
             // we are also fine, we have a standard that can store any unsupported account values
             logger.debug("""
-                         The standard \(type(of: storageProvider)) is used to store the following account values that \
-                         are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
-
+                         The storage provider \(type(of: storageProvider)) is used to store the following account values that \
+                         are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription).
                          """)
             return
         }

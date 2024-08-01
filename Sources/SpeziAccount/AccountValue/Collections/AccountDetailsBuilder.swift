@@ -49,7 +49,7 @@ class AccountDetailsBuilder {
     ///   - value: The value to store.
     /// - Returns: The builder reference for method chaining.
     @discardableResult
-    func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value?) -> Self {
+    func set<Key: AccountKey>(_ key: Key.Type, value: Key.Value) -> Self {
         storage.set(key, value: value)
         return self
     }

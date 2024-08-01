@@ -10,11 +10,9 @@ import Foundation
 
 // TODO: add docs for the macros!
 
-// TODO: adding new account values: make sure the snippet works out of the box (maybe provide the HeightKey example?)
-
 import SwiftUI
 
-extension EmptyView: DataDisplayView, DataEntryView { // TODO: use that? or make an custom type for that?
+extension EmptyView: DataDisplayView, DataEntryView { // TODO: make an custom type for that?
     public typealias Value = Never
 
     public init(_ value: Never) {

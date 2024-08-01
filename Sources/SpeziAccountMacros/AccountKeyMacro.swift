@@ -155,7 +155,6 @@ extension AccountKeyMacro: PeerMacro {
             }
 
             if let displayViewTypeName {
-                // TODO: suddenly we need swiftUI?
                 """
                 \(raw: rawModifier)struct DataDisplay: DataDisplayView {
                     private let value: Value

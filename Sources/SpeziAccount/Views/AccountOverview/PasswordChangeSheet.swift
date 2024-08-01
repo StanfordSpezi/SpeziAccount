@@ -34,14 +34,14 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        account.accountService.configuration.fieldValidationRules(for: AccountKeys.password) ?? []
+        accountDetails.accountServiceConfiguration.fieldValidationRules(for: AccountKeys.password) ?? []
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 passwordFieldsSection
-                    .injectEnvironmentObjects(service: account.accountService, model: model) // TODO: necessity of service?
+                    .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
                     .focused($isFocused)
                     .environment(\.accountViewType, .overview(mode: .new))
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
@@ -97,7 +97,7 @@ struct PasswordChangeSheet: View {
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
-            PasswordValidationRuleFooter(configuration: account.accountService.configuration)
+            PasswordValidationRuleFooter(configuration: accountDetails.accountServiceConfiguration)
         }
     }
 
@@ -141,7 +141,7 @@ struct PasswordChangeSheet: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account), details: details)
+            PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {

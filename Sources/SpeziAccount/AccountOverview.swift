@@ -134,6 +134,8 @@ public struct AccountOverview<AdditionalSections: View>: View {
     NavigationStack {
         AccountOverview()
     }
-        .environment(Account())
+        .previewWith {
+            AccountConfiguration(service: MockAccountService())
+        }
 }
 #endif

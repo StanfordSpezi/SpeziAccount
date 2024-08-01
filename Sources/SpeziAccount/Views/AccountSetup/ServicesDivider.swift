@@ -10,7 +10,7 @@ import SwiftUI
 
 
 /// Simple `Divider` that reads "or" in the middle to divide sections that provide non-overlapping options of choice to the user.
-struct ServicesDivider: View { // TODO: public?
+struct ServicesDivider: View {
     var body: some View {
         HStack {
             VStack {

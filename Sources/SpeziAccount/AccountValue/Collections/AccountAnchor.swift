@@ -12,4 +12,4 @@ import SpeziFoundation
 /// A `RepositoryAnchor` used for all account details.
 ///
 /// This anchor is used with all ``AccountKey``s or other elements stored in the ``AccountDetails``.
-public struct AccountAnchor: RepositoryAnchor, Sendable {} // TODO: internal?
+public struct AccountAnchor: RepositoryAnchor, Sendable {}

@@ -35,7 +35,7 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 
 
 extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
-    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values using ``LocalizableStringBasedDisplayView``.
+    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values.
     public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
 }
 

@@ -10,10 +10,6 @@ import SpeziFoundation
 import SwiftUI
 
 
-// TODO: provide default data entry view for Strings?
-// TODO: provide default views for Date?
-// TODO: provide default views for Numerics?
-
 private struct DisplayView: DataDisplayView {
     var body: some View {
         Text("The internal account identifier is not meant to be user facing!", comment: "Pure debug message, no need to translate.")

@@ -66,9 +66,9 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
 
     var registeredUser: UserStorage // simulates the backend
 
-    @Dependency private var account: Account
-    @Dependency private var notifications: AccountNotifications
-    @Dependency private var externalStorage: ExternalAccountStorage
+    @Dependency(Account.self) private var account
+    @Dependency(AccountNotifications.self) private var notifications
+    @Dependency(ExternalAccountStorage.self) private var externalStorage
 
     @Model var model = TestAlertModel()
 

@@ -12,9 +12,26 @@ import SwiftUI
 
 
 /// A password reset view implementation.
-public struct UserIdPasswordResetView<SuccessView: View>: View { // TODO: example docs?
+///
+/// You can use this view to implement a basic password reset operation.
+///
+/// - Tip: You can throw an `LocalizedError` to communicate erroneous conditions back to the user.
+///
+/// Below is a short code example on how to use this view.
+/// ```swift
+/// struct MyView: View {
+///     var body: some View {
+///         PasswordResetView { userId in
+///             // handle password reset for the requested user id
+///         }
+///     }
+/// }
+/// ```
+///
+/// - Note: Use ``init(resetPassword:success:)`` to provide a custom view that appears for a successful password reset.
+public struct PasswordResetView<SuccessView: View>: View {
     private let successView: SuccessView
-    private let resetPasswordClosure: (String) async throws -> Void // TODO: make a wrapper type that encapsulate semantics
+    private let resetPasswordClosure: (String) async throws -> Void
 
     @Environment(Account.self)
     private var account
@@ -68,7 +85,6 @@ public struct UserIdPasswordResetView<SuccessView: View>: View { // TODO: exampl
                 .padding()
                 .padding(.bottom, 30)
 
-            // TODO: shall we generally try to be much more generalizable (e.g., don't assume that userId is the identifier for password reset?)
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                 .validate(input: userId, rules: .nonEmpty)
                 .focused($isFocused)
@@ -145,7 +161,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View { // TODO: exampl
 #if DEBUG
 #Preview {
     NavigationStack {
-        UserIdPasswordResetView { userId in
+        PasswordResetView { userId in
             print("Reset password for \(userId)")
         }
         .previewWith {
@@ -156,7 +172,7 @@ public struct UserIdPasswordResetView<SuccessView: View>: View { // TODO: exampl
 
 #Preview {
     NavigationStack {
-        UserIdPasswordResetView(requestSubmitted: true) { userId in
+        PasswordResetView(requestSubmitted: true) { userId in
             print("Reset password for \(userId)")
         }
         .previewWith {

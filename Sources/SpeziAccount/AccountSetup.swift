@@ -44,7 +44,22 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
 /// ```
 ///
 /// - Note: Use the ``Account`` module to access the current user details and check if the is currently a user ``Account/signedIn``.
-@MainActor // TODO: remove navigation link in the example!
+///
+/// If you are using the `AccountSetup` view in an onboarding flow, it might be the case that an account is already present.
+/// The view then displays the currently logged-in user to give the user a change to review the user account in place.
+/// `AccountSetup` allows to place additional view components in this subview (e.g., to have a continue button that handles further navigation).
+///
+/// ```swift
+/// AccountSetup {
+///     Button {
+///         // handle navigation
+///     } label: {
+///         Text("Continue")
+///             .frame(maxWidth: .infinity, minHeight: 38)
+///     }
+/// }
+/// ```
+@MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header

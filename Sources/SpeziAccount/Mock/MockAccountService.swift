@@ -17,7 +17,7 @@ struct MockUserIdPasswordEmbeddedView: View {
     private var service
 
     var body: some View {
-        UserIdPasswordEmbeddedView { credential in
+        AccountSetupProvider { credential in
             let service = service
             try await service.login(userId: credential.userId, password: credential.password)
         } signup: { signupDetails in
@@ -81,9 +81,12 @@ public final class MockAccountService: AccountService { // TODO: just write an f
         }
     }
 
-    @Dependency private var account: Account
-    @Dependency private var notifications: AccountNotifications
-    @Dependency private var externalStorage: ExternalAccountStorage
+    @Dependency(Account.self)
+    private var account
+    @Dependency(AccountNotifications.self)
+    private var notifications
+    @Dependency(ExternalAccountStorage.self)
+    private var externalStorage
 
     @IdentityProvider(section: .primary)
     private var loginView = MockUserIdPasswordEmbeddedView()

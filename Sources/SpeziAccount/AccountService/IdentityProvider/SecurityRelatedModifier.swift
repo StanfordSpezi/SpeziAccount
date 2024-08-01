@@ -33,6 +33,7 @@ struct SecurityModifier<V: ViewModifier> {
 public struct SecurityRelatedModifier<V: ViewModifier> {
     private let modifierClosure: @Sendable @MainActor () -> V
 
+    /// The security related modifier instance.
     @MainActor public var wrappedValue: V {
         modifierClosure()
     }
