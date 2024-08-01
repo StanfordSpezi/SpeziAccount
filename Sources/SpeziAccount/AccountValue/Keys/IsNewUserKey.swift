@@ -10,7 +10,7 @@ import SpeziFoundation
 
 
 extension AccountDetails {
-    private struct IsNewUserKey: KnowledgeSource {
+    private struct IsNewUserKey: KnowledgeSource { // TODO: is anonymous user key?
         typealias Anchor = AccountAnchor
         typealias Value = Bool
     }

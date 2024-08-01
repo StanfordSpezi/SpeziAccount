@@ -76,6 +76,7 @@ extension AccountKeyMacro: PeerMacro {
         }
 
         // optional arguments
+        let storageIdentifier = argumentList.first(where: { $0.label?.text == "id" })
         let category = argumentList.first(where: { $0.label?.text == "category" })
         let initial = argumentList.first { $0.label?.text == "initial" }
         let displayViewType = argumentList.first { $0.label?.text == "displayView" }
@@ -140,6 +141,17 @@ extension AccountKeyMacro: PeerMacro {
             """
             \(raw: rawModifier)static let name: LocalizedStringResource = \(name.expression)
             """
+
+            if let id = storageIdentifier?.expression {
+                """
+                \(raw: rawModifier)static let identifier: String = \(id)
+                """
+            } else {
+                """
+                \(raw: rawModifier)static let identifier: String = "\(identifier)"
+                """
+            }
+
 
             let categoryExpr = category?.expression ?? ExprSyntax(MemberAccessExprSyntax(declName: .init(baseName: .identifier("other"))))
             """

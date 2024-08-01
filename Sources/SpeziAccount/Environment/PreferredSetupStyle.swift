@@ -1,0 +1,46 @@
+//
+// This source file is part of the Spezi open-source project
+//
+// SPDX-FileCopyrightText: 2024 Stanford University and the project authors (see CONTRIBUTORS.md)
+//
+// SPDX-License-Identifier: MIT
+//
+
+import SwiftUI
+
+
+/// The preferred style of presenting account setup views.
+///
+/// Some views provided by an ``AccountService`` to the ``AccountSetup`` views support different presentation styles.
+/// In some situations, views might be able to present themselves such that login or signup operations are favored.
+/// For example, an `AccountSetup` view that is displayed in the onboarding flow, might favor a presentation that highlights signup functionality.
+public enum PreferredSetupStyle { // TODO: add docs for the modifier or env key?
+    /// Let the view automatically decide on how to present itself.
+    ///
+    /// For example, if login is not supported, the view might automatically choose to show the signup variant of the view.
+    case automatic
+    /// Prefer to show a view that supports a login flow.
+    case login
+    /// Prefer to show a view that supports a signup flow.
+    case signup
+}
+
+
+extension EnvironmentValues {
+    private struct PreferredSetupStyleKey: EnvironmentKey {
+        static let defaultValue: PreferredSetupStyle = .automatic
+    }
+
+    /// The preferred style of presenting account setup views.
+    public var preferredSetupStyle: PreferredSetupStyle { // TODO: just make it an modifier
+        get {
+            self[PreferredSetupStyleKey.self]
+        }
+        set {
+            self[PreferredSetupStyleKey.self] = newValue
+        }
+    }
+}
+
+
+extension PreferredSetupStyle: Sendable, Hashable {}

@@ -11,7 +11,7 @@ import SwiftUI
 
 
 /// A simple `DatePicker` implementation tailored towards entry of a date of birth.
-public struct DateOfBirthPicker: View { // TODO: generalize
+public struct DateOfBirthPicker: View {
     private let title: LocalizedStringResource
     private let isRequired: Bool
 
@@ -43,7 +43,7 @@ public struct DateOfBirthPicker: View { // TODO: generalize
 
 
     public var body: some View {
-        HStack {
+        HStack { // swiftlint:disable:this closure_body_length
             DynamicHStack {
                 Text(title)
                     .multilineTextAlignment(.leading)
@@ -68,13 +68,17 @@ public struct DateOfBirthPicker: View { // TODO: generalize
                             .foregroundColor(.primary)
                             .padding([.leading, .trailing], 20)
                             .padding([.top, .bottom], 7)
+                            .frame(maxWidth: 120)
+                            .background(
+                                RoundedRectangle(cornerRadius: 8)
+                                #if os(macOS)
+                                    .fill(Color(nsColor: .tertiarySystemFill))
+                                #else
+                                    .fill(Color(uiColor: .tertiarySystemFill))
+                                #endif
+                            )
                     }
-                    .background(
-                        RoundedRectangle(cornerRadius: 8)
-#if !os(macOS)
-                            .fill(Color(uiColor: .tertiarySystemFill)) // TODO: macOs!
-#endif
-                    )
+                        .buttonStyle(.plain)
                 }
             }
 
@@ -105,6 +109,7 @@ public struct DateOfBirthPicker: View { // TODO: generalize
     /// - Parameters:
     ///   - title: Optionally provide a custom label text.
     ///   - date: A binding to the `Date` state.
+    ///   - isRequired: Flag indicating if entry is mandatory. If `false` it adds another `Add Date` button.
     public init(
         _ title: LocalizedStringResource,
         date: Binding<Date>,
@@ -123,45 +128,34 @@ public struct DateOfBirthPicker: View { // TODO: generalize
 
 
 #if DEBUG
-struct DateOfBirthPicker_Previews: PreviewProvider { // TODO: refactor that!
+struct DateOfBirthPicker_Previews: PreviewProvider {
     struct Preview: View {
         @State private var date = Date.now
+        private let required: Bool
 
         var body: some View {
             Form {
-                DateOfBirthPicker("Date of Birth", date: $date)
+                DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
             }
             VStack {
-                DateOfBirthPicker("Date of Birth", date: $date)
+                DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
                     .padding(32)
             }
 #if !os(macOS)
-                .background(Color(.systemGroupedBackground)) // TODO: macOs
+            .background(Color(uiColor: .systemGroupedBackground))
 #endif
+        }
+
+        init(required: Bool) {
+            self.required = required
         }
     }
 
     static var previews: some View {
         // preview entering new data.
-        Preview()
-            .previewWith {
-                AccountConfiguration(service: MockAccountService())
-            }
-            .environment(\.accountViewType, .signup)
+        Preview(required: false)
 
-        // preview entering new data but displaying existing data.
-        Preview()
-            .previewWith {
-                AccountConfiguration(service: MockAccountService())
-            }
-            .environment(\.accountViewType, .overview(mode: .existing))
-
-        // preview entering new data but required.
-        Preview()
-            .previewWith {
-                AccountConfiguration(service: MockAccountService(), configuration: [.requires(\.dateOfBirth)])
-            }
-            .environment(\.accountViewType, .signup)
+        Preview(required: true)
     }
 }
 #endif

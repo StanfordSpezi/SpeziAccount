@@ -46,7 +46,7 @@ private struct EntryView: DataEntryView {
 
     private var isRequired: Bool {
         account.configuration.dateOfBirth?.requirement == .required
-        || viewType?.enteringNewData == false
+            || viewType?.enteringNewData == false
     }
 
     var body: some View {
@@ -62,6 +62,7 @@ private struct EntryView: DataEntryView {
 extension AccountDetails {
     /// The date of birth of a user.
     @AccountKey(
+        id: "DateOfBirthKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module)),
         category: .personalDetails,
         as: Date.self,
@@ -70,8 +71,22 @@ extension AccountDetails {
         entryView: EntryView.self
     )
     public var dateOfBirth: Date?
+
+    /// The date of birth of a user.
+    @_documentation(visibility: internal)
+    @available(*, deprecated, renamed: "dateOfBirth", message: "Replaced by a version that fixes the spelling error.")
+    public var dateOfBrith: Date? {
+        dateOfBirth
+    }
 }
 
 
 @KeyEntry(\.dateOfBirth)
-public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier
+public extension AccountKeys { // swiftlint:disable:this no_extension_access_modifier
+    /// The date of birth of a user.
+    @_documentation(visibility: internal)
+    @available(*, deprecated, renamed: "dateOfBirth", message: "Replaced by a version that fixes the spelling error.")
+    var dateOfBrith: AccountDetails.__Key_dateOfBirth.Type {
+        AccountDetails.__Key_dateOfBirth.self
+    }
+}

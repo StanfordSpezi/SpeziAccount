@@ -11,30 +11,34 @@ import SpeziViews
 import SwiftUI
 
 
-public enum PreferredSetupStyle { // TODO: "SetupViewLayout"
-    case automatic // TODO: e.g. choose signup if no login closure was specified?
-    case login
-    case signup
-}
-
 enum PresentedSetupStyle<Credentials: Sendable> {
     case signup
     case login((Credentials) async throws -> Void)
 }
 
-public struct UserIdPasswordCredential: Sendable { // TODO: new credentials hierarchy?
-    public let userId: String
-    public let password: String
-}
 
-
-extension EnvironmentValues {
-    // TODO: swift 5.10 support
-    @Entry var preferredSetupStyle: PreferredSetupStyle = .automatic
-}
-
-
-public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
+/// A view that provides setup with an identity provider.
+///
+/// This view guides setup through an identity provider. You might use it as a view supplied to the accounts system using ``IdentityProvider``.
+/// It either renders as login with (using userId and password), with optional functionality like password reset and signup, or renders as a signup button.
+/// How the view is presented depends on the functionality supported (based on the initializer arguments) and the ``PreferredSetupStyle`` from the environment.
+///
+/// Password reset functionality is optional. Equally, login and signup are optional, however at least one of both must be supported.
+///
+/// Below is a short code example, how to provide a userId and password login view with signup and password reset functionality.
+/// ```swift
+/// AccountSetupProviderView { credential in
+///     // handle login credentials
+/// } signup: { signupDetails in
+///     // handle signup with the provided details
+/// } resetPassword: { userId in
+///     // handle password reset for the given user id
+/// }
+/// ```
+///
+/// - Note: The above code example uses default components like ``SignupForm`` and the ``PasswordResetView``. You can provide your
+///     own views using ``init(signup:passwordReset:)``.
+public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View {
     /// Optional login closure for providers that support userId-password-based credentials.
     private let loginClosure: ((UserIdPasswordCredential) async throws -> Void)?
     /// The view that handles signup.
@@ -87,7 +91,7 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
             }
     }
 
-    private init( // TODO: update docs!
+    private init(
         loginClosure: ((UserIdPasswordCredential) async throws -> Void)? = nil,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },
         @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }
@@ -97,12 +101,12 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
         self.passwordReset = passwordReset()
     }
 
-    /// Create a new setup view.
+    /// A setup view that supports login, signup and password reset.
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
-    ///   - signup: A closure that is called if the user tries to signup for an new account.
-    ///   - passwordReset: A closure that is called if the user requests to reset their password.
-    public init( // TODO: update docs!
+    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    ///   - passwordReset: The view that is shown as a sheet, if the user presses the "Forgot Password" button. Pass an `EmptyView` if password reset isn't supported.
+    public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },
         @ViewBuilder passwordReset: () -> PasswordReset
@@ -111,7 +115,11 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
     }
 
 
-    public init( // TODO: update docs!
+    /// A setup view that supports signup and password reset.
+    /// - Parameters:
+    ///   - signup: The view that is shown as a sheet, if the user presses the signup button.
+    ///   - passwordReset: The view that is shown as a sheet, if the user presses the "Forgot Password" button. Pass an `EmptyView` if password reset isn't supported.
+    public init(
         @ViewBuilder signup signupForm: () -> Signup,
         @ViewBuilder passwordReset: () -> PasswordReset = { EmptyView() }
     ) {
@@ -119,7 +127,11 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
     }
 
 
-    public init( // TODO: update docs!
+    /// A setup view that supports login and signup.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() }
     ) where PasswordReset == EmptyView {
@@ -129,7 +141,10 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
     }
 
 
-    public init( // TODO: update docs!
+    /// A setup view that supports signup.
+    /// - Parameters:
+    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    public init(
         @ViewBuilder signup signupForm: () -> Signup
     ) where PasswordReset == EmptyView {
         self.init(loginClosure: nil, signup: signupForm) {
@@ -138,12 +153,17 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
     }
 
 
+    /// A setup view that supports login, signup and password reset.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
+    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         signup: @escaping (AccountDetails) async throws -> Void,
         resetPassword: @escaping (String) async throws -> Void
-    ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>,
             PasswordReset == NavigationStack<NavigationPath, PasswordResetView<SuccessfulPasswordResetView>> {
         self.init(loginClosure: login) {
             NavigationStack {
@@ -156,11 +176,15 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
         }
     }
 
+    /// A setup view that supports signup and password reset.
+    /// - Parameters:
+    ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
+    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         signup: @escaping (AccountDetails) async throws -> Void,
         resetPassword: @escaping (String) async throws -> Void
-    ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>,
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>,
     PasswordReset == NavigationStack<NavigationPath, PasswordResetView<SuccessfulPasswordResetView>> {
         self.init(loginClosure: nil) {
             NavigationStack {
@@ -173,6 +197,10 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
         }
     }
 
+    /// A setup view that supports login and password reset.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
@@ -188,10 +216,13 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
         }
     }
 
+    /// A setup view that supports signup.
+    /// - Parameters:
+    ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
     @MainActor
     public init(
         signup: @escaping (AccountDetails) async throws -> Void
-    ) where Signup == NavigationStack<NavigationPath, SignupForm<DefaultSignupFormHeader>>, PasswordReset == EmptyView {
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>, PasswordReset == EmptyView {
         self.init(loginClosure: nil) {
             NavigationStack {
                 SignupForm(signup: signup)
@@ -205,9 +236,8 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
 
 #if DEBUG
 #Preview {
-    let service = MockAccountService()
-    return NavigationStack {
-        AccountSetupProvider { credential in
+    NavigationStack {
+        AccountSetupProviderView { credential in
             print("Login \(credential)")
         } signup: { details in
             print("Signup \(details)")
@@ -216,18 +246,48 @@ public struct AccountSetupProvider<Signup: View, PasswordReset: View>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: service)
+            AccountConfiguration(service: MockAccountService())
         }
 }
 
 #Preview {
     NavigationStack {
-        AccountSetupProvider { (credential: UserIdPasswordCredential) in
+        AccountSetupProviderView { credential in
+            print("Login \(credential)")
+        } signup: { details in
+            print("Signup \(details)")
+        } resetPassword: { userId in
+            print("Reset password for \(userId)")
+        }
+    }
+        .environment(\.preferredSetupStyle, .signup)
+        .previewWith {
+            AccountConfiguration(service: MockAccountService())
+        }
+}
+
+#Preview {
+    NavigationStack {
+        AccountSetupProviderView { (credential: UserIdPasswordCredential) in
             print("Login \(credential)")
         }
     }
         .previewWith {
             AccountConfiguration(service: MockAccountService())
         }
+}
+
+#Preview {
+    NavigationStack {
+        AccountSetupProviderView { (details: AccountDetails) in
+            print("Signup \(details)")
+        } resetPassword: { userId in
+            print("Reset password for \(userId)")
+        }
+    }
+    .environment(\.preferredSetupStyle, .signup)
+    .previewWith {
+        AccountConfiguration(service: MockAccountService())
+    }
 }
 #endif

@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import AuthenticationServices
 import Foundation
 import Spezi
 import SwiftUI
@@ -17,7 +16,7 @@ struct MockUserIdPasswordEmbeddedView: View {
     private var service
 
     var body: some View {
-        AccountSetupProvider { credential in
+        AccountSetupProviderView { credential in
             let service = service
             try await service.login(userId: credential.userId, password: credential.password)
         } signup: { signupDetails in

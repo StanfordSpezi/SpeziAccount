@@ -85,7 +85,7 @@ extension AccountKey {
 }
 
 
-extension AccountDetails { // TODO: doesn't apply to the builder now?
+extension AccountDetails {
     /// Default acceptAll visitor.
     public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
         for entry in self {

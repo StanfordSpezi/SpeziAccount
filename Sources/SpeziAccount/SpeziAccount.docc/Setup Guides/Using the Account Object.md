@@ -1,6 +1,6 @@
-# Using the Account Object
+# Accessing the User Account Details
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Use `Account` to access the current user account state.
 
 <!--
                   
@@ -12,16 +12,13 @@ SPDX-License-Identifier: MIT
              
 -->
 
-Use the global `Account` object to access the current account state.
 
 ## Overview
 
-You can use the ``Account`` object
-that is injected into your App's view hierarchy as an environment object to access `SpeziAccount` state.
-Particularly useful are the properties ``Account/signedIn`` and ``Account/details`` to access the current account
-state.
+You can access the current user account state using the ``Account`` `Module`.
+It provides information if the user is currently ``Account/signedIn`` and allows to access the user ``Account/details``.
 
-Below is a short code example to access the global ``Account`` instance.
+Below is a short code example demonstrating how to access `Account` from your SwiftUI view hierarchy.
 ```swift
 struct MyView: View {
     @Environment(Account.self) var account
@@ -31,6 +28,18 @@ struct MyView: View {
     }
 }
 ```
+
+
+Accessing the `Account` from within your `Module` is equally simple using the Spezi dependency system.
+
+```swift
+final class MyModule: Module {
+    @Dependency(Account.self) private var account
+}
+```
+
+- Note: The code example declares a required dependency and would crash if the user doesn't configure `SpeziAccount`.
+    You might want to consider it as an optional dependency to gracefully handle the case where `SpeziAccount` might not be configured.
 
 ## Topics
 
@@ -56,6 +65,5 @@ Below is a list of built-in account details. Other frameworks might extend this 
 ### Accessing the Account Service
 To access the currently active `AccountService` or its configuration you may want to use the following properties:
 
-- ``AccountDetails/accountService``
 - ``AccountDetails/accountServiceConfiguration``
 - ``AccountDetails/userIdType``

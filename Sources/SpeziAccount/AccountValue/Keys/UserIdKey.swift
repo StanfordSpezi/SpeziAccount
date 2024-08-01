@@ -60,6 +60,7 @@ extension AccountDetails {
         public typealias Value = String
 
         public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
+        public static let identifier = "UserIdKey" // backwards compatibility with 1.0 releases
         public static let category: AccountKeyCategory = .credentials
         public struct DataDisplay: DataDisplayView {
             private let value: Value
@@ -101,6 +102,7 @@ extension AccountDetails {
     ///
     /// - Note: You may also refer to the ``email`` to query the email address of an account.
     @AccountKey(
+        id: "UserIdKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("USER_ID", bundle: .atURL(from: .module)),
         category: .credentials,
         as: String.self,

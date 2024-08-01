@@ -58,8 +58,10 @@ public struct AccountHeader: View {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .frame(width: 60, height: 60)
-#if !os(macOS)
-                    .foregroundColor(Color(.systemGray3)) // TODO: macOS
+#if os(macOS)
+                    .foregroundColor(Color(nsColor: .systemGray))
+#else
+                    .foregroundColor(Color(uiColor: .systemGray3))
 #endif
                     .accessibilityHidden(true)
             }

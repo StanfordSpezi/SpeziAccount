@@ -44,6 +44,43 @@ final class AccountKeyMacroTests: XCTestCase {
                     typealias Value = GenderIdentity
             
                     static let name: LocalizedStringResource = "Gender Identity"
+                    static let identifier: String = "genderIdentity"
+                    static let category: AccountKeyCategory = .personalDetails
+                    static var initialValue: InitialValue<Value> {
+                        .default(.preferNotToState)
+                    }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    func testAccountKeyId() {
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(id: "GI", name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
+                var genderIdentity: GenderIdentity?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var genderIdentity: GenderIdentity? {
+                    get {
+                        self [__Key_genderIdentity.self]
+                    }
+                    set {
+                        self [__Key_genderIdentity.self] = newValue
+                    }
+                }
+            
+                struct __Key_genderIdentity: AccountKey {
+                    typealias Value = GenderIdentity
+            
+                    static let name: LocalizedStringResource = "Gender Identity"
+                    static let identifier: String = "GI"
                     static let category: AccountKeyCategory = .personalDetails
                     static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
@@ -79,6 +116,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     public typealias Value = GenderIdentity
             
                     public static let name: LocalizedStringResource = "Gender Identity"
+                    public static let identifier: String = "genderIdentity"
                     public static let category: AccountKeyCategory = .personalDetails
                     public static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
@@ -114,6 +152,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     typealias Value = String
             
                     static let name: LocalizedStringResource = "Account Id"
+                    static let identifier: String = "accountId"
                     static let category: AccountKeyCategory = .other
                 }
             }
@@ -181,6 +220,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     public typealias Value = GenderIdentity
             
                     public static let name: LocalizedStringResource = "Gender Identity"
+                    public static let identifier: String = "genderIdentity"
                     public static let category: AccountKeyCategory = .personalDetails
                     public static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
@@ -245,6 +285,7 @@ final class AccountKeyMacroTests: XCTestCase {
                     typealias Value = GenderIdentity
             
                     static let name: LocalizedStringResource = "Gender Identity"
+                    static let identifier: String = "genderIdentity"
                     static let category: AccountKeyCategory = .personalDetails
                     static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)

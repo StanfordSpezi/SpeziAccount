@@ -14,6 +14,7 @@ import Foundation
 struct MockNumericKey: AccountKey {
     typealias Value = Int
     static let name: LocalizedStringResource = "Numeric Key"
+    static let identifier = "mockNumeric"
     static let category: AccountKeyCategory = .other
 }
 #endif

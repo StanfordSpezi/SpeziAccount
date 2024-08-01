@@ -53,7 +53,7 @@ public protocol AccountService: Module, CustomStringConvertible, Sendable, Envir
 
 extension AccountService {
     /// Default `CustomStringConvertible` returning the type name.
-    public var description: String { // TODO: do we need the conformance?
+    public var description: String {
         "\(Self.self)"
     }
 }

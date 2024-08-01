@@ -36,12 +36,12 @@ struct SignupSetupView<Credential: Sendable>: View {
         }
     }
 
-    /// Create a new setup view.
+    /// Create a new signup setup view.
     /// - Parameters:
+    ///   - stale: The binding to the presented setup style.
     ///   - login: A closure that is called once a user tries to login with their credentials.
-    ///   - signup: A closure that is called if the user tries to signup for an new account.
-    ///   - passwordReset: A closure that is called if the user requests to reset their password.
-    init( // TODO: update docs!
+    ///   - presentingSignup: Binding if the signup sheet should be presented.
+    init(
         style: Binding<PresentedSetupStyle<Credential>>,
         login loginClosure: ((Credential) async throws -> Void)?,
         presentingSignup: Binding<Bool>

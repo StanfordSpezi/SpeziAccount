@@ -90,6 +90,7 @@ private struct EntryView: DataEntryView {
 extension AccountDetails {
     /// The name of a user.
     @AccountKey(
+        id: "PersonNameKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("NAME", bundle: .atURL(from: .module)),
         category: .name,
         as: PersonNameComponents.self,

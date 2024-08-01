@@ -15,10 +15,13 @@ public struct BinaryIntegerDataEntry<Key: AccountKey>: DataEntryView where Key.V
 
 
     public var body: some View {
+        // TODO: do a proper one that fails validation with string input!
         TextField(value: $value, formatter: NumberFormatter()) {
             Text(Key.name)
         }
+#if !os(macOS)
             .keyboardType(.numberPad)
+#endif
             .disableFieldAssistants()
         // TODO: requiredness!
     }

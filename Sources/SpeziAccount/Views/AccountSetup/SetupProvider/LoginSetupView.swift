@@ -88,7 +88,7 @@ struct LoginSetupView<PasswordReset: View>: View {
 
 
     @ViewBuilder @MainActor private var fields: some View {
-        VStack {
+        VStack { // swiftlint:disable:this closure_body_length
             Group {
                 VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                     .validate(input: userId, rules: .nonEmpty)
@@ -107,8 +107,10 @@ struct LoginSetupView<PasswordReset: View>: View {
                             Text("UP_FORGOT_PASSWORD", bundle: .module)
                                 .font(.caption)
                                 .bold()
-#if !os(macOS)
-                                .foregroundColor(Color(uiColor: .systemGray)) // TODO: macos
+#if os(macOS)
+                                .foregroundColor(Color(nsColor: .systemGray))
+#else
+                                .foregroundColor(Color(uiColor: .systemGray))
 #endif
                         }
                     }

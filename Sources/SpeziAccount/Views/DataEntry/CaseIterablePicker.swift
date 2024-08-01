@@ -92,7 +92,7 @@ private func view(_ genderIdentity: Binding<GenderIdentity>) -> some View {
     }
         .padding(32)
 #if !os(macOS)
-        .background(Color(.systemGroupedBackground)) // TODO: macOS
+        .background(Color(.systemGroupedBackground))
 #endif
 }
 #endif

@@ -11,8 +11,7 @@ import Spezi
 import SwiftUI
 
 
-// TODO: can we somehow enforce that the account services reports the deletingAccount event?
-// TODO: "Integrated" login/signup view (same for SignInWithApple button?)
+// TODO: can we somehow enforce that the account service reports the deletingAccount event?
 // TODO: show/hide password button from QDG
 
 
@@ -60,9 +59,8 @@ import SwiftUI
 /// - ``removeUserDetails()``
 @Observable
 public final class Account {
-    @ObservationIgnored
-    @Application(\.logger)
-    private var logger
+    @ObservationIgnored @Application(\.logger)
+    private var logger // swiftlint:disable:this attributes
 
     @Dependency @ObservationIgnored private var notifications = AccountNotifications()
 
@@ -96,7 +94,7 @@ public final class Account {
     }
 
     /// The account setup components specified via the ``IdentityProvider`` property wrapper that are shown in the ``AccountSetup`` view.
-    let accountSetupComponents: [AnyAccountSetupComponent] // TODO: should that be public?
+    let accountSetupComponents: [AnyAccountSetupComponent]
     /// A security related modifier (see ``SecurityRelatedModifier``).
     let securityRelatedModifiers: [AnySecurityModifier]
 
@@ -132,8 +130,11 @@ public final class Account {
 
             partialResult.append(modifier.securityModifier)
         })
+    }
 
-        if supportedConfiguration.userId == nil {
+    /// Configures the module.
+    public func configure() {
+        if configuration.userId == nil {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
@@ -157,7 +158,7 @@ public final class Account {
     ///     This is primarily helpful for identity providers. You might not want to set this flag
     ///     if you using the builtin ``SignupForm``!
     @MainActor
-    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) {
+    public func supplyUserDetails(_ details: AccountDetails) {
         precondition(
             details.contains(AccountKeys.accountId),
             """
@@ -174,7 +175,6 @@ public final class Account {
 
         var details = details
         details.accountServiceConfiguration = accountService.configuration
-        details.isNewUser = isNewUser // TODO: you can just specify that yourself? no method argument?
         details.password = nil // ensure password never leaks
 
         let previousDetails = self.details

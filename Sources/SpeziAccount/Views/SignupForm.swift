@@ -12,39 +12,6 @@ import SpeziViews
 import SwiftUI
 
 
-public struct DefaultSignupFormHeader: View { // TODO: generalize this view?
-    public var body: some View { // TODO: rename or however we want to make it public!
-        VStack {
-            VStack {
-                Image(systemName: "person.fill.badge.plus")
-                    .foregroundColor(.accentColor)
-                    .symbolRenderingMode(.multicolor)
-                    .font(.custom("XXL", size: 50, relativeTo: .title))
-                    .accessibilityHidden(true)
-                Text("UP_SIGNUP_HEADER", bundle: .module)
-                    .accessibilityAddTraits(.isHeader)
-                    .font(.title)
-                    .bold()
-                    .padding(.bottom, 4)
-            }
-                .accessibilityElement(children: .combine)
-            Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
-                .padding([.leading, .trailing], 25)
-        }
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
-    }
-
-    public init() {}
-}
-
-#if DEBUG
-#Preview {
-    DefaultSignupFormHeader() // TODO: move into its own file!
-}
-#endif
-
-
 /// A generalized signup form used with arbitrary ``AccountService`` implementations.
 ///
 /// A `Form` that collects all configured account values (a ``AccountValueConfiguration`` supplied to ``AccountConfiguration``)
@@ -125,7 +92,6 @@ public struct SignupForm<Header: View>: View {
                 .padding(.top, -3)
 
             SignupSectionsView(sections: accountKeyByCategory)
-                // TODO: try to replace all account service access just for configuration
                 .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(signupDetailsBuilder)
@@ -145,7 +111,7 @@ public struct SignupForm<Header: View>: View {
             .receiveValidation(in: $validation)
     }
 
-    public init(signup: @escaping (AccountDetails) async throws -> Void, @ViewBuilder header: () -> Header = { DefaultSignupFormHeader() }) {
+    public init(signup: @escaping (AccountDetails) async throws -> Void, @ViewBuilder header: () -> Header = { SignupFormHeader() }) {
         self.header = header()
         self.signupClosure = signup
     }
@@ -159,7 +125,6 @@ public struct SignupForm<Header: View>: View {
 
         isFocused = false
 
-        // TODO: can we split that into the credentials and user details?
         let details = signupDetailsBuilder.build()
         try details.validateAgainstSignupRequirements(account.configuration)
 

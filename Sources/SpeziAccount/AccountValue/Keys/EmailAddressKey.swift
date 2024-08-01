@@ -35,6 +35,7 @@ extension AccountDetails {
         public typealias Value = String
 
         public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
+        public static let identifier = "EmailAddressKey" // backwards compatibility with 1.0 releases
         public static let category: AccountKeyCategory = .contactDetails
         public struct DataEntry: DataEntryView {
             @Binding private var value: Value
@@ -53,6 +54,7 @@ extension AccountDetails {
 #if compiler(>=6)
     /// The email address of a user.
     @AccountKey(
+        id: "EmailAddressKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module)),
         category: .contactDetails,
         as: String.self,
@@ -77,7 +79,6 @@ extension AccountDetails {
 public extension AccountKeys {} // swiftlint:disable:this no_extension_access_modifier
 
 
-// TODO: it should be possible with a freestanding macro?
 extension AccountDetails.__Key_email: OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
 

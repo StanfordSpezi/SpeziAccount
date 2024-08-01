@@ -39,7 +39,7 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// or [VerifiableTextField](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/verifiabletextfield).
     associatedtype DataEntry: DataEntryView<Value>
 
-    /// The localized name describing a value of this `AccountKey`.
+    /// The user-visible, localized name of the account key.
     static var name: LocalizedStringResource { get }
 
     /// A string-based identifier that is meant to be stable. Used by storage modules.
@@ -47,37 +47,26 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// By default this maps to the type name.
     static var identifier: String { get }
 
-
     /// The category of the account key.
     ///
     /// The ``AccountKeyCategory`` is used to group ``DataEntryView``s in views like the ``SignupForm``.
     /// Use ``AccountKeyCategory/other`` to move the ``DataEntry`` view to a unnamed group at the bottom.
     static var category: AccountKeyCategory { get }
 
-    /// The ``InitialValue`` that is used when supplying a new account value.
+    /// The initial value that is used when supplying a new account value.
     ///
     /// An empty value (e.g., a empty String) is required when the user is asked to supply a new value for the account value
     /// in views like the ``SignupForm``.
     ///
     /// - Note: There are default implementations for some standard types that all provide a ``InitialValue/empty(_:)`` value.
     static var initialValue: InitialValue<Value> { get }
-
-    /// A unique identifier for an account key.
-    ///
-    /// - Note: A default implementation is provided.
-    static var id: ObjectIdentifier { get }
 }
 
 
 extension AccountKey {
     /// A unique identifier for an account key. Bound to the process lifetime.
-    public static var id: ObjectIdentifier {
+    static var id: ObjectIdentifier {
         ObjectIdentifier(Self.self)
-    }
-
-    /// Default implementation falling back to the Swift type name.
-    public static var identifier: String {
-        "\(Self.self)"
     }
 
     static var isRequired: Bool {

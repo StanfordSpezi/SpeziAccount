@@ -24,7 +24,7 @@ public struct AccountModifications {
     /// Create new account modifications.
     /// - Parameters:
     ///   - modifiedDetails: The account details that contain the updated values.
-    ///   - removedAccountDetails. The removed account keys and their old values.
+    ///   - removedAccountDetails: The removed account keys and their old values.
     public init(modifiedDetails: AccountDetails, removedAccountDetails: AccountDetails = AccountDetails()) throws {
         self.modifiedDetails = modifiedDetails
         self.removedAccountDetails = removedAccountDetails
