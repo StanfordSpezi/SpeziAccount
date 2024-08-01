@@ -1231,6 +1231,9 @@
     "Stanford SUNet" : {
 
     },
+    "The input can only consist of digits." : {
+
+    },
     "The internal account identifier is meant to be generated!" : {
       "comment" : "Pure debug message, no need to translate.",
       "localizations" : {

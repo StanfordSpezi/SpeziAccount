@@ -14,7 +14,9 @@ import SwiftUI
 /// Some views provided by an ``AccountService`` to the ``AccountSetup`` views support different presentation styles.
 /// In some situations, views might be able to present themselves such that login or signup operations are favored.
 /// For example, an `AccountSetup` view that is displayed in the onboarding flow, might favor a presentation that highlights signup functionality.
-public enum PreferredSetupStyle { // TODO: add docs for the modifier or env key?
+///
+/// Use the ``SwiftUICore/View/preferredAccountSetupStyle(_:)`` to set the preferred account setup style.
+public enum PreferredSetupStyle {
     /// Let the view automatically decide on how to present itself.
     ///
     /// For example, if login is not supported, the view might automatically choose to show the signup variant of the view.
@@ -32,7 +34,7 @@ extension EnvironmentValues {
     }
 
     /// The preferred style of presenting account setup views.
-    public var preferredSetupStyle: PreferredSetupStyle { // TODO: just make it an modifier
+    var preferredSetupStyle: PreferredSetupStyle {
         get {
             self[PreferredSetupStyleKey.self]
         }
@@ -44,3 +46,12 @@ extension EnvironmentValues {
 
 
 extension PreferredSetupStyle: Sendable, Hashable {}
+
+
+extension View {
+    /// Set the preferred style of presenting account setup views for the view hierarchy.
+    /// - Parameter setupStyle: The preferred account setup style.
+    public func preferredAccountSetupStyle(_ setupStyle: PreferredSetupStyle) -> some View {
+        environment(\.preferredSetupStyle, setupStyle)
+    }
+}

@@ -40,6 +40,8 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 }
 
 
+// TODO: instead, just provide a custom display view?
+// TODO: provide a custom toggle view for data entry!
 #if compiler(<6)
 extension Swift.Bool: Foundation.CustomLocalizedStringResourceConvertible {}
 #else

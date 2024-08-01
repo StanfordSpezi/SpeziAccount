@@ -131,16 +131,17 @@ A ``AccountKey/DataDisplay`` view is automatically provided if:
 * The `Value` is of type `String`.
 * The `Value` conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible),
     providing a localized string-representation.
-
-// TODO: add other CustomStringConvertible things (also Bool, whatever)
+* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
 
 A ``AccountKey/DataEntry`` view is automatically provide if:
+* The `Value` is of type `String`.
+    A simple string entry will appear. You have to implement your own view if you have special formatting requirements.
+* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
+    A simple number entry will appear. You have to implement your own view if you have special formatting requirements.
 * The `Value` conforms to the ``PickerValue`` protocols. This is provides a Picker UI for enum types.
     `PickerValue` is shorthand to conform to the [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable),
     [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
-    and [`Hashable`](https://developer.apple.com/documentation/swift/hashable) protocols. 
-
-TODO: support automatic string entry!
+    and [`Hashable`](https://developer.apple.com/documentation/swift/hashable) protocols.
 
 ### Input Validation
 

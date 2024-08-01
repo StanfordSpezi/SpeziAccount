@@ -46,12 +46,6 @@ private struct RequiredValidationModifier<Key: AccountKey>: ViewModifier {
             }
         }
             .receiveValidation(in: $validation)
-            .onChange(of: innerValidation, initial: true) {
-                print("InnerValidation: \(innerValidation)")
-            }
-            .onChange(of: validation, initial: true) {
-                print("Validation: \(validation)")
-            }
     }
 }
 

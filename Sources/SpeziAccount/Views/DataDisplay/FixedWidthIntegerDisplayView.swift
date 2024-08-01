@@ -11,7 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
-public struct BinaryIntegerDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: BinaryInteger {
+public struct FixedWidthIntegerDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: FixedWidthInteger {
     private let value: Key.Value
 
     public var body: some View {
@@ -26,16 +26,16 @@ public struct BinaryIntegerDisplayView<Key: AccountKey>: DataDisplayView where K
 }
 
 
-extension AccountKey where Value: BinaryInteger {
-    /// Default DataDisplay for `BinaryInteger`-based values.
-    public typealias DataDisplay = BinaryIntegerDisplayView<Self>
+extension AccountKey where Value: FixedWidthInteger {
+    /// Default DataDisplay for `FixedWidthInteger`-based values.
+    public typealias DataDisplay = FixedWidthIntegerDisplayView<Self>
 }
 
 
 #if DEBUG
 #Preview {
     List {
-        BinaryIntegerDisplayView<MockNumericKey>(3)
+        FixedWidthIntegerDisplayView<MockNumericKey>(3)
     }
 }
 #endif

@@ -38,10 +38,32 @@ struct AccountSetupComponent<V: View> {
 /// ``AccountSetup`` view as entry points to setting up an account with your `AccountService`.
 /// For example, you might provide a SwiftUI Button view that is used to start the signup flow with a Single-Sign-On Provider your `AccountService` supports.
 ///
-/// - Note: In the case that your view's initializer is isolated to `@MainActor` and your `AccountService` doesn't have this isolation guarantee, wrap the view into a new, empty view
-///   that, therefore, provides an non-isolated initializer.
+/// - Note: In the case that your view's initializer is isolated to `@MainActor` and your `AccountService` doesn't have this isolation guarantee, wrap the view into a new view without any state or
+///   initializer arguments, which, therefore, provides an non-isolated initializer.
+///
+/// The `AccountService` implementation below provides two identity providers that both customize the section they are placed in.
+///
+/// ```swift
+/// final class MyAccountService: AccountService {
+///     @IdentityProvider(section: .primary) var myLoginView = MyLoginView()
+///     @IdentityProvider(section: .singleSignOn) var signInWithApple = MySignInWithAppleButton()
+/// }
+/// ```
+///
+/// You can use the [`Environment`](https://developer.apple.com/documentation/swiftui/environment/init(_:)-evj6) property wrapper to access your account service
+/// in your identity provider views.
+///
+/// ```swift
+/// struct MyLoginView: View {
+///     @Environment(MyAccountService.self) var accountService
+///
+///     var body: some View {
+///         // your view implementation ...
+///     }
+/// }
+/// ```
 @propertyWrapper
-public struct IdentityProvider<V: View> { // TODO: code example. + configuration example?
+public struct IdentityProvider<V: View> {
     private let viewClosure: @Sendable @MainActor () -> V
     private let configuration: IdentityProviderConfiguration
 
