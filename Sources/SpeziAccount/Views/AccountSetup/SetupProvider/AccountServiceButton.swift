@@ -36,13 +36,13 @@ public struct AccountServiceButton<Label: View>: View {
         self.init(titleKey, systemImage: systemImage, state: .constant(.idle), action: action)
     }
 
-    public init(
+    public init( // swiftlint:disable:this function_default_parameter_at_end
         _ titleKey: LocalizedStringKey,
         systemImage: String = "person.crop.square",
         state: Binding<ViewState>,
         action: @escaping () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
-        self.init(action: action, state: state) {
+        self.init(state: state, action: action) {
             SwiftUI.Label(titleKey, systemImage: systemImage)
         }
     }
@@ -61,7 +61,7 @@ public struct AccountServiceButton<Label: View>: View {
         state: Binding<ViewState>,
         action: @escaping () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
-        self.init(action: action, state: state) {
+        self.init(state: state, action: action) {
             SwiftUI.Label(titleKey, image: image)
         }
     }
@@ -70,12 +70,12 @@ public struct AccountServiceButton<Label: View>: View {
         action: @escaping () async -> Void,
         @ViewBuilder label: () -> Label
     ) {
-        self.init(action: action, state: .constant(.idle), label: label)
+        self.init(state: .constant(.idle), action: action, label: label)
     }
 
     public init(
-        action: @escaping () async throws -> Void,
         state: Binding<ViewState>,
+        action: @escaping () async throws -> Void,
         @ViewBuilder label: () -> Label
     ) {
         self.action = action
