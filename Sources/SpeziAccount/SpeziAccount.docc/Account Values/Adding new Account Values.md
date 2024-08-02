@@ -129,13 +129,15 @@ This section briefly highlights the conditions under which SpeziAccount can prov
 
 A ``AccountKey/DataDisplay`` view is automatically provided if:
 * The `Value` is of type `String`.
+* The `Value` is of type `Bool`.
+* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
 * The `Value` conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible),
     providing a localized string-representation.
-* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
 
 A ``AccountKey/DataEntry`` view is automatically provide if:
 * The `Value` is of type `String`.
     A simple string entry will appear. You have to implement your own view if you have special formatting requirements.
+* The `Value` is of type `Bool`.
 * The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
     A simple number entry will appear. You have to implement your own view if you have special formatting requirements.
 * The `Value` conforms to the ``PickerValue`` protocols. This is provides a Picker UI for enum types.

@@ -40,23 +40,6 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 }
 
 
-// TODO: instead, just provide a custom display view?
-// TODO: provide a custom toggle view for data entry!
-#if compiler(<6)
-extension Swift.Bool: Foundation.CustomLocalizedStringResourceConvertible {}
-#else
-extension Bool: @retroactive CustomLocalizedStringResourceConvertible {}
-#endif
-
-
-extension Bool {
-    /// Localizes the bool value to "Yes" and "No".
-    public var localizedStringResource: LocalizedStringResource {
-        .init(self ? "YES" : "NO", bundle: .atURL(from: .module))
-    }
-}
-
-
 #if DEBUG
 #Preview {
     Form {

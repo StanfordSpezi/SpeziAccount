@@ -24,6 +24,7 @@ public struct StringDataEntry<Key: AccountKey>: DataEntryView where Key.Value ==
         _value = value
     }
 
+    @MainActor
     fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<String>) {
         self.init(value)
     }

@@ -58,7 +58,7 @@ struct SignupSetupView<Credential: Sendable>: View {
     @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
     @State var presentingSignup = false
 
-    SignupSetupView(style: $style, login: { _ in }, presentingSignup: $presentingSignup)
+    return SignupSetupView(style: $style, login: { _ in }, presentingSignup: $presentingSignup)
         .previewWith {
             AccountConfiguration(service: MockAccountService())
         }
@@ -68,7 +68,7 @@ struct SignupSetupView<Credential: Sendable>: View {
     @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
     @State var presentingSignup = false
 
-    SignupSetupView(style: $style, login: nil, presentingSignup: $presentingSignup)
+    return SignupSetupView(style: $style, login: nil, presentingSignup: $presentingSignup)
         .previewWith {
             AccountConfiguration(service: MockAccountService())
         }
