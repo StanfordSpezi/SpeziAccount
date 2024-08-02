@@ -25,6 +25,11 @@ public struct BoolEntryView<Key: AccountKey>: DataEntryView where Key.Value == B
     public init(_ value: Binding<Key.Value>) {
         self._value = value
     }
+
+    @MainActor
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
+        self.init(value)
+    }
 }
 
 

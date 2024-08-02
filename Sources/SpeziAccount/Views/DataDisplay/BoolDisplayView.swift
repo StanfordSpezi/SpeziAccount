@@ -53,6 +53,11 @@ public struct BoolDisplayView<Key: AccountKey>: DataDisplayView where Key.Value 
         self.value = value
     }
 
+    @MainActor
+    public init(label: Label = .onOff, _ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
+        self.init(label: label, value)
+    }
+
     public init(_ value: Key.Value) {
         self.init(label: .onOff, value)
     }

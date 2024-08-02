@@ -46,6 +46,11 @@ public struct FixedWidthIntegerDataEntry<Key: AccountKey>: DataEntryView where K
         self._value = value
         self._text = State(wrappedValue: value.wrappedValue.description)
     }
+
+    @MainActor
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
+        self.init(value)
+    }
 }
 
 

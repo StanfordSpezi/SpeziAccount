@@ -25,7 +25,7 @@ public struct StringDataEntry<Key: AccountKey>: DataEntryView where Key.Value ==
     }
 
     @MainActor
-    fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<String>) {
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
         self.init(value)
     }
 }
@@ -41,7 +41,7 @@ extension AccountKey where Value == String {
 #Preview {
     @State var value = "Hello World"
     return List {
-        StringDataEntry(for: \.userId, $value)
+        StringDataEntry(\.userId, $value)
             .validate(input: value, rules: .nonEmpty)
     }
 }

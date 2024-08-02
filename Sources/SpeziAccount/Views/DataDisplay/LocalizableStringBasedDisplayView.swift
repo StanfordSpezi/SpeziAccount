@@ -28,7 +28,7 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
     }
 
     @MainActor
-    fileprivate init(for keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
         self.init(value)
     }
 }
@@ -43,7 +43,7 @@ extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
 #if DEBUG
 #Preview {
     Form {
-        LocalizableStringBasedDisplayView(for: \.genderIdentity, .preferNotToState)
+        LocalizableStringBasedDisplayView(\.genderIdentity, .preferNotToState)
     }
 }
 #endif

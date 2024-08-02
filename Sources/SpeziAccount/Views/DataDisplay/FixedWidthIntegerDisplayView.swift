@@ -23,6 +23,11 @@ public struct FixedWidthIntegerDisplayView<Key: AccountKey>: DataDisplayView whe
     public init(_ value: Key.Value) {
         self.value = value
     }
+
+    @MainActor
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
+        self.init(value)
+    }
 }
 
 
