@@ -290,6 +290,9 @@
     "Already got an Account?" : {
 
     },
+    "Cancel" : {
+
+    },
     "CANCEL" : {
       "localizations" : {
         "de" : {
@@ -575,6 +578,9 @@
           }
         }
       }
+    },
+    "Continue" : {
+
     },
     "Default Account Service Configuration Environment Key" : {
       "comment" : "Internal use only, no need to translate.",
@@ -1208,6 +1214,9 @@
           }
         }
       }
+    },
+    "Security Alert" : {
+
     },
     "SIGN_IN_AND_SECURITY" : {
       "localizations" : {

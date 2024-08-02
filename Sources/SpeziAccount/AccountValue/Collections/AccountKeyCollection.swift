@@ -31,6 +31,11 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
         description
     }
 
+    init(key: Key.Type, description: String) {
+        self.key = key
+        self.description = description
+    }
+
     init(_ keyPath: KeyPath<AccountKeys, Key.Type>) {
         self.key = Key.self
         self.description = keyPath.shortDescription
@@ -50,12 +55,19 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 /// - ``AccountKeyCollectionBuilder``
 /// - ``AccountKeyWithDescription``
 public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
-    private let elements: [any AccountKeyWithDescription]
+    private var elements: [any AccountKeyWithDescription]
 
+    public var _keys: [any AccountKey.Type] { // swiftlint:disable:this identifier_name
+        elements.map { $0.key }
+    }
 
     /// Initialize a empty collection.
     public init() {
         self.elements = []
+    }
+
+    init(_ elements: [any AccountKeyWithDescription]) {
+        self.elements = elements
     }
 
     /// Initialize a new collection with elements.
@@ -73,6 +85,19 @@ public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
 
     public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
         elements.contains(where: { $0.key == key })
+    }
+
+    public mutating func removeAll(_ keys: [any AccountKey.Type]) {
+        let contained = Set(keys.map { ObjectIdentifier($0) })
+        elements.removeAll { key in
+            contained.contains(ObjectIdentifier(key.key))
+        }
+    }
+
+
+    @_disfavoredOverload
+    public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
+        removeAll(keys._keys)
     }
 }
 

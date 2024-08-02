@@ -23,6 +23,11 @@ public struct AccountValueConfiguration {
 
     private var configuration: OrderedDictionary<ObjectIdentifier, any AccountKeyConfiguration>
 
+    /// The collection of keys stored in the configuration.
+    public var keys: AccountKeyCollection {
+        AccountKeyCollection(configuration.values.map { $0.keyWithDescription })
+    }
+
 
     init(_ configuration: [ConfiguredAccountKey]) {
         self.configuration = configuration

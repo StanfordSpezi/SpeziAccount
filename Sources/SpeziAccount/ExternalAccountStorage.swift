@@ -105,12 +105,6 @@ public final class ExternalAccountStorage { // TODO: docs example + topics! let 
             return AccountDetails()
         }
         
-        // TODO: previously we calculcated the keys we were required to source from external source like below:
-        /*
-         let unsupportedKeys = accountService.configuration
-         .unsupportedAccountKeys(basedOn: configuration)
-         .map { $0.key }
-         */
         guard let storageProvider else {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
@@ -121,6 +115,16 @@ public final class ExternalAccountStorage { // TODO: docs example + topics! let 
         }
 
         return details
+    }
+
+    /// Retrieve externally stored account details.
+    ///
+    /// - Parameters:
+    ///   - accountId: The account id for which account details should be retrieved from the external storage.
+    ///   - keys: The list of keys that are known to be stored externally.
+    @_disfavoredOverload
+    public func retrieveExternalStorage<Keys: AcceptingAccountKeyVisitor>(for accountId: String, _ keys: Keys) async throws -> AccountDetails {
+        try await retrieveExternalStorage(for: accountId, keys._keys)
     }
 
 

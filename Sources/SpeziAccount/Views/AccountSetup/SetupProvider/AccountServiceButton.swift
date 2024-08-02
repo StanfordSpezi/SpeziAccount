@@ -40,7 +40,7 @@ public struct AccountServiceButton<Label: View>: View {
         _ titleKey: LocalizedStringKey,
         systemImage: String = "person.crop.square",
         state: Binding<ViewState>,
-        action: @escaping () async -> Void
+        action: @escaping () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
             SwiftUI.Label(titleKey, systemImage: systemImage)
@@ -59,7 +59,7 @@ public struct AccountServiceButton<Label: View>: View {
         _ titleKey: LocalizedStringKey,
         image: ImageResource,
         state: Binding<ViewState>,
-        action: @escaping () async -> Void
+        action: @escaping () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
             SwiftUI.Label(titleKey, image: image)

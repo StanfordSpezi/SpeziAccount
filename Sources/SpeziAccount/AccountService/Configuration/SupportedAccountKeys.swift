@@ -68,7 +68,7 @@ extension AccountServiceConfiguration {
     /// - Note: Access the global configuration using ``Account/configuration``.
     /// - Parameter configuration: The user-supplied account value configuration.
     /// - Returns: Returns array of ``AccountKeyConfiguration``.
-    public func unsupportedAccountKeys(basedOn configuration: AccountValueConfiguration) -> [any AccountKeyConfiguration] {
+    func unsupportedAccountKeys(basedOn configuration: AccountValueConfiguration) -> [any AccountKeyConfiguration] {
         let supportedValues = supportedAccountKeys
 
         return configuration

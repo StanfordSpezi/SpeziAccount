@@ -11,10 +11,6 @@ import Spezi
 import SwiftUI
 
 
-// TODO: can we somehow enforce that the account service reports the deletingAccount event?
-// TODO: show/hide password button from QDG
-
-
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
 /// The `Account` object is responsible to manage the state of the currently logged in user.

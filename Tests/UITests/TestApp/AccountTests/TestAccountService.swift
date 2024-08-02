@@ -144,9 +144,7 @@ final class TestAccountService: AccountService { // TODO: just use the MockAccou
         registeredUser.genderIdentity = signupDetails.genderIdentity
         registeredUser.dateOfBirth = signupDetails.dateOfBirth
 
-        // TODO: make that simpler to do!
-        var externallyStored = AccountDetails()
-        externallyStored.add(contentsOf: signupDetails)
+        var externallyStored = signupDetails
         externallyStored.removeAll(UserStorage.supportedKeys)
 
         if !externallyStored.isEmpty {

@@ -305,8 +305,7 @@ extension AccountDetails {
     ///     You can use types like the ``AccountKeyCollection`` or a simple `[any AccountKey.Type]` array.
     @_disfavoredOverload
     public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
-        var visitor = RemoveVisitor(self)
-        storage = keys.acceptAll(&visitor)
+        removeAll(keys._keys)
     }
 }
 

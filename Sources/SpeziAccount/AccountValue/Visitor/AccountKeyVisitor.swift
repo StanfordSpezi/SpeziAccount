@@ -9,6 +9,9 @@
 
 /// A collection type that is capable of accepting an ``AccountKeyVisitor``.
 public protocol AcceptingAccountKeyVisitor {
+    /// Type erased array of keys.
+    var _keys: [any AccountKey.Type] { get }  // swiftlint:disable:this identifier_name
+
     /// Accepts an ``AccountKeyVisitor`` for all elements of the collection.
     /// - Parameter visitor: The visitor to accept.
     /// - Returns: The ``AccountKeyVisitor/Final`` result or `Void`.
@@ -97,4 +100,8 @@ extension AcceptingAccountKeyVisitor where Self: Collection, Element == any Acco
 }
 
 
-extension Array: AcceptingAccountKeyVisitor where Element == any AccountKey.Type {}
+extension Array: AcceptingAccountKeyVisitor where Element == any AccountKey.Type {
+    public var _keys: [any AccountKey.Type] { // swiftlint:disable:this identifier_name
+        self
+    }
+}
