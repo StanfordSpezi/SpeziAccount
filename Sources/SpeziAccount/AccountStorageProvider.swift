@@ -35,7 +35,11 @@ public protocol AccountStorageProvider: Module {
     /// Load associated account data.
     ///
     /// This method is called to load all ``AccountDetails`` that are managed by this `Module`.
-    /// This method should retrieve the details from a local cache. If there is nothing found in the local cache and a network request has to be made,
+    /// This method should retrieve the details from a local cache.
+    ///
+    /// - Note: You can use the ``AccountDetailsCache`` module for a local cache stored on disk.
+    ///
+    /// If there is nothing found in the local cache and a network request has to be made,
     /// return `nil` and update the details later on by calling ``ExternalAccountStorage/notifyAboutUpdatedDetails(for:_:)``.
     ///
     /// - Important: This method call must return immediately. Use `await` suspension only be for synchronization.
