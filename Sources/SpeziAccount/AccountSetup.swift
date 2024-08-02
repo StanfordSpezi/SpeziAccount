@@ -86,7 +86,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
                     Spacer()
 
-                    if let details = account.details {
+                    if let details = account.details, !details.isAnonymous {
                         switch setupState {
                         case let .requiringAdditionalInfo(keys):
                             followUpInformationSheet(details, requiredKeys: keys)

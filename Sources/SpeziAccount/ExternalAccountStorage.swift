@@ -15,7 +15,7 @@ import Spezi
 /// Some ``AccountService`` implementations might not support storing arbitrary ``AccountDetails``. Therefore, it is required to store these additional account details using an
 /// external ``AccountStorageProvider``.
 /// This module is used to interact with an external storage provider.
-public final class ExternalAccountStorage { // TODO: docs example + topics!
+public final class ExternalAccountStorage { // TODO: docs example + topics! let them do the check which account keys are not supported?
     /// Capture details that are externally stored, associated with their account id.
     public struct ExternallyStoredDetails: Sendable {
         /// The account id the storage details are associated with.
