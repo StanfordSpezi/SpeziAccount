@@ -22,11 +22,11 @@ extension XCUIApplication {
             buttons["Add Date of Birth"].tap()
         }
 
-        XCTAssertTrue(datePickers.firstMatch.waitForExistence(timeout: 2.0))
+        XCTAssertTrue(datePickers.firstMatch.waitForExistence(timeout: 2.0), "Failed to find date of birth picker")
         datePickers.firstMatch.tap()
 
         // navigate to previous month and select the first date
-        XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0), "Couldn't find 'Previous Month' button")
         datePickers.buttons["Previous Month"].tap()
 
         usleep(500_000)

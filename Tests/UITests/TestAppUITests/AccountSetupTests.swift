@@ -116,7 +116,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.buttons["OpenID Connect"].exists)
         app.buttons["OpenID Connect"].tap()
 
-        return // TODO: we currently don't do anything with the button (should we?)
+        return; // TODO: we currently don't do anything with the button (should we?)
 
         XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 1.0))
 

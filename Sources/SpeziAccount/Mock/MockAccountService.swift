@@ -11,7 +11,7 @@ import Spezi
 import SwiftUI
 
 
-struct MockUserIdPasswordEmbeddedView: View {
+private struct MockUserIdPasswordEmbeddedView: View {
     @Environment(MockAccountService.self)
     private var service
 
@@ -32,7 +32,7 @@ struct MockUserIdPasswordEmbeddedView: View {
 }
 
 
-struct CustomServiceButton: View {
+private struct CustomServiceButton: View {
     private let cardinalRed = Color(red: 140 / 255.0, green: 21 / 255.0, blue: 21 / 255.0)
     private let cardinalRedDark = Color(red: 130 / 255.0, green: 0, blue: 0)
 
@@ -48,7 +48,7 @@ struct CustomServiceButton: View {
 }
 
 
-struct MockSignInWithAppleButton: View { // TODO: rename, redo (actually test that in the simulator?)
+private struct MockSignInWithAppleButton: View {
     @Environment(\.colorScheme)
     private var colorScheme
 

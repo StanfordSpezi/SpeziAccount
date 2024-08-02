@@ -78,7 +78,6 @@ public struct DateOfBirthPicker: View {
                                 #endif
                             )
                     }
-                        .buttonStyle(.plain)
                 }
             }
 

@@ -96,12 +96,46 @@ public macro AccountKey<Value: StringProtocol, DataDisplay: DataDisplayView, Dat
 /// Create a new `AccountKey`.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
+/// This overload provides a default ``InitialValue/default(_:)`` for `Bool` values.
+///
+/// ```swift
+/// extension AccountDetails {
+///     @AccountKey(name: "Public Profile", as: Bool.self)
+///     var isPublicProfile: Bool?
+/// }
+/// ```
+///
+/// - Important: Refer to the <doc:Adding-new-Account-Values> article for a detailed guide on how to declare a ``KeyEntry(_:)`` and
+///     customizing the user interface.
+///
+/// - Parameters:
+///   - id: A stable, string-based identifier that is used by storage providers.
+///   - name: The user-visible, localized name of the account key.
+///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - value: The value type. This type must be equal to the type annotation of the property.
+///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
+///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
+@attached(accessor, names: named(get), named(set))
+@attached(peer, names: prefixed(__Key_))
+public macro AccountKey<DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
+    id: String? = nil,
+    name: LocalizedStringResource,
+    category: AccountKeyCategory = .other,
+    as value: Bool.Type,
+    displayView: DataDisplay.Type = _EmptyDataView.self,
+    entryView: DataEntry.Type = _EmptyDataView.self
+) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
+
+
+/// Create a new `AccountKey`.
+///
+/// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 /// This overload provides a default ``InitialValue/empty(_:)`` for `Numeric` values.
 ///
 /// ```swift
 /// extension AccountDetails {
-///     @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
-///     var biography: String?
+///     @AccountKey(name: "Steps Goal", as: Int.self)
+///     var stepsGoal: Int?
 /// }
 /// ```
 ///
@@ -134,8 +168,8 @@ public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView,
 ///
 /// ```swift
 /// extension AccountDetails {
-///     @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
-///     var biography: String?
+///     @AccountKey(name: "Address", category: .personalDetails, as: [String].self)
+///     var address: [String]?
 /// }
 /// ```
 ///
@@ -152,40 +186,6 @@ public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView,
 @attached(accessor, names: named(get), named(set))
 @attached(peer, names: prefixed(__Key_))
 public macro AccountKey<Value: ExpressibleByArrayLiteral, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
-    id: String? = nil,
-    name: LocalizedStringResource,
-    category: AccountKeyCategory = .other,
-    as value: Value.Type,
-    displayView: DataDisplay.Type = _EmptyDataView.self,
-    entryView: DataEntry.Type = _EmptyDataView.self
-) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
-
-
-/// Create a new `AccountKey`.
-///
-/// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
-/// This overload provides a default ``InitialValue/empty(_:)`` for `Dictionary` values.
-///
-/// ```swift
-/// extension AccountDetails {
-///     @AccountKey(name: "Biography", category: .personalDetails, as: String.self)
-///     var biography: String?
-/// }
-/// ```
-///
-/// - Important: Refer to the <doc:Adding-new-Account-Values> article for a detailed guide on how to declare a ``KeyEntry(_:)`` and
-///     customizing the user interface.
-///
-/// - Parameters:
-///   - id: A stable, string-based identifier that is used by storage providers.
-///   - name: The user-visible, localized name of the account key.
-///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
-///   - value: The value type. This type must be equal to the type annotation of the property.
-///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
-///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
-@attached(accessor, names: named(get), named(set))
-@attached(peer, names: prefixed(__Key_))
-public macro AccountKey<Value: ExpressibleByDictionaryLiteral, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,

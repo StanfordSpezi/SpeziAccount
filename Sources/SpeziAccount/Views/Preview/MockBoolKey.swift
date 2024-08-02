@@ -16,6 +16,5 @@ struct MockBoolKey: AccountKey {
     static let name: LocalizedStringResource = "Toggle"
     static let identifier = "mockBool"
     static let category: AccountKeyCategory = .other
-    static let initialValue: InitialValue<Bool> = .default(false) // TODO: default! extension
 }
 #endif

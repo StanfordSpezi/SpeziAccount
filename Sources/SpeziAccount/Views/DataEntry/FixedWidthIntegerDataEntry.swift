@@ -28,10 +28,6 @@ public struct FixedWidthIntegerDataEntry<Key: AccountKey>: DataEntryView where K
     }
 
     public var body: some View {
-        // TODO: do a proper one that fails validation with string input!
-        TextField(value: $value, formatter: NumberFormatter()) {
-            Text(Key.name)
-        }
         VerifiableTextField(Key.name, text: $text)
             .validate(input: text, rules: validationRules)
 #if !os(macOS)

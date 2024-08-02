@@ -89,6 +89,14 @@ extension AccountKey where Value: StringProtocol {
 }
 
 
+extension AccountKey where Value == Bool {
+    /// Default initial value for `Bool` values.
+    public static var initialValue: InitialValue<Value> {
+        .default(false)
+    }
+}
+
+
 extension AccountKey where Value: AdditiveArithmetic {
     /// Default initial value for numeric values.
     public static var initialValue: InitialValue<Value> {
@@ -102,13 +110,5 @@ extension AccountKey where Value: ExpressibleByArrayLiteral {
     /// Default initial value for `Array` values.
     public static var initialValue: InitialValue<Value> {
         .empty([])
-    }
-}
-
-
-extension AccountKey where Value: ExpressibleByDictionaryLiteral {
-    /// Default initial value for `Dictionary` values.
-    public static var initialValue: InitialValue<Value> {
-        .empty([:])
     }
 }
