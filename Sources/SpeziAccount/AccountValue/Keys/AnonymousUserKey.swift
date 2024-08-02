@@ -16,7 +16,7 @@ extension AccountDetails {
     }
 
     /// Determine if the user was anonymously signed up.
-    public var isAnonymousUser: Bool { // TODO: docs any diverging behavior!
+    public var isAnonymous: Bool {
         get {
             self[IsAnonymousUser.self] ?? false
         }

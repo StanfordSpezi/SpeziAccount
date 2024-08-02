@@ -66,7 +66,7 @@ extension ValidationRule {
 }
 
 
-extension AccountKey where Value: FixedWidthInteger { // TODO: update docs listing all the defaults!
+extension AccountKey where Value: FixedWidthInteger {
     /// Default DataEntry for `FixedWidthInteger`-based values.
     public typealias DataEntry = FixedWidthIntegerDataEntry<Self>
 }
