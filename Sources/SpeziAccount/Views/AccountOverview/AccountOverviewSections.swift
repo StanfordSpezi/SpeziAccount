@@ -162,7 +162,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     }
 
     @ViewBuilder private var defaultSections: some View {
-        let displayName = model.displaysNameDetails()
+        let displayName = model.displaysNameDetails(accountDetails)
         let displaySecurity = model.displaysSignInSecurityDetails(accountDetails)
 
         if displayName || displaySecurity {
@@ -171,7 +171,11 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     NavigationLink {
                         NameOverview(model: model, details: accountDetails)
                     } label: {
-                        model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
+                        Label {
+                            model.accountIdentifierLabel(configuration: account.configuration, accountDetails)
+                        } icon: {
+                            DetailsSectionIcon()
+                        }
                     }
                 }
 
@@ -179,7 +183,11 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     NavigationLink {
                         SecurityOverview(model: model, details: accountDetails)
                     } label: {
-                        Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                        Label {
+                            Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                        } icon: {
+                            SecuritySectionIcon()
+                        }
                     }
                 }
             }
@@ -287,7 +295,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 #endif

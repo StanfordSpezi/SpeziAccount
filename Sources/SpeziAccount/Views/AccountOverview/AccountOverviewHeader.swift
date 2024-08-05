@@ -34,9 +34,11 @@ struct AccountOverviewHeader: View {
             }
                 .accessibilityHidden(true)
 
-            Text(model.accountHeadline)
-                .font(.title2)
-                .fontWeight(.semibold)
+            if let accountHeadline = model.accountHeadline {
+                Text(accountHeadline)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+            }
 
             if let accountSubheadline = model.accountSubheadline {
                 Text(accountSubheadline)

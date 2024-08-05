@@ -38,7 +38,18 @@ public struct SignupForm<Header: View>: View {
     @MainActor private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
 
-        // patch the user configured account values with account values additionally required by
+        // do not show fields that are already present on an anonymous account
+        if let details = account.details, details.isAnonymous {
+            result = result
+                .mapValues { keys in
+                    keys.filter { !details.contains($0) }
+                }
+                .filter { _, keys in
+                    !keys.isEmpty
+                }
+        }
+
+        // patch the user configured account values with account values additionally required by the account service
         for entry in account.accountService.configuration.requiredAccountKeys {
             let key = entry.key
             if !result[key.category, default: []].contains(where: { $0 == key }) {
@@ -126,7 +137,16 @@ public struct SignupForm<Header: View>: View {
         isFocused = false
 
         let details = signupDetailsBuilder.build()
-        try details.validateAgainstSignupRequirements(account.configuration)
+
+        if let anonymousDetails = account.details,
+           anonymousDetails.isAnonymous {
+            // anonymous accounts will be merged, therefore, details need to be combined fore verifying requirements
+            var combined = details
+            combined.add(contentsOf: anonymousDetails)
+            try combined.validateAgainstSignupRequirements(account.configuration)
+        } else {
+            try details.validateAgainstSignupRequirements(account.configuration)
+        }
 
         try await signupClosure(details)
 
@@ -143,7 +163,7 @@ public struct SignupForm<Header: View>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 #endif

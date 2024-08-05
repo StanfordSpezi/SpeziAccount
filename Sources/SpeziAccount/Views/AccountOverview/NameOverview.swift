@@ -32,11 +32,15 @@ struct NameOverview: View {
                         if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                             view
                         } else {
+                            let name = wrapper.accountKey == AccountKeys.userId
+                                ? accountDetails.userIdType.localizedStringResource
+                                : wrapper.accountKey.name
+
                             HStack {
-                                Text(wrapper.accountKey.name)
+                                Text(name)
                                     .accessibilityHidden(true)
                                 Spacer()
-                                Text("VALUE_ADD \(wrapper.accountKey.name)", bundle: .module)
+                                Text("VALUE_ADD \(name)", bundle: .module)
                                     .foregroundColor(.secondary)
                             }
                                 .accessibilityElement(children: .combine)
@@ -50,7 +54,7 @@ struct NameOverview: View {
                 }
             }
         }
-            .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
+            .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, accountDetails))
 #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
@@ -78,7 +82,7 @@ struct NameOverview: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
@@ -92,7 +96,7 @@ struct NameOverview: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: detailsWithoutName)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: detailsWithoutName)
         }
 }
 #endif

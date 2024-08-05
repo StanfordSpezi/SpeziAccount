@@ -80,7 +80,7 @@ class AccountOverviewFormViewModel {
 
         // We want to establish the following order:
         // - account keys where the user has supplied a value
-        // - account keys the user just added a filed for input in the current edit session
+        // - account keys the user just added input in the current edit session
         // - account keys for which the user doesn't have a value (to display a add button at the bottom of a section)
         return results.mapValues { value in
             // sort is stable: see https://github.com/apple/swift-evolution/blob/main/proposals/0372-document-sorting-as-stable.md
@@ -100,7 +100,9 @@ class AccountOverviewFormViewModel {
                 category == .credentials || category == .name
             }
 
-        if result[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true {
+        if accountDetails.isAnonymous {
+            result.removeValue(forKey: .credentials) // do not allow to add credentials
+        } else if result[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true {
             result[.credentials] = [AccountKeys.userId] // ensure userId is the only credential we display
         }
 
@@ -209,10 +211,14 @@ class AccountOverviewFormViewModel {
         modifiedDetailsBuilder.clear()
     }
 
-    func accountIdentifierLabel(configuration: AccountValueConfiguration, userIdType: UserIdType) -> Text {
-        let userId = Text(userIdType.localizedStringResource)
+    func accountIdentifierLabel(configuration: AccountValueConfiguration, _ details: AccountDetails) -> Text {
+        let userId = Text(details.userIdType.localizedStringResource)
 
         if configuration.name != nil {
+            if details.isAnonymous {
+                return Text(AccountKeys.name.name)
+            }
+
             let separator = ", "
             return Text(AccountKeys.name.name)
                 + Text(separator)
@@ -223,12 +229,14 @@ class AccountOverviewFormViewModel {
     }
 
     func displaysSignInSecurityDetails(_ details: AccountDetails) -> Bool {
-        accountKeys(by: .credentials, using: details)
+        // We currently do not display the security section for anonymous accounts to avoid them setting a password without supplying an email
+        !details.isAnonymous
+            && accountKeys(by: .credentials, using: details)
             .contains(where: { !$0.isHiddenCredential })
     }
 
-    func displaysNameDetails() -> Bool {
-        categorizedAccountKeys[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true
+    func displaysNameDetails(_ details: AccountDetails) -> Bool {
+        (categorizedAccountKeys[.credentials]?.contains(where: { $0 == AccountKeys.userId }) == true && !details.isAnonymous)
             || categorizedAccountKeys[.name]?.isEmpty != true
     }
 }

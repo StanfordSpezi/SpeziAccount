@@ -8,7 +8,6 @@
 
 
 enum Defaults {
-    static let username = "lelandstanford"
     static let email = "lelandstanford@stanford.edu"
     static let password = "StanfordRocks123!"
 

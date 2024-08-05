@@ -228,35 +228,35 @@ extension EnvironmentValues {
 #Preview {
     AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(configure: .all))
+            AccountConfiguration(service: InMemoryAccountService(configure: .all))
         }
 }
 
 #Preview {
     AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(configure: .userIdPassword))
+            AccountConfiguration(service: InMemoryAccountService(configure: .userIdPassword))
         }
 }
 
 #Preview {
     AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(configure: [.userIdPassword, .signInWithApple]))
+            AccountConfiguration(service: InMemoryAccountService(configure: [.userIdPassword, .signInWithApple]))
         }
 }
 
 #Preview {
     AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(configure: .customIdentityProvider))
+            AccountConfiguration(service: InMemoryAccountService(configure: .customIdentityProvider))
         }
 }
 
 #Preview {
     AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(configure: .signInWithApple))
+            AccountConfiguration(service: InMemoryAccountService(configure: .signInWithApple))
         }
 }
 
@@ -267,7 +267,7 @@ extension EnvironmentValues {
 
     return AccountSetup()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
@@ -278,7 +278,7 @@ extension EnvironmentValues {
 
     return AccountSetup(state: .loadingExistingAccount)
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
@@ -298,7 +298,7 @@ extension EnvironmentValues {
             .buttonStyle(.borderedProminent)
         })
             .previewWith {
-                AccountConfiguration(service: MockAccountService(), activeDetails: details)
+                AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
             }
     }
 }

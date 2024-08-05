@@ -104,7 +104,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     /// A setup view that supports login, signup and password reset.
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
-    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    ///   - signupForm: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
     ///   - passwordReset: The view that is shown as a sheet, if the user presses the "Forgot Password" button. Pass an `EmptyView` if password reset isn't supported.
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
@@ -117,7 +117,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
 
     /// A setup view that supports signup and password reset.
     /// - Parameters:
-    ///   - signup: The view that is shown as a sheet, if the user presses the signup button.
+    ///   - signupForm: The view that is shown as a sheet, if the user presses the signup button.
     ///   - passwordReset: The view that is shown as a sheet, if the user presses the "Forgot Password" button. Pass an `EmptyView` if password reset isn't supported.
     public init(
         @ViewBuilder signup signupForm: () -> Signup,
@@ -130,7 +130,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     /// A setup view that supports login and signup.
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
-    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    ///   - signupForm: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() }
@@ -143,7 +143,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
 
     /// A setup view that supports signup.
     /// - Parameters:
-    ///   - signup: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
+    ///   - signupForm: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
     public init(
         @ViewBuilder signup signupForm: () -> Signup
     ) where PasswordReset == EmptyView {
@@ -157,7 +157,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
     ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
-    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
+    ///   - resetPassword: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
@@ -179,7 +179,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     /// A setup view that supports signup and password reset.
     /// - Parameters:
     ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
-    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
+    ///   - resetPassword: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         signup: @escaping (AccountDetails) async throws -> Void,
@@ -200,7 +200,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     /// A setup view that supports login and password reset.
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
-    ///   - passwordReset: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
+    ///   - resetPassword: A closure that is called if the user requests to reset their password. The default ``PasswordResetView`` is used.
     @MainActor
     public init(
         login: @escaping (UserIdPasswordCredential) async throws -> Void,
@@ -246,7 +246,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -262,7 +262,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     }
         .environment(\.preferredSetupStyle, .signup)
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -273,7 +273,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -287,7 +287,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     }
     .environment(\.preferredSetupStyle, .signup)
     .previewWith {
-        AccountConfiguration(service: MockAccountService())
+        AccountConfiguration(service: InMemoryAccountService())
     }
 }
 #endif

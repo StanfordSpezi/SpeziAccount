@@ -48,7 +48,7 @@ public struct DefaultAccountSetupHeader: View {
 #Preview {
     DefaultAccountSetupHeader()
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -58,7 +58,7 @@ public struct DefaultAccountSetupHeader: View {
 
     return DefaultAccountSetupHeader()
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 #endif

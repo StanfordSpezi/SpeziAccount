@@ -60,7 +60,7 @@ struct SignupSetupView<Credential: Sendable>: View {
 
     return SignupSetupView(style: $style, login: { _ in }, presentingSignup: $presentingSignup)
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -70,7 +70,7 @@ struct SignupSetupView<Credential: Sendable>: View {
 
     return SignupSetupView(style: $style, login: nil, presentingSignup: $presentingSignup)
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 #endif

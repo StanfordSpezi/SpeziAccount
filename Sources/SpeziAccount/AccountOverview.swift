@@ -126,7 +126,7 @@ public struct AccountOverview<AdditionalSections: View>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
@@ -135,7 +135,7 @@ public struct AccountOverview<AdditionalSections: View>: View {
         AccountOverview()
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 #endif

@@ -70,7 +70,7 @@ private let name: [any AccountKey.Type] = [
         ])
     }
     .previewWith {
-        AccountConfiguration(service: MockAccountService())
+        AccountConfiguration(service: InMemoryAccountService())
     }
 }
 #endif

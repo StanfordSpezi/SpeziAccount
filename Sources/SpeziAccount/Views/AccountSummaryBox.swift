@@ -35,7 +35,11 @@ public struct AccountSummaryBox: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(model.accountHeadline)
+                if let accountHeadline = model.accountHeadline {
+                    Text(accountHeadline)
+                } else {
+                    Text("Anonymous User", bundle: .module)
+                }
                 if let subheadline = model.accountSubheadline {
                     Text(subheadline)
                         .font(.subheadline)

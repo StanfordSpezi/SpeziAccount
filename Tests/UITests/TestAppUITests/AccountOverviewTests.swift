@@ -20,7 +20,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRequirementLevelsOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -43,7 +43,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testEditView() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -74,7 +74,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testLogout() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -95,7 +95,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testAccountRemoval() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -112,6 +112,9 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 6.0))
         app.alerts[alert].scrollViews.otherElements.buttons["Delete"].tap()
 
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
+
         XCTAssertTrue(app.staticTexts["Got notified about deletion!"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].exists)
     }
@@ -119,7 +122,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testEditDiscard() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -160,7 +163,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRemoveDiscard() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -193,7 +196,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRemoval() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -222,7 +225,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testNameOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -254,8 +257,8 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()
 
-        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
-        app.alerts["Security Alert"].buttons["Dismiss"].tap()
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
 
         XCTAssertTrue(app.staticTexts["lelandstanford@tum.de"].waitForExistence(timeout: 2.0))
 
@@ -280,7 +283,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testAddName() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true, noName: true)
+        app.launch(credentials: .createAndSignIn, noName: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -293,7 +296,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 2.0))
 
         // open user id
-        XCTAssertTrue(app.buttons["Add Name"].exists)
+        XCTAssertTrue(app.buttons["Add Name"].exists, "Name seems to be present which is unexpected")
         app.buttons["Add Name"].tap()
         XCTAssertTrue(app.navigationBars.buttons["Done"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
@@ -311,7 +314,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testSecurityOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -344,8 +347,8 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()
 
-        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
-        app.alerts["Security Alert"].buttons["Dismiss"].tap()
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
 
         XCTAssertTrue(app.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 4.0))
     }
@@ -353,7 +356,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testLicenseOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)

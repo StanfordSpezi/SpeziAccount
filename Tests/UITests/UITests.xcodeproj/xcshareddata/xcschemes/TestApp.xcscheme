@@ -60,7 +60,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "mail"
+            argument = "both"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
@@ -68,11 +68,19 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "allRequiredWithBio"
+            argument = "allRequired"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--default-credentials"
+            argument = "allRequiredWithBio"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--credentials"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "createAndSignIn"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

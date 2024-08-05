@@ -96,7 +96,7 @@ struct SingleEditView<Key: AccountKey>: View {
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 #endif

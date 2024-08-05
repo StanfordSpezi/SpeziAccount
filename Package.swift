@@ -93,7 +93,11 @@ let package = Package(
                 "SpeziAccountMacros",
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
-            ]
+            ],
+            swiftSettings: [
+                swiftConcurrency
+            ],
+            plugins: [] + swiftLintPlugin()
         )
     ]
 )

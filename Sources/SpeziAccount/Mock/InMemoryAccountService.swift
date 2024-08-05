@@ -13,7 +13,7 @@ import SwiftUI
 
 
 private struct MockUserIdPasswordEmbeddedView: View {
-    @Environment(MockAccountService.self)
+    @Environment(InMemoryAccountService.self)
     private var service
 
     var body: some View {
@@ -37,7 +37,7 @@ private struct AnonymousSignupButton: View {
     private let cardinalRed = Color(red: 140 / 255.0, green: 21 / 255.0, blue: 21 / 255.0)
     private let cardinalRedDark = Color(red: 130 / 255.0, green: 0, blue: 0)
 
-    @Environment(MockAccountService.self)
+    @Environment(InMemoryAccountService.self)
     private var service
     @Environment(\.colorScheme)
     private var colorScheme
@@ -72,16 +72,16 @@ private struct MockSignInWithAppleButton: View {
 
 
 private struct MockSecurityAlert: ViewModifier {
-    @Environment(MockAccountService.self)
+    @Environment(InMemoryAccountService.self)
     private var service
 
     @State private var isActive = false
 
     @MainActor var isPresented: Binding<Bool> {
         Binding {
-            service.presentingSecurityAlert && isActive
+            service.state.presentingSecurityAlert && isActive
         } set: { newValue in
-            service.presentingSecurityAlert = newValue
+            service.state.presentingSecurityAlert = newValue
         }
     }
 
@@ -93,9 +93,9 @@ private struct MockSecurityAlert: ViewModifier {
             .onDisappear {
                 isActive = false
             }
-            .alert("Security Alert", isPresented: isPresented, presenting: service.securityContinuation) { continuation in
+            .alert("Security Alert", isPresented: isPresented, presenting: service.state.securityContinuation) { continuation in
                 Button("Cancel", role: .cancel) {
-                    continuation.resume(with: .failure(MockAccountService.AccountError.cancelled))
+                    continuation.resume(with: .failure(InMemoryAccountService.AccountError.cancelled))
                 }
                 Button("Continue", role: .destructive) {
                     continuation.resume()
@@ -105,9 +105,13 @@ private struct MockSecurityAlert: ViewModifier {
 }
 
 
-/// A mock `AccountService` that is useful in SwiftUI Previews.
+/// An Account Service that stores account information in memory.
+///
+/// This ``AccountService`` implements an account service that stores user data in memory.
+/// It serves as an example implementation, demonstrating a complete implementation of an `AccountService`.
+/// Further, it can be easily integrated in SwiftUI previews and UI tests.
 @MainActor
-public final class MockAccountService: AccountService {
+public final class InMemoryAccountService: AccountService {
     public struct ConfiguredIdentityProvider: OptionSet, Sendable {
         public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
         public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
@@ -121,18 +125,25 @@ public final class MockAccountService: AccountService {
         }
     }
 
+    @Observable
+    @MainActor
+    final class State {
+        var presentingSecurityAlert = false
+        var securityContinuation: CheckedContinuation<Void, Error>?
+    }
+
     fileprivate struct UserStorage {
         let accountId: UUID
-        var userId: String
-        var password: String
+        var userId: String?
+        var password: String?
         var name: PersonNameComponents?
         var genderIdentity: GenderIdentity?
         var dateOfBirth: Date?
 
         init( // swiftlint:disable:this function_default_parameter_at_end
             accountId: UUID = UUID(),
-            userId: String,
-            password: String,
+            userId: String?,
+            password: String?,
             name: PersonNameComponents? = nil,
             genderIdentity: GenderIdentity? = nil,
             dateOfBirth: Date? = nil
@@ -147,6 +158,7 @@ public final class MockAccountService: AccountService {
     }
 
     private static let supportedKeys = AccountKeyCollection {
+        \.accountId
         \.userId
         \.password
         \.name
@@ -171,10 +183,9 @@ public final class MockAccountService: AccountService {
     private var signInWithApple = MockSignInWithAppleButton()
 
     @SecurityRelatedModifier private var securityAlert = MockSecurityAlert()
-    @MainActor var presentingSecurityAlert = false
-    @MainActor var securityContinuation: CheckedContinuation<Void, Error>?
 
     public let configuration: AccountServiceConfiguration
+    let state = State()
 
     private var userIdToAccountId: [String: UUID] = [:]
     private var registeredUsers: [UUID: UserStorage] = [:]
@@ -203,10 +214,14 @@ public final class MockAccountService: AccountService {
     }
 
     public func signInAnonymously() {
+        let id = UUID()
+
         var details = AccountDetails()
-        details.accountId = UUID().uuidString
+        details.accountId = id.uuidString
         details.isAnonymous = true
         details.isNewUser = true
+
+        registeredUsers[id] = UserStorage(accountId: id, userId: nil, password: nil)
 
         account.supplyUserDetails(details)
     }
@@ -237,15 +252,38 @@ public final class MockAccountService: AccountService {
             throw AccountError.internalError
         }
 
-        let storage = UserStorage(
-            userId: signupDetails.userId,
-            password: password,
-            name: signupDetails.name,
-            genderIdentity: signupDetails.genderIdentity,
-            dateOfBirth: signupDetails.dateOfBirth
-        )
+        var storage: UserStorage
+        if let details = account.details,
+           let registered = registeredUsers[details.accountId.assumeUUID] {
+            guard details.isAnonymous else {
+                throw AccountError.internalError
+            }
 
-        userIdToAccountId[storage.userId] = storage.accountId
+            // do account linking for anonymous accounts!´
+
+            storage = registered
+            storage.userId = signupDetails.userId
+            storage.password = password
+            if let name = signupDetails.name {
+                storage.name = name
+            }
+            if let genderIdentity = signupDetails.genderIdentity {
+                storage.genderIdentity = genderIdentity
+            }
+            if let dateOfBirth = signupDetails.dateOfBirth {
+                storage.dateOfBirth = dateOfBirth
+            }
+        } else {
+            storage = UserStorage(
+                userId: signupDetails.userId,
+                password: password,
+                name: signupDetails.name,
+                genderIdentity: signupDetails.genderIdentity,
+                dateOfBirth: signupDetails.dateOfBirth
+            )
+        }
+
+        userIdToAccountId[signupDetails.userId] = storage.accountId
         registeredUsers[storage.accountId] = storage
 
         var externallyStored = signupDetails
@@ -278,17 +316,14 @@ public final class MockAccountService: AccountService {
         try await Task.sleep(for: .milliseconds(500))
 
         try await withCheckedThrowingContinuation { continuation in
-            presentingSecurityAlert = true
-            securityContinuation = continuation
+            state.presentingSecurityAlert = true
+            state.securityContinuation = continuation
         }
 
         let notifications = notifications
         try await notifications.reportEvent(.deletingAccount(details.accountId))
 
-        guard let accountId = UUID(uuidString: details.accountId) else {
-            preconditionFailure("Invalid accountId format \(details.accountId)")
-        }
-        registeredUsers.removeValue(forKey: accountId)
+        registeredUsers.removeValue(forKey: details.accountId.assumeUUID)
         userIdToAccountId.removeValue(forKey: details.userId)
 
         account.removeUserDetails()
@@ -313,8 +348,8 @@ public final class MockAccountService: AccountService {
 
         if modifications.modifiedDetails.contains(AccountKeys.userId) || modifications.modifiedDetails.contains(AccountKeys.password) {
             try await withCheckedThrowingContinuation { continuation in
-                presentingSecurityAlert = true
-                securityContinuation = continuation
+                state.presentingSecurityAlert = true
+                state.securityContinuation = continuation
             }
         }
 
@@ -335,10 +370,17 @@ public final class MockAccountService: AccountService {
     private func loadUser(_ user: UserStorage, isNew: Bool = false) async throws {
         var details = AccountDetails()
         details.accountId = user.accountId.uuidString
-        details.userId = user.userId
         details.name = user.name
         details.genderIdentity = user.genderIdentity
         details.dateOfBirth = user.dateOfBirth
+
+        if let userId = user.userId {
+            details.userId = userId
+        }
+
+        if user.password == nil {
+            details.isAnonymous = true
+        }
 
         var unsupportedKeys = account.configuration.keys
         unsupportedKeys.removeAll(Self.supportedKeys)
@@ -353,7 +395,7 @@ public final class MockAccountService: AccountService {
 }
 
 
-extension MockAccountService {
+extension InMemoryAccountService {
     public enum AccountError: LocalizedError {
         case credentialsTaken
         case wrongCredentials
@@ -394,7 +436,7 @@ extension MockAccountService {
 }
 
 
-extension MockAccountService.UserStorage {
+extension InMemoryAccountService.UserStorage {
     mutating func update(_ modifications: AccountModifications) {
         let modifiedDetails = modifications.modifiedDetails
         let removedKeys = modifications.removedAccountDetails
@@ -418,5 +460,15 @@ extension MockAccountService.UserStorage {
         if removedKeys.dateOfBirth != nil {
             self.dateOfBirth = nil
         }
+    }
+}
+
+
+extension String {
+    var assumeUUID: UUID {
+        guard let id = UUID(uuidString: self) else {
+            preconditionFailure("Invalid uuid format \(self)")
+        }
+        return id
     }
 }

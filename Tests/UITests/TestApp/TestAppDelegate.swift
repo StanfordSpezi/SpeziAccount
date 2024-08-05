@@ -53,11 +53,24 @@ class TestAppDelegate: SpeziAppDelegate {
         }
     }
 
+    var provider: InMemoryAccountService.ConfiguredIdentityProvider {
+        switch features.serviceType {
+        case .mail:
+            [.userIdPassword]
+        case .both:
+            [.userIdPassword, .customIdentityProvider]
+        case .withIdentityProvider:
+            [.userIdPassword, .signInWithApple]
+        case .empty:
+            []
+        }
+    }
+
     override var configuration: Configuration {
         Configuration(standard: TestStandard()) {
             AccountConfiguration(
-                service: TestAccountService(.emailAddress, features: features),
-                storageProvider: MockAccountStorage(),
+                service: InMemoryAccountService(.emailAddress, configure: provider),
+                storageProvider: InMemoryAccountStorageProvider(),
                 configuration: configuredValues
             )
         }

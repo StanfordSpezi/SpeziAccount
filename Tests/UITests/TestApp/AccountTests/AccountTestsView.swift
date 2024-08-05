@@ -15,15 +15,21 @@ import SwiftUI
 
 @MainActor
 struct AccountTestsView: View {
-    @Environment(\.features) var features
-    
-    @Environment(Account.self) var account: Account
-    @Environment(TestStandard.self) var standard
+    @Environment(\.features)
+    private var features
+    @Environment(InMemoryAccountService.self)
+    private var service
 
-    @State var showSetup = false
-    @State var showOverview = false
-    @State var isEditing = false
-    
+    @Environment(Account.self)
+    private var account
+    @Environment(TestStandard.self)
+    private var standard
+
+    @State private var showSetup = false
+    @State private var showOverview = false
+    @State private var isEditing = false
+    @State private var accountIdFromAnonymousUser: String?
+
     
     var body: some View {
         NavigationStack {
@@ -54,6 +60,26 @@ struct AccountTestsView: View {
                 setupSheet(closeable: false)
             }
             .verifyRequiredAccountDetails(features.verifyRequiredDetails)
+            .task {
+                var details: AccountDetails = .defaultDetails
+                if features.noName {
+                    details.remove(AccountKeys.name)
+                }
+
+                do {
+                    switch features.credentials {
+                    case .create:
+                        try await service.signUp(with: details)
+                        try await service.logout()
+                    case .createAndSignIn:
+                        try await service.signUp(with: details)
+                    case .disabled:
+                        break
+                    }
+                } catch {
+                    print("Failed to prepare default credentials: \(error)")
+                }
+            }
     }
 
     @ViewBuilder var overviewSheet: some View {
@@ -66,16 +92,38 @@ struct AccountTestsView: View {
                     Text(verbatim: "License Information")
                 }
             }
-        }
-        .toolbar {
-            toolbar(closing: $showOverview)
+                .toolbar {
+                    if !isEditing {
+                        toolbar(closing: $showOverview)
+                    }
+                }
         }
     }
 
     @ViewBuilder var header: some View {
         if let details = account.details {
             Section("Account Details") {
-                Text(details.userId)
+                ListRow("User Id") {
+                    if details.isAnonymous {
+                        Text(verbatim: "Anonymous")
+                            .onAppear {
+                                accountIdFromAnonymousUser = details.accountId
+                            }
+                    } else {
+                        Text(details.userId)
+                    }
+                }
+                if let accountIdFromAnonymousUser {
+                    ListRow("Account Id") {
+                        if details.accountId == accountIdFromAnonymousUser {
+                            Text(verbatim: "Stable")
+                                .foregroundStyle(.green)
+                        } else {
+                            Text(verbatim: "Changed")
+                                .foregroundStyle(.red)
+                        }
+                    }
+                }
             }
         }
         let standard = standard
@@ -107,20 +155,17 @@ struct AccountTestsView: View {
                 finishButton
             }
                 .toolbar {
-                    if closeable {
+                    if closeable && !isEditing {
                         toolbar(closing: $showSetup)
                     }
                 }
         }
     }
 
-    @ToolbarContentBuilder
     func toolbar(closing flag: Binding<Bool>) -> some ToolbarContent {
-        if !isEditing {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Close") {
-                    flag.wrappedValue = false
-                }
+        ToolbarItem(placement: .cancellationAction) {
+            Button("Close") {
+                flag.wrappedValue = false
             }
         }
     }
@@ -136,7 +181,7 @@ struct AccountTestsView: View {
 
     return AccountTestsView()
         .previewWith {
-            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -148,14 +193,14 @@ struct AccountTestsView: View {
 
     return AccountTestsView()
         .previewWith {
-            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
     AccountTestsView()
         .previewWith {
-            AccountConfiguration(service: TestAccountService(.emailAddress, features: Features()))
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 #endif

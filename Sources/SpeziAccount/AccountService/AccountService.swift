@@ -22,6 +22,9 @@ import Spezi
 ///     a user visible ``AccountDetails/userId`` which can be customized using the ``UserIdConfiguration``.
 ///
 /// You can learn more about creating an account service at: <doc:Creating-your-own-Account-Service>.
+///
+/// - Note: The in-memory account service ``InMemoryAccountService`` that is useful for previews and testing is also a great example
+///     on how to implement a account service.
 public protocol AccountService: Module, CustomStringConvertible, Sendable, EnvironmentAccessible {
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }

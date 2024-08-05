@@ -23,19 +23,25 @@ enum Config: String {
     case allRequiredWithBio
 }
 
+enum DefaultCredentials: String {
+    case disabled
+    case create
+    case createAndSignIn
+}
+
 
 extension XCUIApplication {
     func launch( // swiftlint:disable:this function_default_parameter_at_end
         serviceType: ServiceType = .mail,
         config: Config = .default,
-        defaultCredentials: Bool = false,
+        credentials: DefaultCredentials? = nil,
         accountRequired: Bool = false,
         verifyAccountDetails: Bool = false,
         noName: Bool = false,
         flags: String...
     ) {
         launchArguments = ["--service-type", serviceType.rawValue, "--configuration-type", config.rawValue]
-        launchArguments += (defaultCredentials ? ["--default-credentials"] : [])
+        launchArguments += credentials.map { ["--credentials", $0.rawValue] } ?? []
         launchArguments += (accountRequired ? ["--account-required-modifier"] : [])
         launchArguments += (verifyAccountDetails ? ["--verify-required-details"] : [])
         launchArguments += (noName ? ["--no-name"] : [])

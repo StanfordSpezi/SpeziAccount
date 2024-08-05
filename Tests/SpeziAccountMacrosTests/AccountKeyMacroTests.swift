@@ -8,10 +8,10 @@
 
 #if os(macOS) // macro tests can only be run on the host machine
 
+import SpeziAccountMacros
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
-import SpeziAccountMacros
 
 let testMacros: [String: any Macro.Type] = [
     "AccountKey": AccountKeyMacro.self,
@@ -19,7 +19,7 @@ let testMacros: [String: any Macro.Type] = [
 ]
 
 
-final class AccountKeyMacroTests: XCTestCase {
+final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_body_length
     func testAccountKeyGeneration() {
         assertMacroExpansion(
             """
@@ -60,7 +60,13 @@ final class AccountKeyMacroTests: XCTestCase {
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(id: "GI", name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
+                @AccountKey(
+                    id: "GI",
+                    name: "Gender Identity",
+                    category: .personalDetails,
+                    as: GenderIdentity.self,
+                    initial: .default(.preferNotToState)
+                )
                 var genderIdentity: GenderIdentity?
             }
             """,
@@ -189,7 +195,7 @@ final class AccountKeyMacroTests: XCTestCase {
         )
     }
 
-    func testCustomUI() {
+    func testCustomUI() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -254,7 +260,7 @@ final class AccountKeyMacroTests: XCTestCase {
         )
     }
 
-    func testCustomUINameCollision() {
+    func testCustomUINameCollision() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {

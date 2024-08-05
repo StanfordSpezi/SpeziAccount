@@ -96,7 +96,7 @@ private let key = AccountKeys.genderIdentity
             .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 #endif

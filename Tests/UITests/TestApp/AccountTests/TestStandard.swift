@@ -22,8 +22,7 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
 
     private let storage = Storage()
 
-    @MainActor
-    var deleteNotified: Bool {
+    @MainActor var deleteNotified: Bool {
         storage.deleteNotified
     }
 

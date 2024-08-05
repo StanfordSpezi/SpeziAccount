@@ -65,7 +65,7 @@ struct ExistingAccountView<Continue: View>: View {
     return ExistingAccountView(details: details)
         .padding(.horizontal, ViewSizing.outerHorizontalPadding)
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
@@ -85,7 +85,7 @@ struct ExistingAccountView<Continue: View>: View {
     }
         .padding(.horizontal, ViewSizing.outerHorizontalPadding)
         .previewWith {
-            AccountConfiguration(service: MockAccountService())
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 #endif

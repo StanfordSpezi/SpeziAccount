@@ -51,7 +51,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testLoginWithEmail() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail)
+        app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -80,7 +80,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testAccountSummary() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail, defaultCredentials: true)
+        app.launch(serviceType: .mail, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -104,25 +104,78 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     }
 
     @MainActor
-    func testLoginWithMultipleServices() throws {
+    func testSignupWithAnonymousAccount() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .both)
+        app.launch(serviceType: .both, config: .allRequired)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountSetup()
 
-        XCTAssertTrue(app.buttons["OpenID Connect"].exists)
-        app.buttons["OpenID Connect"].tap()
+        XCTAssertTrue(app.buttons["Stanford SUNet"].exists)
+        app.buttons["Stanford SUNet"].tap()
 
-        return; // TODO: we currently don't do anything with the button (should we?)
+        XCTAssertTrue(app.buttons["Close"].exists)
+        app.buttons["Close"].tap()
 
-        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts["User Id, Anonymous"].waitForExistence(timeout: 2.0))
 
-        try app.login(username: Defaults.username, password: Defaults.password)
+        // TEST if we can modify anonymous details
 
-        XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Name"].exists)
+        XCTAssertFalse(app.staticTexts["Name, E-Mail Address"].exists)
+        XCTAssertFalse(app.staticTexts["Sign-In & Security"].exists)
+
+        app.buttons["Name"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Add Name"].exists)
+        app.buttons["Add Name"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name"].waitForExistence(timeout: 2.0))
+
+
+        XCTAssertTrue(app.textFields["enter first name"].exists)
+        XCTAssertTrue(app.textFields["enter last name"].exists)
+        try app.textFields["enter first name"].enter(value: "Leland")
+        try app.textFields["enter last name"].enter(value: "Stanford")
+
+
+        app.navigationBars.buttons["Done"].tap()
+
+
+        XCTAssertTrue(app.staticTexts["Name, Leland Stanford"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.navigationBars.buttons["Account Overview"].exists)
+        app.navigationBars.buttons["Account Overview"].tap()
+
+        XCTAssertTrue(app.navigationBars.buttons["Close"].exists)
+        app.navigationBars.buttons["Close"].tap()
+
+        // TEST SIGNUP
+
+        app.openAccountSetup()
+        app.openSignup()
+
+        XCTAssertFalse(app.textFields["enter first name"].exists)
+        XCTAssertFalse(app.textFields["enter last name"].exists)
+
+        try app.fillSignupForm(
+            email: Defaults.email,
+            password: Defaults.password,
+            genderIdentity: "Male",
+            supplyDateOfBirth: true
+        )
+
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+
+        XCTAssertTrue(app.buttons["Finish"].waitForExistence(timeout: 2.0))
+        app.buttons["Finish"].tap()
+
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Account Id, Stable"].exists)
+        XCTAssertFalse(app.staticTexts["User Id, Anonymous"].exists)
     }
 
     @MainActor
@@ -269,7 +322,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testInvalidCredentials() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail)
+        app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -401,7 +454,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testAdditionalInfoAfterLogin() throws {
         let app = XCUIApplication()
-        app.launch(config: .allRequiredWithBio)
+        app.launch(config: .allRequiredWithBio, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -424,13 +477,12 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         app.openAccountOverview()
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford2"].waitForExistence(timeout: 2.0))
-        // TODO: check why this works, we haven't implemented that?
     }
 
     @MainActor
     func testAccountRequiredModifier() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true, accountRequired: true)
+        app.launch(credentials: .createAndSignIn, accountRequired: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -444,9 +496,12 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
         let app = XCUIApplication()
-        app.launch(config: .allRequiredWithBio, defaultCredentials: true, verifyAccountDetails: true)
+        app.launch(config: .allRequiredWithBio, credentials: .createAndSignIn, verifyAccountDetails: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
     }
 }
+
+
+// swiftlint:disable:this file_length

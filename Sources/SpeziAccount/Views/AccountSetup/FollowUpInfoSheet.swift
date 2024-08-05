@@ -150,7 +150,7 @@ private let keys: [any AccountKey.Type] = [AccountKeys.name]
         }
     }
         .previewWith {
-            AccountConfiguration(service: MockAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 #endif

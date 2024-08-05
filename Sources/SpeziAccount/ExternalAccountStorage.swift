@@ -15,7 +15,19 @@ import Spezi
 /// Some ``AccountService`` implementations might not support storing arbitrary ``AccountDetails``. Therefore, it is required to store these additional account details using an
 /// external ``AccountStorageProvider``.
 /// This module is used to interact with an external storage provider.
-public final class ExternalAccountStorage { // TODO: docs example + topics! let them do the check which account keys are not supported?
+///
+/// ## Topics
+///
+/// ### Interacting with a Storage Provider
+/// - ``updatedDetails``
+/// - ``requestExternalStorage(of:for:)``
+/// - ``updateExternalStorage(with:for:)``
+/// - ``retrieveExternalStorage(for:_:)-8gbg``
+/// - ``retrieveExternalStorage(for:_:)-8zvkq``
+///
+/// ### Communicate changes as a Storage Provider
+/// - ``notifyAboutUpdatedDetails(for:_:)``
+public final class ExternalAccountStorage {
     /// Capture details that are externally stored, associated with their account id.
     public struct ExternallyStoredDetails: Sendable {
         /// The account id the storage details are associated with.
@@ -111,7 +123,7 @@ public final class ExternalAccountStorage { // TODO: docs example + topics! let 
 
         guard let details = try await storageProvider.load(accountId, keys) else {
             // the storage provider currently doesn't have a local copy, they will notify us with updated details later on
-            return AccountDetails() // TODO: set a property or something?
+            return AccountDetails()
         }
 
         return details

@@ -77,7 +77,7 @@ public protocol AccountStorageProvider: Module {
 
     /// Delete all associated account data.
     ///
-    /// - Note: Due to the underlying architecture, there might still be a call to ``clear(_:)`` after a call to
+    /// - Note: Due to the underlying architecture, there might still be a call to ``disassociate(_:)`` after a call to
     ///     this method.
     /// - Parameter accountId: The primary identifier for stored record.
     /// - Throws: A `LocalizedError`.
