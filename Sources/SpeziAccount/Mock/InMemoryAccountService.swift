@@ -175,7 +175,7 @@ public final class InMemoryAccountService: AccountService {
     private var notifications
     @Dependency(ExternalAccountStorage.self)
     private var externalStorage
-
+    
     @IdentityProvider(section: .primary)
     private var loginView = MockUserIdPasswordEmbeddedView()
     @IdentityProvider private var testButton2 = AnonymousSignupButton()
@@ -192,7 +192,9 @@ public final class InMemoryAccountService: AccountService {
 
 
     /// Create a new userId- and password-based account service.
-    /// - Parameter type: The ``UserIdType`` to use for the account service.
+    /// - Parameters:
+    ///   - type: The ``UserIdType`` to use for the account service.
+    ///   - configured: The set of identity providers to enable.
     public init(_ type: UserIdConfiguration = .emailAddress, configure configured: ConfiguredIdentityProvider = .all) {
         self.configuration = AccountServiceConfiguration(supportedKeys: .exactly(Self.supportedKeys)) {
             type
@@ -213,6 +215,26 @@ public final class InMemoryAccountService: AccountService {
         }
     }
 
+    public func configure() {
+        let subscription = externalStorage.updatedDetails
+        Task { [weak self] in
+            for await updatedDetails in subscription {
+                guard let self else {
+                    return
+                }
+
+                guard let accountId = UUID(uuidString: updatedDetails.accountId),
+                      let storage = registeredUsers[accountId] else {
+                    continue
+                }
+
+                var details = _buildUser(from: storage, isNew: false)
+                details.add(contentsOf: updatedDetails.details)
+                account.supplyUserDetails(details) // TODO: actually might intervene with the async call?
+            }
+        }
+    }
+
     public func signInAnonymously() {
         let id = UUID()
 
@@ -222,7 +244,6 @@ public final class InMemoryAccountService: AccountService {
         details.isNewUser = true
 
         registeredUsers[id] = UserStorage(accountId: id, userId: nil, password: nil)
-
         account.supplyUserDetails(details)
     }
 
@@ -260,7 +281,6 @@ public final class InMemoryAccountService: AccountService {
             }
 
             // do account linking for anonymous accounts!´
-
             storage = registered
             storage.userId = signupDetails.userId
             storage.password = password
@@ -368,29 +388,35 @@ public final class InMemoryAccountService: AccountService {
 
 
     private func loadUser(_ user: UserStorage, isNew: Bool = false) async throws {
-        var details = AccountDetails()
-        details.accountId = user.accountId.uuidString
-        details.name = user.name
-        details.genderIdentity = user.genderIdentity
-        details.dateOfBirth = user.dateOfBirth
-
-        if let userId = user.userId {
-            details.userId = userId
-        }
-
-        if user.password == nil {
-            details.isAnonymous = true
-        }
+        var details = _buildUser(from: user, isNew: isNew)
 
         var unsupportedKeys = account.configuration.keys
         unsupportedKeys.removeAll(Self.supportedKeys)
         if !unsupportedKeys.isEmpty {
             let externalStorage = externalStorage
-            let externallyStored = try await externalStorage.retrieveExternalStorage(for: details.accountId, unsupportedKeys)
+            let externallyStored = try await externalStorage.retrieveExternalStorage(for: user.accountId.uuidString, unsupportedKeys)
             details.add(contentsOf: externallyStored)
         }
 
         account.supplyUserDetails(details)
+    }
+
+    private func _buildUser(from storage: UserStorage, isNew: Bool) -> AccountDetails {
+        var details = AccountDetails()
+        details.accountId = storage.accountId.uuidString
+        details.name = storage.name
+        details.genderIdentity = storage.genderIdentity
+        details.dateOfBirth = storage.dateOfBirth
+        details.isNewUser = isNew
+
+        if let userId = storage.userId {
+            details.userId = userId
+        }
+
+        if storage.password == nil {
+            details.isAnonymous = true
+        }
+        return details
     }
 }
 

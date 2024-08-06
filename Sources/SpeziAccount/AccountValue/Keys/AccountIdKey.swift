@@ -43,7 +43,7 @@ extension AccountDetails {
     /// you don't have to do anything.
     ///
     /// As an ``AccountService`` you are required to supply the `accountId` for every ``AccountDetails`` you provide
-    /// to ``Account/supplyUserDetails(_:isNewUser:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
+    /// to ``Account/supplyUserDetails(_:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
     /// configuration as part of your ``AccountServiceConfiguration``, make sure to include the `accountId` there as well.
     @AccountKey(
         id: "AccountIdKey", // backwards compatibility with 1.0 releases

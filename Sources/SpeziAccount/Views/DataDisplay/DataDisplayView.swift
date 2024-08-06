@@ -10,13 +10,11 @@ import SpeziFoundation
 import SwiftUI
 
 
-/// A view that displays the current value of a given ``AccountKey`` implementation.
-///
-/// This view is default implemented for all ``AccountKey``s which value type is `String`-based or conforms
-/// to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
-///  So before implementing one yourself verify if you might be able to rely on the default implementation.
+/// Displays the value of an `AccountKey`.
 ///
 /// This view is typically placed as a row in the ``AccountOverview`` view.
+///
+/// - Note: Refer to the <doc:Adding-new-Account-Values> article for an overview of default implemented display views.
 public protocol DataDisplayView<Value>: View {
     /// The value type that is getting displayed
     associatedtype Value

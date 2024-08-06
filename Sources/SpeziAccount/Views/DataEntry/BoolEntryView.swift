@@ -11,6 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
+/// Entry or modify the value of an `String`-based `AccountKey`.
 public struct BoolEntryView<Key: AccountKey>: DataEntryView where Key.Value == Bool {
     @Binding private var value: Key.Value
 
@@ -22,10 +23,16 @@ public struct BoolEntryView<Key: AccountKey>: DataEntryView where Key.Value == B
     }
 
 
+    /// Create a new entry view.
+    /// - Parameter value: The binding to the value to modify.
     public init(_ value: Binding<Key.Value>) {
         self._value = value
     }
 
+    /// Create a new entry view.
+    /// - Parameters:
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The binding to the value to modify.
     @MainActor
     public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
         self.init(value)

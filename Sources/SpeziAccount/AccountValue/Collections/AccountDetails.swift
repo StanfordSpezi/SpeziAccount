@@ -80,7 +80,96 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 
 /// A typed storage container to easily access any information for the currently signed in user.
 ///
-/// Refer to ``AccountKey`` for a list of bundled keys.
+/// `AccountDetails` store values for their associated ``AccountKey``.
+///
+/// Creating a new `AccountDetails` collection as easy as creating an empty collection and adding each value individually.
+///
+/// ```swift
+/// var details = AccountDetails()
+/// details.accountId = "myUserIdentifier"
+/// details.userId = "lelandstanford@stanford.edu"
+/// details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+/// ```
+///
+/// ### Iteration
+///
+/// `AccountDetails` conforms to the [`Collection`](https://developer.apple.com/documentation/swift/collection) protocol and therefore support iteration.
+/// However, `Element`s of the collection are of type [`AnyRepositoryValue`](https://swiftpackageindex.com/stanfordspezi/spezifoundation/documentation/spezifoundation/anyrepositoryvalue)
+/// as non-`AccountKey`-conforming knowledge sources might be stored in the ``AccountDetails`` (e.g., metadata like ``isNewUser``).
+///
+/// If you want to iterate through account details in a strongly-typed manner, refer to the ``AccountValueVisitor`` documentation.
+///
+/// Similar, `AccountDetails` provides access to the ``keys`` collection in a type-erased way. If you want to iterate through a collection of keys
+/// in a strongly-typed manner, refer to the documentation of ``AccountKeyVisitor``.
+///
+/// ## Topics
+///
+/// ### Initializers
+/// - ``init()``
+///
+/// ### Account Details
+///
+/// - ``accountId``
+/// - ``userId``
+/// - ``password``
+/// - ``name``
+/// - ``dateOfBirth``
+/// - ``genderIdentity``
+/// - ``email``
+///
+/// ### Account Metadata
+///
+/// - ``isAnonymous``
+/// - ``isNewUser``
+/// - ``accountServiceConfiguration``
+/// - ``userIdType``
+///
+/// ### Adding Details
+///
+/// - ``add(contentsOf:merge:)``
+/// - ``add(contentsOf:filterFor:merge:)-358td``
+/// - ``add(contentsOf:filterFor:merge:)-7dmho``
+/// - ``set(_:value:)``
+///
+/// ### Removing Details
+///
+/// - ``remove(_:)-3ujob``
+/// - ``remove(_:)-6loc9``
+/// - ``removeAll(_:)-8jq76``
+/// - ``removeAll(_:)-6rvt0``
+///
+/// ### Finding Details
+///
+/// - ``keys``
+/// - ``contains(_:)-7z7r6``
+/// - ``contains(_:)-4nvuo``
+///
+/// ### Validation
+///
+/// - ``validateAgainstSignupRequirements(_:)``
+///
+/// ### Visitors
+/// - ``AccountValueVisitor``
+/// - ``AcceptingAccountValueVisitor``
+/// - ``AcceptingAccountValueVisitor/acceptAll(_:)-9hgw5``
+/// - ``AcceptingAccountValueVisitor/acceptAll(_:)-4epen``
+/// - ``AccountKeyVisitor``
+/// - ``AcceptingAccountKeyVisitor``
+/// - ``AcceptingAccountKeyVisitor/acceptAll(_:)-1ytax``
+/// - ``AcceptingAccountKeyVisitor/acceptAll(_:)-9b08r``
+///
+/// ### Keys
+///
+/// - ``AccountKeyCollection``
+///
+/// ### Codable
+///
+/// - ``init(from:)``
+/// - ``encode(to:)``
+/// - ``decodingErrors``
+/// - ``Swift/CodingUserInfoKey/accountDetailsKeys``
+/// - ``Swift/CodingUserInfoKey/lazyAccountDetailsDecoding``
+/// - ``AccountKeyCodingKey``
 public struct AccountDetails {
     fileprivate var storage: AccountStorage
 

@@ -19,31 +19,14 @@ import SwiftUI
 public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
 
 
-public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
-    @Binding private var value: Key.Value
-
-    public var body: some View {
-        CaseIterablePicker(Key.name, value: $value)
-    }
-
-    public init(_ value: Binding<Key.Value>) {
-        self._value = value
-    }
-
-    @MainActor
-    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
-        self.init(value)
-    }
-}
-
-
-public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
+// TODO: SpeziViews candidate?
+struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
     private let label: Label
 
     @Binding private var value: Value
 
 
-    public var body: some View {
+    var body: some View {
         Picker(selection: $value) {
             ForEach(Value.allCases, id: \.hashValue) { value in
                 Text(value.localizedStringResource)
@@ -54,15 +37,42 @@ public struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Va
         }
     }
 
-    public init(value: Binding<Value>, @ViewBuilder label: () -> Label) {
+    init(value: Binding<Value>, @ViewBuilder label: () -> Label) {
         self._value = value
         self.label = label()
     }
 
-    public init(_ titleKey: LocalizedStringResource, value: Binding<Value>) where Label == Text {
+    init(_ titleKey: LocalizedStringResource, value: Binding<Value>) where Label == Text {
         self.init(value: value) {
             Text(titleKey)
         }
+    }
+}
+
+
+/// Entry or modify the value of an `PickerValue`-based `AccountKey`.
+///
+/// For more information, refer to the documentation of ``PickerValue``.
+public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
+    @Binding private var value: Key.Value
+
+    public var body: some View {
+        CaseIterablePicker(Key.name, value: $value)
+    }
+
+    /// Create a new entry view.
+    /// - Parameter value: The binding to the value to modify.
+    public init(_ value: Binding<Key.Value>) {
+        self._value = value
+    }
+
+    /// Create a new entry view.
+    /// - Parameters:
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The binding to the value to modify.
+    @MainActor
+    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
+        self.init(value)
     }
 }
 
@@ -74,17 +84,12 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 
 
 #if DEBUG
-@MainActor
-private func view(_ genderIdentity: Binding<GenderIdentity>) -> some View {
-    CaseIterablePickerEntryView<AccountDetails.__Key_genderIdentity>(genderIdentity)
-}
-
 #Preview {
     @State var genderIdentity: GenderIdentity = .male
 
     return Form {
         Grid {
-            view($genderIdentity)
+            CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
         }
     }
 }
@@ -93,7 +98,7 @@ private func view(_ genderIdentity: Binding<GenderIdentity>) -> some View {
     @State var genderIdentity: GenderIdentity = .male
 
     return Grid {
-        view($genderIdentity)
+        CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
     }
         .padding(32)
 #if !os(macOS)

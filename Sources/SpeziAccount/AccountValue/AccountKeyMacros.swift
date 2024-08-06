@@ -24,7 +24,7 @@ public struct _EmptyDataView: DataDisplayView, DataEntryView { // swiftlint:disa
 }
 
 
-/// Create a new `AccountKey`.
+/// Declare a new `AccountKey`.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 ///
@@ -59,7 +59,7 @@ public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntr
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
-/// Create a new `AccountKey`.
+/// Declare a new `AccountKey` with `String` type.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 /// This overload provides a default ``InitialValue/empty(_:)`` for `String` values.
@@ -93,7 +93,7 @@ public macro AccountKey<Value: StringProtocol, DataDisplay: DataDisplayView, Dat
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
-/// Create a new `AccountKey`.
+/// Declare a new `AccountKey` with `Bool` type.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 /// This overload provides a default ``InitialValue/default(_:)`` for `Bool` values.
@@ -127,7 +127,7 @@ public macro AccountKey<DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
-/// Create a new `AccountKey`.
+/// Declare a new `AccountKey` with `Numeric` type.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 /// This overload provides a default ``InitialValue/empty(_:)`` for `Numeric` values.
@@ -161,7 +161,7 @@ public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView,
 ) = #externalMacro(module: "SpeziAccountMacros", type: "AccountKeyMacro")
 
 
-/// Create a new `AccountKey`.
+/// Declare a new `AccountKey` with `Array` type.
 ///
 /// Create a new ``AccountKey`` by declaring an extension to the ``AccountDetails``.
 /// This overload provides a default ``InitialValue/empty(_:)`` for `Array` values.

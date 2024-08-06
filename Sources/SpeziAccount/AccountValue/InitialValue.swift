@@ -9,7 +9,7 @@
 import Foundation
 
 
-/// Provides the type of initial value for an ``AccountKey``.
+/// Provide an initial value for an `AccountKey`.
 public enum InitialValue<Value> {
     /// The initial value is considered an empty value and the user is forced
     /// to provide their own input.

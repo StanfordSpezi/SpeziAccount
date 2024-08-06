@@ -26,7 +26,9 @@ import SwiftUI
 /// ```swift
 /// struct MyView: View {
 ///     var body: some View {
-///         AccountOverview()
+///         NavigationStack {
+///             AccountOverview()
+///         }
 ///     }
 /// }
 /// ```
@@ -37,11 +39,13 @@ import SwiftUI
 /// ```swift
 /// struct MyView: View {
 ///     var body: some View {
-///         AccountOverview {
-///             NavigationLink {
-///                 // ... next view
-///             } label: {
-///                 Text("General Settings")
+///         NavigationStack {
+///             AccountOverview {
+///                 NavigationLink {
+///                     // ... next view
+///                 } label: {
+///                     Text("General Settings")
+///                 }
 ///             }
 ///         }
 ///     }

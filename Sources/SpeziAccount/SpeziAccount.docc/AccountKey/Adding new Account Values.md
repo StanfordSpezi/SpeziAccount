@@ -1,4 +1,4 @@
-# Supporting new Types of Account Details
+# Supporting new Account Details
 
 Support new user account details by defining your own `AccountKey`.
 
@@ -23,10 +23,10 @@ This articles guides you through all the necessary steps to declare your custom 
 
 ### Declaring the property
 
-You use the ``AccountKey(name:category:as:initial:displayView:entryView:)`` macro to declare a new ``AccountKey``.
+You use the ``AccountKey(id:name:category:as:initial:displayView:entryView:)`` macro to declare a new ``AccountKey``.
 
 It is mandatory to provide a localizable ``AccountKey/name`` and the `Value` type.
-> Note: Refer to `Value Conformances` section below to learn more of the mandatory conformances for the `Value` type. 
+> Note: Refer to <doc:Value-Conformances> to learn more of the mandatory conformances for the `Value` type. 
 
 Optionally, you might want to customize the ``AccountKey/category`` in which the account details are shown (see ``AccountKeyCategory``).
 An ``AccountKey/initialValue-6h1oo`` might be required, depending on the `Value` type if `SpeziAccount` cannot derive a sensible default
@@ -56,7 +56,7 @@ it might be necessary or improve the user experience to provide your own user in
 
 This is done by implementing a ``DataDisplayView`` or ``DataEntryView`` respectively.
 
-- Note: The `User Interfaces that are provided by default` section provides an overview when SpeziAccount is able to provide default user interfaces.
+- Note: The <doc:User-Interfaces-that-are-provided-by-default> section provides an overview when SpeziAccount is able to provide default user interfaces.
 
 The code example below implements a custom `EntryView` and `DisplayView` and updates the `AccountKey` declaration from above to use
 the new views.
@@ -112,7 +112,7 @@ extension AccountDetails {
 }
 ```
 
-- Note: You may have to manually handle input validation. Refer to the `Input Validation` section below.
+- Note: You may have to manually handle input validation. Refer to the <doc:Input-Validation> section below.
 
 ### Value Conformances
 
@@ -130,16 +130,19 @@ This section briefly highlights the conditions under which SpeziAccount can prov
 A ``AccountKey/DataDisplay`` view is automatically provided if:
 * The `Value` is of type `String`.
 * The `Value` is of type `Bool`.
-* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
-* The `Value` conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible),
+* The `Value` is a [`FixedWidthInteger`](https://developer.apple.com/documentation/swift/fixedwidthinteger) (e.g., `Int`, `UInt`, ...).
+* The `Value` is a [`BinaryFloatingPoint`](https://developer.apple.com/documentation/swift/binaryfloatingpoint) (e.g., `Double` or `Float`).
+* The `Value` conforms to [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible),
     providing a localized string-representation.
 
 A ``AccountKey/DataEntry`` view is automatically provide if:
 * The `Value` is of type `String`.
     A simple string entry will appear. You have to implement your own view if you have special formatting requirements.
 * The `Value` is of type `Bool`.
-* The `Value` is a [FixedWidthInteger](https://developer.apple.com/documentation/swift/fixedwidthinteger).
+* The `Value` is a [`FixedWidthInteger`](https://developer.apple.com/documentation/swift/fixedwidthinteger)  (e.g., `Int`, `UInt`, ...).
     A simple number entry will appear. You have to implement your own view if you have special formatting requirements.
+* The `Value` is a [`BinaryFloatingPoint`](https://developer.apple.com/documentation/swift/binaryfloatingpoint) (e.g., `Double` or `Float`).
+    A simple decimal entry will appear. You have to implement your own view if you have special formatting requirements.
 * The `Value` conforms to the ``PickerValue`` protocols. This is provides a Picker UI for enum types.
     `PickerValue` is shorthand to conform to the [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable),
     [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
@@ -166,24 +169,43 @@ Still, you are required to evaluate to which extent validation has to be handled
 
 ## Topics
 
-### Implementing Account Values
+### Account Key Declaration
 
-- ``AccountKey``
-- ``RequiredAccountKey``
-- ``AccountKeyCategory``
-- ``InitialValue``
+- ``AccountKey(id:name:category:as:initial:displayView:entryView:)``
+- ``AccountKey(id:name:category:as:displayView:entryView:)-7hix5``
+- ``AccountKey(id:name:category:as:displayView:entryView:)-2hptl``
+- ``AccountKey(id:name:category:as:displayView:entryView:)-73ut1``
+- ``AccountKey(id:name:category:as:displayView:entryView:)-945ks``
+
+### Key Entry Declaration
+
+- ``KeyEntry(_:)``
 - ``AccountKeys``
 
-### Data Display View
+### Account Key Model
+
+- ``AccountKeyCategory``
+- ``InitialValue``
+- ``AccountKey``
+- ``RequiredAccountKey``
+
+### Displaying Account Keys
 
 - ``DataDisplayView``
-- ``StringBasedDisplayView``
-- ``LocalizableStringBasedDisplayView``
+- ``StringDisplayView``
+- ``BoolDisplayView``
+- ``FixedWidthIntegerDisplayView``
+- ``FloatingPointDisplayView``
+- ``LocalizableStringDisplayView``
 
-### Data Entry View
+### Entering Account Keys
 
 - ``DataEntryView``
-- ``GeneralizedDataEntryView``
+- ``StringEntryView``
+- ``BoolEntryView``
+- ``FixedWidthIntegerEntryView``
+- ``FloatingPointEntryView``
+- ``CaseIterablePickerEntryView``
 
 ### Available Environment Keys
 

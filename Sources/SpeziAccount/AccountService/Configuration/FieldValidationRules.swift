@@ -28,7 +28,7 @@ import SpeziValidation
 /// }
 /// ```
 ///
-/// - Note: When using built-in views like ``SignupForm`` that use the ``GeneralizedDataEntryView``, validation is automatically configured to `String`-based inputs.
+/// - Note: When using built-in views like ``SignupForm``, validation is automatically configured to `String`-based inputs.
 ///
 /// ### Default Values
 /// The configuration provides the following default validation rules depending on the context:

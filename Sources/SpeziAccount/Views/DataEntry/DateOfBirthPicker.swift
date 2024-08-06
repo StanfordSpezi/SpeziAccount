@@ -10,8 +10,8 @@ import SpeziViews
 import SwiftUI
 
 
-/// A simple `DatePicker` implementation tailored towards entry of a date of birth.
-public struct DateOfBirthPicker: View {
+/// A `DatePicker` implementation tailored towards entry of a date of birth.
+struct DateOfBirthPicker: View {
     private let title: LocalizedStringResource
     private let isRequired: Bool
 
@@ -42,7 +42,7 @@ public struct DateOfBirthPicker: View {
     }
 
 
-    public var body: some View {
+    var body: some View {
         HStack { // swiftlint:disable:this closure_body_length
             DynamicHStack {
                 Text(title)
@@ -109,7 +109,7 @@ public struct DateOfBirthPicker: View {
     ///   - title: Optionally provide a custom label text.
     ///   - date: A binding to the `Date` state.
     ///   - isRequired: Flag indicating if entry is mandatory. If `false` it adds another `Add Date` button.
-    public init(
+    init(
         _ title: LocalizedStringResource,
         date: Binding<Date>,
         isRequired: Bool = true

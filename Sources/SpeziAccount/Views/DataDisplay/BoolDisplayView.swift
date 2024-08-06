@@ -11,6 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
+/// Displays the value of an `Bool`-based `AccountKey`.
 public struct BoolDisplayView<Key: AccountKey>: DataDisplayView where Key.Value == Bool {
     public enum Label {
         case onOff
@@ -41,24 +42,35 @@ public struct BoolDisplayView<Key: AccountKey>: DataDisplayView where Key.Value 
     public var body: some View {
         ListRow(Key.name) {
             if value {
-                Text("On", bundle: .module)
+                Text(label.onLabel)
             } else {
-                Text("Off", bundle: .module)
+                Text(label.offLabel)
             }
         }
     }
 
+    /// Create a new display view.
+    /// - Parameters:
+    ///   - label: The labels used to represent the `Bool` value.
+    ///   - value: The value to display.
     public init(label: Label, _ value: Key.Value) {
         self.label = label
         self.value = value
     }
 
+    /// Create a new display view.
+    /// - Parameters:
+    ///   - label: The labels used to represent the `Bool` value.
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The value to display.
     @MainActor
     public init(label: Label = .onOff, _ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
         // swiftlint:disable:previous function_default_parameter_at_end
         self.init(label: label, value)
     }
 
+    /// Create a new display view.
+    /// - Parameter value: The value to display.
     public init(_ value: Key.Value) {
         self.init(label: .onOff, value)
     }

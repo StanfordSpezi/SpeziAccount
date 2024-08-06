@@ -24,7 +24,7 @@ private protocol GeneralizedStringEntryView {
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
 ///     ``AccountKey``, a [validate(input:rules:)](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/swiftui/view/validate(input:rules:)-5dac4)
 ///      modifier is automatically injected.
-public struct GeneralizedDataEntryView<Key: AccountKey>: View {
+struct GeneralizedDataEntryView<Key: AccountKey>: View {
     private var dataHookId: String {
         "DataHook-\(Key.self)"
     }
@@ -43,7 +43,7 @@ public struct GeneralizedDataEntryView<Key: AccountKey>: View {
     @State private var value: Key.Value
 
 
-    public var body: some View {
+    var body: some View {
         Group {
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {

@@ -10,11 +10,11 @@ import SpeziFoundation
 import SwiftUI
 
 
-/// A view that handles entry of a new value of a given ``AccountKey`` implementation.
+/// Handles entry of a new or existing value of an `AccountKey`.
 ///
 /// This view is used in views like the ``SignupForm`` or ``AccountOverview`` to enter or modify a account value.
 ///
-/// - Note: The ``AccountKey/initialValue-6h1oo`` is used in views like the ``SignupForm`` as the initial value for this view.
+/// - Note: Refer to the <doc:Adding-new-Account-Values> article for an overview of default implemented display views.
 public protocol DataEntryView<Value>: View {
     /// The type of value this view receives a value for.
     associatedtype Value

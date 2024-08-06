@@ -11,8 +11,8 @@ import SpeziViews
 import SwiftUI
 
 
-/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to `StringProtocol`.
-public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: StringProtocol {
+/// Displays the value of an `String`-based `AccountKey`.
+public struct StringDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: StringProtocol {
     private let value: Key.Value
 
     public var body: some View {
@@ -21,10 +21,16 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
         }
     }
 
+    /// Create a new display view.
+    /// - Parameter value: The value to display.
     public init(_ value: Key.Value) {
         self.value = value
     }
 
+    /// Create a new display view.
+    /// - Parameters:
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The value to display.
     @MainActor
     public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
         self.init(value)
@@ -33,15 +39,15 @@ public struct StringBasedDisplayView<Key: AccountKey>: DataDisplayView where Key
 
 
 extension AccountKey where Value: StringProtocol {
-    /// Default DataDisplay for String-based values.
-    public typealias DataDisplay = StringBasedDisplayView<Self>
+    /// Default DataDisplay for `String`-based values.
+    public typealias DataDisplay = StringDisplayView<Self>
 }
 
 
 #if DEBUG
 #Preview {
     List {
-        StringBasedDisplayView(\.userId, "leland.stanford")
+        StringDisplayView(\.userId, "leland.stanford")
     }
 }
 #endif

@@ -176,6 +176,22 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
         }
     }
 
+    /// A setup view that supports login, signup and password reset.
+    /// - Parameters:
+    ///   - login: A closure that is called once a user tries to login with their credentials.
+    ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.
+    @MainActor
+    public init(
+        login: @escaping (UserIdPasswordCredential) async throws -> Void,
+        signup: @escaping (AccountDetails) async throws -> Void
+    ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>, PasswordReset == EmptyView {
+        self.init(loginClosure: login) {
+            NavigationStack {
+                SignupForm(signup: signup)
+            }
+        }
+    }
+
     /// A setup view that supports signup and password reset.
     /// - Parameters:
     ///   - signup: A closure that is called if the user tries to signup for an new account. The default ``SignupForm`` is used.

@@ -50,7 +50,7 @@ you can use to configure an Account Service base on the Google Firebase service.
 You need to add the Spezi Account Swift package to
 [your app in Xcode](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app#) or
 [Swift package](https://developer.apple.com/documentation/xcode/creating-a-standalone-swift-package-with-xcode#Add-a-dependency-on-another-Swift-package).
-  
+
 > Important: If your application is not yet configured to use Spezi, follow the [Spezi setup article](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/initial-setup) to set up the core Spezi infrastructure.
 
 The <doc:Initial-Setup> article provides a quick-start guide to set up `SpeziAccount` in your App.
@@ -60,18 +60,51 @@ Refer to the <doc:Creating-your-own-Account-Service> article if you plan on impl
 
 ## Topics
 
-### Setup Guides
+### Configuration
 
 - <doc:Initial-Setup>
-- <doc:Using-the-Account-Object>
-- <doc:Custom-Storage-Provider>
+- ``AccountConfiguration``
+- ``AccountValueConfiguration``
 
-### Account Values
+### Account Details
 
+- ``Account``
+- ``AccountDetails``
 - <doc:Adding-new-Account-Values>
-- <doc:Handling-Account-Value-Storage>
 
-### Account Services
+### Account UI
+
+- ``AccountSetup``
+- ``AccountOverview``
+- ``AccountHeader``
+- ``SwiftUI/View/preferredAccountSetupStyle(_:)``
+- ``PreferredSetupStyle``
+- ``SwiftUI/View/accountRequired(_:setupSheet:)``
+- ``SwiftUI/EnvironmentValues/accountRequired``
+- ``SwiftUI/View/verifyRequiredAccountDetails(_:)``
+
+### Reacting to Events
+
+- ``AccountNotifyConstraint``
+- ``AccountNotifications``
+
+### Account Service
 
 - <doc:Creating-your-own-Account-Service>
-- <doc:Customize-your-View-Styles>
+- ``AccountService``
+- ``IdentityProvider``
+- ``SecurityRelatedModifier``
+- ``AccountModifications``
+
+### External Storage
+
+- <doc:Custom-Storage-Provider>
+- ``AccountStorageProvider``
+- ``ExternalAccountStorage``
+- ``AccountDetailsCache``
+
+### In Memory Implementations
+
+In memory implementations are useful for SwiftUI Previews and UI testing purposes.
+- ``InMemoryAccountService``
+- ``InMemoryAccountStorageProvider``

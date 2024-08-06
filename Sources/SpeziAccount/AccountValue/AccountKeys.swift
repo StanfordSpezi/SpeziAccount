@@ -6,18 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
-/// A collection of ``AccountKeys`` type instances.
+/// Collection of `AccountKey` meta-types.
 ///
-/// This type is used across ``SpeziAccount`` API to easily and intuitively access the metatype of an ``AccountKey``.
+/// Use properties of this type to access the meta-type of an ``AccountKey``.
 ///
-/// Below is a short example creating a ``AccountServiceConfiguration`` demonstrating the use of `KeyPath`-based access
-/// to the metatype of an ``AccountKey``.
-///
-/// ```swift
-/// AccountServiceConfiguration(name: "TestEmailPasswordAccountService") {
-///     FieldValidationRules(for: \.password, rules: .interceptingChain(.nonEmpty), .strongPassword)
-/// }
-/// ```
+/// - Note: Use the ``KeyEntry(_:)`` macro to declare a key entry for your custom `AccountKey`.
 public struct AccountKeys {
     private init() {}
 }

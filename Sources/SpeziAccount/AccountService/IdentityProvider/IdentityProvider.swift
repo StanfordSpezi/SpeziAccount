@@ -62,6 +62,12 @@ struct AccountSetupComponent<V: View> {
 ///     }
 /// }
 /// ```
+///
+/// ## Topics
+///
+/// ### Configuration
+/// - ``AccountSetupSection``
+/// - ``IdentityProviderConfiguration``
 @propertyWrapper
 public struct IdentityProvider<V: View> {
     private let viewClosure: @Sendable @MainActor () -> V

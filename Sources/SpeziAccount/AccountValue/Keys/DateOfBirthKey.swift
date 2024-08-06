@@ -75,7 +75,7 @@ extension AccountDetails {
     /// The date of birth of a user.
     @_documentation(visibility: internal)
     @available(*, deprecated, renamed: "dateOfBirth", message: "Replaced by a version that fixes the spelling error.")
-    public var dateOfBrith: Date? {
+    public var dateOfBrith: Date? { // TODO: verify that this is the mispelled version!
         dateOfBirth
     }
 }

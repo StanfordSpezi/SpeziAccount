@@ -8,22 +8,30 @@
 
 
 extension AccountDetails {
+    /// Use an `AccountKey` as a `CodingKey`.
     public struct AccountKeyCodingKey: CodingKey {
         public let stringValue: String
         public let intValue: Int? = nil
 
+        /// Initialize from a raw string value.
+        /// - Parameter stringValue: The string value key.
         public init?(stringValue: String) {
             self.stringValue = stringValue
         }
 
+        /// Unavailable.
         public init?(intValue: Int) {
             nil
         }
 
+        /// Create a new CodingKey from the `AccountKey`.
+        /// - Parameter key: The `AccountKey`.
         public init<Key: AccountKey>(_ key: Key.Type) {
             self.stringValue = key.identifier
         }
 
+        /// Create a new CodingKey from the `AccountKey`.
+        /// - Parameter key: A KeyPath to the key entry for the `AccountKey`.
         public init<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) {
             self.init(Key.self)
         }
@@ -31,7 +39,7 @@ extension AccountDetails {
 }
 
 
-extension AccountDetails: Codable {
+extension AccountDetails: Codable { // TODO: those docs are not shown!
     /// Decodes the contents of a account details collection.
     ///
     /// - Warning: Decoding an `AccountDetails` requires knowledge of the ``AccountKey``s to decode. Therefore,
@@ -145,7 +153,7 @@ extension AccountDetails {
 
 
 extension CodingUserInfoKey {
-    /// Provide a keys to decode to a decoder for `AccountDetails`.
+    /// Provide the keys to decode to a decoder for `AccountDetails`.
     ///
     /// The decode implementation of `AccountDetails` needs prior knowledge of what keys to expect and which type they are.
     /// Therefore, you need a list of all ``AccountKey``s to expect. You can use this userInfo key to supply this list.

@@ -7,19 +7,21 @@
 //
 
 import RegexBuilder
+import Spezi
 import SpeziFoundation
 import SpeziValidation
 import SwiftUI
 
 
-public struct FixedWidthIntegerDataEntry<Key: AccountKey>: DataEntryView where Key.Value: FixedWidthInteger {
+/// Entry or modify the value of an `FixedWidthInteger`-based `AccountKey`.
+public struct FixedWidthIntegerEntryView<Key: AccountKey>: DataEntryView where Key.Value: FixedWidthInteger {
     @Environment(Account.self)
     private var account
 
     @Binding private var value: Key.Value
-    @State private var text: String
+    @State private var text: String = ""
 
-    public var validationRules: [ValidationRule] {
+    private var validationRules: [ValidationRule] {
         if account.configuration[Key.self]?.requirement == .required {
             [.nonEmpty.intercepting, .isDigit(for: Key.Value.self)]
         } else {
@@ -28,13 +30,21 @@ public struct FixedWidthIntegerDataEntry<Key: AccountKey>: DataEntryView where K
     }
 
     public var body: some View {
-        VerifiableTextField(Key.name, text: $text)
+        VerifiableTextField(Key.name, text: $text) // TODO: trailing unit!
             .validate(input: text, rules: validationRules)
 #if !os(macOS)
             .keyboardType(.numberPad)
 #endif
             .disableFieldAssistants()
+            .onAppear {
+                text = value.description
+            }
             .onChange(of: text) {
+                if text.isEmpty {
+                    value = .zero
+                    return
+                }
+
                 guard let value = Key.Value(text, radix: 10) else {
                     return // we check with validation that this is safe
                 }
@@ -42,11 +52,16 @@ public struct FixedWidthIntegerDataEntry<Key: AccountKey>: DataEntryView where K
             }
     }
 
+    /// Create a new entry view.
+    /// - Parameter value: The binding to the value to modify.
     public init(_ value: Binding<Key.Value>) {
         self._value = value
-        self._text = State(wrappedValue: value.wrappedValue.description)
     }
 
+    /// Create a new entry view.
+    /// - Parameters:
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The binding to the value to modify.
     @MainActor
     public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Binding<Key.Value>) {
         self.init(value)
@@ -58,7 +73,7 @@ extension ValidationRule {
     static func isDigit<Value: FixedWidthInteger>(for value: Value.Type = Value.self, radix: Int = 10) -> ValidationRule {
         ValidationRule(
             rule: { input in
-                Value(input, radix: radix) != nil
+                input.isEmpty || Value(input, radix: radix) != nil
             },
             message: LocalizedStringResource("The input can only consist of digits.", bundle: .atURL(from: .module))
         )
@@ -68,7 +83,7 @@ extension ValidationRule {
 
 extension AccountKey where Value: FixedWidthInteger {
     /// Default DataEntry for `FixedWidthInteger`-based values.
-    public typealias DataEntry = FixedWidthIntegerDataEntry<Self>
+    public typealias DataEntry = FixedWidthIntegerEntryView<Self>
 }
 
 
@@ -76,7 +91,10 @@ extension AccountKey where Value: FixedWidthInteger {
 #Preview {
     @State var value = 3
     return List {
-        FixedWidthIntegerDataEntry<MockNumericKey>($value)
+        FixedWidthIntegerEntryView<MockNumericKey>($value)
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
 }
 #endif

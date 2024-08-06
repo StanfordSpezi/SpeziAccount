@@ -59,6 +59,11 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
 ///     }
 /// }
 /// ```
+///
+/// ## Topics
+///
+/// ### Header
+/// - ``DefaultAccountSetupHeader``
 @MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void

@@ -203,7 +203,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                         ForEachAccountKeyWrapper(key)
                     }
                     
-                    ForEach(forEachWrappers, id: \.id) { wrapper in
+                    ForEach(forEachWrappers) { wrapper in
                         AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
                         .onDelete { indexSet in

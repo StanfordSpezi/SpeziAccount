@@ -16,7 +16,12 @@ extension AccountDetails {
     }
 
     /// Determine if the user was freshly created.
-    public var isNewUser: Bool {
+    ///
+    /// If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
+    /// ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
+    /// This is primarily helpful for identity providers. You might not want to set this flag
+    /// if you using the builtin ``SignupForm``!
+    public var isNewUser: Bool { // TODO: update these docs should the behavior change?
         get {
             self[IsNewUserKey.self] ?? false
         }

@@ -43,7 +43,7 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 }
 
 
-/// A collection of ``AccountKey``s that is built using `KeyPath`-based specification.
+/// A collection of `AccountKey`s that is built using `KeyPath`-based specification.
 ///
 /// Using the `KeyPath`-based result builder ``AccountKeyCollectionBuilder`` we can preserve user-friendly
 /// naming in debug messages (see ``AccountKeyWithDescription``).

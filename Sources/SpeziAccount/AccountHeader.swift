@@ -11,20 +11,25 @@ import SpeziPersonalInfo
 import SwiftUI
 
 
-/// A account summary view that can be used to link to the ``AccountOverview``.
+/// A account summary view that can be used to link to the `AccountOverview`.
 ///
 /// Below is a short code example on how to use the `AccountHeader` view.
 ///
 /// ```swift
 /// struct MyView: View {
+///     @Environment(Account.self)
+///     private var account
+///
 ///     var body: some View {
 ///         NavigationStack {
 ///             Form {
-///                 Section {
-///                     NavigationLink {
-///                         AccountOverview()
-///                     } label: {
-///                         AccountHeader(details: details)
+///                 if let details = account.details {
+///                     Section {
+///                         NavigationLink {
+///                             AccountOverview()
+///                         } label: {
+///                             AccountHeader(details: details)
+///                         }
 ///                     }
 ///                 }
 ///             }

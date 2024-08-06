@@ -18,7 +18,7 @@ import Spezi
 ///
 /// ### Storage
 ///
-///  All ``AccountKey/Value`` types are required to adopt the [`Codable`](https://developer.apple.com/documentation/swift/codable) protocol to support encoding and
+///  All `Value` types are required to adopt the [`Codable`](https://developer.apple.com/documentation/swift/codable) protocol to support encoding and
 ///  decoding of values.
 ///  Additionally, storage providers can use the ``AccountKey/identifier`` of an AccountKey to associate data with the account key on the persistent storage.
 public protocol AccountStorageProvider: Module {
@@ -30,7 +30,7 @@ public protocol AccountStorageProvider: Module {
     ///   - accountId: The primary identifier for stored record.
     ///   - details: The signup details that need to be stored.
     /// - Throws: A `LocalizedError`.
-    func create(_ accountId: String, _ details: AccountDetails) async throws
+    func create(_ accountId: String, _ details: AccountDetails) async throws // TODO: we do not guarantee that this is called, just remove it?
 
     /// Load associated account data.
     ///

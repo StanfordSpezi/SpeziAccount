@@ -21,6 +21,7 @@ import Spezi
 /// - ``Event``
 ///
 /// ### Reporting events
+/// Report events when implementing an `AccountService`.
 /// - ``reportEvent(_:)``
 public final class AccountNotifications {
     /// Describes an Account event.

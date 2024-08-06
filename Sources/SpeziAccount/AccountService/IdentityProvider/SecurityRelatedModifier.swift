@@ -44,7 +44,9 @@ struct SecurityModifier<V: ViewModifier> {
 ///     @SecurityRelatedModifier var myModifier = MyModifier()
 ///
 ///     func delete() async throws {
+///         // pop up an alert that requires entering the password
 ///         try await myModifier.ensureAuthenticated()
+///
 ///         // perform delete
 ///     }
 /// }

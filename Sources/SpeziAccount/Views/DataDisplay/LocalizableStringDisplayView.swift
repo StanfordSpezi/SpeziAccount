@@ -11,9 +11,8 @@ import SpeziViews
 import SwiftUI
 
 
-/// A ``DataDisplayView`` implementation for all ``AccountKey`` `Value` types that conform to
-/// [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
-public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayView
+/// Displays the value of an `CustomLocalizedStringResourceConvertible`-based `AccountKey`.
+public struct LocalizableStringDisplayView<Key: AccountKey>: DataDisplayView
     where Key.Value: CustomLocalizedStringResourceConvertible {
     private let value: Key.Value
 
@@ -23,10 +22,16 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
         }
     }
 
+    /// Create a new display view.
+    /// - Parameter value: The value to display.
     public init(_ value: Key.Value) {
         self.value = value
     }
 
+    /// Create a new display view.
+    /// - Parameters:
+    ///   - keyPath: The `AccountKey` type.
+    ///   - value: The value to display.
     @MainActor
     public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value) {
         self.init(value)
@@ -36,14 +41,14 @@ public struct LocalizableStringBasedDisplayView<Key: AccountKey>: DataDisplayVie
 
 extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
     /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values.
-    public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
+    public typealias DataDisplay = LocalizableStringDisplayView<Self>
 }
 
 
 #if DEBUG
 #Preview {
     Form {
-        LocalizableStringBasedDisplayView(\.genderIdentity, .preferNotToState)
+        LocalizableStringDisplayView(\.genderIdentity, .preferNotToState)
     }
 }
 #endif

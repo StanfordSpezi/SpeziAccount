@@ -10,11 +10,11 @@ import SpeziPersonalInfo
 import SwiftUI
 
 
-/// A simple account summary displayed in the ``AccountSetup`` view when there is already a signed in user account.
-public struct AccountSummaryBox: View {
+/// A simple account summary displayed in the `AccountSetup` view when there is already a signed in user account.
+struct AccountSummaryBox: View {
     private let model: AccountDisplayModel
 
-    public var body: some View {
+    var body: some View {
         HStack(spacing: 16) {
             Group {
                 if let profileViewName = model.profileViewName {
@@ -60,7 +60,7 @@ public struct AccountSummaryBox: View {
 
     /// Create a new `AccountSummaryBox`
     /// - Parameter details: The ``AccountDetails`` to render.
-    public init(details: AccountDetails) {
+    init(details: AccountDetails) {
         self.model = AccountDisplayModel(details: details)
     }
 }

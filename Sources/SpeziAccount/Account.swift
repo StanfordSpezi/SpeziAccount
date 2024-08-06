@@ -13,45 +13,49 @@ import SwiftUI
 
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
-/// The `Account` object is responsible to manage the state of the currently logged in user.
-/// You can simply access the currently ``signedIn`` state of the user (or via the `$signedIn` publisher) or
-/// access the account information from the ``details`` property (or via the `$details` publisher).
+/// You can access the current user account state using the `Account` `Module`.
+/// It provides information if the user is currently ``Account/signedIn`` and allows to access the user ``Account/details``.
 ///
 /// - Note: For more information on how to access and use the `Account` object when implementing a custom ``AccountService``
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
 ///
-/// ### Accessing `Account` in your view
-///
-/// To access the `Account` object from anywhere in your view hierarchy (assuming you have ``AccountConfiguration`` configured),
-/// you may just declare the respective [@Environment](https://developer.apple.com/documentation/swiftui/environment)
-/// property wrapper as in the code sample below.
-///
+/// Below is a short code example demonstrating how to access `Account` from your SwiftUI view hierarchy.
 /// ```swift
 /// struct MyView: View {
-///     @Environment(Account.self) var account
+///     @Environment(Account.self)
+///     private var account
 ///
 ///     var body: some View {
-///         if let details = account.details {
-///             Text("Hello \(details.name.formatted(.name(style: .medium)))")
-///         } else {
-///             Text("Hello World")
-///         }
+///         // ...
 ///     }
 /// }
 /// ```
 ///
+///
+/// Accessing the `Account` from within your `Module` is equally simple using the Spezi dependency system.
+///
+/// ```swift
+/// final class MyModule: Module {
+///     @Dependency(Account.self)
+///     private var account
+/// }
+/// ```
+///
+/// - Note: The code example declares a required dependency and would crash if the user doesn't configure `SpeziAccount`.
+///     You might want to consider it as an optional dependency to gracefully handle the case where `SpeziAccount` might not be configured.
+///
 /// ## Topics
 ///
-/// ### Retrieving Account state
-/// This section provides an overview on how to retrieve the currently logged in user from your views.
+/// ### Associated User Account
+/// Determine account association status and retrieve associated user details.
 ///
 /// - ``signedIn``
 /// - ``details``
 ///
-/// ### Managing Account state
-/// This section provides an overview on how to manage and manipulate the current user account as an ``AccountService``.
+/// ### Managing Account State
+/// Manage user account association as an `AccountService`.
 ///
-/// - ``supplyUserDetails(_:isNewUser:)``
+/// - ``supplyUserDetails(_:)``
 /// - ``removeUserDetails()``
 @Observable
 public final class Account {
@@ -146,13 +150,10 @@ public final class Account {
     /// This method is called by the ``AccountService`` every time the state of the user account changes.
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
-    /// - Parameters:
-    ///   - details: The ``AccountDetails`` of the currently logged in user account.
-    ///   - isNewUser: An optional flag that indicates if the provided account details are for a new user registration.
-    ///     If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
-    ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
-    ///     This is primarily helpful for identity providers. You might not want to set this flag
-    ///     if you using the builtin ``SignupForm``!
+    /// - Note: Please set the ``AccountDetails/isNewUser`` or ``AccountDetails/isAnonymous`` properties to communicate the type of account details
+    ///     supplied to `Account`.
+    ///
+    /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
     @MainActor
     public func supplyUserDetails(_ details: AccountDetails) {
         precondition(

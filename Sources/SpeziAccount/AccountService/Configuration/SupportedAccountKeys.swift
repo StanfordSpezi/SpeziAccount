@@ -7,16 +7,14 @@
 //
 
 
-/// The collection of ``AccountKey``s that a ``AccountService`` is capable to storing itself.
+/// The collection of `AccountKey`s that an `AccountService` is capable to storing itself.
 ///
-/// A ``AccountService`` must set this configuration option to communicate what set of ``AccountKey`` it is
+/// An ``AccountService`` must set this configuration option to communicate what set of ``AccountKey`` it is
 /// capable of storing.
 ///
 /// Upon startup, `SpeziAccount` automatically verifies that the user-configured account values match what the
-/// ``AccountService`` is capable of storing or that the user provides a ``AccountStorageProvider``
-/// to the ``AccountConfiguration`` to handle storage of all unsupported account values.
-///
-/// Access the configuration via the ``AccountServiceConfiguration/supportedAccountKeys``.
+/// `AccountService` is capable of storing or that the user provides an ``AccountStorageProvider``
+/// to handle storage of all unsupported account values.
 ///
 /// Below is an example on how to provide a fixed set of supported account keys.
 ///
@@ -27,7 +25,7 @@
 ///     \.name
 /// }
 ///
-/// let configuration = AccountServiceConfiguration(name: /* ... */, supportedKeys: .exactly(supportedKeys))
+/// let configuration = AccountServiceConfiguration(supportedKeys: .exactly(supportedKeys))
 /// ```
 public enum SupportedAccountKeys: AccountServiceConfigurationKey {
     /// The ``AccountService`` is capable of storing arbitrary account keys.
