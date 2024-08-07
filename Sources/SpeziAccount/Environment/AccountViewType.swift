@@ -20,16 +20,6 @@ import SwiftUI
 /// }
 /// ```
 public enum AccountViewType {
-    /// The mode in which a subview of a ``AccountOverview`` operates in.
-    public enum OverviewEntryMode {
-        /// New data is entered.
-        case new
-        /// Existing data is provided to the ``DataEntryView``.
-        case existing
-        /// Data is used to display data.
-        case display
-    }
-
     /// The view is part of a ``SignupForm`` view hierarchy.
     case signup
     /// The view is part of a ``AccountOverview`` view hierarchy in a given ``OverviewEntryMode``.
@@ -44,6 +34,19 @@ public enum AccountViewType {
         case let .overview(mode):
             return mode == .new
         }
+    }
+}
+
+
+extension AccountViewType {
+    /// The mode in which a subview of a ``AccountOverview`` operates in.
+    public enum OverviewEntryMode {
+        /// New data is entered.
+        case new
+        /// Existing data is provided to the ``DataEntryView``.
+        case existing
+        /// Data is used to display data.
+        case display
     }
 }
 
