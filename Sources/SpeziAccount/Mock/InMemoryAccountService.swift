@@ -8,6 +8,7 @@
 
 import Foundation
 import Spezi
+import SpeziFoundation
 import SpeziViews
 import SwiftUI
 
@@ -43,8 +44,14 @@ private struct AnonymousSignupButton: View {
     private var colorScheme
 
     var body: some View {
-        AccountServiceButton("Stanford SUNet", systemImage: "graduationcap.fill") {
+        AccountServiceButton {
             service.signInAnonymously()
+        } label: {
+            Label {
+                Text(verbatim: "Stanford SUNet")
+            } icon: {
+                Image(systemName: "graduationcap.fill") // swiftlint:disable:this accessibility_label_for_image
+            }
         }
             .tint(colorScheme == .light ? cardinalRed : cardinalRedDark)
     }
@@ -67,6 +74,7 @@ private struct MockSignInWithAppleButton: View {
         } onCompletion: { result in
             print("Sign in with Apple completed: \(result)")
         }
+            .frame(height: 55)
     }
 }
 
@@ -93,12 +101,16 @@ private struct MockSecurityAlert: ViewModifier {
             .onDisappear {
                 isActive = false
             }
-            .alert("Security Alert", isPresented: isPresented, presenting: service.state.securityContinuation) { continuation in
-                Button("Cancel", role: .cancel) {
+            .alert(Text(verbatim: "Security Alert"), isPresented: isPresented, presenting: service.state.securityContinuation) { continuation in
+                Button(role: .cancel) {
                     continuation.resume(with: .failure(InMemoryAccountService.AccountError.cancelled))
+                } label: {
+                    Text(verbatim: "Cancel")
                 }
-                Button("Continue", role: .destructive) {
+                Button(role: .destructive) {
                     continuation.resume()
+                } label: {
+                    Text(verbatim: "Continue")
                 }
             }
     }
@@ -112,51 +124,6 @@ private struct MockSecurityAlert: ViewModifier {
 /// Further, it can be easily integrated in SwiftUI previews and UI tests.
 @MainActor
 public final class InMemoryAccountService: AccountService {
-    public struct ConfiguredIdentityProvider: OptionSet, Sendable {
-        public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
-        public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
-        public static let signInWithApple = ConfiguredIdentityProvider(rawValue: 1 << 2)
-        public static let all: ConfiguredIdentityProvider = [.userIdPassword, .customIdentityProvider, .signInWithApple]
-
-        public let rawValue: UInt8
-
-        public init(rawValue: UInt8) {
-            self.rawValue = rawValue
-        }
-    }
-
-    @Observable
-    @MainActor
-    final class State {
-        var presentingSecurityAlert = false
-        var securityContinuation: CheckedContinuation<Void, Error>?
-    }
-
-    fileprivate struct UserStorage {
-        let accountId: UUID
-        var userId: String?
-        var password: String?
-        var name: PersonNameComponents?
-        var genderIdentity: GenderIdentity?
-        var dateOfBirth: Date?
-
-        init( // swiftlint:disable:this function_default_parameter_at_end
-            accountId: UUID = UUID(),
-            userId: String?,
-            password: String?,
-            name: PersonNameComponents? = nil,
-            genderIdentity: GenderIdentity? = nil,
-            dateOfBirth: Date? = nil
-        ) {
-            self.accountId = accountId
-            self.userId = userId
-            self.password = password
-            self.name = name
-            self.genderIdentity = genderIdentity
-            self.dateOfBirth = dateOfBirth
-        }
-    }
-
     private static let supportedKeys = AccountKeyCollection {
         \.accountId
         \.userId
@@ -185,7 +152,8 @@ public final class InMemoryAccountService: AccountService {
     @SecurityRelatedModifier private var securityAlert = MockSecurityAlert()
 
     public let configuration: AccountServiceConfiguration
-    let state = State()
+    fileprivate let state = State()
+    private let access = AsyncSemaphore()
 
     private var userIdToAccountId: [String: UUID] = [:]
     private var registeredUsers: [UUID: UserStorage] = [:]
@@ -228,9 +196,11 @@ public final class InMemoryAccountService: AccountService {
                     continue
                 }
 
+                try await access.waitCheckingCancellation()
                 var details = _buildUser(from: storage, isNew: false)
                 details.add(contentsOf: updatedDetails.details)
-                account.supplyUserDetails(details) // TODO: actually might intervene with the async call?
+                account.supplyUserDetails(details)
+                access.signal()
             }
         }
     }
@@ -388,6 +358,10 @@ public final class InMemoryAccountService: AccountService {
 
 
     private func loadUser(_ user: UserStorage, isNew: Bool = false) async throws {
+        try await access.waitCheckingCancellation()
+        defer {
+            access.signal()
+        }
         var details = _buildUser(from: user, isNew: isNew)
 
         var unsupportedKeys = account.configuration.keys
@@ -459,6 +433,51 @@ extension InMemoryAccountService {
             }
         }
     }
+
+    public struct ConfiguredIdentityProvider: OptionSet, Sendable {
+        public static let userIdPassword = ConfiguredIdentityProvider(rawValue: 1 << 0)
+        public static let customIdentityProvider = ConfiguredIdentityProvider(rawValue: 1 << 1)
+        public static let signInWithApple = ConfiguredIdentityProvider(rawValue: 1 << 2)
+        public static let all: ConfiguredIdentityProvider = [.userIdPassword, .customIdentityProvider, .signInWithApple]
+
+        public let rawValue: UInt8
+
+        public init(rawValue: UInt8) {
+            self.rawValue = rawValue
+        }
+    }
+
+    @Observable
+    @MainActor
+    final class State {
+        var presentingSecurityAlert = false
+        var securityContinuation: CheckedContinuation<Void, Error>?
+    }
+
+    fileprivate struct UserStorage {
+        let accountId: UUID
+        var userId: String?
+        var password: String?
+        var name: PersonNameComponents?
+        var genderIdentity: GenderIdentity?
+        var dateOfBirth: Date?
+
+        init( // swiftlint:disable:this function_default_parameter_at_end
+            accountId: UUID = UUID(),
+            userId: String?,
+            password: String?,
+            name: PersonNameComponents? = nil,
+            genderIdentity: GenderIdentity? = nil,
+            dateOfBirth: Date? = nil
+        ) {
+            self.accountId = accountId
+            self.userId = userId
+            self.password = password
+            self.name = name
+            self.genderIdentity = genderIdentity
+            self.dateOfBirth = dateOfBirth
+        }
+    }
 }
 
 
@@ -498,3 +517,5 @@ extension String {
         return id
     }
 }
+
+// swiftlint:disable:this file_length

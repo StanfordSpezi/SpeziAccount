@@ -18,7 +18,7 @@ struct SignupSetupView<Credential: Sendable>: View {
 
     var body: some View {
         VStack {
-            AccountServiceButton("Signup") {
+            AccountServiceButton("UP_SIGNUP") {
                 presentingSignupSheet = true
             }
             .padding(.bottom, 12)
@@ -28,7 +28,7 @@ struct SignupSetupView<Credential: Sendable>: View {
                     Button {
                         setupStyle = .login(loginClosure)
                     } label: {
-                        Text("Login", bundle: .module)
+                        Text("UP_LOGIN", bundle: .module)
                     }
                 }
                 .font(.footnote)

@@ -8,6 +8,24 @@
 
 import SpeziFoundation
 
+public struct AccountDetailsFlags: OptionSet, Sendable { // TODO: maybe that should stay private/internal!
+    public let rawValue: UInt16
+
+    public init(rawValue: UInt16) {
+        self.rawValue = rawValue
+    }
+}
+
+
+extension AccountDetailsFlags {
+    public static let isNewUser = AccountDetailsFlags(rawValue: 1 << 0)
+    public static let isAnonymousUser = AccountDetailsFlags(rawValue: 1 << 1)
+    public static let isVerified = AccountDetailsFlags(rawValue: 1 << 2)
+    public static let isIncomplete = AccountDetailsFlags(rawValue: 1 << 3)
+
+    // TODO: how to encode "signup provider not capable to retrieve all signup details"
+}
+
 
 extension AccountDetails {
     private struct IsNewUserKey: KnowledgeSource {

@@ -19,7 +19,6 @@ import SwiftUI
 public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
 
 
-// TODO: SpeziViews candidate?
 struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
     private let label: Label
 

@@ -17,6 +17,12 @@ import OrderedCollections
 /// A configuration instance is created using ``AccountConfiguration`` and stored at ``Account/configuration``.
 @dynamicMemberLookup
 public struct AccountValueConfiguration {
+    enum IncludeCollectedType {
+        case onlyRequired
+        case includeCollected
+        case includeCollectedAtLeastOneRequired
+    }
+
     /// The default set of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
     public static let `default` = AccountValueConfiguration(.default)
 
@@ -69,15 +75,38 @@ public struct AccountValueConfiguration {
         }
     }
 
-    func missingRequiredKeys(for details: AccountDetails, includeCollected: Bool = false) -> [any AccountKey.Type] {
-        let accountKeyIds = Set(details.keys.map { ObjectIdentifier($0) })
+    func missingRequiredKeys(
+        for details: AccountDetails,
+        _ includeCollected: IncludeCollectedType = .onlyRequired,
+        ignoring: [any AccountKey.Type] = []
+    ) -> [any AccountKey.Type] {
+        let keysPresent = Set(details.keys.map { ObjectIdentifier($0) })
+            .union(Set(ignoring.map { ObjectIdentifier($0) }))
 
-        return self
-            .all(filteredBy: includeCollected ? [.required, .collected] : [.required])
-            .filter { $0.category != .credentials } // don't collect credentials!
-            .filter { key in
-                !accountKeyIds.contains(ObjectIdentifier(key))
+        let missingKeys = filter { entry in
+            entry.key.category != .credentials // generally, don't collect credentials!
+                && (entry.requirement == .required || entry.requirement == .collected) // not interested in supported keys
+                && !keysPresent.contains(ObjectIdentifier(entry.key)) // missing on the current details
+        }
+
+        let result = switch includeCollected {
+        case .includeCollectedAtLeastOneRequired:
+            if missingKeys.contains(where: { $0.requirement == .required }) {
+                missingKeys
+            } else {
+                missingKeys.filter { entry in
+                    entry.requirement == .required
+                }
             }
+        case .onlyRequired:
+            missingKeys.filter { entry in
+                entry.requirement == .required
+            }
+        case .includeCollected:
+            missingKeys
+        }
+
+        return result.map { $0.key }
     }
 
 

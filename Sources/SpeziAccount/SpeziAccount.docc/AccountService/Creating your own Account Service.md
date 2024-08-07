@@ -248,6 +248,11 @@ actor MyAccountService: AccountService {
 - ``PasswordResetView``
 - ``SuccessfulPasswordResetView``
 
+### UI Customization
+
+- ``SwiftUI/View/reportSignupProviderCompliance(_:)``
+- ``SignupProviderCompliance``
+
 ### Credentials
 
 - ``UserIdPasswordCredential``

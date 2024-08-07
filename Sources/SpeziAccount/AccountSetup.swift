@@ -72,8 +72,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
     @Environment(Account.self)
     private var account
+    @Environment(\.followUpBehavior)
+    private var followUpBehavior
 
     @State private var setupState: _AccountSetupState = .generic
+    @State private var compliance: SignupProviderCompliance?
     @State private var followUpSheet = false
 
     private var hasSetupComponents: Bool {
@@ -120,16 +123,12 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
         }
             .onChange(of: account.signedIn) {
-                if let details = account.details, case .setupShown = setupState {
-                    let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
-
-                    if missingKeys.isEmpty {
-                        setupState = .loadingExistingAccount
-                        setupCompleteClosure(details)
-                    } else {
-                        setupState = .requiringAdditionalInfo(missingKeys)
-                    }
+                guard let details = account.details,
+                      case .setupShown = setupState else {
+                    return
                 }
+
+                handleSuccessfulSetup(details)
             }
     }
 
@@ -158,6 +157,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
+                .receiveSignupProviderCompliance { compliance in
+                    self.compliance = compliance
+                }
         }
     }
 
@@ -201,7 +203,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         ProgressView()
             .sheet(isPresented: $followUpSheet) {
                 NavigationStack {
-                    FollowUpInfoSheet(details: details, requiredKeys: requiredKeys)
+                    FollowUpInfoSheet(details: details, keys: requiredKeys)
                 }
             }
             .onAppear {
@@ -213,6 +215,44 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     setupCompleteClosure(details)
                 }
             }
+    }
+
+    private func handleSuccessfulSetup(_ details: AccountDetails) {
+        var includeCollected: AccountValueConfiguration.IncludeCollectedType
+        let ignoreCollected: [any AccountKey.Type]
+
+        switch followUpBehavior {
+        case .disabled:
+            handleSetupCompleted(details)
+            return
+        case .minimal:
+            includeCollected = .onlyRequired
+        case .redundant:
+            includeCollected = .includeCollectedAtLeastOneRequired // TODO: should we test that?
+        }
+
+        // If the provider was not able to present all details and it is a new user we always include collected.
+        // This applies to both followUpBehaviors.
+        if details.isNewUser,
+           case let .only(keys) = compliance?.visualizedAccountKeys {
+            includeCollected = .includeCollected
+            ignoreCollected = keys
+        } else {
+            ignoreCollected = []
+        }
+
+        let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected, ignoring: ignoreCollected)
+
+        if !missingKeys.isEmpty {
+            setupState = .requiringAdditionalInfo(missingKeys)
+        } else {
+            handleSetupCompleted(details)
+        }
+    }
+
+    private func handleSetupCompleted(_ details: AccountDetails) {
+        setupState = .loadingExistingAccount
+        setupCompleteClosure(details)
     }
 }
 

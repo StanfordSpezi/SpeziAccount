@@ -23,8 +23,6 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     
     @Environment(Account.self)
     private var account
-    @Environment(\.logger)
-    private var logger
     @Environment(\.editMode)
     private var editMode
     @Environment(\.dismiss)
@@ -238,19 +236,19 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         }
         
         guard !model.modifiedDetailsBuilder.isEmpty else {
-            logger.debug("Not saving anything, as there were no changes!")
+            account.logger.debug("Not saving anything, as there were no changes!")
             model.discardChangesAction(editMode: editMode)
             return
         }
         
         guard validation.validateSubviews() else {
-            logger.debug("Some input validation failed. Staying in edit mode!")
+            account.logger.debug("Some input validation failed. Staying in edit mode!")
             return
         }
         
         isFocused = false
         
-        logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
+        account.logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         
         try await model.updateAccountDetails(details: accountDetails, using: account, editMode: editMode)
     }

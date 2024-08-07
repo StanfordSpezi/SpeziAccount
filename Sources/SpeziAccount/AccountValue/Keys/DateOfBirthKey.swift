@@ -75,7 +75,7 @@ extension AccountDetails {
     /// The date of birth of a user.
     @_documentation(visibility: internal)
     @available(*, deprecated, renamed: "dateOfBirth", message: "Replaced by a version that fixes the spelling error.")
-    public var dateOfBrith: Date? { // TODO: verify that this is the mispelled version!
+    public var dateOfBrith: Date? {
         dateOfBirth
     }
 }
@@ -83,10 +83,4 @@ extension AccountDetails {
 
 @KeyEntry(\.dateOfBirth)
 public extension AccountKeys { // swiftlint:disable:this no_extension_access_modifier
-    /// The date of birth of a user.
-    @_documentation(visibility: internal)
-    @available(*, deprecated, renamed: "dateOfBirth", message: "Replaced by a version that fixes the spelling error.")
-    var dateOfBrith: AccountDetails.__Key_dateOfBirth.Type {
-        AccountDetails.__Key_dateOfBirth.self
-    }
 }

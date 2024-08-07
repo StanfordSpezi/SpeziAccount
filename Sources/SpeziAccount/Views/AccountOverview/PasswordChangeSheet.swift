@@ -20,8 +20,6 @@ struct PasswordChangeSheet: View {
 
     @Environment(Account.self)
     private var account
-    @Environment(\.logger)
-    private var logger
     @Environment(\.dismiss)
     private var dismiss
 
@@ -114,7 +112,7 @@ struct PasswordChangeSheet: View {
 
         isFocused = false
 
-        logger.debug("Saving updated password to AccountService!")
+        account.logger.debug("Saving updated password to AccountService!")
 
         try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()

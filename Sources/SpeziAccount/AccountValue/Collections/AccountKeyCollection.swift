@@ -54,9 +54,10 @@ struct AccountKeyWithKeyPathDescription<Key: AccountKey>: AccountKeyWithDescript
 ///
 /// - ``AccountKeyCollectionBuilder``
 /// - ``AccountKeyWithDescription``
-public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
+public struct AccountKeyCollection {
     private var elements: [any AccountKeyWithDescription]
 
+    /// The type-erased array of keys stored in the collection.
     public var _keys: [any AccountKey.Type] { // swiftlint:disable:this identifier_name
         elements.map { $0.key }
     }
@@ -76,17 +77,15 @@ public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
         self.elements = keys()
     }
 
-
-    public func acceptAll<Visitor: AccountKeyVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
-        self
-            .map { $0.key }
-            .acceptAll(&visitor)
-    }
-
+    /// Checks if the provided `AccountKey` is stored in the collection.
+    /// - Parameter key: The account key to check existence for.
+    /// - Returns: Returns `true` if the a value is stored for the given `AccountKey`.
     public func contains<Key: AccountKey>(_ key: Key.Type) -> Bool {
         elements.contains(where: { $0.key == key })
     }
 
+    /// Remove the keys from the collection.
+    /// - Parameter keys: The list of keys which are removed from the collection.
     public mutating func removeAll(_ keys: [any AccountKey.Type]) {
         let contained = Set(keys.map { ObjectIdentifier($0) })
         elements.removeAll { key in
@@ -95,9 +94,21 @@ public struct AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
     }
 
 
+    /// Remove the keys from the collection.
+    /// - Parameter keys: The list of keys which are removed from the collection.
+    ///     You can use types like the ``AccountKeyCollection`` or a simple `[any AccountKey.Type]` array.
     @_disfavoredOverload
     public mutating func removeAll<Keys: AcceptingAccountKeyVisitor>(_ keys: Keys) {
         removeAll(keys._keys)
+    }
+}
+
+
+extension AccountKeyCollection: Sendable, AcceptingAccountKeyVisitor {
+    public func acceptAll<Visitor: AccountKeyVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
+        self
+            .map { $0.key }
+            .acceptAll(&visitor)
     }
 }
 

@@ -365,6 +365,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
 
+        // Note, if we are not back at the home screen, the setup closure does not work
+
         // Now verify what we entered
         app.openAccountOverview()
 
@@ -500,6 +502,22 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
+
+        XCTAssertTrue(app.navigationBars.buttons["Logout"].exists)
+
+        app.staticTexts["Finish Account Setup"].firstMatch.swipeDown(velocity: .slow) // check that this is not dismissible
+
+        app.navigationBars.buttons["Logout"].tap()
+
+        let confirmation = "This account information is required. If you abort, you will automatically be signed out!" // TODO: update this message?
+        XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.scrollViews.buttons["Logout"].exists)
+        XCTAssertTrue(app.buttons["Keep Editing"].exists)
+
+        app.scrollViews.buttons["Logout"].tap()
+
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.staticTexts["User Id"].exists)
     }
 }
 

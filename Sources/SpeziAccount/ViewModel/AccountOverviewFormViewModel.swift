@@ -8,7 +8,7 @@
 
 import Combine
 import OrderedCollections
-import os
+import OSLog
 import SpeziViews
 import SwiftUI
 
@@ -16,9 +16,7 @@ import SwiftUI
 @MainActor
 @Observable
 class AccountOverviewFormViewModel {
-    private static var logger: Logger {
-        LoggerKey.defaultValue
-    }
+    private let logger = Logger(subsystem: "edu.stanford.spezi", category: "AccountOverview")
 
     /// We categorize ``AccountKey`` by ``AccountKeyCategory``. This is completely static and precomputed.
     ///
@@ -116,7 +114,7 @@ class AccountOverviewFormViewModel {
             return
         }
 
-        Self.logger.debug("Adding new account value \(value) to the edit view!")
+        logger.debug("Adding new account value \(value) to the edit view!")
 
         if let index = removedAccountKeys.index(of: value) {
             // This is a account value for which the user has a value set, but which he marked as removed in this session
@@ -151,7 +149,7 @@ class AccountOverviewFormViewModel {
 
     @available(macOS, unavailable)
     func cancelEditAction(editMode: Binding<EditMode>?) {
-        Self.logger.debug("Pressed the cancel button!")
+        logger.debug("Pressed the cancel button!")
         if !hasUnsavedChanges {
             discardChangesAction(editMode: editMode)
             return
@@ -159,7 +157,7 @@ class AccountOverviewFormViewModel {
 
         presentingCancellationDialog = true
 
-        Self.logger.debug("Found \(self.modifiedDetailsBuilder.count) modified elements. Asking to discard.")
+        logger.debug("Found \(self.modifiedDetailsBuilder.count) modified elements. Asking to discard.")
     }
 
     @available(macOS, unavailable)
@@ -170,7 +168,7 @@ class AccountOverviewFormViewModel {
     }
 
     func discardChangesAction() {
-        Self.logger.debug("Exiting edit mode and discarding changes.")
+        logger.debug("Exiting edit mode and discarding changes.")
 
         resetModelState()
     }
@@ -191,7 +189,7 @@ class AccountOverviewFormViewModel {
         )
 
         try await account.accountService.updateAccountDetails(modifications)
-        Self.logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
+        logger.debug("\(self.modifiedDetailsBuilder.count) items saved successfully.")
 
         resetModelState()
     }

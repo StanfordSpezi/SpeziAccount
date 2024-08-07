@@ -39,7 +39,7 @@ extension AccountDetails {
 }
 
 
-extension AccountDetails: Codable { // TODO: those docs are not shown!
+extension AccountDetails: Codable {
     /// Decodes the contents of a account details collection.
     ///
     /// - Warning: Decoding an `AccountDetails` requires knowledge of the ``AccountKey``s to decode. Therefore,

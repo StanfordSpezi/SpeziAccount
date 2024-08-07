@@ -288,13 +288,36 @@
       }
     },
     "Already got an Account?" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast bereits ein Benutzerkonto?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Already got an Account?"
+          }
+        }
+      }
     },
     "Anonymous User" : {
-
-    },
-    "Cancel" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonymer Benutzer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonymous User"
+          }
+        }
+      }
     },
     "CANCEL" : {
       "localizations" : {
@@ -358,28 +381,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cerrar"
-          }
-        }
-      }
-    },
-    "CONFIRMATION_DISCARD_ADDITIONAL_INFO" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abbrechen und Abmelden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel and Logout"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar y Cerrar Sesión"
           }
         }
       }
@@ -582,33 +583,6 @@
         }
       }
     },
-    "Continue" : {
-
-    },
-    "Default Account Service Configuration Environment Key" : {
-      "comment" : "Internal use only, no need to translate.",
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        }
-      }
-    },
     "DELETE" : {
       "localizations" : {
         "de" : {
@@ -676,7 +650,20 @@
       }
     },
     "Double Key" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double Key"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double Key"
+          }
+        }
+      }
     },
     "EDIT" : {
       "localizations" : {
@@ -898,9 +885,6 @@
         }
       }
     },
-    "Login" : {
-
-    },
     "MISSING_ACCOUNT_DETAILS" : {
       "localizations" : {
         "de" : {
@@ -941,75 +925,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "**No hay servicios de cuenta configurados.**\n\n¡Por favor, consulte la documentación del paquete SpeziAccount sobre cómo configurar un servicio de cuenta!"
-          }
-        }
-      }
-    },
-    "Mock AccountService" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Account Service"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Account Service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servicio de Cuenta Simulada"
-          }
-        }
-      }
-    },
-    "Mock SignIn with Apple" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Sign in with Apple"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Sign in with Apple"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simulacro de Inicio de Sesión con Apple"
-          }
-        }
-      }
-    },
-    "Mock Simple AccountService" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Simple Account Service"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Simple Account Service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servicio de Cuenta Simple Simulado"
           }
         }
       }
@@ -1103,13 +1018,52 @@
       }
     },
     "Numeric Key" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numeric Key"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numeric Key"
+          }
+        }
+      }
     },
     "Off" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
     },
     "On" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
+          }
+        }
+      }
     },
     "OPEN_DOCUMENTATION" : {
       "localizations" : {
@@ -1221,9 +1175,6 @@
         }
       }
     },
-    "Security Alert" : {
-
-    },
     "SIGN_IN_AND_SECURITY" : {
       "localizations" : {
         "de" : {
@@ -1246,14 +1197,21 @@
         }
       }
     },
-    "Signup" : {
-
-    },
-    "Stanford SUNet" : {
-
-    },
     "The input can only consist of digits." : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Eingabe kann nur aus Zahlen bestehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The input can only consist of digits."
+          }
+        }
+      }
     },
     "The internal account identifier is meant to be generated!" : {
       "comment" : "Pure debug message, no need to translate.",
@@ -1302,7 +1260,20 @@
       }
     },
     "Toggle" : {
-
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle"
+          }
+        }
+      }
     },
     "UAP_PASSWORD_RESET_SUBTITLE %@" : {
       "localizations" : {

@@ -8,7 +8,7 @@
 
 
 /// Describes the user-configured requirement level for an ``AccountKey``.
-public enum AccountKeyRequirement: Sendable {
+public enum AccountKeyRequirement {
     /// The associated account value **must** be provided by the user at signup.
     ///
     /// It is mandatory to use the ``RequiredAccountKey`` protocol.
@@ -24,3 +24,6 @@ public enum AccountKeyRequirement: Sendable {
     /// and a user can supply a value by editing their account details.
     case supported
 }
+
+
+extension AccountKeyRequirement: Sendable, Hashable {}

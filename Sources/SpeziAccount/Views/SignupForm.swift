@@ -33,6 +33,7 @@ public struct SignupForm<Header: View>: View {
     @State private var viewState: ViewState = .idle
     @FocusState private var isFocused: Bool
 
+    @State private var compliance: SignupProviderCompliance?
     @State private var presentingCloseConfirmation = false
 
     @MainActor private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
@@ -66,6 +67,7 @@ public struct SignupForm<Header: View>: View {
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .interactiveDismissDisabled(!signupDetailsBuilder.isEmpty)
+            .reportSignupProviderCompliance(compliance)
             .confirmationDialog(
                 Text("CONFIRMATION_DISCARD_INPUT_TITLE", bundle: .module),
                 isPresented: $presentingCloseConfirmation,
@@ -148,8 +150,14 @@ public struct SignupForm<Header: View>: View {
             try details.validateAgainstSignupRequirements(account.configuration)
         }
 
-        try await signupClosure(details)
-
+        compliance = .compliant
+        do {
+            try await signupClosure(details)
+        } catch {
+            compliance = nil
+            throw error
+        }
+        
         dismiss()
     }
 }

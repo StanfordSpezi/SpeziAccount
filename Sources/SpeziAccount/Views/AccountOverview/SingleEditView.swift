@@ -19,8 +19,6 @@ struct SingleEditView<Key: AccountKey>: View {
 
     @Environment(Account.self)
     private var account
-    @Environment(\.logger)
-    private var logger
     @Environment(\.dismiss)
     private var dismiss
 
@@ -77,7 +75,7 @@ struct SingleEditView<Key: AccountKey>: View {
 
         isFocused = false
 
-        logger.debug("Saving updated \(Key.self) value!")
+        account.logger.debug("Saving updated \(Key.self) value!")
 
         try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()

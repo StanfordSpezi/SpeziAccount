@@ -13,16 +13,42 @@ import SpeziViews
 import SwiftUI
 
 
+struct FollowUpInfoFormHeader: View {
+    var body: some View {
+        FormHeader(
+            image: Image(systemName: "person.crop.rectangle.badge.plus"), // swiftlint:disable:this accessibility_label_for_image
+            title: Text("FOLLOW_UP_INFORMATION_TITLE", bundle: .module),
+            instructions: Text("FOLLOW_UP_INFORMATION_INSTRUCTIONS", bundle: .module)
+        )
+    }
+
+    init() {}
+}
+
+
+/// A 
 @MainActor
-struct FollowUpInfoSheet: View {
+public struct FollowUpInfoSheet: View {
+    /// Defines the behavior of the cancel button for the followup-info sheet.
+    public enum CancelBehavior { // TODO: similar thing for AccountOverview instead of the isEditing binding?
+        /// Cancel button is not shown.
+        case disabled
+        /// Cancellation results in logout.
+        case requireLogout
+        /// Cancellation dismisses the view.
+        case cancel
+    }
+
     private let accountDetails: AccountDetails
     private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
+    private let cancelBehavior: CancelBehavior
+    private let onComplete: (AccountModifications) -> Void
 
 
-    @Environment(\.logger)
-    private var logger
     @Environment(\.dismiss)
     private var dismiss
+    @Environment(\.scenePhase)
+    private var scenePhase
 
     @Environment(Account.self)
     private var account
@@ -36,30 +62,35 @@ struct FollowUpInfoSheet: View {
     @State private var presentingCancellationConfirmation = false
 
 
-    var body: some View {
+    public var body: some View {
         form
             .interactiveDismissDisabled(true)
             .receiveValidation(in: $validation)
             .viewStateAlert(state: $viewState)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        presentingCancellationConfirmation = true
-                    }) {
-                        Text("CANCEL", bundle: .module)
+                if cancelBehavior != .disabled {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(role: .destructive) {
+                            presentingCancellationConfirmation = true
+                        } label: {
+                            Text("CANCEL", bundle: .module)
+                        }
                     }
                 }
             }
             .confirmationDialog(
-                Text("CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE", bundle: .module),
+                // TODO: different labels!
+                cancelBehavior.confirmationMessage,
                 isPresented: $presentingCancellationConfirmation,
                 titleVisibility: .visible
             ) {
-                Button(role: .destructive, action: {
+                AsyncButton(role: cancelBehavior.actionRole, state: $viewState) {
+                    try await account.accountService.logout()
                     dismiss()
-                }) {
-                    Text("CONFIRMATION_DISCARD_ADDITIONAL_INFO", bundle: .module)
+                } label: {
+                    cancelBehavior.actionLabel
                 }
+
                 Button(role: .cancel, action: {}) {
                     Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
                 }
@@ -68,25 +99,10 @@ struct FollowUpInfoSheet: View {
 
     @ViewBuilder private var form: some View {
         Form {
-            VStack {
-                Image(systemName: "person.crop.rectangle.badge.plus")
-                    .foregroundColor(.accentColor)
-                    .symbolRenderingMode(.multicolor)
-                    .font(.custom("XXL", size: 50, relativeTo: .title))
-                    .accessibilityHidden(true)
-                Text("FOLLOW_UP_INFORMATION_TITLE", bundle: .module)
-                    .accessibilityAddTraits(.isHeader)
-                    .font(.title)
-                    .bold()
-                    .padding(.bottom, 4)
-                Text("FOLLOW_UP_INFORMATION_INSTRUCTIONS", bundle: .module)
-                    .padding([.leading, .trailing], 25)
-            }
+            FollowUpInfoFormHeader()
                 .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
                 .listRowBackground(Color.clear)
                 .padding(.top, -3)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
 
             SignupSectionsView(sections: accountKeyByCategory)
                 .environment(\.accountServiceConfiguration, account.accountService.configuration)
@@ -109,17 +125,24 @@ struct FollowUpInfoSheet: View {
     }
 
 
-    init(details: AccountDetails, requiredKeys: [any AccountKey.Type]) {
+    public init(
+        details: AccountDetails,
+        keys: [any AccountKey.Type],
+        cancelBehavior: CancelBehavior = .requireLogout,
+        onComplete: @escaping (AccountModifications) -> Void = { _ in }
+    ) { // TODO: docs
         self.accountDetails = details
-        self.accountKeyByCategory = requiredKeys.reduce(into: [:]) { result, key in
+        self.accountKeyByCategory = keys.reduce(into: [:]) { result, key in
             result[key.category, default: []] += [key]
         }
+        self.cancelBehavior = cancelBehavior
+        self.onComplete = onComplete
     }
 
 
     private func completeButtonAction() async throws {
         guard validation.validateSubviews() else {
-            logger.debug("Failed to save updated account information. Validation failed!")
+            account.logger.debug("Failed to save updated account information. Validation failed!")
             return
         }
 
@@ -129,14 +152,49 @@ struct FollowUpInfoSheet: View {
 
         let modifications = try AccountModifications(modifiedDetails: modifiedDetails)
 
-        logger.debug("Finished additional account setup. Saving \(detailsBuilder.count) changes!")
+        account.logger.debug("Finished additional account setup. Saving \(detailsBuilder.count) changes!")
 
         let service = account.accountService
         try await service.updateAccountDetails(modifications)
 
+        onComplete(modifications)
+
         dismiss()
     }
 }
+
+
+extension FollowUpInfoSheet.CancelBehavior {
+    var confirmationMessage: Text {
+        switch self {
+        case .requireLogout:
+            Text("CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE", bundle: .module)
+        case .cancel:
+            Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module)
+        case .disabled:
+            Text(verbatim: "")
+        }
+    }
+
+    var actionRole: ButtonRole? {
+        switch self {
+        case .requireLogout:
+            .destructive
+        default:
+            nil
+        }
+    }
+
+    var actionLabel: Text {
+        switch self {
+        case .requireLogout:
+            Text("UP_LOGOUT", bundle: .module)
+        default:
+            Text("CANCEL", bundle: .module)
+        }
+    }
+}
+
 
 #if DEBUG
 private let keys: [any AccountKey.Type] = [AccountKeys.name]
@@ -146,7 +204,7 @@ private let keys: [any AccountKey.Type] = [AccountKeys.name]
 
     return NavigationStack {
         AccountDetailsReader { _, details in
-            FollowUpInfoSheet(details: details, requiredKeys: keys)
+            FollowUpInfoSheet(details: details, keys: keys)
         }
     }
         .previewWith {

@@ -77,11 +77,17 @@ Refer to the <doc:Creating-your-own-Account-Service> article if you plan on impl
 - ``AccountSetup``
 - ``AccountOverview``
 - ``AccountHeader``
-- ``SwiftUI/View/preferredAccountSetupStyle(_:)``
-- ``PreferredSetupStyle``
+- ``FollowUpInfoSheet``
 - ``SwiftUI/View/accountRequired(_:setupSheet:)``
 - ``SwiftUI/EnvironmentValues/accountRequired``
 - ``SwiftUI/View/verifyRequiredAccountDetails(_:)``
+
+### Environment & Preferences
+
+- ``SwiftUI/View/preferredAccountSetupStyle(_:)``
+- ``PreferredSetupStyle``
+- ``SwiftUI/View/followUpBehaviorAfterSetup(_:)``
+- ``FollowUpBehavior``
 
 ### Reacting to Events
 
