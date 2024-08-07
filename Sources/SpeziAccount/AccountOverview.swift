@@ -52,9 +52,9 @@ import SwiftUI
 /// }
 /// ```
 ///
-/// - Note: The ``init(isEditing:additionalSections:)`` initializer allows to pass an optional `Bool` Binding to retrieve the
-///     current edit mode of the view. This can be helpful to, e.g., render a custom `Close` Button if the
-///     view is not editing when presenting the AccountOverview in a sheet.
+/// ## Topics
+/// ### Close Button
+/// - ``CloseBehavior``
 @available(macOS, unavailable)
 public struct AccountOverview<AdditionalSections: View>: View {
     /// Defines the behavior for the close button.

@@ -9,17 +9,6 @@
 import SwiftUI
 
 
-/// The mode in which a subview of a ``AccountOverview`` operates in.
-public enum OverviewEntryMode {
-    /// New data is entered.
-    case new
-    /// Existing data is provided to the ``DataEntryView``.
-    case existing
-    /// Data is used to display data.
-    case display
-}
-
-
 /// Defines the type of `SpeziAccount` view a ``DataEntryView`` or ``DataDisplayView`` is placed in.
 ///
 /// Access this property inside supporting views using the ``SwiftUI/EnvironmentValues/accountViewType`` environment key.
@@ -30,14 +19,21 @@ public enum OverviewEntryMode {
 ///     var accountViewType
 /// }
 /// ```
-public enum AccountViewType: EnvironmentKey {
+public enum AccountViewType {
+    /// The mode in which a subview of a ``AccountOverview`` operates in.
+    public enum OverviewEntryMode {
+        /// New data is entered.
+        case new
+        /// Existing data is provided to the ``DataEntryView``.
+        case existing
+        /// Data is used to display data.
+        case display
+    }
+
     /// The view is part of a ``SignupForm`` view hierarchy.
     case signup
     /// The view is part of a ``AccountOverview`` view hierarchy in a given ``OverviewEntryMode``.
     case overview(mode: OverviewEntryMode)
-
-
-    public static let defaultValue: AccountViewType? = nil
 
 
     /// Determines if the view type represents a view mode where new data is provided for an account value.
@@ -52,20 +48,27 @@ public enum AccountViewType: EnvironmentKey {
 }
 
 
-extension OverviewEntryMode: Sendable, Hashable {}
+extension AccountViewType.OverviewEntryMode: Sendable, Hashable {}
 
 
 extension AccountViewType: Sendable, Hashable {}
 
 
 extension EnvironmentValues {
+    private struct AccountViewTypeKey: EnvironmentKey {
+        static let defaultValue: AccountViewType? = nil
+    }
+
     /// The type of `SpeziAccount` view a ``DataEntryView`` or ``DataDisplayView`` is placed in.
+    ///
+    /// ## Topics
+    /// - ``AccountViewType``
     public var accountViewType: AccountViewType? {
         get {
-            self[AccountViewType.self]
+            self[AccountViewTypeKey.self]
         }
         set {
-            self[AccountViewType.self] = newValue
+            self[AccountViewTypeKey.self] = newValue
         }
     }
 }

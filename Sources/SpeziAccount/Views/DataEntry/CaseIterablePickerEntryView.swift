@@ -52,6 +52,9 @@ struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.All
 /// Entry or modify the value of an `PickerValue`-based `AccountKey`.
 ///
 /// For more information, refer to the documentation of ``PickerValue``.
+///
+/// ## Topics
+/// - ``PickerValue``
 public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
     @Binding private var value: Key.Value
 

@@ -51,6 +51,9 @@ extension PreferredSetupStyle: Sendable, Hashable {}
 extension View {
     /// Set the preferred style of presenting account setup views for the view hierarchy.
     /// - Parameter setupStyle: The preferred account setup style.
+    ///
+    /// ## Topics
+    /// - ``PreferredSetupStyle``
     public func preferredAccountSetupStyle(_ setupStyle: PreferredSetupStyle) -> some View {
         environment(\.preferredSetupStyle, setupStyle)
     }

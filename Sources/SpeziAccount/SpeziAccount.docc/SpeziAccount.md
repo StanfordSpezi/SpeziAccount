@@ -36,13 +36,13 @@ The `SpeziAccount` framework fully abstracts setup and management of user accoun
 }
 
 The ``AccountSetup`` and ``AccountOverview`` views are central to `SpeziAccount`.
-You use the ``AccountDetails`` abstraction within your views to visualize account information of the associated user account.
+You use the ``AccountDetails`` collection within your views to visualize account information of the associated user account.
 
 An ``AccountService`` provides an abstraction layer for managing different types of account management services
 (e.g., email address and password-based service combined with an identity provider like Sign in with Apple).
 
 > Note: The [SpeziFirebase](https://github.com/StanfordSpezi/SpeziFirebase)
-framework provides the [`FirebaseAccountConfiguration`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountconfiguration)
+framework provides the [`FirebaseAccountService`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountservice)
 you can use to configure an Account Service base on the Google Firebase service.
 
 ## Setup
@@ -80,14 +80,11 @@ Refer to the <doc:Creating-your-own-Account-Service> article if you plan on impl
 - ``FollowUpInfoSheet``
 - ``SwiftUI/View/accountRequired(_:setupSheet:)``
 - ``SwiftUI/EnvironmentValues/accountRequired``
-- ``SwiftUI/View/verifyRequiredAccountDetails(_:)``
 
 ### Environment & Preferences
 
 - ``SwiftUI/View/preferredAccountSetupStyle(_:)``
-- ``PreferredSetupStyle``
 - ``SwiftUI/View/followUpBehaviorAfterSetup(_:)``
-- ``FollowUpBehavior``
 
 ### Reacting to Events
 

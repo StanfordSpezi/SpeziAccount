@@ -65,7 +65,7 @@ extension View {
     /// If account requirement is set, this modifier will automatically pop open an account setup sheet if
     /// it is detected that the associated user account was removed.
     ///
-    /// - Note: This modifier injects the ``SwiftUICore/EnvironmentValues/accountRequired`` property depending on the `required` argument.
+    /// - Note: This modifier injects the ``SwiftUI/EnvironmentValues/accountRequired`` property depending on the `required` argument.
     ///
     /// - Parameters:
     ///   - required: The flag indicating if an account is required at all times.

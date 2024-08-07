@@ -11,6 +11,9 @@ import SwiftUI
 
 extension AccountDetails {
     /// The gender identity of a user.
+    ///
+    /// ## Topics
+    /// - ``GenderIdentity``
     @AccountKey(
         id: "GenderIdentityKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module)),

@@ -67,14 +67,9 @@ public final class Account {
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
 
-    /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
+    /// Determine if there is are associated account details.
     ///
-    /// You might use the projected value `$signedIn` to get access to the corresponding publisher.
-    ///
-    /// - Important: If the property is set to `true`, it is guaranteed that ``details`` is present.
-    ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
-    ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
-    ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
+    /// - Note: If the property is set to `true`, it is guaranteed that ``details`` is present.
     @MainActor public private(set) var signedIn: Bool
 
     /// The user details of the currently associated user account.

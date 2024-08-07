@@ -212,5 +212,3 @@ Still, you are required to evaluate to which extent validation has to be handled
 - ``SwiftUI/EnvironmentValues/accountViewType``
 - ``SwiftUI/EnvironmentValues/passwordFieldType``
 - ``SwiftUI/EnvironmentValues/accountServiceConfiguration``
-- ``AccountViewType``
-- ``OverviewEntryMode``

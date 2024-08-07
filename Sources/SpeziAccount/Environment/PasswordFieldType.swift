@@ -54,6 +54,10 @@ extension EnvironmentValues {
     }
 
     /// The semantic use of a password field.
+    ///
+    /// ## Topics
+    ///
+    /// - ``PasswordFieldType``
     public var passwordFieldType: PasswordFieldType {
         get {
             self[PasswordFieldTypeKey.self]

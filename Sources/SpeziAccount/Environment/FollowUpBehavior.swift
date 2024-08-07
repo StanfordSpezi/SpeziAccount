@@ -84,6 +84,9 @@ extension View {
     ///
     /// - Parameter behavior: The behavior that should be used on a successful account setup.
     /// - Returns: Returns the modified view.
+    ///
+    /// ## Topics
+    /// - ``FollowUpBehavior``
     public func followUpBehaviorAfterSetup(_ behavior: FollowUpBehavior) -> some View {
         environment(\.followUpBehavior, behavior)
     }

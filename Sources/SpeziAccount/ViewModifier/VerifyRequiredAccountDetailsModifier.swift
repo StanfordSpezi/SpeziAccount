@@ -54,7 +54,7 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
                     return
                 }
 
-                guard let details = account.details, !details.isIncomplete else {
+                guard let details = account.details, !details.isIncomplete, !details.isAnonymous else {
                     followUpSession = nil
                     return
                 }

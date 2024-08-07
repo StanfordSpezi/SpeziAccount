@@ -29,7 +29,7 @@ The `SpeziAccount` framework fully abstracts setup and management of user accoun
 
 
 The ``AccountSetup`` and ``AccountOverview`` views are central to `SpeziAccount`.
-You use the ``AccountDetails`` abstraction within your views to visualize account information of the associated user account.
+You use the ``AccountDetails`` collection within your views to visualize account information of the associated user account.
 
 An ``AccountService`` provides an abstraction layer for managing different types of account management services
 (e.g., email address and password-based service combined with an identity provider like Sign in with Apple).
@@ -38,7 +38,7 @@ For more information, please refer to the [API documentation](https://swiftpacka
 
 > [!NOTE]
 > The [SpeziFirebase](https://github.com/StanfordSpezi/SpeziFirebase)
-framework provides the [`FirebaseAccountConfiguration`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountconfiguration)
+framework provides the [`FirebaseAccountService`](https://swiftpackageindex.com/stanfordspezi/spezifirebase/documentation/spezifirebaseaccount/firebaseaccountservice)
 you can use to configure an Account Service base on the Google Firebase service.
 
 
@@ -54,7 +54,7 @@ You need to add the Spezi Account Swift package to
 The [Initial Setup](https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/initial-setup)
 article provides a quick-start guide to set up `SpeziAccount` in your App.
 Refer to the
-[Creating your own Account Service](https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/creating-your-own-account-service)
+[Implementing an Account Service](https://swiftpackageindex.com/stanfordspezi/speziaccount/documentation/speziaccount/creating-your-own-account-service)
 article if you plan on implementing your own Account Service.
 
 The [Spezi Template Application](https://github.com/StanfordSpezi/SpeziTemplateApplication) provides a great starting point and example using the Spezi Account module.
