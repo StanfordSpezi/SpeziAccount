@@ -58,7 +58,6 @@ struct AccountTestsView: View {
             .accountRequired(features.accountRequiredModifier) {
                 setupSheet(closeable: false)
             }
-            .verifyRequiredAccountDetails(features.verifyRequiredDetails)
             .task {
                 var details: AccountDetails = .defaultDetails
                 if features.noName {

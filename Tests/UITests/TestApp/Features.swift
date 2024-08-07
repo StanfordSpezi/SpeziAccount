@@ -47,9 +47,6 @@ struct Features: ParsableArguments, EnvironmentKey {
     @Flag(help: "Enable the AccountRequiredModifier")
     var accountRequiredModifier = false
 
-    @Flag(help: "Enable the VerifyRequiredAccountDetailsModifier")
-    var verifyRequiredDetails = false
-
     @Flag(help: "Set no name if default credentials are used")
     var noName = false
 }

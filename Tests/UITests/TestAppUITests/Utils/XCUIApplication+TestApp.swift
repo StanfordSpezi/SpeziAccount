@@ -36,14 +36,12 @@ extension XCUIApplication {
         config: Config = .default,
         credentials: DefaultCredentials? = nil,
         accountRequired: Bool = false,
-        verifyAccountDetails: Bool = false,
         noName: Bool = false,
         flags: String...
     ) {
         launchArguments = ["--service-type", serviceType.rawValue, "--configuration-type", config.rawValue]
         launchArguments += credentials.map { ["--credentials", $0.rawValue] } ?? []
         launchArguments += (accountRequired ? ["--account-required-modifier"] : [])
-        launchArguments += (verifyAccountDetails ? ["--verify-required-details"] : [])
         launchArguments += (noName ? ["--no-name"] : [])
         launchArguments += flags
         launch()

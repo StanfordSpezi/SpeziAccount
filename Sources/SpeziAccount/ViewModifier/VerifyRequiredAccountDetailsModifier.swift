@@ -33,7 +33,7 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
     private var verifiedAccount = false
     @State private var followUpSession: FollowUpSession?
 
-    private var state: DetailsState {
+    @MainActor private var state: DetailsState {
         DetailsState(signedIn: account.signedIn, isIncomplete: account.details?.isIncomplete)
     }
 
@@ -50,11 +50,16 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
                 }
             }
             .onChange(of: state, initial: true) {
-                guard enabled, !verifiedAccount else {
+                guard enabled else {
                     return
                 }
 
                 guard let details = account.details, !details.isIncomplete else {
+                    followUpSession = nil
+                    return
+                }
+
+                guard !verifiedAccount else {
                     return
                 }
 

@@ -498,7 +498,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
         let app = XCUIApplication()
-        app.launch(config: .allRequiredWithBio, credentials: .createAndSignIn, verifyAccountDetails: true)
+        app.launch(config: .allRequiredWithBio, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
