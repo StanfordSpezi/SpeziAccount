@@ -336,6 +336,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.secureTextFields["re-enter password"].exists)
 
         try app.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
+        XCTAssertTrue(app.staticTexts.matching(identifier: warningLength).firstMatch.waitForExistence(timeout: 2.0))
         XCTAssertEqual(app.staticTexts.matching(identifier: warningLength).count, 2) // additional red warning.
         app.typeText("6789")
         app.dismissKeyboard()

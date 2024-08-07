@@ -28,9 +28,9 @@ struct FollowUpInfoFormHeader: View {
 
 /// A 
 @MainActor
-public struct FollowUpInfoSheet: View {
+public struct FollowUpInfoSheet: View { // TODO: docs!
     /// Defines the behavior of the cancel button for the followup-info sheet.
-    public enum CancelBehavior { // TODO: similar thing for AccountOverview instead of the isEditing binding?
+    public enum CancelBehavior {
         /// Cancel button is not shown.
         case disabled
         /// Cancellation results in logout.
@@ -39,7 +39,6 @@ public struct FollowUpInfoSheet: View {
         case cancel
     }
 
-    private let accountDetails: AccountDetails
     private let accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
     private let cancelBehavior: CancelBehavior
     private let onComplete: (AccountModifications) -> Void
@@ -79,7 +78,6 @@ public struct FollowUpInfoSheet: View {
                 }
             }
             .confirmationDialog(
-                // TODO: different labels!
                 cancelBehavior.confirmationMessage,
                 isPresented: $presentingCancellationConfirmation,
                 titleVisibility: .visible
@@ -126,12 +124,10 @@ public struct FollowUpInfoSheet: View {
 
 
     public init(
-        details: AccountDetails,
         keys: [any AccountKey.Type],
         cancelBehavior: CancelBehavior = .requireLogout,
         onComplete: @escaping (AccountModifications) -> Void = { _ in }
     ) { // TODO: docs
-        self.accountDetails = details
         self.accountKeyByCategory = keys.reduce(into: [:]) { result, key in
             result[key.category, default: []] += [key]
         }
@@ -203,9 +199,7 @@ private let keys: [any AccountKey.Type] = [AccountKeys.name]
     details.userId = "lelandstanford@stanford.edu"
 
     return NavigationStack {
-        AccountDetailsReader { _, details in
-            FollowUpInfoSheet(details: details, keys: keys)
-        }
+        FollowUpInfoSheet(keys: keys)
     }
         .previewWith {
             AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)

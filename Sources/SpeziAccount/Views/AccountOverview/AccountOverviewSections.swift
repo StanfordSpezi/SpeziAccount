@@ -17,7 +17,8 @@ import SwiftUI
 @MainActor
 @available(macOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
-    let additionalSections: AdditionalSections
+    private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
+    private let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
 
     
@@ -36,8 +37,6 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @State private var destructiveViewState: ViewState = .idle
     @FocusState private var isFocused: Bool
 
-    @Binding private var isEditing: Bool
-
     var isProcessing: Bool {
         viewState == .processing || destructiveViewState == .processing
     }
@@ -52,15 +51,24 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .viewStateAlert(state: $viewState)
             .viewStateAlert(state: $destructiveViewState)
             .toolbar {
-                if editMode?.wrappedValue.isEditing == true && !isProcessing {
+                if !isProcessing {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            model.cancelEditAction(editMode: editMode)
-                        }) {
-                            Text("CANCEL", bundle: .module)
+                        if editMode?.wrappedValue.isEditing == true {
+                            Button(action: {
+                                model.cancelEditAction(editMode: editMode)
+                            }) {
+                                Text("CANCEL", bundle: .module)
+                            }
+                        } else {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Text("CLOSE", bundle: .module)
+                            }
                         }
                     }
                 }
+                
                 if destructiveViewState == .idle {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: editButtonAction) {
@@ -120,10 +128,6 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 }
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
-            }
-            .onChange(of: editMode?.wrappedValue.isEditing ?? false) { _, newValue in
-                // sync the edit mode with the outer view
-                isEditing = newValue
             }
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
 
@@ -219,12 +223,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     init(
         account: Account,
         details accountDetails: AccountDetails,
-        isEditing: Binding<Bool>,
+        close closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
         self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account, details: accountDetails))
-        self._isEditing = isEditing
+        self.closeBehavior = closeBehavior
         self.additionalSections = additionalSections()
     }
     

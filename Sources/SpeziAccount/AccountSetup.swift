@@ -203,7 +203,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         ProgressView()
             .sheet(isPresented: $followUpSheet) {
                 NavigationStack {
-                    FollowUpInfoSheet(details: details, keys: requiredKeys)
+                    FollowUpInfoSheet(keys: requiredKeys)
                 }
             }
             .onAppear {

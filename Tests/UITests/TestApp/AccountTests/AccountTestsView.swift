@@ -27,7 +27,6 @@ struct AccountTestsView: View {
 
     @State private var showSetup = false
     @State private var showOverview = false
-    @State private var isEditing = false
     @State private var accountIdFromAnonymousUser: String?
 
     
@@ -84,7 +83,7 @@ struct AccountTestsView: View {
 
     @ViewBuilder var overviewSheet: some View {
         NavigationStack {
-            AccountOverview(isEditing: $isEditing) {
+            AccountOverview(close: .showCloseButton) {
                 NavigationLink {
                     Text(verbatim: "")
                         .navigationTitle(Text(verbatim: "Package Dependencies"))
@@ -92,11 +91,6 @@ struct AccountTestsView: View {
                     Text(verbatim: "License Information")
                 }
             }
-                .toolbar {
-                    if !isEditing {
-                        toolbar(closing: $showOverview)
-                    }
-                }
         }
     }
 
@@ -155,7 +149,7 @@ struct AccountTestsView: View {
                 finishButton
             }
                 .toolbar {
-                    if closeable && !isEditing {
+                    if closeable {
                         toolbar(closing: $showSetup)
                     }
                 }

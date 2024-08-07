@@ -57,12 +57,20 @@ import SwiftUI
 ///     view is not editing when presenting the AccountOverview in a sheet.
 @available(macOS, unavailable)
 public struct AccountOverview<AdditionalSections: View>: View {
+    /// Defines the behavior for the close button.
+    public enum CloseBehavior {
+        /// No close button is shown.
+        case disabled
+        /// A close button is shown that calls the `dismiss` action.
+        case showCloseButton
+    }
+
+    private let closeBehavior: CloseBehavior
+    private let additionalSections: AdditionalSections
+
     @Environment(Account.self)
     private var account
 
-    @Binding private var isEditing: Bool
-    
-    let additionalSections: AdditionalSections
     
     public var body: some View {
         VStack {
@@ -73,7 +81,7 @@ public struct AccountOverview<AdditionalSections: View>: View {
                     AccountOverviewSections(
                         account: account,
                         details: details,
-                        isEditing: $isEditing
+                        close: closeBehavior
                     ) {
                         additionalSections
                     }
@@ -99,8 +107,8 @@ public struct AccountOverview<AdditionalSections: View>: View {
     /// - Parameters:
     ///   - isEditing: A Binding that allows you to read the current editing state of the Account Overview view.
     ///   - additionalSections: Optional additional sections displayed between the other AccountOverview information and the log out button.
-    public init(isEditing: Binding<Bool> = .constant(false), @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }) {
-        self._isEditing = isEditing
+    public init(close closeBehavior: CloseBehavior = .disabled, @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }) {
+        self.closeBehavior = closeBehavior
         self.additionalSections = additionalSections()
     }
 }

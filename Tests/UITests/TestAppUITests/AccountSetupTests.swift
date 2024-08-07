@@ -503,13 +503,13 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
 
-        XCTAssertTrue(app.navigationBars.buttons["Logout"].exists)
+        XCTAssertTrue(app.navigationBars.buttons["Cancel"].exists)
 
         app.staticTexts["Finish Account Setup"].firstMatch.swipeDown(velocity: .slow) // check that this is not dismissible
 
-        app.navigationBars.buttons["Logout"].tap()
+        app.navigationBars.buttons["Cancel"].tap()
 
-        let confirmation = "This account information is required. If you abort, you will automatically be signed out!" // TODO: update this message?
+        let confirmation = "This account information is required. If you abort, you will automatically be signed out!"
         XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.scrollViews.buttons["Logout"].exists)
         XCTAssertTrue(app.buttons["Keep Editing"].exists)

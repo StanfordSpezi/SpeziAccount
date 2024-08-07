@@ -35,7 +35,7 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
         content
             .sheet(item: $followUpSession) { session in
                 NavigationStack {
-                    FollowUpInfoSheet(details: session.details, keys: session.requiredKeys)
+                    FollowUpInfoSheet(keys: session.requiredKeys)
                 }
             }
             .onChange(of: account.signedIn, initial: true) {
