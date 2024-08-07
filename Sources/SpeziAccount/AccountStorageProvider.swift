@@ -22,16 +22,6 @@ import Spezi
 ///  decoding of values.
 ///  Additionally, storage providers can use the ``AccountKey/identifier`` of an AccountKey to associate data with the account key on the persistent storage.
 public protocol AccountStorageProvider: Module {
-    /// Create new associated account data.
-    ///
-    /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
-    ///
-    /// - Parameters:
-    ///   - accountId: The primary identifier for stored record.
-    ///   - details: The signup details that need to be stored.
-    /// - Throws: A `LocalizedError`.
-    func create(_ accountId: String, _ details: AccountDetails) async throws // TODO: we do not guarantee that this is called, just remove it?
-
     /// Load associated account data.
     ///
     /// This method is called to load all ``AccountDetails`` that are managed by this `Module`.
@@ -53,9 +43,21 @@ public protocol AccountStorageProvider: Module {
     /// - Throws: A `LocalizedError`.
     func load(_ accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails?
 
+    /// Store associated account data.
+    ///
+    /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
+    ///
+    /// - Parameters:
+    ///   - accountId: The primary identifier for stored record.
+    ///   - details: The signup details that need to be stored.
+    /// - Throws: A `LocalizedError`.
+    func store(_ accountId: String, _ details: AccountDetails) async throws
+
     /// Modify the associated account data of an existing user account.
     ///
     /// This call is used to apply all modifications of the externally managed account values.
+    ///
+    /// - Warning: Even though this call receives modifications, it might be that the user record doesn't exist yet and needs to be created.
     ///
     /// - Note: A call to this method might certainly be immediately followed by a call to ``load(_:_:)``.
     ///
@@ -63,7 +65,7 @@ public protocol AccountStorageProvider: Module {
     ///   - accountId: The primary identifier for stored record.
     ///   - modifications: The account modifications.
     /// - Throws: A `LocalizedError`.
-    func modify(_ accountId: String, _ modifications: AccountModifications) async throws
+    func store(_ accountId: String, _ modifications: AccountModifications) async throws
 
     /// The currently associated user was cleared.
     ///
@@ -82,4 +84,15 @@ public protocol AccountStorageProvider: Module {
     /// - Parameter accountId: The primary identifier for stored record.
     /// - Throws: A `LocalizedError`.
     func delete(_ accountId: String) async throws
+}
+
+
+extension AccountStorageProvider {
+    /// Default implementation converting details to a modifications.
+    ///
+    /// This implementation automatically forwards the call to ``store(_:_:)-82rh6``.
+    public func store(_ accountId: String, _ details: AccountDetails) async throws {
+        let modifications = try AccountModifications(modifiedDetails: details)
+        try await store(accountId, modifications)
+    }
 }

@@ -228,7 +228,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         case .minimal:
             includeCollected = .onlyRequired
         case .redundant:
-            includeCollected = .includeCollectedAtLeastOneRequired // TODO: should we test that?
+            includeCollected = .includeCollectedAtLeastOneRequired
         }
 
         // If the provider was not able to present all details and it is a new user we always include collected.

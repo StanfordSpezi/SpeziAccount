@@ -20,6 +20,12 @@ private struct FollowUpSession: Identifiable {
 
 
 struct VerifyRequiredAccountDetailsModifier: ViewModifier {
+    private struct DetailsState: Equatable {
+        let signedIn: Bool
+        let isIncomplete: Bool? // swiftlint:disable:this discouraged_optional_boolean
+    }
+    private let enabled: Bool
+
     @Environment(Account.self)
     private var account
 
@@ -27,8 +33,13 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
     private var verifiedAccount = false
     @State private var followUpSession: FollowUpSession?
 
+    private var state: DetailsState {
+        DetailsState(signedIn: account.signedIn, isIncomplete: account.details?.isIncomplete)
+    }
 
-    init() {}
+    nonisolated init(enabled: Bool = true) {
+        self.enabled = enabled
+    }
 
 
     func body(content: Content) -> some View {
@@ -38,8 +49,12 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
                     FollowUpInfoSheet(keys: session.requiredKeys)
                 }
             }
-            .onChange(of: account.signedIn, initial: true) {
-                guard let details = account.details, !verifiedAccount else {
+            .onChange(of: state, initial: true) {
+                guard enabled, !verifiedAccount else {
+                    return
+                }
+
+                guard let details = account.details, !details.isIncomplete else {
                     return
                 }
 
@@ -58,28 +73,5 @@ struct VerifyRequiredAccountDetailsModifier: ViewModifier {
                 try? await Task.sleep(for: .seconds(5)) // we let the initial account setup take up to 5s
                 verifiedAccount = true
             }
-    }
-}
-
-
-extension View {
-    /// Ensure that all user accounts in your app are up to date with your SpeziAccount configuration upon startup.
-    ///
-    /// Within your ``AccountConfiguration`` you define your app-global ``AccountValueConfiguration`` that defines
-    /// what ``AccountKey`` are required and collected at signup. You can use this modifier to collect additional information
-    /// form existing users, should your configuration of **required** account keys change between one of your releases.
-    ///
-    /// This check is performed only upon app startup for the currently associated user account. Otherwise, this check is automatically done
-    /// upon login with the ``AccountSetup`` view.
-    ///
-    /// - Parameter verify: Flag indicating if this verification check is turned on.
-    /// - Returns: The modified view.
-    @ViewBuilder
-    public func verifyRequiredAccountDetails(_ verify: Bool = true) -> some View { // TODO: new name!
-        if verify {
-            modifier(VerifyRequiredAccountDetailsModifier())
-        } else {
-            self
-        }
     }
 }

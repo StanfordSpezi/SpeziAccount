@@ -33,6 +33,9 @@ public final class AccountConfiguration<Service: AccountService> {
     @Dependency private var storageProvider: [any Module] // we store the storage provider in a type erased way! it is optional to supply!
     @StandardActor private var standard: any Standard
 
+
+    @Modifier private var verifyRequiredConfiguration = VerifyRequiredAccountDetailsModifier()
+
     /// Configure the `SpeziAccount` framework.
     ///
     /// Provide an ``AccountService`` implementation that manages all account-related operations.

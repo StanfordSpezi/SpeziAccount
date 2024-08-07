@@ -26,9 +26,17 @@ struct FollowUpInfoFormHeader: View {
 }
 
 
-/// A 
+/// Complete account details with missing information.
+///
+/// This view can be used to prompt the user to provide additional information that is currently missing from the ``AccountDetails``.
+/// By default, SpeziAccount will make sure that the current account is always prompted to provide the required account details should the ``AccountValueConfiguration`` change
+/// in the lifetime of the application. Further, depending on the ``FollowUpBehavior`` configuration, the ``AccountSetup`` will automatically present the follow-up information sheet
+/// to prompt for missing account details in certain situations.
+///
+/// However, you can also use this view to design your own flow of requesting additional information. Just pass the account keys to the initializer that should be request from the user.
+/// - Note: The requirement level of the account keys is derived from the global ``AccountValueConfiguration``.
 @MainActor
-public struct FollowUpInfoSheet: View { // TODO: docs!
+public struct FollowUpInfoSheet: View {
     /// Defines the behavior of the cancel button for the followup-info sheet.
     public enum CancelBehavior {
         /// Cancel button is not shown.
@@ -69,9 +77,7 @@ public struct FollowUpInfoSheet: View { // TODO: docs!
             .toolbar {
                 if cancelBehavior != .disabled {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(role: .destructive) {
-                            presentingCancellationConfirmation = true
-                        } label: {
+                        Button(role: .destructive, action: onCancelPressed) {
                             Text("CANCEL", bundle: .module)
                         }
                     }
@@ -123,11 +129,16 @@ public struct FollowUpInfoSheet: View { // TODO: docs!
     }
 
 
+    /// Create a new follow-up information view.
+    /// - Parameters:
+    ///   - keys: The account keys to ask the user for additional information.
+    ///   - cancelBehavior: Defines the behavior when the user attempts to cancel the request for additional information.
+    ///   - onComplete: An action that is called once the modification was successful. It provides an overview of all the modifications made.
     public init(
         keys: [any AccountKey.Type],
         cancelBehavior: CancelBehavior = .requireLogout,
         onComplete: @escaping (AccountModifications) -> Void = { _ in }
-    ) { // TODO: docs
+    ) {
         self.accountKeyByCategory = keys.reduce(into: [:]) { result, key in
             result[key.category, default: []] += [key]
         }
@@ -135,6 +146,20 @@ public struct FollowUpInfoSheet: View { // TODO: docs!
         self.onComplete = onComplete
     }
 
+    private func onCancelPressed() {
+        switch cancelBehavior {
+        case .disabled:
+            break
+        case .requireLogout:
+            presentingCancellationConfirmation = true
+        case .cancel:
+            if detailsBuilder.isEmpty {
+                dismiss()
+            } else {
+                presentingCancellationConfirmation = true
+            }
+        }
+    }
 
     private func completeButtonAction() async throws {
         guard validation.validateSubviews() else {

@@ -80,6 +80,8 @@ public final class ExternalAccountStorage {
     ///   - accountId: The account id for which details changed.
     ///   - details: All externally stored account details with updated values.
     public func notifyAboutUpdatedDetails(for accountId: String, _ details: AccountDetails) {
+        var details = details
+        details.isIncomplete = false
         let update = ExternallyStoredDetails(accountId: accountId, details: details)
 
         lock.withLock {
@@ -103,15 +105,20 @@ public final class ExternalAccountStorage {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
-        try await storageProvider.create(accountId, details)
+        try await storageProvider.store(accountId, details)
     }
 
 
     /// Retrieve externally stored account details.
     ///
+    /// - Important: Subscribe to changes from the storage provider using the ``updatedDetails`` async stream.
+    ///
     /// - Parameters:
     ///   - accountId: The account id for which account details should be retrieved from the external storage.
     ///   - keys: The list of keys that are known to be stored externally.
+    /// - Returns: The account details retrieved from the external storage. In the case that the details are not yet loaded, the ``AccountDetails/isIncomplete`` flag is
+    ///     set and shall be merged into the details the account service aims to supply. Make sure to not persistently store these account details containing the ``AccountDetails/isIncomplete``
+    ///     flag set to true.
     public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
@@ -123,7 +130,9 @@ public final class ExternalAccountStorage {
 
         guard let details = try await storageProvider.load(accountId, keys) else {
             // the storage provider currently doesn't have a local copy, they will notify us with updated details later on
-            return AccountDetails()
+            var details = AccountDetails()
+            details.isIncomplete = true
+            return details
         }
 
         return details
@@ -150,7 +159,7 @@ public final class ExternalAccountStorage {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
-        try await storageProvider.modify(accountId, modifications)
+        try await storageProvider.store(accountId, modifications)
     }
 
     @MainActor

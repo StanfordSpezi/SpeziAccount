@@ -22,11 +22,6 @@ public actor InMemoryAccountStorageProvider: AccountStorageProvider {
 
     public init() {}
 
-    public func create(_ accountId: String, _ details: AccountDetails) throws {
-        // we treat a creating the same as a modify with just the created details
-        modify(accountId, try AccountModifications(modifiedDetails: details))
-    }
-
     public func load(_ accountId: String, _ keys: [any AccountKey.Type]) -> AccountDetails? {
         guard let details = cache[accountId] else {
             guard records[accountId] != nil else {
@@ -48,7 +43,7 @@ public actor InMemoryAccountStorageProvider: AccountStorageProvider {
         return details
     }
 
-    public func modify(_ accountId: String, _ modifications: AccountModifications) {
+    public func store(_ accountId: String, _ modifications: AccountModifications) {
         records[accountId, default: AccountDetails()]
             .add(contentsOf: modifications.modifiedDetails, merge: true)
 

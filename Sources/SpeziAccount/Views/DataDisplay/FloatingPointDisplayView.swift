@@ -15,6 +15,7 @@ import SwiftUI
 public struct FloatingPointDisplayView<Key: AccountKey>: DataDisplayView where Key.Value: BinaryFloatingPoint {
     private let value: Key.Value
     private let formatStyle: FloatingPointFormatStyle<Key.Value>?
+    private let unit: Text
 
     @Environment(\.locale)
     private var locale
@@ -26,6 +27,7 @@ public struct FloatingPointDisplayView<Key: AccountKey>: DataDisplayView where K
     public var body: some View {
         ListRow(Key.name) {
             Text(value, format: formatStyleValue)
+                + unit
         }
     }
 
@@ -33,19 +35,21 @@ public struct FloatingPointDisplayView<Key: AccountKey>: DataDisplayView where K
     /// - Parameters:
     ///   - value: The value to display.
     ///   - formatStyle: The format style to use for displaying the floating point value.
+    ///   - unit: A trailing unit label.
     public init(
         _ value: Key.Value,
-        format formatStyle: FloatingPointFormatStyle<Key.Value>? = nil
+        format formatStyle: FloatingPointFormatStyle<Key.Value>? = nil,
+        unit: Text = Text(verbatim: "")
     ) {
         self.value = value
         self.formatStyle = formatStyle
+        self.unit = unit
     }
 
     /// Create a new display view.
     /// - Parameter value: The value to display.
     public init(_ value: Key.Value) {
-        self.value = value
-        self.formatStyle = nil
+        self.init(value, format: nil)
     }
 
     /// Create a new display view.
@@ -53,9 +57,15 @@ public struct FloatingPointDisplayView<Key: AccountKey>: DataDisplayView where K
     ///   - keyPath: The `AccountKey` type.
     ///   - value: The value to display.
     ///   - formatStyle: The format style to use for displaying the floating point value.
+    ///   - unit: A trailing unit label.
     @MainActor
-    public init(_ keyPath: KeyPath<AccountKeys, Key.Type>, _ value: Key.Value, format formatStyle: FloatingPointFormatStyle<Key.Value>? = nil) {
-        self.init(value, format: formatStyle)
+    public init(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        _ value: Key.Value,
+        format formatStyle: FloatingPointFormatStyle<Key.Value>? = nil,
+        unit: Text = Text(verbatim: "")
+    ) {
+        self.init(value, format: formatStyle, unit: unit)
     }
 }
 
@@ -70,6 +80,7 @@ extension AccountKey where Value: BinaryFloatingPoint {
     List {
         FloatingPointDisplayView<MockDoubleKey>(3.12456)
         FloatingPointDisplayView<MockDoubleKey>(533.124)
+        FloatingPointDisplayView<MockDoubleKey>(23.45, unit: Text(verbatim: " cm"))
     }
 }
 #endif
