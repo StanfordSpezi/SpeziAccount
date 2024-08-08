@@ -37,7 +37,11 @@ public struct FixedWidthIntegerEntryView<Key: AccountKey>: DataEntryView where K
 #endif
             .disableFieldAssistants()
             .onAppear {
-                text = value.description
+                if case let .empty(empty) = Key.initialValue, empty == value {
+                    text = ""
+                } else {
+                    text = value.description
+                }
             }
             .onChange(of: text) {
                 if text.isEmpty {

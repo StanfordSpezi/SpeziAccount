@@ -51,7 +51,11 @@ public struct FloatingPointEntryView<Key: AccountKey>: DataEntryView where Key.V
 #endif
             .disableFieldAssistants()
             .onAppear {
-                text = Decimal(Double(value)).formatted(formatStyleValue)
+                if case let .empty(empty) = Key.initialValue, empty == value {
+                    text = ""
+                } else {
+                    text = Decimal(Double(value)).formatted(formatStyleValue)
+                }
             }
             .onChange(of: text) {
                 if text.isEmpty {

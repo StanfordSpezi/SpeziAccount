@@ -46,6 +46,9 @@ struct AccountTestsView: View {
                     }
                 }
                     .disabled(!account.signedIn)
+                NavigationLink("Entry Views") {
+                    EntryViewTests()
+                }
             }
                 .navigationTitle("Spezi Account")
                 .sheet(isPresented: $showSetup) {

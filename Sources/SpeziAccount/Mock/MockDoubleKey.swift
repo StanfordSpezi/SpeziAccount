@@ -9,10 +9,11 @@
 import Foundation
 
 
-// for internal previews
-struct MockDoubleKey: AccountKey {
-    typealias Value = Double
-    static let name: LocalizedStringResource = "Double Key"
-    static let identifier = "mockDouble"
-    static let category: AccountKeyCategory = .other
+/// For internal previews and testing.
+@_spi(_Testing)
+public struct MockDoubleKey: AccountKey {
+    public typealias Value = Double
+    public static let name: LocalizedStringResource = "Double Key"
+    public static let identifier = "mockDouble"
+    public static let category: AccountKeyCategory = .other
 }

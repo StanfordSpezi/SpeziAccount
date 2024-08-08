@@ -11,6 +11,10 @@ import XCTestExtensions
 
 
 final class DocumentationHintsTests: XCTestCase {
+    override func setUp() {
+        continueAfterFailure = false
+    }
+
     @MainActor
     func testDocumentationHint(type: ServiceType, button: String, hint: String) {
         let app = XCUIApplication()
