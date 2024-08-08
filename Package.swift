@@ -80,7 +80,8 @@ let package = Package(
             name: "SpeziAccountTests",
             dependencies: [
                 .target(name: "SpeziAccount"),
-                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions")
+                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
+                .product(name: "XCTSpezi", package: "Spezi")
             ],
             swiftSettings: [
                 swiftConcurrency

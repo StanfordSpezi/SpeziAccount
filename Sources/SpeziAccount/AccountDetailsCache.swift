@@ -26,6 +26,15 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
     private var localCache: [String: AccountDetails] = [:]
 
 
+    private var storageSettings: LocalStorageSetting {
+#if targetEnvironment(simulator)
+        return .unencrypted()
+#else
+        return .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false)
+#endif
+    }
+
+
     public init() {}
 
     private static func key(for accountId: String) -> String {
@@ -51,14 +60,14 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
                 AccountDetails.self,
                 decoder: decoder,
                 storageKey: Self.key(for: accountId),
-                settings: .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false)
+                settings: storageSettings
             )
 
             localCache[accountId] = details
             return details
         } catch {
-            if let cocoaError = error as? CocoaError,
-               cocoaError.code == .fileNoSuchFile {
+            if let cocoaError = error as? CocoaError, // swiftlint:disable:this control_statement
+               (cocoaError.code == .fileNoSuchFile || cocoaError.code == .fileReadNoSuchFile) {
                 return nil // we are fine if it doesn't exist
             }
             logger.error("Failed to read cached account details from disk: \(error)")
@@ -77,6 +86,10 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
         } catch {
             logger.error("Failed to clear cached account details from disk: \(error)")
         }
+    }
+
+    func purgeMemoryCache(for accountId: String) { // test support
+        localCache.removeValue(forKey: accountId)
     }
 
     /// Communicate modifications done by the user.
@@ -116,7 +129,7 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
             try localStorage.store(
                 details,
                 storageKey: Self.key(for: accountId),
-                settings: .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false)
+                settings: storageSettings
             )
         } catch {
             logger.error("Failed to update cached account details to disk: \(error)")
