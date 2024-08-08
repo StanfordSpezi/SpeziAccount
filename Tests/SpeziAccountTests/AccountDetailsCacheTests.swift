@@ -51,8 +51,6 @@ final class AccountDetailsCacheTests: XCTestCase {
         XCTAssertNil(nilEntry2)
     }
 
-    // TODO: snapshot test some of the display views + preferred setup views? + AccountHeader!
-
     @MainActor
     func testApplyModifications() async {
         continueAfterFailure = true // ensure entries are cleared at the end

@@ -18,10 +18,10 @@ struct SignupSetupView<Credential: Sendable>: View {
 
     var body: some View {
         VStack {
-            AccountServiceButton("UP_SIGNUP") {
+            AccountServiceButton(LocalizedStringResource("UP_SIGNUP", bundle: .atURL(from: .module))) {
                 presentingSignupSheet = true
             }
-            .padding(.bottom, 12)
+                .padding(.bottom, 12)
             if let loginClosure {
                 HStack {
                     Text("Already got an Account?", bundle: .module)
@@ -31,7 +31,7 @@ struct SignupSetupView<Credential: Sendable>: View {
                         Text("UP_LOGIN", bundle: .module)
                     }
                 }
-                .font(.footnote)
+                    .font(.footnote)
             }
         }
     }

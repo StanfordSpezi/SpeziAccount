@@ -29,7 +29,7 @@ public struct AccountServiceButton<Label: View>: View {
     }
 
     public init(
-        _ titleKey: LocalizedStringKey,
+        _ titleKey: LocalizedStringResource,
         systemImage: String = "person.crop.square",
         action: @escaping () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
@@ -37,18 +37,22 @@ public struct AccountServiceButton<Label: View>: View {
     }
 
     public init( // swiftlint:disable:this function_default_parameter_at_end
-        _ titleKey: LocalizedStringKey,
+        _ titleKey: LocalizedStringResource,
         systemImage: String = "person.crop.square",
         state: Binding<ViewState>,
         action: @escaping () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
-            SwiftUI.Label(titleKey, systemImage: systemImage)
+            SwiftUI.Label {
+                Text(titleKey)
+            } icon: {
+                Image(systemName: systemImage) // swiftlint:disable:this accessibility_label_for_image
+            }
         }
     }
 
     public init(
-        _ titleKey: LocalizedStringKey,
+        _ titleKey: LocalizedStringResource,
         image: ImageResource,
         action: @escaping () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
@@ -56,13 +60,17 @@ public struct AccountServiceButton<Label: View>: View {
     }
 
     public init(
-        _ titleKey: LocalizedStringKey,
+        _ titleKey: LocalizedStringResource,
         image: ImageResource,
         state: Binding<ViewState>,
         action: @escaping () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
-            SwiftUI.Label(titleKey, image: image)
+            SwiftUI.Label {
+                Text(titleKey)
+            } icon: {
+                Image(image) // swiftlint:disable:this accessibility_label_for_image
+            }
         }
     }
 

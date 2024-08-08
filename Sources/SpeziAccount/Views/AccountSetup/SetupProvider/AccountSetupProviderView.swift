@@ -91,6 +91,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
             }
     }
 
+    @_disfavoredOverload
     private init(
         loginClosure: ((UserIdPasswordCredential) async throws -> Void)? = nil,
         @ViewBuilder signup signupForm: () -> Signup = { EmptyView() },
@@ -141,18 +142,6 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     }
 
 
-    /// A setup view that supports signup.
-    /// - Parameters:
-    ///   - signupForm: The view that is shown as a sheet, if the user presses the signup button. Pass an `EmptyView` if signup isn't supported.
-    public init(
-        @ViewBuilder signup signupForm: () -> Signup
-    ) where PasswordReset == EmptyView {
-        self.init(loginClosure: nil, signup: signupForm) {
-            EmptyView()
-        }
-    }
-
-
     /// A setup view that supports login, signup and password reset.
     /// - Parameters:
     ///   - login: A closure that is called once a user tries to login with their credentials.
@@ -165,7 +154,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
         resetPassword: @escaping (String) async throws -> Void
     ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>,
             PasswordReset == NavigationStack<NavigationPath, PasswordResetView<SuccessfulPasswordResetView>> {
-        self.init(loginClosure: login) {
+        self.init(login: login) {
             NavigationStack {
                 SignupForm(signup: signup)
             }
@@ -202,7 +191,7 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
         resetPassword: @escaping (String) async throws -> Void
     ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>,
     PasswordReset == NavigationStack<NavigationPath, PasswordResetView<SuccessfulPasswordResetView>> {
-        self.init(loginClosure: nil) {
+        self.init {
             NavigationStack {
                 SignupForm(signup: signup)
             }
@@ -239,12 +228,10 @@ public struct AccountSetupProviderView<Signup: View, PasswordReset: View>: View 
     public init(
         signup: @escaping (AccountDetails) async throws -> Void
     ) where Signup == NavigationStack<NavigationPath, SignupForm<SignupFormHeader>>, PasswordReset == EmptyView {
-        self.init(loginClosure: nil) {
+        self.init {
             NavigationStack {
                 SignupForm(signup: signup)
             }
-        } passwordReset: {
-            EmptyView()
         }
     }
 }

@@ -21,7 +21,6 @@ final class SnapshotTesting: XCTestCase {
         let viewTrueYes = BoolDisplayView<MockBoolKey>(label: .yesNo, true)
         let viewFalseNo = BoolDisplayView<MockBoolKey>(label: .yesNo, false)
 
-        // TODO: doesn't test accessibility?
 #if os(iOS)
         assertSnapshot(of: viewTrue, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewTrue")
         assertSnapshot(of: viewFalse, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewFalse")
@@ -52,26 +51,95 @@ final class SnapshotTesting: XCTestCase {
 #endif
     }
 
-    // TODO: for string and enum as well?
+    @MainActor
+    func testStringDisplayView() {
+        let view = StringDisplayView(\.userId, "Hello World")
+
+#if os(iOS)
+        assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
+#endif
+    }
 
     @MainActor
-    func testAccountProviderViewLayout() {
+    func testLocalizedStringDisplayView() {
+        let view = LocalizableStringDisplayView(\.genderIdentity, .male)
+
+#if os(iOS)
+        assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
+#endif
+    }
+
+    @MainActor
+    func testAccountProviderViewLayoutVariations() {
         let configuration = AccountConfiguration(service: InMemoryAccountService())
         withDependencyResolution {
             configuration
         }
 
-        let view = AccountSetupProviderView { _ in
+        let view0 = AccountSetupProviderView { _ in
         } signup: { _ in
         } resetPassword: { _ in
         }
             .environment(configuration.account)
 
-        let viewSignup = view.preferredAccountSetupStyle(.signup)
+        let view1 = AccountSetupProviderView { _ in
+        } signup: { _ in
+        }
+            .environment(configuration.account)
+
+        let view2 = AccountSetupProviderView { (_: UserIdPasswordCredential) in
+        } resetPassword: { _ in
+        }
+            .environment(configuration.account)
+
+        let view3 = AccountSetupProviderView { (_: AccountDetails) in
+        } resetPassword: { _ in
+        }
+            .environment(configuration.account)
+
+        let view4 = AccountSetupProviderView { (_: UserIdPasswordCredential) in
+        }
+            .environment(configuration.account)
+
+        let view5 = AccountSetupProviderView { (_: AccountDetails) in
+        }
+            .environment(configuration.account)
+
+        let view0Signup = view0.preferredAccountSetupStyle(.signup)
+        let view1Signup = view1.preferredAccountSetupStyle(.signup)
+        let view2Signup = view2.preferredAccountSetupStyle(.signup)
+        let view3Signup = view3.preferredAccountSetupStyle(.signup)
+        let view4Signup = view4.preferredAccountSetupStyle(.signup)
+        let view5Signup = view5.preferredAccountSetupStyle(.signup)
 
 #if os(iOS)
-        assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-login-variant")
-        assertSnapshot(of: viewSignup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-signup-variant")
+        assertSnapshot(of: view0, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view0")
+        assertSnapshot(of: view1, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view1")
+        assertSnapshot(of: view2, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view2")
+        assertSnapshot(of: view3, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view3")
+        assertSnapshot(of: view4, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view4")
+        assertSnapshot(of: view5, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view5")
+
+        assertSnapshot(of: view0Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view0-signup")
+        assertSnapshot(of: view1Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view1-signup")
+        assertSnapshot(of: view2Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view2-signup")
+        assertSnapshot(of: view3Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view3-signup")
+        assertSnapshot(of: view4Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view4-signup")
+        assertSnapshot(of: view5Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view5-signup")
+#endif
+    }
+
+    @MainActor
+    func testAccountHeader() {
+        let configuration = AccountConfiguration(service: InMemoryAccountService())
+        withDependencyResolution {
+            configuration
+        }
+        let view = AccountHeader(caption: "Custom Caption")
+            .environment(configuration.account)
+
+#if os(iOS)
+        assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
 #endif
     }
 }
