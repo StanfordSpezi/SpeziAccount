@@ -106,6 +106,7 @@ final class SnapshotTesting: XCTestCase {
         }
             .environment(configuration.account)
 
+
         let view0Signup = view0.preferredAccountSetupStyle(.signup)
         let view1Signup = view1.preferredAccountSetupStyle(.signup)
         let view2Signup = view2.preferredAccountSetupStyle(.signup)
