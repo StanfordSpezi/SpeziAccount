@@ -7,6 +7,7 @@
 //
 
 import SnapshotTesting
+@_spi(_Testing)
 @testable import SpeziAccount
 import SwiftUI
 import XCTest
