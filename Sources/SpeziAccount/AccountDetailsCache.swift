@@ -26,16 +26,16 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
     private var localCache: [String: AccountDetails] = [:]
 
 
-    private var storageSettings: LocalStorageSetting {
-#if targetEnvironment(simulator)
-        return .unencrypted()
-#else
-        return .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false)
-#endif
+    private let storageSettings: LocalStorageSetting
+
+
+    public init() {
+        self.init(settings: .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false))
     }
 
-
-    public init() {}
+    public init(settings: LocalStorageSetting) {
+        self.storageSettings = settings
+    }
 
     private static func key(for accountId: String) -> String {
         "edu.stanford.spezi.details-cache.\(accountId)"

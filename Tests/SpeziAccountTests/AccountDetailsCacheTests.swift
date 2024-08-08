@@ -18,7 +18,7 @@ final class AccountDetailsCacheTests: XCTestCase {
     func testCache() async {
         continueAfterFailure = true // ensure entries are cleared at the end
 
-        let cache = AccountDetailsCache()
+        let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
             cache
         }
@@ -51,17 +51,20 @@ final class AccountDetailsCacheTests: XCTestCase {
         XCTAssertNil(nilEntry2)
     }
 
+    // TODO: snapshot test some of the display views + preferred setup views? + AccountHeader!
+
     @MainActor
     func testApplyModifications() async {
         continueAfterFailure = true // ensure entries are cleared at the end
 
-        let cache = AccountDetailsCache()
+        let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
             cache
         }
 
 
         var details: AccountDetails = .mock(id: Self.id)
+        let keys = details.keys // TODO: decoding fails with more keys than expected where presented? => is that a problem, generally yes right?
         await cache.clearEntry(for: details.accountId)
 
         await cache.communicateRemoteChanges(for: details.accountId, details)
@@ -92,5 +95,40 @@ final class AccountDetailsCacheTests: XCTestCase {
         }
 
         await cache.clearEntry(for: details.accountId)
+    }
+
+    @MainActor
+    func testAccountNotifications() async throws { // TODO: move
+        let notifications = AccountNotifications()
+        withDependencyResolution {
+            notifications
+            ExternalAccountStorage(nil) // TODO: test that will associasted and will delete are forwarded to storage provider?
+        }
+
+        // TODO: test call to standard?
+
+        let stream = notifications.events
+
+        let details: AccountDetails = .mock()
+
+        try await notifications.reportEvent(.deletingAccount("account1"))
+        try await notifications.reportEvent(.associatedAccount(details))
+
+        var iterator = stream.makeAsyncIterator()
+
+        let element0 = await iterator.next()
+        let element1 = await iterator.next()
+
+        if case let .deletingAccount(id) = element0 {
+            XCTAssertEqual(id, "account1")
+        } else {
+            XCTFail("Unexpected first element \(String(describing: element0))")
+        }
+
+        if case let .associatedAccount(associated) = element1 {
+            XCTAssertDetails(associated, details)
+        } else {
+            XCTFail("Unexpected second element \(String(describing: element1))")
+        }
     }
 }
