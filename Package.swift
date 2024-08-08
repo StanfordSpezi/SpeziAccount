@@ -38,7 +38,8 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
-        .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0")
+        .package(url: "https://github.com/apple/swift-syntax", from: "510.0.0"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
@@ -81,7 +82,9 @@ let package = Package(
             dependencies: [
                 .target(name: "SpeziAccount"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
-                .product(name: "XCTSpezi", package: "Spezi")
+                .product(name: "Spezi", package: "Spezi"),
+                .product(name: "XCTSpezi", package: "Spezi"),
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
             swiftSettings: [
                 swiftConcurrency

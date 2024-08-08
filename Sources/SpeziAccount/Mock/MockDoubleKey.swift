@@ -10,11 +10,9 @@ import Foundation
 
 
 // for internal previews
-#if DEBUG
 struct MockDoubleKey: AccountKey {
     typealias Value = Double
     static let name: LocalizedStringResource = "Double Key"
     static let identifier = "mockDouble"
     static let category: AccountKeyCategory = .other
 }
-#endif

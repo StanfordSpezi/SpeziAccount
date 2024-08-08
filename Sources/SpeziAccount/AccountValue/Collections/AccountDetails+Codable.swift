@@ -59,9 +59,11 @@ extension AccountDetails: Codable {
             ))
         }
 
+        let requireKeys = decoder.userInfo[.requireAllKeys] as? Bool == true
+
         let container = try decoder.container(keyedBy: AccountKeyCodingKey.self)
 
-        var visitor = DecoderVisitor(container)
+        var visitor = DecoderVisitor(container, required: requireKeys)
         let details = keys.acceptAll(&visitor)
 
         if let error = visitor.errors.first {
@@ -127,19 +129,28 @@ extension AccountDetails {
 
     private struct DecoderVisitor: AccountKeyVisitor {
         private let container: KeyedDecodingContainer<AccountKeyCodingKey>
+        private let requireKeys: Bool
         private var details = AccountDetails()
 
         private(set) var errors: [(any AccountKey.Type, Error)] = []
 
-        init(_ container: KeyedDecodingContainer<AccountKeyCodingKey>) {
+        init(_ container: KeyedDecodingContainer<AccountKeyCodingKey>, required: Bool) {
             self.container = container
+            self.requireKeys = required
         }
 
 
         mutating func visit<Key: AccountKey>(_ key: Key.Type) {
             do {
-                let value = try container.decode(Key.Value.self, forKey: .init(key))
-                details.set(Key.self, value: value)
+                if requireKeys {
+                    let value = try container.decode(Key.Value.self, forKey: .init(key))
+                    details.set(Key.self, value: value)
+                } else {
+                    let value = try container.decodeIfPresent(Key.Value.self, forKey: .init(key))
+                    if let value {
+                        details.set(Key.self, value: value)
+                    }
+                }
             } catch {
                 errors.append((key, error))
             }
@@ -192,6 +203,24 @@ extension CodingUserInfoKey {
     public static let lazyAccountDetailsDecoding: CodingUserInfoKey = {
         guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.collect-errors-oob") else {
             preconditionFailure("Unable to create `collectCodingErrorsOutOfBand` CodingUserInfoKey!")
+        }
+        return key
+    }()
+
+    /// Require that all `accountDetailsKeys` are present.
+    ///
+    /// If this key is set to `true`, decoding will fail with a key present present in ``Swift/CodingUserInfoKey/accountDetailsKeys`` is not found while decoding.
+    /// A value of `false` (the default) will decode only the keys found.
+    ///
+    /// ```swift
+    /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
+    /// let decoder = JSONDecoder()
+    /// decoder.userInfo[.accountDetailsKeys] = keys
+    /// decoder.userInfo[.requireAllKeys] = true
+    /// ```
+    public static let requireAllKeys: CodingUserInfoKey = {
+        guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.require-all-keys") else {
+            preconditionFailure("Unable to create `requireAllKeys` CodingUserInfoKey!")
         }
         return key
     }()

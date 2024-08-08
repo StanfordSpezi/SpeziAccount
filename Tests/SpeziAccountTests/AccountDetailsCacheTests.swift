@@ -1,7 +1,7 @@
 //
 // This source file is part of the Spezi open source project
 //
-// SPDX-FileCopyrightText: 2022 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2024 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -64,7 +64,7 @@ final class AccountDetailsCacheTests: XCTestCase {
 
 
         var details: AccountDetails = .mock(id: Self.id)
-        let keys = details.keys // TODO: decoding fails with more keys than expected where presented? => is that a problem, generally yes right?
+        let keys = details.keys
         await cache.clearEntry(for: details.accountId)
 
         await cache.communicateRemoteChanges(for: details.accountId, details)
@@ -81,54 +81,19 @@ final class AccountDetailsCacheTests: XCTestCase {
         await cache.communicateModifications(for: details.accountId, modifications)
 
 
-        let localEntry = await cache.loadEntry(for: details.accountId, details.keys)
+        let localEntry = await cache.loadEntry(for: details.accountId, keys)
         XCTAssertNotNil(localEntry)
         if let localEntry {
             XCTAssertDetails(localEntry, details)
         }
 
         await cache.purgeMemoryCache(for: details.accountId)
-        let diskEntry = await cache.loadEntry(for: details.accountId, details.keys)
+        let diskEntry = await cache.loadEntry(for: details.accountId, keys)
         XCTAssertNotNil(diskEntry)
         if let diskEntry {
             XCTAssertDetails(diskEntry, details)
         }
 
         await cache.clearEntry(for: details.accountId)
-    }
-
-    @MainActor
-    func testAccountNotifications() async throws { // TODO: move
-        let notifications = AccountNotifications()
-        withDependencyResolution {
-            notifications
-            ExternalAccountStorage(nil) // TODO: test that will associasted and will delete are forwarded to storage provider?
-        }
-
-        // TODO: test call to standard?
-
-        let stream = notifications.events
-
-        let details: AccountDetails = .mock()
-
-        try await notifications.reportEvent(.deletingAccount("account1"))
-        try await notifications.reportEvent(.associatedAccount(details))
-
-        var iterator = stream.makeAsyncIterator()
-
-        let element0 = await iterator.next()
-        let element1 = await iterator.next()
-
-        if case let .deletingAccount(id) = element0 {
-            XCTAssertEqual(id, "account1")
-        } else {
-            XCTFail("Unexpected first element \(String(describing: element0))")
-        }
-
-        if case let .associatedAccount(associated) = element1 {
-            XCTAssertDetails(associated, details)
-        } else {
-            XCTFail("Unexpected second element \(String(describing: element1))")
-        }
     }
 }

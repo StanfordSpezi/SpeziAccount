@@ -24,7 +24,7 @@ public final class AccountConfiguration<Service: AccountService> {
     private var logger
 
     @Dependency(Account.self)
-    private var account
+    var account
     @Dependency(ExternalAccountStorage.self)
     private var externalStorage
     @Dependency(Service.self)
