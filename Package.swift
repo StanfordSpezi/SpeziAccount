@@ -34,7 +34,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "1.1.3"),
         .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/dependency-restructure"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.5.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.1.1"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.1.2"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
