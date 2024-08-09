@@ -94,7 +94,6 @@ extension AccountDetails: Codable {
     ///
     /// - Parameter encoder: The encoder.
     public func encode(to encoder: any Encoder) throws {
-        // TODO: unit test that!
         let mapping = encoder.userInfo[.accountKeyIdentifierMapping] as? [String: any AccountKey.Type]
 
         let container = encoder.container(keyedBy: AccountKeyCodingKey.self)
