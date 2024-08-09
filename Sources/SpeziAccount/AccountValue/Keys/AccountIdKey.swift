@@ -46,7 +46,6 @@ extension AccountDetails {
     /// to ``Account/supplyUserDetails(_:)``. Further, if you supply a ``SupportedAccountKeys/exactly(_:)``
     /// configuration as part of your ``AccountServiceConfiguration``, make sure to include the `accountId` there as well.
     @AccountKey(
-        id: "AccountIdKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("ACCOUNT_ID", bundle: .atURL(from: .module)),
         category: .credentials,
         as: String.self,

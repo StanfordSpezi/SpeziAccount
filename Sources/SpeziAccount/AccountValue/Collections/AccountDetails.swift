@@ -168,7 +168,9 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 /// - ``encode(to:)``
 /// - ``decodingErrors``
 /// - ``Swift/CodingUserInfoKey/accountDetailsKeys``
+/// - ``Swift/CodingUserInfoKey/accountKeyIdentifierMapping``
 /// - ``Swift/CodingUserInfoKey/lazyAccountDetailsDecoding``
+/// - ``Swift/CodingUserInfoKey/requireAllKeys``
 /// - ``AccountKeyCodingKey``
 public struct AccountDetails {
     fileprivate var storage: AccountStorage

@@ -21,7 +21,7 @@ public struct AccountServiceConfigurationStorageAnchor: RepositoryAnchor, Sendab
 public typealias AccountServiceConfigurationStorage = ValueRepository<AccountServiceConfigurationStorageAnchor>
 
 
-/// Configuration options that are provided by an ``AccountService``.
+/// Configuration options that are provided by an `AccountService`.
 ///
 /// A instance of this type is required to be provided by every ``AccountService``. It is used to
 /// set and communicate certain configuration options of the account service to the UI components that
@@ -34,7 +34,7 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 /// ## Topics
 ///
 /// ### Retrieving configuration
-/// Below is a list of configuration options built into the ``SpeziAccount`` framework.
+/// Below is a list of builtin configuration options.
 ///
 /// - ``userIdConfiguration``
 /// - ``fieldValidationRules(for:)-28x74``

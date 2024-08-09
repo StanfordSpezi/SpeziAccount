@@ -35,7 +35,7 @@ extension AccountDetails {
         public typealias Value = String
 
         public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
-        public static let identifier = "EmailAddressKey" // backwards compatibility with 1.0 releases
+        public static let identifier = "email"
         public static let category: AccountKeyCategory = .contactDetails
         public struct DataEntry: DataEntryView {
             @Binding private var value: Value
@@ -54,7 +54,6 @@ extension AccountDetails {
 #if compiler(>=6)
     /// The email address of a user.
     @AccountKey(
-        id: "EmailAddressKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module)),
         category: .contactDetails,
         as: String.self,
@@ -88,7 +87,7 @@ extension AccountDetails.__Key_email: OptionalComputedKnowledgeSource {
             return email
         }
 
-        guard let configuration = repository[AccountServiceConfigurationDetailsKey.self],
+        guard let configuration = repository[AccountDetails.AccountServiceConfigurationDetailsKey.self],
               case .emailAddress = configuration.userIdConfiguration.idType else {
             return nil
         }

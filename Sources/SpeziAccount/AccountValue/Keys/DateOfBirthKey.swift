@@ -62,7 +62,6 @@ private struct EntryView: DataEntryView {
 extension AccountDetails {
     /// The date of birth of a user.
     @AccountKey(
-        id: "DateOfBirthKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("UAP_SIGNUP_DATE_OF_BIRTH_TITLE", bundle: .atURL(from: .module)),
         category: .personalDetails,
         as: Date.self,

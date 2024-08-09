@@ -24,4 +24,29 @@ final class AccountDetailsTests: XCTestCase {
         XCTAssertDetails(decoded, details)
         XCTAssertFalse(decoded.isNewUser) // flags are never encoded
     }
+
+    func testCodableWithCustomMapping() throws {
+        var details = AccountDetails()
+        details.genderIdentity = .female
+
+        let mapping: [String: any AccountKey.Type] = [
+            "GenderIdentityKey": AccountKeys.genderIdentity
+        ]
+
+        let encoder = JSONEncoder()
+        encoder.userInfo[.accountKeyIdentifierMapping] = mapping
+
+        let decoder = JSONDecoder()
+        decoder.userInfo[.accountDetailsKeys] = [AccountKeys.genderIdentity]
+        decoder.userInfo[.accountKeyIdentifierMapping] = mapping
+
+
+        let data = try encoder.encode(details)
+        let string = try XCTUnwrap(String(data: data, encoding: .utf8))
+        XCTAssertEqual(string, "{\"GenderIdentityKey\":\"female\"}")
+
+        let decoded = try decoder.decode(AccountDetails.self, from: data)
+
+        XCTAssertEqual(decoded.genderIdentity, details.genderIdentity)
+    }
 }

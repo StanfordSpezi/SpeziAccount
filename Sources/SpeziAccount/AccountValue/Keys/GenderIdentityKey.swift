@@ -15,7 +15,6 @@ extension AccountDetails {
     /// ## Topics
     /// - ``GenderIdentity``
     @AccountKey(
-        id: "GenderIdentityKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("GENDER_IDENTITY_TITLE", bundle: .atURL(from: .module)),
         category: .personalDetails,
         as: GenderIdentity.self,

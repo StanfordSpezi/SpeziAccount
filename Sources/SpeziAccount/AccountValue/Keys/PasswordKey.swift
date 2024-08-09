@@ -66,7 +66,6 @@ extension AccountDetails {
     /// - Note: This account value is only present if the ``AccountDetails`` transport are part of modifications (e.g. in ``AccountModifications``) or transport
     ///     signup details (e.g., using ``SignupForm``). `SpeziAccount` will never store the user's password in plain-text.
     @AccountKey(
-        id: "PasswordKey", // backwards compatibility with 1.0 releases
         name: LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module)),
         category: .credentials,
         as: String.self,

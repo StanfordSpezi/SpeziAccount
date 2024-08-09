@@ -9,15 +9,14 @@
 import SpeziFoundation
 
 
-struct AccountServiceConfigurationDetailsKey: DefaultProvidingKnowledgeSource {
-    typealias Anchor = AccountAnchor
-    typealias Value = AccountServiceConfiguration
-
-    static let defaultValue = AccountServiceConfiguration(supportedKeys: .exactly(AccountKeyCollection()))
-}
-
-
 extension AccountDetails {
+    struct AccountServiceConfigurationDetailsKey: DefaultProvidingKnowledgeSource {
+        typealias Anchor = AccountAnchor
+        typealias Value = AccountServiceConfiguration
+
+        static let defaultValue = AccountServiceConfiguration(supportedKeys: .exactly(AccountKeyCollection()))
+    }
+
     /// The configuration of the account service that manages these account details.
     public var accountServiceConfiguration: AccountServiceConfiguration {
         get {
