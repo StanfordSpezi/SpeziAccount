@@ -55,12 +55,22 @@ extension AccountDetails: Codable {
     ///
     /// - Parameter decoder: The decoder.
     public init(from decoder: any Decoder) throws {
-        guard let keys = decoder.userInfo[.accountDetailsKeys] as? [any AccountKey.Type] else {
+        guard let anyKeys = decoder.userInfo[.accountDetailsKeys] else {
             throw DecodingError.dataCorrupted(.init(
                 codingPath: decoder.codingPath,
                 debugDescription: """
                                   AccountKeys unspecified. Do decode AccountDetails you must specify requested AccountKey types \
                                   via the `accountDetailsKeys` CodingUserInfoKey.
+                                  """
+            ))
+        }
+        
+        guard let keys = anyKeys as? [any AccountKey.Type] else {
+            throw DecodingError.dataCorrupted(.init(
+                codingPath: decoder.codingPath,
+                debugDescription: """
+                                  Supplied `accountDetailsKeys` of type \(type(of: anyKeys)) did not match expected type \
+                                  of \([any AccountKey.Type].self).
                                   """
             ))
         }
