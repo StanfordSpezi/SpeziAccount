@@ -14,7 +14,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     private let setupSheet: SetupSheet
 
     @Environment(Account.self)
-    private var account
+    private var account: Account? // make sure that the modifier can be used when account is not configured
 
     @State private var presentingSheet = false
 
@@ -27,8 +27,8 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: [account.signedIn, presentingSheet]) {
-                guard enabled else {
+            .onChange(of: [account?.signedIn, presentingSheet]) {
+                guard enabled, let account else {
                     return
                 }
 
@@ -41,7 +41,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
                 }
             }
             .task {
-                guard enabled else {
+                guard enabled, let account else {
                     return
                 }
 
