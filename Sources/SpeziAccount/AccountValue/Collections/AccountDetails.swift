@@ -175,7 +175,6 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 public struct AccountDetails {
     fileprivate var storage: AccountStorage
 
-
     /// Initialize empty account details.
     public init() {
         self.init(from: AccountStorage())
@@ -189,7 +188,7 @@ public struct AccountDetails {
     /// Retrieve the value for an account key.
     /// - Parameter key: The meta-type of the ``AccountKey``.
     /// - Returns: The value if its currently stored in the collection.
-    public subscript<Key: KnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value? {
+    public subscript<Key: KnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value? where Key.Value: Sendable {
         get {
             storage[Key.self]
         }
@@ -203,7 +202,7 @@ public struct AccountDetails {
     /// - Parameter key: The meta-type of the ``RequiredAccountKey``.
     /// - Returns: The value if its currently stored in the collection or the default value. Note that retrieving the default value for a ``RequiredAccountKey`` results in a runtime crash.
     @_disfavoredOverload
-    public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value {
+    public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value where Key.Value: Sendable {
         get {
             storage[Key.self]
         }
@@ -215,9 +214,9 @@ public struct AccountDetails {
     /// Retrieve the value for an computed account key.
     /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
     /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
-    public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
+    public subscript<Key: ComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
         _ key: Key.Type
-    ) -> Key.Value where Key.StoragePolicy == _StoreComputePolicy {
+    ) -> Key.Value where Key.StoragePolicy == _StoreComputePolicy, Key.Value: Sendable {
         mutating get {
             storage[key]
         }
@@ -226,18 +225,18 @@ public struct AccountDetails {
     /// Retrieve the value for an computed account key.
     /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
     /// - Returns: The computed value of the account key.
-    public subscript<Key: ComputedKnowledgeSource<AccountAnchor>>(
+    public subscript<Key: ComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
         _ key: Key.Type
-    ) -> Key.Value where Key.StoragePolicy == _AlwaysComputePolicy {
+    ) -> Key.Value where Key.StoragePolicy == _AlwaysComputePolicy, Key.Value: Sendable {
         key.compute(from: storage)
     }
 
     /// Retrieve the value for an computed account key.
     /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
     /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
-    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
+    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
         _ key: Key.Type
-    ) -> Key.Value? where Key.StoragePolicy == _StoreComputePolicy {
+    ) -> Key.Value? where Key.StoragePolicy == _StoreComputePolicy, Key.Value: Sendable {
         mutating get {
             storage[key]
         }
@@ -246,9 +245,9 @@ public struct AccountDetails {
     /// Retrieve the value for an computed account key.
     /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
     /// - Returns: The computed value of the account key.
-    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor>>(
+    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
         _ key: Key.Type
-    ) -> Key.Value? where Key.StoragePolicy == _AlwaysComputePolicy {
+    ) -> Key.Value? where Key.StoragePolicy == _AlwaysComputePolicy, Key.Value: Sendable {
         key.compute(from: storage)
     }
 }
@@ -283,7 +282,7 @@ extension AccountDetails {
 // MARK: - Collection
 
 extension AccountDetails: Collection {
-    public typealias Index = ValueRepository<AccountAnchor>.Index
+    public typealias Index = SendableValueRepository<AccountAnchor>.Index
 
     /// Default `Collection` implementation.
     public var startIndex: Index {

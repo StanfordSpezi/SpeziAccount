@@ -84,7 +84,7 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     }
 
 
-    public static func compute<Repository: SharedRepository<Anchor>>(from repository: Repository) -> FieldValidationRules<Key>? {
+    public static func compute(from repository: AccountServiceConfigurationStorage) -> FieldValidationRules<Key>? {
         if let value = repository.get(Self.self) {
             return value // either the user configured a value themselves
         }

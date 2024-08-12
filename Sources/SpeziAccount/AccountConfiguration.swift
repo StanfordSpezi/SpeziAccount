@@ -45,7 +45,7 @@ public final class AccountConfiguration<Service: AccountService> {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     public convenience init(
         service: Service,
-        configuration: AccountValueConfiguration = .default
+        configuration: AccountValueConfiguration
     ) {
         self.init(accountService: service, configuration: configuration)
     }
@@ -62,9 +62,42 @@ public final class AccountConfiguration<Service: AccountService> {
     public convenience init<Storage: AccountStorageProvider>(
         service: Service,
         storageProvider: Storage,
-        configuration: AccountValueConfiguration = .default
+        configuration: AccountValueConfiguration
     ) {
         self.init(accountService: service, storageProvider: storageProvider, configuration: configuration)
+    }
+
+    /// Configure the `SpeziAccount` framework.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    ///
+    /// - Note: This initializer uses the ``AccountValueConfiguration/default`` configuration.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    @_spi(TestingSupport)
+    public convenience init(
+        service: Service
+    ) {
+        self.init(accountService: service, configuration: .default)
+    }
+
+    /// Configure the `SpeziAccount` framework with external storage.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    /// Use this to supply an ``AccountStorageProvider`` that manages external storage of account values unsupported by the account service.
+    ///
+    /// - Note: This initializer uses the ``AccountValueConfiguration/default`` configuration.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
+    public convenience init<Storage: AccountStorageProvider>(
+        service: Service,
+        storageProvider: Storage
+    ) {
+        self.init(accountService: service, storageProvider: storageProvider, configuration: .default)
     }
 
     /// Configure the `Account` Module for previewing purposes.

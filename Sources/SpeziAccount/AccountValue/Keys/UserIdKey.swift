@@ -142,7 +142,7 @@ public extension AccountKeys {} // swiftlint:disable:this no_extension_access_mo
 extension AccountDetails.__Key_userId: ComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
 
-    public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String {
+    public static func compute(from repository: AccountStorage) -> String {
         if let value = repository.get(Self.self) {
             return value // return the userId if there is one stored
         }

@@ -18,7 +18,7 @@ public struct AccountServiceConfigurationStorageAnchor: RepositoryAnchor, Sendab
 /// A `ValueRepository` that is anchored to ``AccountServiceConfigurationStorageAnchor``.
 ///
 /// This is the underlying storage type for the ``AccountServiceConfiguration`` to store instances of ``AccountServiceConfigurationKey``.
-public typealias AccountServiceConfigurationStorage = ValueRepository<AccountServiceConfigurationStorageAnchor>
+public typealias AccountServiceConfigurationStorage = SendableValueRepository<AccountServiceConfigurationStorageAnchor>
 
 
 /// Configuration options that are provided by an `AccountService`.

@@ -81,7 +81,7 @@ public extension AccountKeys {} // swiftlint:disable:this no_extension_access_mo
 extension AccountDetails.__Key_email: OptionalComputedKnowledgeSource {
     public typealias StoragePolicy = AlwaysCompute
 
-    public static func compute<Repository: SharedRepository<AccountAnchor>>(from repository: Repository) -> String? {
+    public static func compute(from repository: AccountStorage) -> String? {
         if let email = repository.get(Self.self) {
             // if we have manually stored a value for this key we return it
             return email

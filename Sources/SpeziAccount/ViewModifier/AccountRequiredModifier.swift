@@ -6,7 +6,11 @@
 // SPDX-License-Identifier: MIT
 //
 
+import OSLog
 import SwiftUI
+
+
+private let logger = Logger(subsystem: "edu.stanford.sepzi.SepziAccount", category: "AccountRequiredModifier")
 
 
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
@@ -41,7 +45,15 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
                 }
             }
             .task {
-                guard enabled, let account else {
+                guard enabled else {
+                    return
+                }
+
+                guard let account else {
+                    logger.error("""
+                                 accountRequired(_:setupSheet:) modifier was enabled but `Account` was not configured. \
+                                 Make sure to include the `AccountConfiguration` the configuration section of your App delegate.
+                                 """)
                     return
                 }
 
