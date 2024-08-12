@@ -18,6 +18,7 @@ import SwiftUI
 @available(macOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
+    private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
     private let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
 
@@ -143,7 +144,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         
         Section {
             HStack {
-                if editMode?.wrappedValue.isEditing == true {
+                if case .inEditMode = deletionBehavior,
+                   editMode?.wrappedValue.isEditing == true {
                     AsyncButton(role: .destructive, state: $destructiveViewState, action: {
                         // While the action closure itself is not async, we rely on ability to render loading indicator
                         // of the AsyncButton which based on the externally supplied viewState.
@@ -224,11 +226,13 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         account: Account,
         details accountDetails: AccountDetails,
         close closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
+        deletion deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior,
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
         self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account, details: accountDetails))
         self.closeBehavior = closeBehavior
+        self.deletionBehavior = deletionBehavior
         self.additionalSections = additionalSections()
     }
     

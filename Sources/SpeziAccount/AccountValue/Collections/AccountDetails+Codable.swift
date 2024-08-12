@@ -35,7 +35,7 @@ extension AccountDetails {
         }
 
         /// Create a new CodingKey from the `AccountKey`.
-        /// - Parameter key: A KeyPath to the key entry for the `AccountKey`.
+        /// - Parameter keyPath: A KeyPath to the key entry for the `AccountKey`.
         public init<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) {
             self.init(Key.self)
         }

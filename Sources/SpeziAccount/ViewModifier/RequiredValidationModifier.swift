@@ -19,10 +19,6 @@ private struct RequiredValidationModifier<Key: AccountKey>: ViewModifier {
 
     @Binding private var value: Key.Value
 
-    private var mockText: String {
-        detailsBuilder.contains(Key.self) ? "CONTAINED" : ""
-    }
-
     init(_ binding: Binding<Key.Value>) {
         self._value = binding
     }
@@ -35,7 +31,10 @@ private struct RequiredValidationModifier<Key: AccountKey>: ViewModifier {
             if innerValidation.isEmpty {
                 // ensure we don't nest validate modifiers. Otherwise, we get visibility problems.
                 view
-                    .validate(input: mockText, rules: .nonEmpty)
+                    .validate(
+                        detailsBuilder.contains(Key.self),
+                        message: LocalizedStringResource("This field is required.", bundle: .atURL(from: .module))
+                    )
 
                 HStack {
                     ValidationResultsView(results: validation.allDisplayedValidationResults)

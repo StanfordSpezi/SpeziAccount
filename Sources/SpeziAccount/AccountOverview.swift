@@ -53,8 +53,10 @@ import SwiftUI
 /// ```
 ///
 /// ## Topics
-/// ### Close Button
+/// ### Configuration
 /// - ``CloseBehavior``
+/// - ``AccountDeletionBehavior``
+/// - ``init(close:deletion:additionalSections:)``
 @available(macOS, unavailable)
 public struct AccountOverview<AdditionalSections: View>: View {
     /// Defines the behavior for the close button.
@@ -65,7 +67,16 @@ public struct AccountOverview<AdditionalSections: View>: View {
         case showCloseButton
     }
 
+    /// Defines the behavior of delete functionality.
+    public enum AccountDeletionBehavior {
+        /// Account deletion is not available.
+        case disabled
+        /// When entering the edit mode, the logout button turns into a delete account button.
+        case inEditMode
+    }
+
     private let closeBehavior: CloseBehavior
+    private let deletionBehavior: AccountDeletionBehavior
     private let additionalSections: AdditionalSections
 
     @Environment(Account.self)
@@ -81,7 +92,8 @@ public struct AccountOverview<AdditionalSections: View>: View {
                     AccountOverviewSections(
                         account: account,
                         details: details,
-                        close: closeBehavior
+                        close: closeBehavior,
+                        deletion: deletionBehavior
                     ) {
                         additionalSections
                     }
@@ -105,10 +117,17 @@ public struct AccountOverview<AdditionalSections: View>: View {
     
     /// Display a new Account Overview.
     /// - Parameters:
-    ///   - isEditing: A Binding that allows you to read the current editing state of the Account Overview view.
+    ///   - closeBehavior: Define the behavior of the close button that can be rendered in the toolbar. This is useful when presenting the AccountOverview
+    ///     as a sheet. Disabled by default.
+    ///   - deletionBehavior: Define how the Account Overview offers the user to delete their account. By default the Logout button turns into a delete button when entering edit mode.
     ///   - additionalSections: Optional additional sections displayed between the other AccountOverview information and the log out button.
-    public init(close closeBehavior: CloseBehavior = .disabled, @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }) {
+    public init(
+        close closeBehavior: CloseBehavior = .disabled,
+        deletion deletionBehavior: AccountDeletionBehavior = .inEditMode,
+        @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }
+    ) {
         self.closeBehavior = closeBehavior
+        self.deletionBehavior = deletionBehavior
         self.additionalSections = additionalSections()
     }
 }

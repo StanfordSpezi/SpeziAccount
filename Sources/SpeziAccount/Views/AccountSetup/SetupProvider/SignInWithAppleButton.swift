@@ -111,6 +111,7 @@ public struct SignInWithAppleButton: View {
     /// Create a new Sign in with Apple button.
     /// - Parameters:
     ///   - label: Optionally override the label that is used for the button. Otherwise, it will be derived from the ``PreferredSetupStyle``.
+    ///   - state: A view state binding that is used to set the error state if the `onCompletion` handler returns an error.
     ///   - onRequest: The authorization request for an Apple ID.
     ///   - onCompletion: The completion handler that the system calls when the sign-in completes.
     public init( // swiftlint:disable:this function_default_parameter_at_end

@@ -1259,6 +1259,22 @@
         }
       }
     },
+    "This field is required." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Feld is erforderlich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This field is required."
+          }
+        }
+      }
+    },
     "Toggle" : {
       "localizations" : {
         "de" : {
