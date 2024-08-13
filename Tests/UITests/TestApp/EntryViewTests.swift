@@ -8,6 +8,7 @@
 
 import Spezi
 @_spi(_Testing)
+@_spi(TestingSupport)
 import SpeziAccount
 import SpeziViews
 import SwiftUI
