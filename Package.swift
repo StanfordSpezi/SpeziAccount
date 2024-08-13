@@ -31,9 +31,9 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", branch: "feature/sendable-shared-repository"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/dependency-restructure"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", branch: "feature/validate-predicate"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.1"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/upgrade-spezi"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.5.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.1.2"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.1.2"),
@@ -118,7 +118,7 @@ func swiftLintPlugin() -> [Target.PluginUsage] {
 
 func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
     if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.package(url: "https://github.com/realm/SwiftLint.git", .upToNextMinor(from: "0.55.1"))]
+        [.package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")]
     } else {
         []
     }

@@ -184,72 +184,6 @@ public struct AccountDetails {
     init(from storage: AccountStorage) {
         self.storage = storage
     }
-
-    /// Retrieve the value for an account key.
-    /// - Parameter key: The meta-type of the ``AccountKey``.
-    /// - Returns: The value if its currently stored in the collection.
-    public subscript<Key: KnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value? where Key.Value: Sendable {
-        get {
-            storage[Key.self]
-        }
-        set {
-            storage[Key.self] = newValue
-        }
-    }
-
-
-    /// Retrieve the value for an account key.
-    /// - Parameter key: The meta-type of the ``RequiredAccountKey``.
-    /// - Returns: The value if its currently stored in the collection or the default value. Note that retrieving the default value for a ``RequiredAccountKey`` results in a runtime crash.
-    @_disfavoredOverload
-    public subscript<Key: DefaultProvidingKnowledgeSource<AccountAnchor>>(_ key: Key.Type) -> Key.Value where Key.Value: Sendable {
-        get {
-            storage[Key.self]
-        }
-        set {
-            storage[Key.self] = newValue
-        }
-    }
-
-    /// Retrieve the value for an computed account key.
-    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
-    /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
-    public subscript<Key: ComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
-        _ key: Key.Type
-    ) -> Key.Value where Key.StoragePolicy == _StoreComputePolicy, Key.Value: Sendable {
-        mutating get {
-            storage[key]
-        }
-    }
-
-    /// Retrieve the value for an computed account key.
-    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `ComputedKnowledgeSource`.
-    /// - Returns: The computed value of the account key.
-    public subscript<Key: ComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
-        _ key: Key.Type
-    ) -> Key.Value where Key.StoragePolicy == _AlwaysComputePolicy, Key.Value: Sendable {
-        key.compute(from: storage)
-    }
-
-    /// Retrieve the value for an computed account key.
-    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
-    /// - Returns: The value if its currently stored in the collection or otherwise the computed value.
-    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
-        _ key: Key.Type
-    ) -> Key.Value? where Key.StoragePolicy == _StoreComputePolicy, Key.Value: Sendable {
-        mutating get {
-            storage[key]
-        }
-    }
-
-    /// Retrieve the value for an computed account key.
-    /// - Parameter key: The meta-type of the ``AccountKey`` that conforms to `OptionalComputedKnowledgeSource`.
-    /// - Returns: The computed value of the account key.
-    public subscript<Key: OptionalComputedKnowledgeSource<AccountAnchor, AccountStorage>>(
-        _ key: Key.Type
-    ) -> Key.Value? where Key.StoragePolicy == _AlwaysComputePolicy, Key.Value: Sendable {
-        key.compute(from: storage)
-    }
 }
 
 
@@ -257,6 +191,23 @@ extension AccountDetails: Sendable {}
 
 
 extension AccountDetails: AcceptingAccountValueVisitor {}
+
+
+extension AccountDetails: SendableSharedRepository {
+    public typealias Anchor = AccountAnchor
+
+    public func get<Source: KnowledgeSource<Anchor>>(_ source: Source.Type) -> Source.Value? where Source.Value: Sendable {
+        storage.get(source)
+    }
+    
+    public mutating func set<Source: KnowledgeSource<Anchor>>(_ source: Source.Type, value newValue: Source.Value?) where Source.Value: Sendable {
+        storage.set(source, value: newValue)
+    }
+    
+    public func collect<Value>(allOf type: Value.Type) -> [Value] {
+        storage.collect(allOf: type)
+    }
+}
 
 // MARK: - Signup
 
