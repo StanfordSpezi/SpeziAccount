@@ -32,7 +32,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.1"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", branch: "feature/upgrade-spezi"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.7.1"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.6.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.1.2"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
