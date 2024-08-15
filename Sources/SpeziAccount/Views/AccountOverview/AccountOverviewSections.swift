@@ -22,7 +22,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     private let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
 
-    
+
     @Environment(Account.self)
     private var account
     @Environment(\.editMode)
@@ -38,15 +38,35 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @State private var destructiveViewState: ViewState = .idle
     @FocusState private var isFocused: Bool
 
-    var isProcessing: Bool {
+    private var isProcessing: Bool {
         viewState == .processing || destructiveViewState == .processing
     }
-    
-    
+
+    private var showDeleteButton: Bool {
+        switch deletionBehavior {
+        case .disabled:
+            false
+        case .inEditMode:
+            editMode?.wrappedValue.isEditing == true
+        case .belowLogout:
+            true
+        }
+    }
+
+    private var showLogoutButton: Bool {
+        switch deletionBehavior {
+        case .inEditMode:
+            editMode?.wrappedValue.isEditing != true
+        default:
+            true
+        }
+    }
+
+
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
-            // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
-            // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
+        // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
+        // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
             .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || isProcessing)
             .viewStateAlert(state: $viewState)
@@ -69,7 +89,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                         }
                     }
                 }
-                
+
                 if destructiveViewState == .idle {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: editButtonAction) {
@@ -79,8 +99,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                            .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
-                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+                        .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
+                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
             }
@@ -109,7 +129,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     Text("UP_LOGOUT", bundle: .module)
                 }
                 .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                
+
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
@@ -122,8 +142,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 }) {
                     Text("DELETE", bundle: .module)
                 }
-                    .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                
+                .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
@@ -133,35 +153,36 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
 
         defaultSections
-        
+
         sectionsView
             .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
-        
+
         additionalSections
-        
-        Section {
-            HStack {
-                if case .inEditMode = deletionBehavior,
-                   editMode?.wrappedValue.isEditing == true {
-                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                        // While the action closure itself is not async, we rely on ability to render loading indicator
-                        // of the AsyncButton which based on the externally supplied viewState.
-                        model.presentingRemovalAlert = true
-                    }) {
-                        Text("DELETE_ACCOUNT", bundle: .module)
-                    }
-                } else {
-                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                        model.presentingLogoutAlert = true
-                    }) {
-                        Text("UP_LOGOUT", bundle: .module)
-                    }
+
+        if showLogoutButton {
+            Section {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    model.presentingLogoutAlert = true
+                }) {
+                    Text("UP_LOGOUT", bundle: .module)
                 }
-            }
                 .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+        if showDeleteButton {
+            Section {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    // While the action closure itself is not async, we rely on ability to render loading indicator
+                    // of the AsyncButton which based on the externally supplied viewState.
+                    model.presentingRemovalAlert = true
+                }) {
+                    Text("DELETE_ACCOUNT", bundle: .module)
+                }
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 
@@ -286,6 +307,33 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
     return NavigationStack {
         AccountOverview {
+            Section(header: Text(verbatim: "App")) {
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "General Settings")
+                }
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "License Information")
+                }
+            }
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
+
+    return NavigationStack {
+        AccountOverview(deletion: .belowLogout) {
             Section(header: Text(verbatim: "App")) {
                 NavigationLink {
                     Text(String())

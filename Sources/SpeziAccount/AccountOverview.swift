@@ -73,6 +73,8 @@ public struct AccountOverview<AdditionalSections: View>: View {
         case disabled
         /// When entering the edit mode, the logout button turns into a delete account button.
         case inEditMode
+        /// Show the delete button below the logout button.
+        case belowLogout
     }
 
     private let closeBehavior: CloseBehavior

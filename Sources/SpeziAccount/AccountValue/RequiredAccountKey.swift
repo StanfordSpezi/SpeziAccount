@@ -23,7 +23,7 @@ import SpeziFoundation
 /// will result in a runtime crash.
 ///
 /// - Important: Avoid introducing required account keys after user accounts have already been created without it.
-public protocol RequiredAccountKey: AccountKey, DefaultProvidingKnowledgeSource {} // TODO: 
+public protocol RequiredAccountKey: AccountKey, DefaultProvidingKnowledgeSource {} 
 
 extension RequiredAccountKey {
     /// A default implementation that results in a fatal error.
