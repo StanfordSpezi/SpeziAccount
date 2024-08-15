@@ -10,7 +10,7 @@ import XCTest
 import XCTestExtensions
 
 
-final class AccountOverviewTests: XCTestCase {
+final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
 

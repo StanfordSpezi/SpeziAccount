@@ -203,7 +203,6 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         app.openAccountSetup()
 
-        // TODO: visuals on visionOS of that button!
         XCTAssertTrue(app.buttons["Forgot Password?"].exists)
         app.buttons["Forgot Password?"].tap()
 
