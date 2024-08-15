@@ -174,7 +174,9 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
             supplyDateOfBirth: supplyDateOfBirth
         )
 
+#if os(visionOS)
         app.scrollUpInSetup()
+#endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
@@ -477,9 +479,9 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         try app.textFields["enter first name"].delete(count: 6)
 
-        #if os(visionOS)
+#if os(visionOS)
         app.scrollUpInSetup()
-        #endif
+#endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
