@@ -104,7 +104,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     }
 
     @MainActor
-    func testSignupWithAnonymousAccount() throws {
+    func testSignupWithAnonymousAccount() throws { // swiftlint:disable:this function_body_length
         let app = XCUIApplication()
         app.launch(serviceType: .both, config: .allRequired)
 
