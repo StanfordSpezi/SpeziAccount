@@ -160,12 +160,21 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertFalse(app.textFields["enter first name"].exists)
         XCTAssertFalse(app.textFields["enter last name"].exists)
 
+#if !os(visionOS)
+        let supplyDateOfBirth = true
+#else
+        // we are not able to interact with the date picker on visionOS
+        let supplyDateOfBirth = false
+#endif
+
         try app.fillSignupForm(
             email: Defaults.email,
             password: Defaults.password,
             genderIdentity: "Male",
-            supplyDateOfBirth: true
+            supplyDateOfBirth: supplyDateOfBirth
         )
+
+        app.scrollUpInSetup()
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
@@ -565,9 +574,15 @@ extension XCUIApplication {
     func scrollUpInSetup() {
         // swipeUp doesn't work on visionOS, so we improvise
 
-        XCTAssertTrue(staticTexts["Name"].waitForExistence(timeout: 2.0))
-        XCTAssertTrue(staticTexts["Create a new Account"].exists)
-        staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        if staticTexts["Name"].waitForExistence(timeout: 2.0) {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else if staticTexts["Personal Details"].exists {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else {
+            XCTFail("Could not scroll on visionOS")
+        }
     }
 #endif
 }

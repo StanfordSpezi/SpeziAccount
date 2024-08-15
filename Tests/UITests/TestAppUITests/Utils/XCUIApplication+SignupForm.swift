@@ -42,13 +42,13 @@ extension XCUIApplication {
             if let lastname = name.familyName {
                 try textFields["enter last name"].enter(value: lastname)
             }
-        }
 
 #if os(visionOS)
-        if genderIdentity != nil || supplyDateOfBirth || biography != nil {
-            scrollUpInSetup()
-        }
+            if genderIdentity != nil || supplyDateOfBirth || biography != nil {
+                scrollUpInSetup()
+            }
 #endif
+        }
 
         if let genderIdentity {
             XCTAssertTrue(staticTexts["Choose not to answer"].waitForExistence(timeout: 2.0), "Didn't find Gender Identity Picker")
