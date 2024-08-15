@@ -30,7 +30,7 @@ public final class AccountConfiguration<Service: AccountService> {
     @Dependency(Service.self)
     private var accountService
 
-    @Dependency private var storageProvider: [any Module] // we store the storage provider in a type erased way! it is optional to supply!
+    @Dependency private var storageProvider: [any Module]
     @StandardActor private var standard: any Standard
 
 

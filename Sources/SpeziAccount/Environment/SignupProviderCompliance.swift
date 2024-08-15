@@ -41,7 +41,7 @@ private struct SignupProviderComplianceKey: PreferenceKey {
 
 /// Define the compliance level of a custom signup provider.
 ///
-/// SpeziBluetooth imposes requirements on account keys using ``AccountValueConfiguration`` which is supplied by the framework user.
+/// SpeziAccount imposes requirements on account keys using ``AccountValueConfiguration`` which is supplied by the framework user.
 /// This specifies which account keys are required and optional during signup.
 /// Some signup provider, typically one external ones like a Single-Sign-On provider, might not be able to comply with that.
 ///
@@ -116,7 +116,7 @@ extension SignupProviderCompliance: Sendable, Equatable {}
 extension View {
     /// Informs the parent account setup view about compliance of the signup provider.
     ///
-    /// SpeziBluetooth imposes requirements on account keys using ``AccountValueConfiguration`` which is supplied by the framework user.
+    /// SpeziAccount imposes requirements on account keys using ``AccountValueConfiguration`` which is supplied by the framework user.
     /// This specifies which account keys are required and optional during signup.
     /// Some signup provider, typically one external ones like a Single-Sign-On provider, might not be able to comply with that.
     ///

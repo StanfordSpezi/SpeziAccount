@@ -44,6 +44,12 @@ extension XCUIApplication {
             }
         }
 
+#if os(visionOS)
+        if genderIdentity != nil || supplyDateOfBirth || biography != nil {
+            scrollUpInSetup()
+        }
+#endif
+
         if let genderIdentity {
             XCTAssertTrue(staticTexts["Choose not to answer"].waitForExistence(timeout: 2.0), "Didn't find Gender Identity Picker")
             self.updateGenderIdentity(from: "Choose not to answer", to: genderIdentity)

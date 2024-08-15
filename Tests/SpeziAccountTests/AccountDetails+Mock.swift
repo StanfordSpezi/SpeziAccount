@@ -10,6 +10,8 @@ import Foundation
 import SpeziAccount
 import XCTest
 
+// TODO: add unit tests for computed account details! userId and email! no regressions there!
+
 
 extension AccountDetails {
     static func mock(id: UUID = UUID(), date: Date = .now) -> AccountDetails {

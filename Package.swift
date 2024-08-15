@@ -25,7 +25,8 @@ let package = Package(
     defaultLocalization: "en",
     platforms: [
         .iOS(.v17),
-        .macOS(.v14) // we need to specify that to run macro tests as they only run on the host platform
+        .macOS(.v14), // we need to specify that to run macro tests as they only run on the host platform
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])

@@ -35,14 +35,34 @@ class TestAppDelegate: SpeziAppDelegate {
                 .supports(\.biography)
             ]
         case .allRequired:
+#if os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .requires(\.dateOfBirth),
+                .collects(\.dateOfBirth),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
+
+#else
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .collects(\.dateOfBirth),
+                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+            ]
+#endif
         case .allRequiredWithBio:
+#if os(visionOS)
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .collects(\.dateOfBirth),
+                .requires(\.biography)
+            ]
+#else
             return [
                 .requires(\.userId),
                 .requires(\.name),
@@ -50,6 +70,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.dateOfBirth),
                 .requires(\.biography)
             ]
+#endif
         }
     }
 

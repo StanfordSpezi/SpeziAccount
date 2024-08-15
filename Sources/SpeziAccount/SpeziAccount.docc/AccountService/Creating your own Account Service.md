@@ -134,7 +134,7 @@ private struct MySetupView: View {
         AccountSetupProviderView { credentials in
             try await service.login(userId: credentials.userId, password: credentials.password)
         } signup: { details in
-            // try await service.signup(details)
+            try await service.signup(details)
         }
     }
 

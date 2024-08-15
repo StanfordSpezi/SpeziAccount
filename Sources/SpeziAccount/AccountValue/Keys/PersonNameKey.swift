@@ -71,13 +71,7 @@ private struct EntryView: DataEntryView {
 
             GridValidationStateFooter(familyNameValidation.allDisplayedValidationResults)
         }
-        .environment(\.validationConfiguration, .considerNoInputAsValid)
-        .onChange(of: givenNameValidation) {
-            print("given Name: \(givenNameValidation)")
-        }
-        .onChange(of: familyNameValidation) {
-            print("family Name: \(familyNameValidation)")
-        }
+            .environment(\.validationConfiguration, .considerNoInputAsValid)
     }
 
 

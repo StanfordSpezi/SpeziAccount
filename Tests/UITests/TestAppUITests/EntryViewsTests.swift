@@ -32,9 +32,17 @@ final class EntryViewsTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Bool Value, false"].exists)
         XCTAssertTrue(app.switches["Toggle"].exists)
         XCTAssertEqual(app.switches["Toggle"].value as? String, "0")
+#if os(visionOS)
+        app.switches["Toggle"].tap()
+#else
         app.switches["Toggle"].coordinate(withNormalizedOffset: .init(dx: 0.9, dy: 0.5)).tap()
+#endif
         XCTAssertTrue(app.staticTexts["Bool Value, true"].waitForExistence(timeout: 0.5))
+#if os(visionOS)
+        app.switches["Toggle"].tap()
+#else
         app.switches["Toggle"].coordinate(withNormalizedOffset: .init(dx: 0.9, dy: 0.5)).tap()
+#endif
         XCTAssertTrue(app.staticTexts["Bool Value, false"].waitForExistence(timeout: 0.5))
 
 

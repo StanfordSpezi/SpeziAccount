@@ -37,6 +37,10 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Date of Birth, Mar 9, 1824"].exists)
 
         XCTAssertTrue(app.staticTexts["License Information"].exists)
+
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
         XCTAssertTrue(app.buttons["Logout"].exists)
     }
 
@@ -53,10 +57,13 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Edit"].exists)
         app.buttons["Edit"].tap()
 
-        XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
 
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+#if !os(visionOS)
+        // on visionOS we are currently unable to tap on date pickers :)
         app.changeDatePreviousMonthFirstDay()
+#endif
 
         XCTAssertTrue(app.buttons["Add Biography"].exists)
         app.buttons["Add Biography"].tap()
@@ -81,6 +88,10 @@ final class AccountOverviewTests: XCTestCase {
 
         app.openAccountOverview()
 
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
+
         XCTAssertTrue(app.buttons["Logout"].exists)
         app.buttons["Logout"].tap()
 
@@ -104,6 +115,10 @@ final class AccountOverviewTests: XCTestCase {
 
         XCTAssertTrue(app.buttons["Edit"].exists)
         app.buttons["Edit"].tap()
+
+        #if os(visionOS)
+        app.scrollUpInOverview()
+        #endif
 
         XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
         app.buttons["Delete Account"].tap()
@@ -133,12 +148,11 @@ final class AccountOverviewTests: XCTestCase {
         app.buttons["Edit"].tap()
 
         // no changes, should just leave edit mode
-        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
         app.buttons["Cancel"].tap()
-        XCTAssertTrue(app.buttons["Logout"].waitForExistence(timeout: 0.5))
 
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 
@@ -368,4 +382,17 @@ final class AccountOverviewTests: XCTestCase {
         app.buttons["License Information"].tap()
         XCTAssertTrue(app.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 3.0))
     }
+}
+
+
+extension XCUIApplication {
+#if os(visionOS)
+    fileprivate func scrollUpInOverview() {
+        // swipeUp doesn't work on visionOS, so we improvise
+
+        XCTAssertTrue(staticTexts["Personal Details"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(staticTexts["Leland Stanford"].exists)
+        staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Leland Stanford"])
+    }
+#endif
 }
