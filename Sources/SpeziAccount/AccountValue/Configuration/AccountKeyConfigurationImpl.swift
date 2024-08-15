@@ -15,6 +15,7 @@ public protocol AccountKeyConfiguration: CustomStringConvertible, CustomDebugStr
 
     /// Access the ``AccountKey`` meta-type.
     var key: Key.Type { get }
+
     /// The requirement level that was defined for the ``AccountKey``.
     var requirement: AccountKeyRequirement { get }
 
@@ -33,6 +34,13 @@ struct AccountKeyConfigurationImpl<Key: AccountKey>: AccountKeyConfiguration {
         self.key = Key.self
         self.requirement = type
         self.keyPathDescription = keyPath.shortDescription
+    }
+}
+
+
+extension AccountKeyConfiguration {
+    var keyWithDescription: any AccountKeyWithDescription {
+        AccountKeyWithKeyPathDescription(key: key, description: keyPathDescription)
     }
 }
 

@@ -29,10 +29,10 @@ extension XCUIApplication {
         biography: String? = nil
     ) throws {
         // we access through collectionViews as there is another E-Mail Address and Password field behind the signup sheet
-        XCTAssertTrue(collectionViews.textFields["E-Mail Address"].exists)
+        XCTAssertTrue(collectionViews.textFields["E-Mail Address"].exists, "Couldn't locate E-Mail Address field")
         try collectionViews.textFields["E-Mail Address"].enter(value: email)
 
-        XCTAssertTrue(collectionViews.secureTextFields["Password"].exists)
+        XCTAssertTrue(collectionViews.secureTextFields["Password"].exists, "Couldn't locate Password field")
         try collectionViews.secureTextFields["Password"].enter(value: password)
 
         if let name {
@@ -42,10 +42,16 @@ extension XCUIApplication {
             if let lastname = name.familyName {
                 try textFields["enter last name"].enter(value: lastname)
             }
+
+#if os(visionOS)
+            if genderIdentity != nil || supplyDateOfBirth || biography != nil {
+                scrollUpInSetup()
+            }
+#endif
         }
 
         if let genderIdentity {
-            XCTAssertTrue(staticTexts["Choose not to answer"].waitForExistence(timeout: 2.0))
+            XCTAssertTrue(staticTexts["Choose not to answer"].waitForExistence(timeout: 2.0), "Didn't find Gender Identity Picker")
             self.updateGenderIdentity(from: "Choose not to answer", to: genderIdentity)
         }
 

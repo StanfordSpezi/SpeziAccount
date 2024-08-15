@@ -9,7 +9,9 @@
 import SpeziFoundation
 
 
-/// A typed storage key extending ``AccountKey`` for values that are required for every user account if used.
+/// A typed storage key for values that are required for every user account if used.
+///
+/// This protocol extends the ``AccountKey`` protocol.
 ///
 /// A `RequiredAccountKey` can be used to provide the guarantee on a type-level that a given account key
 /// will be present in every case.
@@ -18,9 +20,9 @@ import SpeziFoundation
 ///     But a user might still choose to not configure it at all.
 ///
 /// Use this protocol with care. Accessing the value of a `RequiredAccountKey` when it isn't present,
-/// will result in a runtime crash. When you introduce a new required account key after user accounts
-/// have already been created without it, make sure to use optional bindings by directly accessing ``AccountValues/storage``
-/// to safely unwrap the value.
+/// will result in a runtime crash.
+///
+/// - Important: Avoid introducing required account keys after user accounts have already been created without it.
 public protocol RequiredAccountKey: AccountKey, DefaultProvidingKnowledgeSource {}
 
 extension RequiredAccountKey {

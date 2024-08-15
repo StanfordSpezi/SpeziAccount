@@ -18,10 +18,10 @@ public struct AccountServiceConfigurationStorageAnchor: RepositoryAnchor, Sendab
 /// A `ValueRepository` that is anchored to ``AccountServiceConfigurationStorageAnchor``.
 ///
 /// This is the underlying storage type for the ``AccountServiceConfiguration`` to store instances of ``AccountServiceConfigurationKey``.
-public typealias AccountServiceConfigurationStorage = ValueRepository<AccountServiceConfigurationStorageAnchor>
+public typealias AccountServiceConfigurationStorage = SendableValueRepository<AccountServiceConfigurationStorageAnchor>
 
 
-/// Configuration options that are provided by an ``AccountService``.
+/// Configuration options that are provided by an `AccountService`.
 ///
 /// A instance of this type is required to be provided by every ``AccountService``. It is used to
 /// set and communicate certain configuration options of the account service to the UI components that
@@ -34,10 +34,8 @@ public typealias AccountServiceConfigurationStorage = ValueRepository<AccountSer
 /// ## Topics
 ///
 /// ### Retrieving configuration
-/// Below is a list of configuration options built into the ``SpeziAccount`` framework.
+/// Below is a list of builtin configuration options.
 ///
-/// - ``name``
-/// - ``image``
 /// - ``userIdConfiguration``
 /// - ``fieldValidationRules(for:)-28x74``
 /// - ``fieldValidationRules(for:)-w2n2``
@@ -56,37 +54,32 @@ public struct AccountServiceConfiguration: Sendable {
 
     /// Initialize a new configuration by just providing the required ones.
     /// - Parameters:
-    ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageProvider``
     ///     that is capable of handling all non-supported ``AccountKey``s.
-    public init(name: LocalizedStringResource, supportedKeys: SupportedAccountKeys) {
-        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys)
+    public init(supportedKeys: SupportedAccountKeys) {
+        self.storage = Self.createStorage(supportedKeys: supportedKeys)
     }
 
     /// Initialize a new configuration by providing additional configurations.
     /// - Parameters:
-    ///   - name: The name of the ``AccountService``. Refer to ``AccountServiceName`` for more information.
     ///   - supportedKeys: The set of ``SupportedAccountKeys`` the ``AccountService`` is capable of storing itself.
-    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageConstraint``
+    ///     If ``SupportedAccountKeys/exactly(_:)`` is chosen, the user is responsible of providing a ``AccountStorageProvider``
     ///     that is capable of handling all non-supported ``AccountKey``s.
     ///   - configuration: A ``AccountServiceConfigurationBuilder`` to provide a list of ``AccountServiceConfigurationKey``s.
     public init(
-        name: LocalizedStringResource,
         supportedKeys: SupportedAccountKeys,
         @AccountServiceConfigurationBuilder configuration: () -> [any AccountServiceConfigurationKey]
     ) {
-        self.storage = Self.createStorage(name: name, supportedKeys: supportedKeys, configuration: configuration())
+        self.storage = Self.createStorage(supportedKeys: supportedKeys, configuration: configuration())
     }
 
 
     private static func createStorage(
-        name: LocalizedStringResource,
         supportedKeys: SupportedAccountKeys,
         configuration: [any AccountServiceConfigurationKey] = []
     ) -> AccountServiceConfigurationStorage {
         var storage = AccountServiceConfigurationStorage()
-        storage[AccountServiceName.self] = AccountServiceName(name)
         storage[SupportedAccountKeys.self] = supportedKeys
 
         for configuration in configuration {

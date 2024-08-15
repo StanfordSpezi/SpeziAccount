@@ -13,85 +13,85 @@ import SwiftUI
 
 /// The primary entry point for UI components and ``AccountService``s to interact with ``SpeziAccount`` interfaces.
 ///
-/// The `Account` object is responsible to manage the state of the currently logged in user.
-/// You can simply access the currently ``signedIn`` state of the user (or via the `$signedIn` publisher) or
-/// access the account information from the ``details`` property (or via the `$details` publisher).
+/// You can access the current user account state using the `Account` `Module`.
+/// It provides information if the user is currently ``Account/signedIn`` and allows to access the user ``Account/details``.
 ///
 /// - Note: For more information on how to access and use the `Account` object when implementing a custom ``AccountService``
 ///     refer to the <doc:Creating-your-own-Account-Service> article.
 ///
-/// ### Accessing `Account` in your view
-///
-/// To access the `Account` object from anywhere in your view hierarchy (assuming you have ``AccountConfiguration`` configured),
-/// you may just declare the respective [@Environment](https://developer.apple.com/documentation/swiftui/environment)
-/// property wrapper as in the code sample below.
-///
+/// Below is a short code example demonstrating how to access `Account` from your SwiftUI view hierarchy.
 /// ```swift
 /// struct MyView: View {
-///     @Environment(Account.self) var account
+///     @Environment(Account.self)
+///     private var account
 ///
 ///     var body: some View {
-///         if let details = account.details {
-///             Text("Hello \(details.name.formatted(.name(style: .medium)))")
-///         } else {
-///             Text("Hello World")
-///         }
+///         // ...
 ///     }
 /// }
 /// ```
 ///
+///
+/// Accessing the `Account` from within your `Module` is equally simple using the Spezi dependency system.
+///
+/// ```swift
+/// final class MyModule: Module {
+///     @Dependency(Account.self)
+///     private var account
+/// }
+/// ```
+///
+/// - Note: The code example declares a required dependency and would crash if the user doesn't configure `SpeziAccount`.
+///     You might want to consider it as an optional dependency to gracefully handle the case where `SpeziAccount` might not be configured.
+///
 /// ## Topics
 ///
-/// ### Retrieving Account state
-/// This section provides an overview on how to retrieve the currently logged in user from your views.
+/// ### Associated User Account
+/// Determine account association status and retrieve associated user details.
 ///
 /// - ``signedIn``
 /// - ``details``
 ///
-/// ### Managing Account state
-/// This section provides an overview on how to manage and manipulate the current user account as an ``AccountService``.
+/// ### Managing Account State
+/// Manage user account association as an `AccountService`.
 ///
-/// - ``supplyUserDetails(_:isNewUser:)``
+/// - ``supplyUserDetails(_:)``
 /// - ``removeUserDetails()``
-///
-/// ### Initializers for your Preview Provider
-///
-/// - ``init(services:configuration:)``
-/// - ``init(_:configuration:)``
-/// - ``init(building:active:configuration:)``
 @Observable
 public final class Account {
-    private var logger: Logger {
-        LoggerKey.defaultValue
-    }
+    @ObservationIgnored @Application(\.logger)
+    var logger // swiftlint:disable:this attributes
 
-    /// The `signedIn` property determines if the the current Account context is signed in or not yet signed in.
-    ///
-    /// You might use the projected value `$signedIn` to get access to the corresponding publisher.
-    ///
-    /// - Important: If the property is set to `true`, it is guaranteed that ``details`` is present.
-    ///     This has the following implications. When `signedIn` is `false`, there might still be a `details` instance present.
-    ///     Similarly, when `details` is set to `nil, `signedIn` is guaranteed to be `false`. Otherwise,
-    ///     if `details` is set to some value, the `signedIn` property might still be set to `false`.
-    @MainActor public private(set) var signedIn: Bool
-
-    /// Provides access to associated data of the currently associated user account.
-    ///
-    /// The ``AccountDetails`` acts as a typed collection and is implemented as a
-    /// [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository).
-    ///
-    /// - Note: The associated ``AccountService`` that is responsible for managing the associated user can be retrieved
-    ///     using the ``AccountDetails/accountService`` property.
-    @MainActor public private(set) var details: AccountDetails?
+    @Dependency @ObservationIgnored private var notifications = AccountNotifications()
 
     /// The user-defined configuration of account values that all user accounts need to support.
     public let configuration: AccountValueConfiguration
 
-    ///  An account provides a collection of ``AccountService``s that are used to populate login, sign up, or reset password screens.
+    /// Determine if there is are associated account details.
     ///
-    /// - Note: This array also contains ``IdentityProvider``s that need to be treated differently due to differing
-    ///     ``AccountSetupViewStyle`` implementations (see ``IdentityProviderViewStyle``).
-    @MainActor public private(set) var registeredAccountServices: [any AccountService]
+    /// - Note: If the property is set to `true`, it is guaranteed that ``details`` is present.
+    @MainActor public private(set) var signedIn: Bool
+
+    /// The user details of the currently associated user account.
+    ///
+    /// - Note: The ``AccountDetails`` acts as a typed collection and is implemented as a
+    /// [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository).
+    @MainActor public private(set) var details: AccountDetails?
+
+    @MainActor private weak var _accountService: (any AccountService)?
+
+    /// The account service that was configured.
+    @MainActor public var accountService: any AccountService {
+        guard let service = _accountService else {
+            preconditionFailure("Tried to access account service that was deallocated!")
+        }
+        return service
+    }
+
+    /// The account setup components specified via the ``IdentityProvider`` property wrapper that are shown in the ``AccountSetup`` view.
+    let accountSetupComponents: [AnyAccountSetupComponent]
+    /// A security related modifier (see ``SecurityRelatedModifier``).
+    let securityRelatedModifiers: [AnySecurityModifier]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -99,18 +99,37 @@ public final class Account {
     ///   - supportedConfiguration: The ``AccountValueConfiguration`` to user intends to support.
     ///   - details: A initial ``AccountDetails`` object. The ``signedIn`` is set automatically based on the presence of this argument.
     init(
-        services: [any AccountService],
+        service: some AccountService,
         supportedConfiguration: AccountValueConfiguration = .default,
         details: AccountDetails? = nil
     ) {
-        // we have to initialize the macro generated properties directly to stay non-isolated.
+        self.configuration = supportedConfiguration
+
         self._signedIn = details != nil
         self._details = details
+        self.__accountService = service
 
-        self.configuration = supportedConfiguration
-        self._registeredAccountServices = services
 
-        if supportedConfiguration[UserIdKey.self] == nil {
+        let mirror = Mirror(reflecting: service)
+        self.accountSetupComponents = mirror.children.reduce(into: []) { partialResult, property in
+            guard let provider = property.value as? AnyIdentityProvider else {
+                return
+            }
+
+            partialResult.append(provider.component)
+        }
+        self.securityRelatedModifiers = mirror.children.reduce(into: [], { partialResult, property in
+            guard let modifier = property.value as? AnySecurityRelatedModifier else {
+                return
+            }
+
+            partialResult.append(modifier.securityModifier)
+        })
+    }
+
+    /// Configures the module.
+    public func configure() {
+        if configuration.userId == nil {
             logger.warning(
                 """
                 Your AccountConfiguration doesn't have the \\.userId (aka. UserIdKey) configured. \
@@ -121,76 +140,19 @@ public final class Account {
         }
     }
 
-    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init(
-        services: [any AccountService],
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: services, supportedConfiguration: configuration)
-    }
-
-    /// Initializes a new `Account` object without a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - services: A collection of ``AccountService`` that are used to handle account-related functionality.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init(
-        _ services: any AccountService...,
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: services, supportedConfiguration: configuration)
-    }
-
-    /// Initializes a new `Account` object with a logged in user for usage within a `PreviewProvider`.
-    ///
-    /// To use this within your `PreviewProvider` just supply it to a `environmentObject(_:)` modified in your view hierarchy.
-    /// - Parameters:
-    ///   - builder: A  ``AccountValuesBuilder`` for ``AccountDetails`` with all account details for the logged in user.
-    ///   - accountService: The ``AccountService`` that is managing the provided ``AccountDetails``.
-    ///   - configuration: The ``AccountValueConfiguration`` to user intends to support.
-    @available(*, deprecated, message: "Use the AccountConfiguration(building:active:configuration) and previewWith(_:) modifier for previews.")
-    public convenience init<Service: AccountService>(
-        building builder: AccountDetails.Builder,
-        active accountService: Service,
-        configuration: AccountValueConfiguration = .default
-    ) {
-        self.init(services: [accountService], supportedConfiguration: configuration, details: builder.build(owner: accountService))
-    }
-
-    /// Initialize an empty Account module.
-    public convenience init() {
-        self.init(services: [], supportedConfiguration: .default)
-    }
-
-    @MainActor
-    func configureServices(_ services: [any AccountService]) {
-        registeredAccountServices.append(contentsOf: services)
-    }
-
     /// Supply the ``AccountDetails`` of the currently logged in user.
     ///
     /// This method is called by the ``AccountService`` every time the state of the user account changes.
     /// Either if the went from no logged in user to having a logged in user, or if the details of the user account changed.
     ///
-    /// - Parameters:
-    ///   - details: The ``AccountDetails`` of the currently logged in user account.
-    ///   - isNewUser: An optional flag that indicates if the provided account details are for a new user registration.
-    ///     If this flag is set to `true`, the ``AccountSetup`` view will render a additional information sheet not only for
-    ///     ``AccountKeyRequirement/required``, but also for ``AccountKeyRequirement/collected`` account values.
-    ///     This is primarily helpful for identity providers. You might not want to set this flag
-    ///     if you using the builtin ``SignupForm``!
+    /// - Note: Please set the ``AccountDetails/isNewUser`` or ``AccountDetails/isAnonymous`` properties to communicate the type of account details
+    ///     supplied to `Account`.
+    ///
+    /// - Parameter details: The ``AccountDetails`` of the currently logged in user account.
     @MainActor
-    public func supplyUserDetails(_ details: AccountDetails, isNewUser: Bool = false) async throws {
+    public func supplyUserDetails(_ details: AccountDetails) {
         precondition(
-            details.contains(AccountIdKey.self),
+            details.contains(AccountKeys.accountId),
             """
             The provided `AccountDetails` do not have the \\.accountId (aka. AccountIdKey) set. \
             A primary, unique and stable user identifier is expected with most SpeziAccount components and \
@@ -198,48 +160,33 @@ public final class Account {
             """
         )
 
+        guard let accountService = _accountService else {
+            assertionFailure("The account service was deallocated.")
+            return
+        }
+
         var details = details
+        details.accountServiceConfiguration = accountService.configuration
+        details.password = nil // ensure password never leaks
 
-        if isNewUser { // mark the account details to be from a new user
-            details.patchIsNewUser(true)
-        }
+        let previousDetails = self.details
 
-
-        // Account details will always get built by the respective Account Service. Therefore, we need to patch it
-        // if they are wrapped into a StandardBacked one such that the `AccountDetails` carry the correct reference.
-        for service in registeredAccountServices {
-            if let standardBacked = service as? any _StandardBacked,
-               standardBacked.isBacking(service: details.accountService) {
-                details.patchAccountService(service)
-                break
-            }
-        }
-
-        if let existingDetails = self.details,
-           existingDetails.accountService.id != details.accountService.id {
-            logger.warning("The AccountService \(details.accountService.description) is overwriting `AccountDetails` from \(existingDetails.accountService.description)!")
-        }
-
-        // Check if the account service is wrapped with a storage standard. If that's the case, contact them about the signup!
-        if let standardBacked = details.accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
-
-            try await standardBacked.preUserDetailsSupply(recordId: recordId)
-
-            let unsupportedKeys = details.accountService.configuration
-                .unsupportedAccountKeys(basedOn: configuration)
-                .map { $0.key }
-
-            let partialDetails = try await storageStandard.load(recordId, unsupportedKeys)
-
-            self.details = details.merge(with: partialDetails, allowOverwrite: false)
-        } else {
-            self.details = details
-        }
+        self.details = details
 
         if !signedIn {
             signedIn = true
+        }
+
+        Task { @MainActor [notifications, previousDetails, details] in
+            do {
+                if let previousDetails {
+                    try await notifications.reportEvent(.detailsChanged(previousDetails, details))
+                } else {
+                    try await notifications.reportEvent(.associatedAccount(details))
+                }
+            } catch {
+                logger.error("Account Association event failed unexpectedly: \(error)")
+            }
         }
     }
 
@@ -248,14 +195,17 @@ public final class Account {
     /// This method is called by the currently active ``AccountService`` to remove the ``AccountDetails`` of the currently
     /// signed in user and notify others that the user logged out (or the account was removed).
     @MainActor
-    public func removeUserDetails() async {
-        if let details,
-           let standardBacked = details.accountService as? any _StandardBacked,
-           let storageStandard = standardBacked.standard as? any AccountStorageConstraint {
-            let recordId = AdditionalRecordId(serviceId: standardBacked.backedId, accountId: details.accountId)
-
-            await storageStandard.clear(recordId)
+    public func removeUserDetails() {
+        if let details {
+            Task { @MainActor [notifications, details] in
+                do {
+                    try await notifications.reportEvent(.disassociatingAccount(details))
+                } catch {
+                    logger.error("Account Disassociation event failed unexpectedly: \(error)")
+                }
+            }
         }
+
 
         if signedIn {
             signedIn = false
@@ -265,7 +215,7 @@ public final class Account {
 }
 
 
-extension Account: Sendable {}
+extension Account: @unchecked Sendable {} // unchecked because of the property wrapper storage
 
 
-extension Account: Module, EnvironmentAccessible, DefaultInitializable {}
+extension Account: Module, EnvironmentAccessible {}

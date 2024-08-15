@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import OrderedCollections
 import SwiftUI
 
 
@@ -18,74 +19,82 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
     public static let defaultValue: _AccountSetupState = .generic
 }
 
-/// The essential `SpeziAccount` view to login into or signup for a user account.
+
+/// Login or signup for a user account.
 ///
-/// This view handles account setup for a user. The user can choose from all configured ``AccountService`` and
-/// ``IdentityProvider`` instances to setup an active user account. They might create a new account with a given
-/// ``AccountService`` or log into an existing one.
+/// This view handles account setup for a user. It will show all enabled ``IdentityProvider``s from the configured ``AccountService``.
+/// Account setup or login is then handled through the view components provided by the `AccountService`.
 ///
-/// This view relies on an ``Account`` object in its environment. This is done automatically by providing a
+/// - Note: This view relies on an ``Account`` object in its environment. This is done automatically by providing a
 /// ``AccountConfiguration`` in the configuration section of your `Spezi` app delegate.
-///
-/// - Note: In SwiftUI previews you can easily instantiate your own ``Account``. Use initializers like
-///     ``Account/init(services:configuration:)`` or ``Account/init(building:active:configuration:)``.
-///
 ///
 /// Below is a short code example on how to use the `AccountSetup` view.
 ///
 /// ```swift
 /// struct MyView: View {
-///     @Environment(Account.self) var account
-///
 ///     var body: some View {
 ///         // You may use `account.signedIn` to conditionally render another view if there is already a signed in account
 ///         // or use the `continue` closure as shown below to render a Continue button.
 ///         // The continue button is especially useful in cases like Onboarding Flows such that the user has the chance
 ///         // to review the currently signed in account.
 ///
-///         AccountSetup {
-///            NavigationLink {
-///                // ... next view
-///            } label: {
-///                Text("Continue")
-///            }
-///         }
+///         AccountSetup()
 ///     }
 /// }
 /// ```
+///
+/// - Note: Use the ``Account`` module to access the current user details and check if the is currently a user ``Account/signedIn``.
+///
+/// If you are using the `AccountSetup` view in an onboarding flow, it might be the case that an account is already present.
+/// The view then displays the currently logged-in user to give the user a change to review the user account in place.
+/// `AccountSetup` allows to place additional view components in this subview (e.g., to have a continue button that handles further navigation).
+///
+/// ```swift
+/// AccountSetup {
+///     Button {
+///         // handle navigation
+///     } label: {
+///         Text("Continue")
+///             .frame(maxWidth: .infinity, minHeight: 38)
+///     }
+/// }
+/// ```
+///
+/// ## Topics
+///
+/// ### Header
+/// - ``DefaultAccountSetupHeader``
 @MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: (AccountDetails) -> Void
     private let header: Header
     private let continueButton: Continue
 
-    @Environment(Account.self) var account
+    @Environment(Account.self)
+    private var account
+    @Environment(\.followUpBehavior)
+    private var followUpBehavior
 
     @State private var setupState: _AccountSetupState = .generic
+    @State private var compliance: SignupProviderCompliance?
     @State private var followUpSheet = false
 
-    private var services: [any AccountService] {
-        account.registeredAccountServices
-            .filter { !($0 is any IdentityProvider) }
-    }
-
-    private var identityProviders: [any IdentityProvider] {
-        account.registeredAccountServices
-            .compactMap { $0 as? any IdentityProvider }
+    private var hasSetupComponents: Bool {
+        account.accountSetupComponents.contains { $0.configuration.isEnabled }
     }
 
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    if !services.isEmpty || !identityProviders.isEmpty {
+                    if hasSetupComponents {
                         header
                             .environment(\._accountSetupState, setupState)
                     }
 
                     Spacer()
 
-                    if let details = account.details {
+                    if let details = account.details, !details.isAnonymous {
                         switch setupState {
                         case let .requiringAdditionalInfo(keys):
                             followUpInformationSheet(details, requiredKeys: keys)
@@ -114,35 +123,43 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
         }
             .onChange(of: account.signedIn) {
-                if let details = account.details, case .setupShown = setupState {
-                    let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected: details.isNewUser)
-
-                    if missingKeys.isEmpty {
-                        setupState = .loadingExistingAccount
-                        setupCompleteClosure(details)
-                    } else {
-                        setupState = .requiringAdditionalInfo(missingKeys)
-                    }
+                guard let details = account.details,
+                      case .setupShown = setupState else {
+                    return
                 }
+
+                handleSuccessfulSetup(details)
             }
     }
 
     @ViewBuilder private var accountSetupView: some View {
-        if services.isEmpty && identityProviders.isEmpty {
+        if !hasSetupComponents {
             EmptyServicesWarning()
         } else {
             VStack {
-                AccountServicesSection(services: services)
-
-                if !services.isEmpty && !identityProviders.isEmpty {
-                    ServicesDivider()
+                let categorized = account.accountSetupComponents.reduce(into: OrderedDictionary()) { partialResult, component in
+                    guard component.configuration.isEnabled else {
+                        return
+                    }
+                    partialResult[component.configuration.section] = component
                 }
 
-                IdentityProviderSection(providers: identityProviders)
+                ForEach(categorized.keys.sorted(), id: \.self) { placement in
+                    if let component = categorized[placement] {
+                        component.anyView
+
+                        if categorized.keys.last != placement {
+                            ServicesDivider()
+                        }
+                    }
+                }
             }
                 .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
+                .receiveSignupProviderCompliance { compliance in
+                    self.compliance = compliance
+                }
         }
     }
 
@@ -186,7 +203,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         ProgressView()
             .sheet(isPresented: $followUpSheet) {
                 NavigationStack {
-                    FollowUpInfoSheet(details: details, requiredKeys: requiredKeys)
+                    FollowUpInfoSheet(keys: requiredKeys)
                 }
             }
             .onAppear {
@@ -198,6 +215,44 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     setupCompleteClosure(details)
                 }
             }
+    }
+
+    private func handleSuccessfulSetup(_ details: AccountDetails) {
+        var includeCollected: AccountValueConfiguration.IncludeCollectedType
+        let ignoreCollected: [any AccountKey.Type]
+
+        switch followUpBehavior {
+        case .disabled:
+            handleSetupCompleted(details)
+            return
+        case .minimal:
+            includeCollected = .onlyRequired
+        case .redundant:
+            includeCollected = .includeCollectedAtLeastOneRequired
+        }
+
+        // If the provider was not able to present all details and it is a new user we always include collected.
+        // This applies to both followUpBehaviors.
+        if details.isNewUser,
+           case let .only(keys) = compliance?.visualizedAccountKeys {
+            includeCollected = .includeCollected
+            ignoreCollected = keys
+        } else {
+            ignoreCollected = []
+        }
+
+        let missingKeys = account.configuration.missingRequiredKeys(for: details, includeCollected, ignoring: ignoreCollected)
+
+        if !missingKeys.isEmpty {
+            setupState = .requiringAdditionalInfo(missingKeys)
+        } else {
+            handleSetupCompleted(details)
+        }
+    }
+
+    private func handleSetupCompleted(_ details: AccountDetails) {
+        setupState = .loadingExistingAccount
+        setupCompleteClosure(details)
     }
 }
 
@@ -215,59 +270,80 @@ extension EnvironmentValues {
 
 
 #if DEBUG
-struct AccountView_Previews: PreviewProvider {
-    static var accountServicePermutations: [[any AccountService]] = {
-       [
-           [MockUserIdPasswordAccountService()],
-           [MockSimpleAccountService()],
-           [MockUserIdPasswordAccountService(), MockSimpleAccountService()],
-           [
-               MockUserIdPasswordAccountService(),
-               MockSimpleAccountService(),
-               MockUserIdPasswordAccountService()
-           ],
-           []
-       ]
-    }()
-
-    static let detailsBuilder = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-
-    @MainActor static var previews: some View {
-        ForEach(accountServicePermutations.indices, id: \.self) { index in
-            AccountSetup()
-                .environment(Account(services: accountServicePermutations[index] + [MockSignInWithAppleProvider()]))
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(configure: .all))
         }
+}
 
-        AccountSetup()
-            .previewWith {
-                AccountConfiguration {
-                    MockSignInWithAppleProvider()
-                }
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(configure: .userIdPassword))
+        }
+}
 
-        AccountSetup()
-            .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(configure: [.userIdPassword, .signInWithApple]))
+        }
+}
 
-        AccountSetup(state: .setupShown)
-            .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
-            }
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(configure: .customIdentityProvider))
+        }
+}
 
+#Preview {
+    AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(configure: .signInWithApple))
+        }
+}
+
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+    return AccountSetup()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+    return AccountSetup(state: .loadingExistingAccount)
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    
+    return NavigationStack {
         AccountSetup(continue: {
-            Button(action: {
+            Button {
                 print("Continue")
-            }, label: {
+            } label: {
                 Text(verbatim: "Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
-            })
+            }
             .buttonStyle(.borderedProminent)
         })
             .previewWith {
-                AccountConfiguration(building: detailsBuilder, active: MockUserIdPasswordAccountService())
+                AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
             }
     }
 }

@@ -17,63 +17,67 @@ private protocol GeneralizedStringEntryView {
 }
 
 
-/// A View to manage the state of a ``DataEntryView``.
+/// A View to manage the state of a `DataEntryView`.
 ///
 /// For every ``DataEntryView`` the following things are automatically taken care of:
 /// - Declare and manage the state of the value and post any changes back up to the parent view.
 /// - If the value is of type `String` and the ``AccountService`` has a ``FieldValidationRules`` configuration for the given
-///     ``DataEntryView/Key``, a [validate(input:rules:)](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/swiftui/view/validate(input:rules:)-5dac4)
+///     ``AccountKey``, a [validate(input:rules:)](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/swiftui/view/validate(input:rules:)-5dac4)
 ///      modifier is automatically injected.
-public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountValues>: View {
+struct GeneralizedDataEntryView<Key: AccountKey>: View {
     private var dataHookId: String {
-        "DataHook-\(Wrapped.Key.self)"
+        "DataHook-\(Key.self)"
     }
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
-    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
+    @Environment(AccountDetailsBuilder.self)
+    private var detailsBuilder
 
-    @Environment(\.accountServiceConfiguration) private var configuration
-    @Environment(\.accountViewType) private var viewType
+    @Environment(\.accountServiceConfiguration)
+    private var configuration
+    @Environment(\.accountViewType)
+    private var viewType
 
-    @State private var value: Wrapped.Key.Value
+    @State private var value: Key.Value
 
 
-    public var body: some View {
+    var body: some View {
         Group {
             if let stringValue = value as? String,
                let stringEntryView = self as? GeneralizedStringEntryView {
                 // if we have a string value, we have to check if FieldValidationRules is configured and
                 // inject a ValidationEngine into the environment
-                Wrapped($value)
+                Key.DataEntry($value)
                     .validate(input: stringValue, rules: stringEntryView.validationRules())
-            } else if case .empty = Wrapped.Key.initialValue,
-                      account.configuration[Wrapped.Key.self]?.requirement == .required {
+            } else if case .empty = Key.initialValue,
+                      account.configuration[Key.self]?.requirement == .required {
                 // If the field provides an empty value and is required, we inject a `nonEmpty` validation rule
                 // if there isn't a validation engine already in the subview!
-                Wrapped($value)
+                Key.DataEntry($value)
                     // checks that non-string values are supplied if configured to be `.required`
-                    .requiredValidation(for: Wrapped.Key.self, storage: Values.self, $value)
+                    .validateRequired(for: Key.self, $value)
             } else {
-                Wrapped($value)
+                Key.DataEntry($value)
             }
         }
             .onAppear {
                 // values like `GenderIdentity` provide a default value a user might not want to change
                 if viewType?.enteringNewData == true,
-                   case let .default(value) = Wrapped.Key.initialValue {
-                    detailsBuilder.set(Wrapped.Key.self, defaultValue: value)
+                   case let .default(value) = Key.initialValue {
+                    detailsBuilder.set(Key.self, defaultValue: value)
                 }
             }
             .onChange(of: value) {
                 // ensure parent view has access to the latest value
                 if viewType?.enteringNewData == true,
-                   case let .empty(emptyValue) = Wrapped.Key.initialValue,
+                   case let .empty(emptyValue) = Key.initialValue,
                    value == emptyValue {
                     // e.g. make sure we don't save an empty value (e.g. an empty PersonNameComponents)
-                    detailsBuilder.remove(Wrapped.Key.self)
+                    detailsBuilder.remove(Key.self)
                 } else {
-                    detailsBuilder.set(Wrapped.Key.self, value: value)
+                    detailsBuilder.set(Key.self, value: value)
                 }
             }
     }
@@ -81,19 +85,19 @@ public struct GeneralizedDataEntryView<Wrapped: DataEntryView, Values: AccountVa
 
     /// Initialize a new GeneralizedDataEntryView given a `Wrapped` view.
     /// - Parameter signupValue: The initial value to use. Typically you want to pass some "empty" value.
-    init(initialValue signupValue: Wrapped.Key.Value) {
+    init(initialValue signupValue: Key.Value) {
         self._value = State(wrappedValue: signupValue)
     }
 }
 
 
-extension GeneralizedDataEntryView: GeneralizedStringEntryView where Wrapped.Key.Value == String {
+extension GeneralizedDataEntryView: GeneralizedStringEntryView where Key.Value == String {
     func validationRules() -> [ValidationRule] {
-        if let rules = configuration.fieldValidationRules(for: Wrapped.Key.self) {
+        if let rules = configuration.fieldValidationRules(for: Key.self) {
             return rules
         }
 
-        if account.configuration[Wrapped.Key.self]?.requirement == .required {
+        if account.configuration[Key.self]?.requirement == .required {
             return [.nonEmpty]
         }
 

@@ -24,15 +24,21 @@ struct AccountOverviewHeader: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
+                    #if os(macOS)
+                        .foregroundColor(Color(.systemGray))
+                    #else
                         .foregroundColor(Color(.systemGray3))
+                    #endif
                         .accessibilityHidden(true)
                 }
             }
                 .accessibilityHidden(true)
 
-            Text(model.accountHeadline)
-                .font(.title2)
-                .fontWeight(.semibold)
+            if let accountHeadline = model.accountHeadline {
+                Text(accountHeadline)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+            }
 
             if let accountSubheadline = model.accountSubheadline {
                 Text(accountSubheadline)
@@ -54,14 +60,11 @@ struct AccountOverviewHeader: View {
 
 
 #if DEBUG
-struct AccountOverviewHeader_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static var previews: some View {
-        AccountOverviewHeader(details: details)
-    }
+    return AccountOverviewHeader(details: details)
 }
 #endif

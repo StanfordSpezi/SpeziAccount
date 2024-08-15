@@ -23,9 +23,22 @@ public protocol AcceptingAccountValueVisitor {
 }
 
 
-/// A visitor to visit ``AccountKey``s and their corresponding values.
+/// A visitor to visit `AccountKey`s and their corresponding values.
 ///
-/// Use the ``AcceptingAccountValueVisitor/acceptAll(_:)-9hgw5`` method on supporting types to visit all contained values.
+/// You can iterate over ``AccountDetails`` in a typed way using the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
+///
+/// ```swift
+/// struct Visitor: AccountValueVisitor {
+///     mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
+///         // perform visit step
+///     }
+/// }
+///
+/// var visitor = Visitor()
+/// details.acceptAll(&visitor)
+/// ```
+///
+/// - Note: A visitor can implement the optional ``final()-cr4o`` method to return a result through the ``AcceptingAccountValueVisitor/acceptAll(_:)-9hgw5`` method.
 public protocol AccountValueVisitor {
     /// A optional final result type returned by ``final()-7apm4``.
     associatedtype Final = Void
@@ -85,7 +98,7 @@ extension AccountKey {
 }
 
 
-extension AccountValuesCollection {
+extension AccountDetails {
     /// Default acceptAll visitor.
     public func acceptAll<Visitor: AccountValueVisitor>(_ visitor: inout Visitor) -> Visitor.Final {
         for entry in self {

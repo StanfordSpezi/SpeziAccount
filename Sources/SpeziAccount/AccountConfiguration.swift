@@ -11,161 +11,169 @@ import Spezi
 import XCTRuntimeAssertions
 
 
-/// The Spezi `Component` to configure the ``SpeziAccount`` framework in the `Configuration` section of your app.
+/// Configure the `SpeziAccount` framework.
 ///
-/// This Spezi `Component` is used to configure the ``SpeziAccount`` framework, namely to collect and setup all ``AccountService``
-/// either provided directly or provided by other configured `Component`s. The global ``Account`` object will
-/// be injected as an environment object into the view hierarchy of your app.
+/// This Spezi `Module` is used to configure the `SpeziAccount` framework.
+/// You provide the ``AccountService`` module that should be used with the framework.
+/// The ``Account`` module will be injected as an environment object into the view hierarchy of your app and is accessible
+/// using the `@Dependency` property wrapper from other Spezi `Module`s.
 ///
-/// ``AccountService`` can either be supplied directly via ``init(configuration:_:)`` or might be automatically collected from
-/// other `Component`s that provide ``AccountService`` instances (like the `SpeziFirebase` framework).
-///
-/// - Note: For more information on how to provide an ``AccountService`` if you are implementing your own Spezi `Component`
-///     refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration: Module {
-    @Application(\.logger) private var logger
-    @Application(\.spezi) private var spezi
+/// - Note: For more information on how to provide an ``AccountService`` refer to the <doc:Creating-your-own-Account-Service> article.
+public final class AccountConfiguration<Service: AccountService> {
+    @Application(\.logger)
+    private var logger
 
-    @Dependency private var account: Account?
+    @Dependency(Account.self)
+    var account
+    @Dependency(ExternalAccountStorage.self)
+    private var externalStorage
+    @Dependency(Service.self)
+    private var accountService
 
+    @Dependency private var storageProvider: [any Module]
     @StandardActor private var standard: any Standard
 
-    /// An array of ``AccountService``s provided directly in the initializer of the configuration object.
-    @Dependency @ObservationIgnored private var providedAccountServices: [any Module]
 
+    @Modifier private var verifyRequiredConfiguration = VerifyRequiredAccountDetailsModifier()
 
-    /// Initializes a `AccountConfiguration` without directly  providing any ``AccountService`` instances.
+    /// Configure the `SpeziAccount` framework.
     ///
-    /// ``AccountService`` instances might be automatically collected from other Spezi `Component`s that provide some.
-    ///
-    /// - Parameter configuration: The user-defined configuration of account values that all user accounts need to support.
-    public convenience init(configuration: AccountValueConfiguration = .default) {
-        self.init(configuration: configuration, defaultActiveDetails: nil) {}
-    }
-
-    /// Initializes a `AccountConfiguration` by directly providing a set of ``AccountService`` instances.
-    ///
-    /// In addition to the supplied ``AccountService``s, ``SpeziAccount`` will collect any ``AccountService`` instances
-    /// provided by other Spezi `Component`s.
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
     ///
     /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    ///   - accountServices: Account Services provided through a ``AccountServiceBuilder``.
     public convenience init(
-        configuration: AccountValueConfiguration = .default,
-        @AccountServiceBuilder _ accountServices: () -> DependencyCollection
+        service: Service,
+        configuration: AccountValueConfiguration
     ) {
-        self.init(configuration: configuration, defaultActiveDetails: nil, accountServices)
+        self.init(accountService: service, configuration: configuration)
     }
 
-    /// Configure the Account Module for previewing purposes with default `AccountDetails`.
+    /// Configure the `SpeziAccount` framework with external storage.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    /// Use this to supply an ``AccountStorageProvider`` that manages external storage of account values unsupported by the account service.
     ///
     /// - Parameters:
-    ///   - builder: The ``AccountDetails`` Builder for the account details that you want to supply.
-    ///   - accountService: The ``AccountService`` that is responsible for the supplied account details.
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    public convenience init<Service: AccountService>(
-        building builder: AccountDetails.Builder,
-        active accountService: Service,
-        configuration: AccountValueConfiguration = .default
+    public convenience init<Storage: AccountStorageProvider>(
+        service: Service,
+        storageProvider: Storage,
+        configuration: AccountValueConfiguration
     ) {
-        let details = builder.build(owner: accountService)
-        self.init(configuration: configuration, defaultActiveDetails: details) {
-            accountService
-        }
+        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration)
     }
 
-    init(
-        configuration: AccountValueConfiguration = .default,
-        defaultActiveDetails: AccountDetails? = nil,
-        @AccountServiceBuilder _ accountServices: () -> DependencyCollection
+    /// Configure the `SpeziAccount` framework.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    ///
+    /// - Note: This initializer uses the ``AccountValueConfiguration/default`` configuration.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    @_spi(TestingSupport)
+    public convenience init(
+        service: Service
     ) {
-        self._providedAccountServices = Dependency(using: accountServices())
+        self.init(accountService: service, configuration: .default)
+    }
+
+    /// Configure the `SpeziAccount` framework with external storage.
+    ///
+    /// Provide an ``AccountService`` implementation that manages all account-related operations.
+    /// Use this to supply an ``AccountStorageProvider`` that manages external storage of account values unsupported by the account service.
+    ///
+    /// - Note: This initializer uses the ``AccountValueConfiguration/default`` configuration.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
+    public convenience init<Storage: AccountStorageProvider>(
+        service: Service,
+        storageProvider: Storage
+    ) {
+        self.init(accountService: service, storageProvider: storageProvider, configuration: .default)
+    }
+
+    /// Configure the `Account` Module for previewing purposes.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    ///   - activeDetails: The  account details you want to simulate.
+    @_spi(TestingSupport)
+    public convenience init( // swiftlint:disable:this function_default_parameter_at_end
+        service: Service,
+        configuration: AccountValueConfiguration = .default,
+        activeDetails: AccountDetails
+    ) {
+        self.init(accountService: service, configuration: configuration, defaultActiveDetails: activeDetails)
+    }
+
+    /// Configure the `Account` Module for previewing purposes with external storage.
+    ///
+    /// - Parameters:
+    ///   - service: The `AccountService` to use with the framework.
+    ///   - storageProvider: The storage provider that will be used to store additional account details.
+    ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
+    ///   - activeDetails: The  account details you want to simulate.
+    @_spi(TestingSupport)
+    public convenience init<Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
+        service: Service,
+        storageProvider: Storage,
+        configuration: AccountValueConfiguration = .default,
+        activeDetails: AccountDetails
+    ) {
+        self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: activeDetails)
+    }
+
+    init( // swiftlint:disable:this function_default_parameter_at_end
+        accountService: Service,
+        storageProvider: (any AccountStorageProvider)? = nil,
+        configuration: AccountValueConfiguration,
+        defaultActiveDetails: AccountDetails? = nil
+    ) {
+        self._accountService = Dependency(load: accountService)
+        self._storageProvider = Dependency {
+            if let storageProvider {
+                storageProvider
+            }
+        }
 
         self._account = Dependency(wrappedValue: Account(
-            services: [],
+            service: accountService,
             supportedConfiguration: configuration,
             details: defaultActiveDetails
         ))
+        self._externalStorage = Dependency(wrappedValue: ExternalAccountStorage(storageProvider))
     }
 
-    public func configure() {
-        // assemble the final array of account services
-        guard let account else {
-            preconditionFailure("Failed to initialize Account module as part of Account configuration.")
-        }
-
-        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService }).map { service in
-            // Verify account service can store all configured account keys.
-            // If applicable, wraps the service into an StandardBackedAccountService
-            let service = verify(configurationRequirements: account.configuration, against: service)
-
-            if let notifyStandard = standard as? any AccountNotifyConstraint {
-                return service.backedBy(standard: notifyStandard)
-            }
-
-            return service
-        }
-
-        account.configureServices(accountServices)
-
-        let servicesYetToLoad: [any AccountService] = accountServices.reduce(into: []) { partialResult, service in
-            guard var standardBacked = service as? any _StandardBacked else {
-                return
-            }
-            partialResult.append(standardBacked)
-            
-            while let nestedBacked = standardBacked.accountService as? any _StandardBacked {
-                partialResult.append(nestedBacked)
-                standardBacked = nestedBacked
-            }
-        }
-
-        if !servicesYetToLoad.isEmpty {
-            Task.detached { @MainActor in
-                // we cannot load additional modules within configure() so delay module loading a bit
-                for service in servicesYetToLoad {
-                    self.spezi.loadModule(service)
-                }
-            }
-        }
-    }
-
+    /// Configure the module.
     @MainActor
-    private func configureAccountServices() {
-        // assemble the final array of account services
-        guard let account else {
-            preconditionFailure("Failed to initialize Account module as part of Account configuration.")
-        }
-
-        let accountServices = (providedAccountServices.compactMap { $0 as? any AccountService }).map { service in
-            // Verify account service can store all configured account keys.
-            // If applicable, wraps the service into an StandardBackedAccountService
-            let service = verify(configurationRequirements: account.configuration, against: service)
-
-            if let notifyStandard = standard as? any AccountNotifyConstraint {
-                return service.backedBy(standard: notifyStandard)
-            }
-
-            return service
-        }
-
-        account.configureServices(accountServices)
+    public func configure() {
+        // Verify account service can store all configured account keys.
+        // If applicable, wraps the service into an StandardBackedAccountService
+        verify(configurationRequirements: account.configuration, against: accountService)
     }
 
     @MainActor
     private func verify(
         configurationRequirements configuration: AccountValueConfiguration,
-        against service: any AccountService
-    ) -> any AccountService {
+        against service: Service
+    ) {
         logger.debug("Checking \(service.description) against the configured account keys.")
 
         // if account service states exact supported keys, AccountIdKey must be one of them
         if case let .exactly(keys) = service.configuration.supportedAccountKeys {
             precondition(
-                keys.contains(AccountIdKey.self),
+                keys.contains(AccountKeys.accountId),
                 """
-                The account service \(type(of: service)) doesn't have the \\.accountId (aka. AccountIdKey) configured \
+                The account service \(type(of: service)) doesn't have the \\.accountId configured \
                 as an supported key. \
                 A primary, unique and stable user identifier is expected with most SpeziAccount components and \
                 will result in those components breaking.
@@ -178,18 +186,17 @@ public final class AccountConfiguration: Module {
             .unsupportedAccountKeys(basedOn: configuration)
 
         guard !unmappedAccountKeys.isEmpty else {
-            return service // we are fine, nothing unsupported
+            return // we are fine, nothing unsupported
         }
 
 
-        if let accountStandard = standard as? any AccountStorageConstraint {
+        if let storageProvider = storageProvider.first {
             // we are also fine, we have a standard that can store any unsupported account values
             logger.debug("""
-                         The standard \(accountStandard.description) is used to store the following account values that \
-                         are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription)
-
+                         The storage provider \(type(of: storageProvider)) is used to store the following account values that \
+                         are unsupported by the Account Service \(service.description): \(unmappedAccountKeys.debugDescription).
                          """)
-            return service.backedBy(standard: accountStandard)
+            return
         }
 
         // When we reach here, we have no way to store the configured account value
@@ -210,8 +217,4 @@ public final class AccountConfiguration: Module {
 }
 
 
-extension Standard {
-    fileprivate nonisolated var description: String {
-        "\(Self.self)"
-    }
-}
+extension AccountConfiguration: Module {}

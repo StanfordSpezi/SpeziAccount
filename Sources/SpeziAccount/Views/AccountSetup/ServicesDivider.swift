@@ -33,9 +33,7 @@ struct ServicesDivider: View {
 
 
 #if DEBUG
-struct ServicesDivider_Previews: PreviewProvider {
-    static var previews: some View {
-        ServicesDivider()
-    }
+#Preview {
+    ServicesDivider()
 }
 #endif

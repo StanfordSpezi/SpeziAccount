@@ -15,20 +15,21 @@ import SwiftUI
 
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 @MainActor
+@available(macOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
-    let additionalSections: AdditionalSections
+    private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
+    private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
+    private let additionalSections: AdditionalSections
     private let accountDetails: AccountDetails
-    
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-    
-    @Environment(Account.self) private var account
 
-    @Environment(\.logger) private var logger
-    @Environment(\.editMode) private var editMode
-    @Environment(\.dismiss) private var dismiss
-    
+
+    @Environment(Account.self)
+    private var account
+    @Environment(\.editMode)
+    private var editMode
+    @Environment(\.dismiss)
+    private var dismiss
+
     @State private var model: AccountOverviewFormViewModel
     @ValidationState private var validation
 
@@ -37,31 +38,58 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     @State private var destructiveViewState: ViewState = .idle
     @FocusState private var isFocused: Bool
 
-    @Binding private var isEditing: Bool
-
-    var isProcessing: Bool {
+    private var isProcessing: Bool {
         viewState == .processing || destructiveViewState == .processing
     }
-    
-    
+
+    private var showDeleteButton: Bool {
+        switch deletionBehavior {
+        case .disabled:
+            false
+        case .inEditMode:
+            editMode?.wrappedValue.isEditing == true
+        case .belowLogout:
+            true
+        }
+    }
+
+    private var showLogoutButton: Bool {
+        switch deletionBehavior {
+        case .inEditMode:
+            editMode?.wrappedValue.isEditing != true
+        default:
+            true
+        }
+    }
+
+
     var body: some View {
         AccountOverviewHeader(details: accountDetails)
-            // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
-            // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
+        // Every `Section` is basically a `Group` view. So we have to be careful where to place modifiers
+        // as they might otherwise be rendered for every element in the Section/Group, e.g., placing multiple buttons.
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
             .navigationBarBackButtonHidden(editMode?.wrappedValue.isEditing ?? false || isProcessing)
             .viewStateAlert(state: $viewState)
             .viewStateAlert(state: $destructiveViewState)
             .toolbar {
-                if editMode?.wrappedValue.isEditing == true && !isProcessing {
+                if !isProcessing {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            model.cancelEditAction(editMode: editMode)
-                        }) {
-                            Text("CANCEL", bundle: .module)
+                        if editMode?.wrappedValue.isEditing == true {
+                            Button(action: {
+                                model.cancelEditAction(editMode: editMode)
+                            }) {
+                                Text("CANCEL", bundle: .module)
+                            }
+                        } else {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Text("CLOSE", bundle: .module)
+                            }
                         }
                     }
                 }
+
                 if destructiveViewState == .idle {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: editButtonAction) {
@@ -71,8 +99,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                                 Text("EDIT", bundle: .module)
                             }
                         }
-                            .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
-                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+                        .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
+                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
                 }
             }
@@ -95,13 +123,13 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.logout()
+                    try await account.accountService.logout()
                     dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
                 }
                 .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                
+
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
@@ -109,59 +137,57 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await service.delete()
+                    try await account.accountService.delete()
                     dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
                 }
-                    .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                
+                .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+
                 Button(role: .cancel, action: {}) {
                     Text("CANCEL", bundle: .module)
                 }
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
-            .onChange(of: editMode?.wrappedValue.isEditing ?? false) { _, newValue in
-                // sync the edit mode with the outer view
-                isEditing = newValue
-            }
-            .anyViewModifier(service.viewStyle.securityRelatedViewModifier) // for delete action
+            .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
 
         defaultSections
-        
+
         sectionsView
-            .injectEnvironmentObjects(service: service, model: model)
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .animation(nil, value: editMode?.wrappedValue)
-        
+
         additionalSections
-        
-        Section {
-            HStack {
-                if editMode?.wrappedValue.isEditing == true {
-                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                        // While the action closure itself is not async, we rely on ability to render loading indicator
-                        // of the AsyncButton which based on the externally supplied viewState.
-                        model.presentingRemovalAlert = true
-                    }) {
-                        Text("DELETE_ACCOUNT", bundle: .module)
-                    }
-                } else {
-                    AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                        model.presentingLogoutAlert = true
-                    }) {
-                        Text("UP_LOGOUT", bundle: .module)
-                    }
+
+        if showLogoutButton {
+            Section {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    model.presentingLogoutAlert = true
+                }) {
+                    Text("UP_LOGOUT", bundle: .module)
                 }
-            }
                 .frame(maxWidth: .infinity, alignment: .center)
+            }
+        }
+        if showDeleteButton {
+            Section {
+                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                    // While the action closure itself is not async, we rely on ability to render loading indicator
+                    // of the AsyncButton which based on the externally supplied viewState.
+                    model.presentingRemovalAlert = true
+                }) {
+                    Text("DELETE_ACCOUNT", bundle: .module)
+                }
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
         }
     }
 
     @ViewBuilder private var defaultSections: some View {
-        let displayName = model.displaysNameDetails()
+        let displayName = model.displaysNameDetails(accountDetails)
         let displaySecurity = model.displaysSignInSecurityDetails(accountDetails)
 
         if displayName || displaySecurity {
@@ -170,7 +196,11 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     NavigationLink {
                         NameOverview(model: model, details: accountDetails)
                     } label: {
-                        model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType)
+                        Label {
+                            model.accountIdentifierLabel(configuration: account.configuration, accountDetails)
+                        } icon: {
+                            DetailsSectionIcon()
+                        }
                     }
                 }
 
@@ -178,7 +208,11 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     NavigationLink {
                         SecurityOverview(model: model, details: accountDetails)
                     } label: {
-                        Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                        Label {
+                            Text("SIGN_IN_AND_SECURITY", bundle: .module)
+                        } icon: {
+                            SecuritySectionIcon()
+                        }
                     }
                 }
             }
@@ -194,7 +228,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                         ForEachAccountKeyWrapper(key)
                     }
                     
-                    ForEach(forEachWrappers, id: \.id) { wrapper in
+                    ForEach(forEachWrappers) { wrapper in
                         AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
                     }
                         .onDelete { indexSet in
@@ -212,12 +246,14 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     init(
         account: Account,
         details accountDetails: AccountDetails,
-        isEditing: Binding<Bool>,
+        close closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
+        deletion deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior,
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.accountDetails = accountDetails
-        self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account))
-        self._isEditing = isEditing
+        self._model = State(wrappedValue: AccountOverviewFormViewModel(account: account, details: accountDetails))
+        self.closeBehavior = closeBehavior
+        self.deletionBehavior = deletionBehavior
         self.additionalSections = additionalSections()
     }
     
@@ -229,21 +265,21 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         }
         
         guard !model.modifiedDetailsBuilder.isEmpty else {
-            logger.debug("Not saving anything, as there were no changes!")
+            account.logger.debug("Not saving anything, as there were no changes!")
             model.discardChangesAction(editMode: editMode)
             return
         }
         
         guard validation.validateSubviews() else {
-            logger.debug("Some input validation failed. Staying in edit mode!")
+            account.logger.debug("Some input validation failed. Staying in edit mode!")
             return
         }
         
         isFocused = false
         
-        logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
+        account.logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         
-        try await model.updateAccountDetails(details: accountDetails, editMode: editMode)
+        try await model.updateAccountDetails(details: accountDetails, using: account, editMode: editMode)
     }
     
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing
@@ -262,33 +298,58 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 }
 
 
-#if DEBUG
-struct AccountOverviewSections_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
-    
-    static var previews: some View {
-        NavigationStack {
-            AccountOverview {
-                Section(header: Text(verbatim: "App")) {
-                    NavigationLink {
-                        Text(String())
-                    } label: {
-                        Text(verbatim: "General Settings")
-                    }
-                    NavigationLink {
-                        Text(String())
-                    } label: {
-                        Text(verbatim: "License Information")
-                    }
+#if DEBUG && !os(macOS)
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
+
+    return NavigationStack {
+        AccountOverview {
+            Section(header: Text(verbatim: "App")) {
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "General Settings")
+                }
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "License Information")
                 }
             }
         }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
+
+    return NavigationStack {
+        AccountOverview(deletion: .belowLogout) {
+            Section(header: Text(verbatim: "App")) {
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "General Settings")
+                }
+                NavigationLink {
+                    Text(String())
+                } label: {
+                    Text(verbatim: "License Information")
+                }
+            }
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

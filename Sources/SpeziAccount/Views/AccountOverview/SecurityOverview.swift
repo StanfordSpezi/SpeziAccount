@@ -11,16 +11,14 @@ import SpeziViews
 import SwiftUI
 
 
+@available(macOS, unavailable)
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
 
-
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     @State private var viewState: ViewState = .idle
     @State private var presentingPasswordChangeSheet = false
@@ -36,7 +34,7 @@ struct SecurityOverview: View {
 
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
-                    if wrapper.accountKey == PasswordKey.self {
+                    if wrapper.accountKey == AccountKeys.password {
                         // we have a special case for the PasswordKey, as we currently don't expose the capabilities required to the subviews!
                         Button(action: {
                             presentingPasswordChangeSheet = true
@@ -54,12 +52,14 @@ struct SecurityOverview: View {
                     }
                 }
             }
-                .injectEnvironmentObjects(service: service, model: model)
+                .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
                 .environment(\.defaultErrorDescription, model.defaultErrorDescription)
         }
             .viewStateAlert(state: $viewState)
             .navigationTitle(Text("SIGN_IN_AND_SECURITY", bundle: .module))
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .onDisappear {
                 model.resetModelState()
             }
@@ -73,22 +73,20 @@ struct SecurityOverview: View {
 }
 
 
-#if DEBUG
-struct SecurityOverview_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+#if DEBUG && !os(macOS)
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                SecurityOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            SecurityOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

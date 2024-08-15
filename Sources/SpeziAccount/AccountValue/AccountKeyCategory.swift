@@ -9,7 +9,7 @@
 import Foundation
 
 
-/// Provide categories ui components of an ``AccountKey``.
+/// Provide categories ui components of an `AccountKey`.
 ///
 /// A `AccountKeyCategory` is used in views like ``SignupForm`` to visually separate ``AccountKey``
 /// and group similar elements into sections.
@@ -22,7 +22,7 @@ import Foundation
 /// - ``contactDetails``
 /// - ``personalDetails``
 /// - ``other``
-public struct AccountKeyCategory: Sendable {
+public struct AccountKeyCategory {
     /// A category to group account credentials.
     public static let credentials = AccountKeyCategory(title: LocalizedStringResource("UP_CREDENTIALS", bundle: .atURL(from: .module)))
 
@@ -53,6 +53,9 @@ public struct AccountKeyCategory: Sendable {
         self.categoryTitle = categoryTitle
     }
 }
+
+
+extension AccountKeyCategory: Sendable {}
 
 
 extension AccountKeyCategory: Identifiable, Hashable {

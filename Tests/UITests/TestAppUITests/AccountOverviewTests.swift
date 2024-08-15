@@ -10,7 +10,7 @@ import XCTest
 import XCTestExtensions
 
 
-final class AccountOverviewTests: XCTestCase {
+final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
 
@@ -20,7 +20,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRequirementLevelsOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -37,13 +37,17 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Date of Birth, Mar 9, 1824"].exists)
 
         XCTAssertTrue(app.staticTexts["License Information"].exists)
+
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
         XCTAssertTrue(app.buttons["Logout"].exists)
     }
 
     @MainActor
     func testEditView() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -53,10 +57,13 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Edit"].exists)
         app.buttons["Edit"].tap()
 
-        XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
 
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+#if !os(visionOS)
+        // on visionOS we are currently unable to tap on date pickers :)
         app.changeDatePreviousMonthFirstDay()
+#endif
 
         XCTAssertTrue(app.buttons["Add Biography"].exists)
         app.buttons["Add Biography"].tap()
@@ -74,12 +81,16 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testLogout() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountOverview()
+
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
 
         XCTAssertTrue(app.buttons["Logout"].exists)
         app.buttons["Logout"].tap()
@@ -95,7 +106,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testAccountRemoval() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -105,12 +116,19 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Edit"].exists)
         app.buttons["Edit"].tap()
 
+        #if os(visionOS)
+        app.scrollUpInOverview()
+        #endif
+
         XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
         app.buttons["Delete Account"].tap()
 
         let alert = "Are you sure you want to delete your account?"
         XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 6.0))
         app.alerts[alert].scrollViews.otherElements.buttons["Delete"].tap()
+
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
 
         XCTAssertTrue(app.staticTexts["Got notified about deletion!"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.staticTexts["lelandstanford@stanford.edu"].exists)
@@ -119,7 +137,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testEditDiscard() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -130,12 +148,11 @@ final class AccountOverviewTests: XCTestCase {
         app.buttons["Edit"].tap()
 
         // no changes, should just leave edit mode
-        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 0.5))
+        XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
         app.buttons["Cancel"].tap()
-        XCTAssertTrue(app.buttons["Logout"].waitForExistence(timeout: 0.5))
 
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 
@@ -160,7 +177,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRemoveDiscard() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -193,7 +210,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testRemoval() {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -222,7 +239,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testNameOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -254,8 +271,8 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()
 
-        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
-        app.alerts["Security Alert"].buttons["Dismiss"].tap()
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
 
         XCTAssertTrue(app.staticTexts["lelandstanford@tum.de"].waitForExistence(timeout: 2.0))
 
@@ -280,7 +297,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testAddName() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true, noName: true)
+        app.launch(credentials: .createAndSignIn, noName: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -293,7 +310,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.navigationBars.staticTexts["Name, E-Mail Address"].waitForExistence(timeout: 2.0))
 
         // open user id
-        XCTAssertTrue(app.buttons["Add Name"].exists)
+        XCTAssertTrue(app.buttons["Add Name"].exists, "Name seems to be present which is unexpected")
         app.buttons["Add Name"].tap()
         XCTAssertTrue(app.navigationBars.buttons["Done"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
@@ -311,7 +328,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testSecurityOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -333,6 +350,7 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.secureTextFields["re-enter password"].exists)
 
         try app.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
+        XCTAssertTrue(app.staticTexts.matching(identifier: warningLength).firstMatch.waitForExistence(timeout: 2.0))
         XCTAssertEqual(app.staticTexts.matching(identifier: warningLength).count, 2) // additional red warning.
         app.typeText("6789")
         app.dismissKeyboard()
@@ -344,8 +362,8 @@ final class AccountOverviewTests: XCTestCase {
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()
 
-        XCTAssertTrue(app.alerts["Security Alert"].buttons["Dismiss"].waitForExistence(timeout: 2.0))
-        app.alerts["Security Alert"].buttons["Dismiss"].tap()
+        XCTAssertTrue(app.alerts["Security Alert"].waitForExistence(timeout: 6.0))
+        app.alerts["Security Alert"].buttons["Continue"].tap()
 
         XCTAssertTrue(app.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 4.0))
     }
@@ -353,7 +371,7 @@ final class AccountOverviewTests: XCTestCase {
     @MainActor
     func testLicenseOverview() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true)
+        app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -364,4 +382,17 @@ final class AccountOverviewTests: XCTestCase {
         app.buttons["License Information"].tap()
         XCTAssertTrue(app.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 3.0))
     }
+}
+
+
+extension XCUIApplication {
+#if os(visionOS)
+    fileprivate func scrollUpInOverview() {
+        // swipeUp doesn't work on visionOS, so we improvise
+
+        XCTAssertTrue(staticTexts["Personal Details"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(staticTexts["Leland Stanford"].exists)
+        staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Leland Stanford"])
+    }
+#endif
 }

@@ -10,13 +10,16 @@ import Spezi
 import SwiftUI
 
 
+@available(macOS, unavailable)
 struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
     private let model: AccountOverviewFormViewModel
 
-    @Environment(Account.self) private var account
-    @Environment(\.editMode) private var editMode
+    @Environment(Account.self)
+    private var account
+    @Environment(\.editMode)
+    private var editMode
 
     var body: some View {
         if editMode?.wrappedValue.isEditing == true {
@@ -24,15 +27,15 @@ struct AccountKeyOverviewRow: View {
             let hStack = VStack {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
                     Group {
-                        if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder, for: ModifiedAccountDetails.self) {
+                        if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder) {
                             view
                         } else {
-                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                            accountKey.dataEntryViewWithStoredValueOrInitial(details: accountDetails)
                         }
                     }
                         .environment(\.accountViewType, .overview(mode: .existing))
                 } else if model.addedAccountKeys.contains(accountKey) { // no need to repeat the removedAccountKeys condition
-                    accountKey.emptyDataEntryView(for: ModifiedAccountDetails.self)
+                    accountKey.emptyDataEntryView()
                         .deleteDisabled(false)
                         .environment(\.accountViewType, .overview(mode: .new))
                 } else {
@@ -78,23 +81,22 @@ struct AccountKeyOverviewRow: View {
     }
 }
 
-#if DEBUG
-struct AccountKeyEditRow_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+#if DEBUG && !os(macOS)
+private let key = AccountKeys.genderIdentity
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        AccountDetailsReader { account, details in
-            let model = AccountOverviewFormViewModel(account: account)
-            
-            AccountKeyOverviewRow(details: details, for: GenderIdentityKey.self, model: model)
-                .injectEnvironmentObjects(service: details.accountService, model: model)
-        }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
+    return AccountDetailsReader { account, details in
+        let model = AccountOverviewFormViewModel(account: account, details: details)
+
+        AccountKeyOverviewRow(details: details, for: key, model: model)
+            .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

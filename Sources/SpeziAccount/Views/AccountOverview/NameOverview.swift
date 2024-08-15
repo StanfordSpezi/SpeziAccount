@@ -14,11 +14,8 @@ struct NameOverview: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
 
     var body: some View {
@@ -30,32 +27,38 @@ struct NameOverview: View {
                 Section {
                     NavigationLink {
                         wrapper.accountKey.singleEditView(model: model, details: accountDetails)
-                            .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
+                            .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
                     } label: {
                         if let view = wrapper.accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                             view
                         } else {
+                            let name = wrapper.accountKey == AccountKeys.userId
+                                ? accountDetails.userIdType.localizedStringResource
+                                : wrapper.accountKey.name
+
                             HStack {
-                                Text(wrapper.accountKey.name)
+                                Text(name)
                                     .accessibilityHidden(true)
                                 Spacer()
-                                Text("VALUE_ADD \(wrapper.accountKey.name)", bundle: .module)
+                                Text("VALUE_ADD \(name)", bundle: .module)
                                     .foregroundColor(.secondary)
                             }
                                 .accessibilityElement(children: .combine)
                         }
                     }
                 } header: {
-                    if wrapper.accountKey == PersonNameKey.self,
-                       let title = PersonNameKey.category.categoryTitle {
+                    if wrapper.accountKey == AccountKeys.name,
+                       let title = AccountKeys.name.category.categoryTitle {
                         Text(title)
                     }
                 }
             }
         }
-            .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, userIdType: accountDetails.userIdType))
+            .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, accountDetails))
+#if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
-            .injectEnvironmentObjects(service: accountDetails.accountService, model: model)
+#endif
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .environment(\.accountViewType, .overview(mode: .display))
     }
 
@@ -68,32 +71,32 @@ struct NameOverview: View {
 
 
 #if DEBUG
-struct NameOverview_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static let detailsWithoutName = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
-
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                NameOverview(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
-        }
-            .previewWith {
-                AccountConfiguration(building: detailsWithoutName, active: MockUserIdPasswordAccountService())
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
+}
+
+#Preview {
+    var detailsWithoutName = AccountDetails()
+    detailsWithoutName.userId = "lelandstanford@stanford.edu"
+
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
+        }
+    }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: detailsWithoutName)
+        }
 }
 #endif

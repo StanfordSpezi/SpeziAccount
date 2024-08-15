@@ -22,36 +22,28 @@ import XCTRuntimeAssertions
 ///     can be safely passed between actor boundaries.
 ///     `Equatable` conformance is required such that views like the ``SignupForm`` can react to changes
 ///     and validate input.
-///     `Codable` conformance is required such that ``AccountService``s of ``AccountStorageConstraint``s
+///     `Codable` conformance is required such that ``AccountStorageProvider``s
 ///     can easily store arbitrarily defined account values.
 ///
 /// ## Topics
 ///
-/// ### Builtin Account Keys
-/// - ``AccountIdKey``
-/// - ``UserIdKey``
-/// - ``PasswordKey``
-/// - ``PersonNameKey``
-/// - ``EmailAddressKey``
-/// - ``DateOfBirthKey``
-/// - ``GenderIdentityKey``
-/// - ``ActiveAccountServiceKey``
+/// ### Shared Repository
+/// - ``AccountAnchor``
+/// - ``AccountStorage``
 public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable, Value: Codable {
-    /// The ``DataDisplayView`` that is used to display a value for this account value.
+    /// The view that is used to display a value for this account key.
     ///
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.
-    /// - Note: This View implementation is automatically provided if the `Value` is a String or the `Value`
-    ///     conforms to [CustomLocalizedStringResourceConvertible](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible).
-    associatedtype DataDisplay: DataDisplayView<Self>
+    /// - Note: Refer to the <doc:Adding-new-Account-Values> article for a list of ``DataDisplayView`` that are automatically provided.
+    associatedtype DataDisplay: DataDisplayView<Value>
 
-    /// The ``DataEntryView`` that is used to enter a value for this account value.
+    /// The view that is used to enter a value for this account value.
     ///
-    /// This view is wrapped into a ``GeneralizedDataEntryView`` and used in views like the ``SignupForm`` to enter the account value.
-    /// For example, for a String-based account value, one might define a ``DataEntryView`` based on `TextField`
-    /// or [VerifiableTextField](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/verifiabletextfield).
-    associatedtype DataEntry: DataEntryView<Self>
+    /// This view is used in views like the ``SignupForm`` to enter the account value.
+    /// - Note: Refer to the <doc:Adding-new-Account-Values> article for a list of ``DataDisplayView`` that are automatically provided.
+    associatedtype DataEntry: DataEntryView<Value>
 
-    /// The localized name describing a value of this `AccountKey`.
+    /// The user-visible, localized name of the account key.
     static var name: LocalizedStringResource { get }
 
     /// A string-based identifier that is meant to be stable. Used by storage modules.
@@ -59,37 +51,26 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// By default this maps to the type name.
     static var identifier: String { get }
 
-
     /// The category of the account key.
     ///
     /// The ``AccountKeyCategory`` is used to group ``DataEntryView``s in views like the ``SignupForm``.
     /// Use ``AccountKeyCategory/other`` to move the ``DataEntry`` view to a unnamed group at the bottom.
     static var category: AccountKeyCategory { get }
 
-    /// The ``InitialValue`` that is used when supplying a new account value.
+    /// The initial value that is used when supplying a new account value.
     ///
-    /// An empty value (e.g., a empty String) is required when the user is asked to supply a new value for the account value
+    /// An empty value (e.g., an empty `String`) is required when the user is asked to supply a new value for the account value
     /// in views like the ``SignupForm``.
     ///
     /// - Note: There are default implementations for some standard types that all provide a ``InitialValue/empty(_:)`` value.
     static var initialValue: InitialValue<Value> { get }
-
-    /// A unique identifier for an account key.
-    ///
-    /// - Note: A default implementation is provided.
-    static var id: ObjectIdentifier { get }
 }
 
 
 extension AccountKey {
     /// A unique identifier for an account key. Bound to the process lifetime.
-    public static var id: ObjectIdentifier {
+    static var id: ObjectIdentifier {
         ObjectIdentifier(Self.self)
-    }
-
-    /// Default implementation falling back to the Swift type name.
-    public static var identifier: String {
-        "\(Self.self)"
     }
 
     static var isRequired: Bool {
@@ -99,7 +80,7 @@ extension AccountKey {
     /// A ``AccountKeyCategory/credentials`` key that is not meant to be modified in
     /// the `SecurityOverview` section in the ``AccountOverview``.
     static var isHiddenCredential: Bool {
-        self == AccountIdKey.self || self == UserIdKey.self
+        self == AccountKeys.accountId || self == AccountKeys.userId
     }
 }
 
@@ -108,6 +89,14 @@ extension AccountKey where Value: StringProtocol {
     /// Default initial value for `String` values.
     public static var initialValue: InitialValue<Value> {
         .empty("")
+    }
+}
+
+
+extension AccountKey where Value == Bool {
+    /// Default initial value for `Bool` values.
+    public static var initialValue: InitialValue<Value> {
+        .default(false)
     }
 }
 
@@ -125,13 +114,5 @@ extension AccountKey where Value: ExpressibleByArrayLiteral {
     /// Default initial value for `Array` values.
     public static var initialValue: InitialValue<Value> {
         .empty([])
-    }
-}
-
-
-extension AccountKey where Value: ExpressibleByDictionaryLiteral {
-    /// Default initial value for `Dictionary` values.
-    public static var initialValue: InitialValue<Value> {
-        .empty([:])
     }
 }

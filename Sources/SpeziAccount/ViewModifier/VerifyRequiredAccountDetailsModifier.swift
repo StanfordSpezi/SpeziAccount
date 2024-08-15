@@ -20,57 +20,63 @@ private struct FollowUpSession: Identifiable {
 
 
 struct VerifyRequiredAccountDetailsModifier: ViewModifier {
-    @Environment(Account.self) private var account
+    private struct DetailsState: Equatable {
+        let signedIn: Bool
+        let isIncomplete: Bool? // swiftlint:disable:this discouraged_optional_boolean
+    }
+    private let enabled: Bool
 
-    @SceneStorage("edu.stanford.spezi-account.startup-account-check") private var verifiedAccount = false
+    @Environment(Account.self)
+    private var account
+
+    @SceneStorage("edu.stanford.spezi-account.startup-account-check")
+    private var verifiedAccount = false
     @State private var followUpSession: FollowUpSession?
 
+    @MainActor private var state: DetailsState {
+        DetailsState(signedIn: account.signedIn, isIncomplete: account.details?.isIncomplete)
+    }
 
-    init() {
+    nonisolated init(enabled: Bool = true) {
+        self.enabled = enabled
     }
 
 
     func body(content: Content) -> some View {
         content
             .sheet(item: $followUpSession) { session in
-                FollowUpInfoSheet(details: session.details, requiredKeys: session.requiredKeys)
+                NavigationStack {
+                    FollowUpInfoSheet(keys: session.requiredKeys)
+                }
+            }
+            .onChange(of: state, initial: true) {
+                guard enabled else {
+                    return
+                }
+
+                guard let details = account.details, !details.isIncomplete, !details.isAnonymous else {
+                    followUpSession = nil
+                    return
+                }
+
+                guard !verifiedAccount else {
+                    return
+                }
+
+                verifiedAccount = true
+                let missingKeys = account.configuration.missingRequiredKeys(for: details)
+
+                if !missingKeys.isEmpty {
+                    followUpSession = FollowUpSession(details: details, requiredKeys: missingKeys)
+                }
             }
             .task {
                 guard !verifiedAccount else {
                     return
                 }
 
-                try? await Task.sleep(for: .milliseconds(500))
+                try? await Task.sleep(for: .seconds(5)) // we let the initial account setup take up to 5s
                 verifiedAccount = true
-
-                if let details = account.details {
-                    let missingKeys = account.configuration.missingRequiredKeys(for: details)
-
-                    if !missingKeys.isEmpty {
-                        followUpSession = FollowUpSession(details: details, requiredKeys: missingKeys)
-                    }
-                }
             }
-    }
-}
-
-
-extension View {
-    /// Used this modifier to ensure that all user accounts in your app are up to date with your
-    /// SpeziAccount configuration.
-    ///
-    /// Withing your ``AccountConfiguration`` you define your app-global ``AccountValueConfiguration`` that defines
-    /// what ``AccountKey`` are required and collected at signup. You can use this modifier to collect additional information
-    /// form existing users, should your configuration of **required** account keys change between one of your releases.
-    ///
-    /// - Parameter verify: Flag indicating if this verification check is turned on.
-    /// - Returns: The modified view.
-    @ViewBuilder
-    public func verifyRequiredAccountDetails(_ verify: Bool = true) -> some View {
-        if verify {
-            modifier(VerifyRequiredAccountDetailsModifier())
-        } else {
-            self
-        }
     }
 }

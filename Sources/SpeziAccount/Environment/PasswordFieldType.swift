@@ -10,22 +10,21 @@ import SwiftUI
 
 
 /// The semantic use of a password field.
-public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConvertible {
+public enum PasswordFieldType {
     /// Standard password field
     case password
     /// New password field
     case new
     /// Password repeat field
     case `repeat`
+}
 
 
-    public static let defaultValue: PasswordFieldType = .password
-
-
+extension PasswordFieldType: CustomLocalizedStringResourceConvertible {
     public var localizedStringResource: LocalizedStringResource {
         switch self {
         case .password:
-            return PasswordKey.name
+            return AccountKeys.password.name
         case .new:
             return .init("NEW_PASSWORD", bundle: .atURL(from: .module))
         case .repeat:
@@ -36,7 +35,7 @@ public enum PasswordFieldType: EnvironmentKey, CustomLocalizedStringResourceConv
     public var localizedPrompt: LocalizedStringResource {
         switch self {
         case .password:
-            return PasswordKey.name
+            return AccountKeys.password.name
         case .new:
             return .init("NEW_PASSWORD_PROMPT", bundle: .atURL(from: .module))
         case .repeat:
@@ -50,13 +49,21 @@ extension PasswordFieldType: Sendable, Hashable {}
 
 
 extension EnvironmentValues {
+    private struct PasswordFieldTypeKey: EnvironmentKey {
+        static let defaultValue: PasswordFieldType = .password
+    }
+
     /// The semantic use of a password field.
+    ///
+    /// ## Topics
+    ///
+    /// - ``PasswordFieldType``
     public var passwordFieldType: PasswordFieldType {
         get {
-            self[PasswordFieldType.self]
+            self[PasswordFieldTypeKey.self]
         }
         set {
-            self[PasswordFieldType.self] = newValue
+            self[PasswordFieldTypeKey.self] = newValue
         }
     }
 }

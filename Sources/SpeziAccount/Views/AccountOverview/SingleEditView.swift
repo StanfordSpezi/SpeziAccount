@@ -17,13 +17,10 @@ struct SingleEditView<Key: AccountKey>: View {
     private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
-
-    @Environment(\.logger) private var logger
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.dismiss)
+    private var dismiss
 
     @ValidationState private var validation
 
@@ -32,20 +29,20 @@ struct SingleEditView<Key: AccountKey>: View {
 
     private var disabledDone: Bool {
         !model.hasUnsavedChanges // we don't have any changes
-            || accountDetails.storage.get(Key.self) == model.modifiedDetailsBuilder.get(Key.self) // it's the same value
+            || accountDetails[Key.self] == model.modifiedDetailsBuilder.get(Key.self) // it's the same value
             || !validation.allInputValid // or the input isn't valid
     }
 
     var body: some View {
         Form {
             VStack {
-                Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails, for: ModifiedAccountDetails.self)
+                Key.dataEntryViewWithStoredValueOrInitial(details: accountDetails)
                     .focused($isFocused)
             }
                 .environment(\.accountViewType, .overview(mode: .existing))
-                .injectEnvironmentObjects(service: service, model: model)
+                .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
         }
-            .navigationTitle(Text(Key.self == UserIdKey.self ? accountDetails.userIdType.localizedStringResource : Key.name))
+            .navigationTitle(Text(Key.self == AccountKeys.userId ? accountDetails.userIdType.localizedStringResource : Key.name))
             .viewStateAlert(state: $viewState)
             .receiveValidation(in: $validation)
             .toolbar {
@@ -66,6 +63,10 @@ struct SingleEditView<Key: AccountKey>: View {
         self.accountDetails = accountDetails
     }
 
+    init(for keyPath: KeyPath<AccountKeys, Key.Type>, model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
+        self.init(model: model, details: accountDetails)
+    }
+
 
     private func submitChange() async throws {
         guard validation.validateSubviews() else {
@@ -74,28 +75,26 @@ struct SingleEditView<Key: AccountKey>: View {
 
         isFocused = false
 
-        logger.debug("Saving updated \(Key.self) value!")
+        account.logger.debug("Saving updated \(Key.self) value!")
 
-        try await model.updateAccountDetails(details: accountDetails)
+        try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()
     }
 }
 
 #if DEBUG
-struct SingleEditView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                SingleEditView<PersonNameKey>(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            SingleEditView(for: \.name, model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

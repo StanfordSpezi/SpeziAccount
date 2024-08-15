@@ -11,8 +11,9 @@ import SwiftUI
 
 @main
 struct UITestsApp: App {
-    @UIApplicationDelegateAdaptor(TestAppDelegate.self) var appDelegate
-    
+    @UIApplicationDelegateAdaptor(TestAppDelegate.self)
+    private var appDelegate
+
     var body: some Scene {
         WindowGroup {
             AccountTestsView()

@@ -287,6 +287,38 @@
         }
       }
     },
+    "Already got an Account?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast bereits ein Benutzerkonto?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Already got an Account?"
+          }
+        }
+      }
+    },
+    "Anonymous User" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonymer Benutzer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonymous User"
+          }
+        }
+      }
+    },
     "CANCEL" : {
       "localizations" : {
         "de" : {
@@ -349,28 +381,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cerrar"
-          }
-        }
-      }
-    },
-    "CONFIRMATION_DISCARD_ADDITIONAL_INFO" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abbrechen und Abmelden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel and Logout"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar y Cerrar Sesión"
           }
         }
       }
@@ -573,29 +583,6 @@
         }
       }
     },
-    "Default Account Service Configuration Environment Key" : {
-      "comment" : "Internal use only, no need to translate.",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Default Account Service Configuration Environment Key"
-          }
-        }
-      }
-    },
     "DELETE" : {
       "localizations" : {
         "de" : {
@@ -658,6 +645,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hecho"
+          }
+        }
+      }
+    },
+    "Double Key" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double Key"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double Key"
           }
         }
       }
@@ -926,72 +929,6 @@
         }
       }
     },
-    "Mock AccountService" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Account Service"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Account Service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servicio de Cuenta Simulada"
-          }
-        }
-      }
-    },
-    "Mock SignIn with Apple" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Sign in with Apple"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Sign in with Apple"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simulacro de Inicio de Sesión con Apple"
-          }
-        }
-      }
-    },
-    "Mock Simple AccountService" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Simple Account Service"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mock Simple Account Service"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Servicio de Cuenta Simple Simulado"
-          }
-        }
-      }
-    },
     "NAME" : {
       "localizations" : {
         "de" : {
@@ -1076,6 +1013,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No"
+          }
+        }
+      }
+    },
+    "Numeric Key" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numeric Key"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numeric Key"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
           }
         }
       }
@@ -1212,6 +1197,22 @@
         }
       }
     },
+    "The input can only consist of digits." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Eingabe kann nur aus Zahlen bestehen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The input can only consist of digits."
+          }
+        }
+      }
+    },
     "The internal account identifier is meant to be generated!" : {
       "comment" : "Pure debug message, no need to translate.",
       "localizations" : {
@@ -1254,6 +1255,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The internal account identifier is not meant to be user facing!"
+          }
+        }
+      }
+    },
+    "This field is required." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Feld is erforderlich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This field is required."
+          }
+        }
+      }
+    },
+    "Toggle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle"
           }
         }
       }

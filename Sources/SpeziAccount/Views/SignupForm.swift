@@ -12,31 +12,6 @@ import SpeziViews
 import SwiftUI
 
 
-struct DefaultSignupFormHeader: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "person.fill.badge.plus")
-                .foregroundColor(.accentColor)
-                .symbolRenderingMode(.multicolor)
-                .font(.custom("XXL", size: 50, relativeTo: .title))
-                .accessibilityHidden(true)
-            Text("UP_SIGNUP_HEADER", bundle: .module)
-                .accessibilityAddTraits(.isHeader)
-                .font(.title)
-                .bold()
-                .padding(.bottom, 4)
-            Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
-                .padding([.leading, .trailing], 25)
-        }
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .listRowBackground(Color.clear)
-            .padding(.top, -3)
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
-    }
-}
-
-
 /// A generalized signup form used with arbitrary ``AccountService`` implementations.
 ///
 /// A `Form` that collects all configured account values (a ``AccountValueConfiguration`` supplied to ``AccountConfiguration``)
@@ -44,25 +19,39 @@ struct DefaultSignupFormHeader: View {
 ///
 /// - Note: This view is built with the assumption to be placed inside a `NavigationStack` within a Sheet modifier.
 public struct SignupForm<Header: View>: View {
-    private let service: any AccountService
     private let header: Header
+    private let signupClosure: (AccountDetails) async throws -> Void
 
-    @Environment(Account.self) private var account
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.dismiss)
+    private var dismiss
 
-    @State private var signupDetailsBuilder = SignupDetails.Builder()
+    @State private var signupDetailsBuilder = AccountDetailsBuilder()
     @ValidationState private var validation
 
     @State private var viewState: ViewState = .idle
     @FocusState private var isFocused: Bool
 
+    @State private var compliance: SignupProviderCompliance?
     @State private var presentingCloseConfirmation = false
 
     @MainActor private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
 
-        // patch the user configured account values with account values additionally required by
-        for entry in service.configuration.requiredAccountKeys {
+        // do not show fields that are already present on an anonymous account
+        if let details = account.details, details.isAnonymous {
+            result = result
+                .mapValues { keys in
+                    keys.filter { !details.contains($0) }
+                }
+                .filter { _, keys in
+                    !keys.isEmpty
+                }
+        }
+
+        // patch the user configured account values with account values additionally required by the account service
+        for entry in account.accountService.configuration.requiredAccountKeys {
             let key = entry.key
             if !result[key.category, default: []].contains(where: { $0 == key }) {
                 result[key.category, default: []].append(key)
@@ -78,6 +67,7 @@ public struct SignupForm<Header: View>: View {
             .disableDismissiveActions(isProcessing: viewState)
             .viewStateAlert(state: $viewState)
             .interactiveDismissDisabled(!signupDetailsBuilder.isEmpty)
+            .reportSignupProviderCompliance(compliance)
             .confirmationDialog(
                 Text("CONFIRMATION_DISCARD_INPUT_TITLE", bundle: .module),
                 isPresented: $presentingCloseConfirmation,
@@ -110,9 +100,12 @@ public struct SignupForm<Header: View>: View {
     @MainActor @ViewBuilder var form: some View {
         Form {
             header
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                .listRowBackground(Color.clear)
+                .padding(.top, -3)
 
-            SignupSectionsView(for: SignupDetails.self, service: service, sections: accountKeyByCategory)
-                .environment(\.accountServiceConfiguration, service.configuration)
+            SignupSectionsView(sections: accountKeyByCategory)
+                .environment(\.accountServiceConfiguration, account.accountService.configuration)
                 .environment(\.accountViewType, .signup)
                 .environment(signupDetailsBuilder)
 
@@ -131,15 +124,9 @@ public struct SignupForm<Header: View>: View {
             .receiveValidation(in: $validation)
     }
 
-
-    init(using service: any AccountService) where Header == DefaultSignupFormHeader {
-        self.service = service
-        self.header = DefaultSignupFormHeader()
-    }
-
-    init(service: any AccountService, @ViewBuilder header: () -> Header) {
-        self.service = service
+    public init(signup: @escaping (AccountDetails) async throws -> Void, @ViewBuilder header: () -> Header = { SignupFormHeader() }) {
         self.header = header()
+        self.signupClosure = signup
     }
 
 
@@ -151,29 +138,40 @@ public struct SignupForm<Header: View>: View {
 
         isFocused = false
 
-        let details: SignupDetails = try signupDetailsBuilder.build(checking: account.configuration)
+        let details = signupDetailsBuilder.build()
 
-        try await service.signUp(signupDetails: details)
+        if let anonymousDetails = account.details,
+           anonymousDetails.isAnonymous {
+            // anonymous accounts will be merged, therefore, details need to be combined fore verifying requirements
+            var combined = details
+            combined.add(contentsOf: anonymousDetails)
+            try combined.validateAgainstSignupRequirements(account.configuration)
+        } else {
+            try details.validateAgainstSignupRequirements(account.configuration)
+        }
 
-        // go back if the view doesn't update anyway
+        compliance = .compliant
+        do {
+            try await signupClosure(details)
+        } catch {
+            compliance = nil
+            throw error
+        }
+        
         dismiss()
     }
 }
 
 
 #if DEBUG
-struct DefaultUserIdPasswordSignUpView_Previews: PreviewProvider {
-    static let accountService = MockUserIdPasswordAccountService()
-
-    static var previews: some View {
-        NavigationStack {
-            SignupForm(using: accountService)
+#Preview {
+    NavigationStack {
+        SignupForm { signupDetails in
+            print("Signup Details: \(signupDetails)")
         }
-            .previewWith {
-                AccountConfiguration {
-                    accountService
-                }
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
 }
 #endif

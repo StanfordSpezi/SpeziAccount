@@ -35,14 +35,34 @@ class TestAppDelegate: SpeziAppDelegate {
                 .supports(\.biography)
             ]
         case .allRequired:
+#if os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .requires(\.dateOfBirth),
+                .collects(\.dateOfBirth),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
+
+#else
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .collects(\.dateOfBirth),
+                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+            ]
+#endif
         case .allRequiredWithBio:
+#if os(visionOS)
+            return [
+                .requires(\.userId),
+                .requires(\.name),
+                .requires(\.genderIdentity),
+                .collects(\.dateOfBirth),
+                .requires(\.biography)
+            ]
+#else
             return [
                 .requires(\.userId),
                 .requires(\.name),
@@ -50,34 +70,30 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.dateOfBirth),
                 .requires(\.biography)
             ]
+#endif
+        }
+    }
+
+    var provider: InMemoryAccountService.ConfiguredIdentityProvider {
+        switch features.serviceType {
+        case .mail:
+            [.userIdPassword]
+        case .both:
+            [.userIdPassword, .customIdentityProvider]
+        case .withIdentityProvider:
+            [.userIdPassword, .signInWithApple]
+        case .empty:
+            []
         }
     }
 
     override var configuration: Configuration {
         Configuration(standard: TestStandard()) {
-            AccountConfiguration(configuration: configuredValues) {
-                let defaultCredentials = features.defaultCredentials
-                let noName = features.noName
-                switch features.serviceType {
-                case .mail:
-                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-                case .both:
-                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-                    TestAccountService(.username)
-                case .withIdentityProvider:
-                    TestAccountService(.emailAddress, defaultAccount: defaultCredentials, noName: noName)
-                    MockSignInWithAppleProvider()
-                case .empty:
-                    []
-                }
-            }
+            AccountConfiguration(
+                service: InMemoryAccountService(.emailAddress, configure: provider),
+                storageProvider: InMemoryAccountStorageProvider(),
+                configuration: configuredValues
+            )
         }
-    }
-}
-
-
-extension AccountServiceBuilder {
-    static func buildExpression(_ empty: [Void]) -> DependencyCollection {
-        Self.buildBlock()
     }
 }

@@ -20,6 +20,20 @@
                ReferencedContainer = "container:UITests.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SpeziAccount"
+               BuildableName = "SpeziAccount"
+               BlueprintName = "SpeziAccount"
+               ReferencedContainer = "container:../..">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -60,20 +74,28 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "mail"
+            argument = "both"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--configuration-type"
-            isEnabled = "YES">
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "allRequired"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "allRequiredWithBio"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--credentials"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "--default-credentials"
-            isEnabled = "NO">
+            argument = "createAndSignIn"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <LocationScenarioReference

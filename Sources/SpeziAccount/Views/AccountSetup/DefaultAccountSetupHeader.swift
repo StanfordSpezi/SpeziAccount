@@ -14,8 +14,10 @@ import SwiftUI
 /// This view expects a ``Account`` object to be in the environment to dynamically
 /// present the appropriate subtitle.
 public struct DefaultAccountSetupHeader: View {
-    @Environment(Account.self) private var account
-    @Environment(\._accountSetupState) private var setupState
+    @Environment(Account.self)
+    private var account
+    @Environment(\._accountSetupState)
+    private var setupState
 
     public var body: some View {
         VStack {
@@ -43,17 +45,20 @@ public struct DefaultAccountSetupHeader: View {
 
 
 #if DEBUG
-struct DefaultAccountSetupHeader_Previews: PreviewProvider {
-    static var previews: some View {
-        DefaultAccountSetupHeader()
-            .previewWith {
-                AccountConfiguration()
-            }
+#Preview {
+    DefaultAccountSetupHeader()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
+}
 
-        DefaultAccountSetupHeader()
-            .previewWith {
-                AccountConfiguration(building: .init().set(\.userId, value: "myUser"), active: MockUserIdPasswordAccountService())
-            }
-    }
+#Preview {
+    var details = AccountDetails()
+    details.userId = "myUser"
+
+    return DefaultAccountSetupHeader()
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

@@ -51,7 +51,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testLoginWithEmail() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail)
+        app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -80,7 +80,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testAccountSummary() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail, defaultCredentials: true)
+        app.launch(serviceType: .mail, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -104,24 +104,89 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     }
 
     @MainActor
-    func testLoginWithMultipleServices() throws {
-        throw XCTSkip("Tests with multiple account services are currently disabled as Spezi is required to support multi same-type modules first.")
+    func testSignupWithAnonymousAccount() throws { // swiftlint:disable:this function_body_length
         let app = XCUIApplication()
-        app.launch(serviceType: .both)
+        app.launch(serviceType: .both, config: .allRequired)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountSetup()
 
-        XCTAssertTrue(app.buttons["Username and Password"].exists)
-        app.buttons["Username and Password"].tap()
+        XCTAssertTrue(app.buttons["Stanford SUNet"].exists)
+        app.buttons["Stanford SUNet"].tap()
 
-        XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.buttons["Close"].exists)
+        app.buttons["Close"].tap()
 
-        try app.login(username: Defaults.username, password: Defaults.password)
+        XCTAssertTrue(app.staticTexts["User Id, Anonymous"].waitForExistence(timeout: 2.0))
 
-        XCTAssertTrue(app.staticTexts[Defaults.username].waitForExistence(timeout: 2.0))
+        // TEST if we can modify anonymous details
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Name"].exists)
+        XCTAssertFalse(app.staticTexts["Name, E-Mail Address"].exists)
+        XCTAssertFalse(app.staticTexts["Sign-In & Security"].exists)
+
+        app.buttons["Name"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.buttons["Add Name"].exists)
+        app.buttons["Add Name"].tap()
+        XCTAssertTrue(app.navigationBars.staticTexts["Name"].waitForExistence(timeout: 2.0))
+
+
+        XCTAssertTrue(app.textFields["enter first name"].exists)
+        XCTAssertTrue(app.textFields["enter last name"].exists)
+        try app.textFields["enter first name"].enter(value: "Leland")
+        try app.textFields["enter last name"].enter(value: "Stanford")
+
+
+        app.navigationBars.buttons["Done"].tap()
+
+
+        XCTAssertTrue(app.staticTexts["Name, Leland Stanford"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.navigationBars.buttons["Account Overview"].exists)
+        app.navigationBars.buttons["Account Overview"].tap()
+
+        XCTAssertTrue(app.navigationBars.buttons["Close"].exists)
+        app.navigationBars.buttons["Close"].tap()
+
+        // TEST SIGNUP
+
+        app.openAccountSetup()
+        app.openSignup()
+
+        XCTAssertFalse(app.textFields["enter first name"].exists)
+        XCTAssertFalse(app.textFields["enter last name"].exists)
+
+#if !os(visionOS)
+        let supplyDateOfBirth = true
+#else
+        // we are not able to interact with the date picker on visionOS
+        let supplyDateOfBirth = false
+#endif
+
+        try app.fillSignupForm(
+            email: Defaults.email,
+            password: Defaults.password,
+            genderIdentity: "Male",
+            supplyDateOfBirth: supplyDateOfBirth
+        )
+
+#if os(visionOS)
+        app.scrollUpInSetup()
+#endif
+
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        app.collectionViews.buttons["Signup"].tap()
+
+        XCTAssertTrue(app.buttons["Finish"].waitForExistence(timeout: 2.0))
+        app.buttons["Finish"].tap()
+
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Account Id, Stable"].exists)
+        XCTAssertFalse(app.staticTexts["User Id, Anonymous"].exists)
     }
 
     @MainActor
@@ -188,9 +253,6 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         app.openSignup()
 
-        // verify basic validation
-        XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
-        XCTAssertFalse(app.collectionViews.buttons["Signup"].isEnabled)
         XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
 
         // verify empty validation appearing
@@ -224,6 +286,10 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.typeText(String(password.dropFirst(4))) // stay focused, such that password field will not reset after regaining focus
         app.dismissKeyboard()
 
+#if os(visionOS)
+        app.scrollUpInSetup()
+#endif
+
         // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
         XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
         app.collectionViews.buttons["Signup"].tap()
@@ -249,6 +315,10 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openAccountSetup()
         app.openSignup()
 
+#if os(visionOS)
+        app.scrollUpInSetup()
+#endif
+
         XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
         XCTAssertFalse(app.collectionViews.buttons["Signup"].isEnabled)
 
@@ -268,7 +338,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testInvalidCredentials() throws {
         let app = XCUIApplication()
-        app.launch(serviceType: .mail)
+        app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -277,6 +347,10 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openSignup()
 
         try app.fillSignupForm(email: Defaults.email, password: Defaults.password)
+
+#if os(visionOS)
+        app.scrollUpInSetup()
+#endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
@@ -296,20 +370,35 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openAccountSetup()
         app.openSignup()
 
+#if !os(visionOS)
+        // we do that check later
         XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5)) // test requirement level
+
+        let supplyDateOfBirth = true
+#else
+        // we are not able to interact with the date picker on visionOS
+        let supplyDateOfBirth = false
+#endif
+
 
         try app.fillSignupForm(
             email: "lelandstanford2@stanford.edu",
             password: Defaults.password,
             name: .init("Leland Stanford"),
             genderIdentity: "Male",
-            supplyDateOfBirth: true
+            supplyDateOfBirth: supplyDateOfBirth
         )
+
+#if os(visionOS)
+        XCTAssertTrue(app.buttons["Add Date of Birth"].waitForExistence(timeout: 0.5)) // test requirement level
+#endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
 
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
+
+        // Note, if we are not back at the home screen, the setup closure does not work
 
         // Now verify what we entered
         app.openAccountOverview()
@@ -319,7 +408,9 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].exists)
         XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+#if !os(visionOS)
         XCTAssertTrue(app.staticTexts["Date of Birth"].exists)
+#endif
     }
 
     @MainActor
@@ -333,16 +424,24 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openAccountSetup()
         app.openSignup()
 
+#if !os(visionOS)
+        let supplyDateOfBirth = true
+#else
+        // we are not able to interact with the date picker on visionOS
+        let supplyDateOfBirth = false
+#endif
+
         try app.fillSignupForm(
             email: "lelandstanford2@stanford.edu",
             password: Defaults.password,
             name: .init("Leland Stanford"),
             genderIdentity: "Male",
-            supplyDateOfBirth: true,
+            supplyDateOfBirth: supplyDateOfBirth,
             biography: "Hello Stanford"
         )
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].isEnabled)
         app.collectionViews.buttons["Signup"].tap()
 
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
@@ -355,7 +454,9 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Leland Stanford"].exists)
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].exists)
         XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+#if !os(visionOS)
         XCTAssertTrue(app.staticTexts["Date of Birth"].exists)
+#endif
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
     }
 
@@ -377,6 +478,10 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         try app.fillSignupForm(email: email, password: "123456789", name: .init(givenName: "Leland"))
 
         try app.textFields["enter first name"].delete(count: 6)
+
+#if os(visionOS)
+        app.scrollUpInSetup()
+#endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
@@ -400,7 +505,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testAdditionalInfoAfterLogin() throws {
         let app = XCUIApplication()
-        app.launch(config: .allRequiredWithBio)
+        app.launch(config: .allRequiredWithBio, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -413,19 +518,22 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Please fill out the details below to complete your account setup."].exists)
 
-        try app.textFields["Biography"].enter(value: "Hello Stanford")
+        try app.textFields["Biography"].enter(value: "Hello Stanford2")
 
         XCTAssertTrue(app.buttons["Complete"].waitForExistence(timeout: 2.0))
         app.buttons["Complete"].tap()
 
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+
+        app.openAccountOverview()
+        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford2"].waitForExistence(timeout: 2.0))
     }
 
     @MainActor
     func testAccountRequiredModifier() throws {
         let app = XCUIApplication()
-        app.launch(defaultCredentials: true, accountRequired: true)
+        app.launch(credentials: .createAndSignIn, accountRequired: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
@@ -439,9 +547,47 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
         let app = XCUIApplication()
-        app.launch(config: .allRequiredWithBio, defaultCredentials: true, verifyAccountDetails: true)
+        app.launch(config: .allRequiredWithBio, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Finish Account Setup"].waitForExistence(timeout: 6.0))
+
+        XCTAssertTrue(app.navigationBars.buttons["Cancel"].exists)
+
+        app.staticTexts["Finish Account Setup"].firstMatch.swipeDown(velocity: .slow) // check that this is not dismissible
+
+        app.navigationBars.buttons["Cancel"].tap()
+
+        let confirmation = "This account information is required. If you abort, you will automatically be signed out!"
+        XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.scrollViews.buttons["Logout"].exists)
+        XCTAssertTrue(app.buttons["Keep Editing"].exists)
+
+        app.scrollViews.buttons["Logout"].tap()
+
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
+        XCTAssertFalse(app.staticTexts["User Id"].exists)
     }
 }
+
+
+extension XCUIApplication {
+#if os(visionOS)
+    func scrollUpInSetup() {
+        // swipeUp doesn't work on visionOS, so we improvise
+
+        if staticTexts["Name"].waitForExistence(timeout: 2.0) {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else if staticTexts["Personal Details"].exists {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else {
+            XCTFail("Could not scroll on visionOS")
+        }
+    }
+#endif
+}
+
+
+// swiftlint:disable:this file_length

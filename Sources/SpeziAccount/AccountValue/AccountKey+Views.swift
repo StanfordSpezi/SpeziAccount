@@ -10,44 +10,29 @@ import SpeziFoundation
 import SwiftUI
 
 
-extension AccountKey where Value: StringProtocol {
-    /// Default DataDisplay for String-based values using ``StringBasedDisplayView``.
-    public typealias DataDisplay = StringBasedDisplayView<Self>
-}
-
-extension AccountKey where Value: CustomLocalizedStringResourceConvertible {
-    /// Default DataDisplay for `CustomLocalizedStringResourceConvertible`-based values using ``LocalizableStringBasedDisplayView``.
-    public typealias DataDisplay = LocalizableStringBasedDisplayView<Self>
-}
-
-
 @MainActor
 extension AccountKey {
-    static func emptyDataEntryView<Values: AccountValues>(for values: Values.Type) -> AnyView {
-        AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: initialValue.value))
+    static func emptyDataEntryView() -> AnyView {
+        AnyView(GeneralizedDataEntryView<Self>(initialValue: initialValue.value))
     }
 
-    static func dataEntryViewWithStoredValueOrInitial<Values: AccountValues>(
-        details: AccountDetails,
-        for values: Values.Type
-    ) -> AnyView {
-        let value = details.storage.get(Self.self) ?? initialValue.value
-        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
+    static func dataEntryViewWithStoredValueOrInitial(details: AccountDetails) -> AnyView {
+        let value = details[Self.self] ?? initialValue.value
+        return AnyView(GeneralizedDataEntryView<Self>(initialValue: value))
     }
 
-    static func dataEntryViewFromBuilder<Values: AccountValues>(
-        builder: ModifiedAccountDetails.Builder,
-        for values: Values.Type
+    static func dataEntryViewFromBuilder(
+        builder: AccountDetailsBuilder
     ) -> AnyView? {
         guard let value = builder.get(Self.self) else {
             return nil
         }
 
-        return AnyView(GeneralizedDataEntryView<DataEntry, Values>(initialValue: value))
+        return AnyView(GeneralizedDataEntryView<Self>(initialValue: value))
     }
 
     static func dataDisplayViewWithCurrentStoredValue(from details: AccountDetails) -> AnyView? {
-        guard let value = details.storage.get(Self.self) else {
+        guard let value = details[Self.self] else {
             return nil
         }
 

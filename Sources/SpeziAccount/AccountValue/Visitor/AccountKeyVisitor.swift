@@ -9,6 +9,9 @@
 
 /// A collection type that is capable of accepting an ``AccountKeyVisitor``.
 public protocol AcceptingAccountKeyVisitor {
+    /// Type erased array of keys.
+    var _keys: [any AccountKey.Type] { get }  // swiftlint:disable:this identifier_name
+
     /// Accepts an ``AccountKeyVisitor`` for all elements of the collection.
     /// - Parameter visitor: The visitor to accept.
     /// - Returns: The ``AccountKeyVisitor/Final`` result or `Void`.
@@ -21,10 +24,25 @@ public protocol AcceptingAccountKeyVisitor {
 }
 
 
-/// A visitor to visit ``AccountKey`` metatypes.
+/// A visitor to visit `AccountKey` metatypes.
 ///
-/// Use the ``AcceptingAccountKeyVisitor/acceptAll(_:)-1ytax`` method on supporting types to
-/// visit all contained metatypes.
+/// You can iterate through a collection of ``AccountKey``s in a typed way using the [Visitor Pattern](https://en.wikipedia.org/wiki/Visitor_pattern).
+///
+/// - Note: The Visitor can be both applied to `[any AccountKey.Type]` arrays and to ``AccountKeyCollection``.
+/// 
+/// ```swift
+/// struct Visitor: AccountKeyVisitor {
+///     mutating func visit<Key: AccountKey>(_ key: Key.Type) {
+///         // perform visit step
+///     }
+/// }
+///
+/// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.userId, ...]
+/// var visitor = Visitor()
+/// details.acceptAll(&visitor)
+/// ```
+///
+/// - Note: A visitor can implement the optional ``final()-66gfx`` method to return a result through the ``AcceptingAccountKeyVisitor/acceptAll(_:)-1ytax`` method.
 public protocol AccountKeyVisitor {
     /// A optional final result type returned by ``final()-66gfx``.
     associatedtype Final = Void
@@ -97,4 +115,8 @@ extension AcceptingAccountKeyVisitor where Self: Collection, Element == any Acco
 }
 
 
-extension Array: AcceptingAccountKeyVisitor where Element == any AccountKey.Type {}
+extension Array: AcceptingAccountKeyVisitor where Element == any AccountKey.Type {
+    public var _keys: [any AccountKey.Type] { // swiftlint:disable:this identifier_name
+        self
+    }
+}

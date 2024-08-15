@@ -12,13 +12,7 @@ import SwiftUI
 // swiftlint:disable:next type_name
 private struct AccountServiceConfigurationEnvironmentKey: EnvironmentKey {
     static var defaultValue: AccountServiceConfiguration {
-        .init(
-            name: LocalizedStringResource(
-                "Default Account Service Configuration Environment Key",
-                comment: "Internal use only, no need to translate."
-            ),
-            supportedKeys: .arbitrary
-        )
+        .init(supportedKeys: .arbitrary)
     }
 }
 

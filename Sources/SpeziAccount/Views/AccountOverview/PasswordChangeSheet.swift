@@ -17,13 +17,11 @@ struct PasswordChangeSheet: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
 
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
 
-
-    @Environment(\.logger) private var logger
-    @Environment(\.dismiss) private var dismiss
+    @Environment(Account.self)
+    private var account
+    @Environment(\.dismiss)
+    private var dismiss
 
     @ValidationState private var validation
 
@@ -34,22 +32,23 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        accountDetails.accountServiceConfiguration.fieldValidationRules(for: \.password) ?? []
+        accountDetails.accountServiceConfiguration.fieldValidationRules(for: AccountKeys.password) ?? []
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 passwordFieldsSection
-                    .injectEnvironmentObjects(service: service, model: model)
+                    .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
                     .focused($isFocused)
                     .environment(\.accountViewType, .overview(mode: .new))
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
                 .viewStateAlert(state: $viewState)
-                .anyViewModifier(service.viewStyle.securityRelatedViewModifier)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
+#if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: submitPasswordChange) {
@@ -67,13 +66,14 @@ struct PasswordChangeSheet: View {
                 .onDisappear {
                     model.resetModelState() // clears modified details
                 }
+                .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
         }
     }
 
     @ViewBuilder private var passwordFieldsSection: some View {
         Section {
             Grid {
-                PasswordKey.DataEntry($newPassword)
+                AccountKeys.password.DataEntry($newPassword)
                     .environment(\.passwordFieldType, .new)
                     .validate(input: newPassword, rules: passwordValidations)
                     .onChange(of: newPassword) {
@@ -83,19 +83,19 @@ struct PasswordChangeSheet: View {
                             validation.validateSubviews(switchFocus: false) // Must not switch focus here!
                         }
 
-                        model.modifiedDetailsBuilder.set(\.password, value: newPassword)
+                        model.modifiedDetailsBuilder.set(AccountKeys.password, value: newPassword)
                     }
 
                 Divider()
                     .gridCellUnsizedAxes(.horizontal)
 
-                PasswordKey.DataEntry($repeatPassword)
+                AccountKeys.password.DataEntry($repeatPassword)
                     .environment(\.passwordFieldType, .repeat)
                     .validate(input: repeatPassword, rules: passwordEqualityValidation(new: $newPassword))
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
-            PasswordValidationRuleFooter(configuration: service.configuration)
+            PasswordValidationRuleFooter(configuration: accountDetails.accountServiceConfiguration)
         }
     }
 
@@ -112,9 +112,9 @@ struct PasswordChangeSheet: View {
 
         isFocused = false
 
-        logger.debug("Saving updated password to AccountService!")
+        account.logger.debug("Saving updated password to AccountService!")
 
-        try await model.updateAccountDetails(details: accountDetails)
+        try await model.updateAccountDetails(details: accountDetails, using: account)
         dismiss()
     }
 
@@ -131,21 +131,19 @@ struct PasswordChangeSheet: View {
 
 
 #if DEBUG
-struct PasswordChangeSheet_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .set(\.genderIdentity, value: .male)
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+    details.genderIdentity = .male
 
-    static var previews: some View {
-        NavigationStack {
-            AccountDetailsReader { account, details in
-                PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account), details: details)
-            }
+    return NavigationStack {
+        AccountDetailsReader { account, details in
+            PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
-            .previewWith {
-                AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
-            }
     }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+        }
 }
 #endif

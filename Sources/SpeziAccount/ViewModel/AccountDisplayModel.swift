@@ -16,18 +16,24 @@ struct AccountDisplayModel {
         accountDetails.name
     }
 
-    var accountHeadline: String {
+    var accountHeadline: String? {
         // we gracefully check if the account details have a name, bypassing the subscript overloads
         if let name = accountDetails.name {
             return name.formatted(.name(style: .long))
-        } else {
+        } else if accountDetails.contains(AccountKeys.userId) {
             // otherwise we display the userId
             return accountDetails.userId
+        } else {
+            return nil // do not show the accountId for anonymous users
         }
     }
 
     var accountSubheadline: String? {
         if accountDetails.name != nil {
+            if !accountDetails.contains(AccountKeys.userId) {
+                return nil // do not display account id in subheadline
+            }
+
             // If the accountHeadline uses the name, we display the userId as the subheadline
             return accountDetails.userId
         } else if accountDetails.userIdType != .emailAddress,

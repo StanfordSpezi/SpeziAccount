@@ -10,17 +10,14 @@ import SpeziValidation
 import SwiftUI
 
 
-private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues>: ViewModifier {
-    @Environment(AccountValuesBuilder<Values>.self) private var detailsBuilder
+private struct RequiredValidationModifier<Key: AccountKey>: ViewModifier {
+    @Environment(AccountDetailsBuilder.self)
+    private var detailsBuilder
 
     @ValidationState private var validation
     @ValidationState private var innerValidation
 
     @Binding private var value: Key.Value
-
-    private var mockText: String {
-        detailsBuilder.contains(Key.self) ? "CONTAINED" : ""
-    }
 
     init(_ binding: Binding<Key.Value>) {
         self._value = binding
@@ -34,7 +31,10 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
             if innerValidation.isEmpty {
                 // ensure we don't nest validate modifiers. Otherwise, we get visibility problems.
                 view
-                    .validate(input: mockText, rules: .nonEmpty)
+                    .validate(
+                        detailsBuilder.contains(Key.self),
+                        message: LocalizedStringResource("This field is required.", bundle: .atURL(from: .module))
+                    )
 
                 HStack {
                     ValidationResultsView(results: validation.allDisplayedValidationResults)
@@ -45,23 +45,13 @@ private struct RequiredValidationModifier<Key: AccountKey, Values: AccountValues
             }
         }
             .receiveValidation(in: $validation)
-            .onChange(of: innerValidation, initial: true) {
-                print("InnerValidation: \(innerValidation)")
-            }
-            .onChange(of: validation, initial: true) {
-                print("Validation: \(validation)")
-            }
     }
 }
 
 
 extension View {
     @ViewBuilder
-    func requiredValidation<Key: AccountKey, Values: AccountValues>(
-        for key: Key.Type,
-        storage values: Values.Type,
-        _ value: Binding<Key.Value>
-    ) -> some View {
-        modifier(RequiredValidationModifier<Key, Values>(value))
+    func validateRequired<Key: AccountKey>(for key: Key.Type, _ value: Binding<Key.Value>) -> some View {
+        modifier(RequiredValidationModifier<Key>(value))
     }
 }

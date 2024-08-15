@@ -11,20 +11,25 @@ import SpeziPersonalInfo
 import SwiftUI
 
 
-/// A account summary view that can be used to link to the ``AccountOverview``.
+/// A account summary view that can be used to link to the `AccountOverview`.
 ///
 /// Below is a short code example on how to use the `AccountHeader` view.
 ///
 /// ```swift
 /// struct MyView: View {
+///     @Environment(Account.self)
+///     private var account
+///
 ///     var body: some View {
 ///         NavigationStack {
 ///             Form {
-///                 Section {
-///                     NavigationLink {
-///                         AccountOverview()
-///                     } label: {
-///                         AccountHeader(details: details)
+///                 if let details = account.details {
+///                     Section {
+///                         NavigationLink {
+///                             AccountOverview()
+///                         } label: {
+///                             AccountHeader(details: details)
+///                         }
 ///                     }
 ///                 }
 ///             }
@@ -39,10 +44,10 @@ public struct AccountHeader: View {
         /// Default caption.
         @_documentation(visibility: internal)
         public static let caption = LocalizedStringResource("ACCOUNT_HEADER_CAPTION", bundle: .atURL(from: .module))
-        // swiftlint:disable:previous attributes
     }
     
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
     private let caption: Text
 
     public var body: some View {
@@ -58,7 +63,11 @@ public struct AccountHeader: View {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .frame(width: 60, height: 60)
-                    .foregroundColor(Color(.systemGray3))
+#if os(macOS)
+                    .foregroundColor(Color(nsColor: .systemGray))
+#else
+                    .foregroundColor(Color(uiColor: .systemGray3))
+#endif
                     .accessibilityHidden(true)
             }
 
@@ -91,29 +100,28 @@ public struct AccountHeader: View {
 
 #if DEBUG
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-    
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
     return AccountHeader()
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
     AccountHeader(caption: Text(verbatim: "Email, Password, Preferences"))
         .previewWith {
-            AccountConfiguration {
-                MockUserIdPasswordAccountService()
-            }
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
+#if !os(macOS)
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
     return NavigationStack {
         Form {
@@ -127,13 +135,13 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
 #Preview {
-    let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
 
     return NavigationStack {
         Form {
@@ -147,7 +155,7 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration(building: details, active: MockUserIdPasswordAccountService())
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
         }
 }
 
@@ -164,9 +172,8 @@ public struct AccountHeader: View {
         }
     }
         .previewWith {
-            AccountConfiguration {
-                MockUserIdPasswordAccountService()
-            }
+            AccountConfiguration(service: InMemoryAccountService())
         }
 }
+#endif
 #endif

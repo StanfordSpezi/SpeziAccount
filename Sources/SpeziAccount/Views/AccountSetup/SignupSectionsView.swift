@@ -19,12 +19,11 @@ import SwiftUI
 /// - An ``ValidationEngines`` object.
 /// - The ``SwiftUI/EnvironmentValues/accountServiceConfiguration`` environment variable.
 /// - The ``SwiftUI/EnvironmentValues/accountViewType`` environment variable.
-struct SignupSectionsView<Storage: AccountValues>: View {
-    private let service: any AccountService
+struct SignupSectionsView: View {
     private let sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>
-    private let storageType: Storage.Type
 
-    @Environment(Account.self) private var account
+    @Environment(Account.self)
+    private var account
 
     var body: some View {
         // OrderedDictionary `elements` conforms to RandomAccessCollection so we can directly use it
@@ -33,7 +32,7 @@ struct SignupSectionsView<Storage: AccountValues>: View {
                 // the array doesn't change, so its fine to rely on the indices as identifiers
                 ForEach(accountKeys.indices, id: \.self) { index in
                     VStack {
-                        accountKeys[index].emptyDataEntryView(for: storageType)
+                        accountKeys[index].emptyDataEntryView()
                     }
                 }
             } header: {
@@ -41,37 +40,37 @@ struct SignupSectionsView<Storage: AccountValues>: View {
                     Text(title)
                 }
             } footer: {
-                if category == .credentials && account.configuration[PasswordKey.self] != nil {
-                    PasswordValidationRuleFooter(configuration: service.configuration)
+                if category == .credentials && account.configuration.password != nil {
+                    PasswordValidationRuleFooter(configuration: account.accountService.configuration)
                 }
             }
         }
     }
 
-    init(for storageType: Storage.Type, service: any AccountService, sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
-        self.service = service
+    init(sections: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]>) {
         self.sections = sections
-        self.storageType = storageType
     }
 }
 
 
 #if DEBUG
-struct SignupSectionsView_Previews: PreviewProvider {
-    private static let service = MockUserIdPasswordAccountService()
+private let credentials: [any AccountKey.Type] = [
+    AccountKeys.userId,
+    AccountKeys.password
+]
 
-    static var previews: some View {
-        Form {
-            SignupSectionsView(for: SignupDetails.self, service: service, sections: [
-                .credentials: [UserIdKey.self, PasswordKey.self],
-                .name: [PersonNameKey.self]
-            ])
-        }
-            .previewWith {
-                AccountConfiguration {
-                    service
-                }
-            }
+private let name: [any AccountKey.Type] = [
+    AccountKeys.name
+]
+#Preview {
+    Form {
+        SignupSectionsView(sections: [
+            .credentials: credentials,
+            .name: name
+        ])
+    }
+    .previewWith {
+        AccountConfiguration(service: InMemoryAccountService())
     }
 }
 #endif

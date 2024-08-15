@@ -10,7 +10,7 @@ import SpeziFoundation
 import SpeziValidation
 
 
-/// A list of `ValidationRule` to validate the input for String-based ``AccountKey``s.
+/// A list of `ValidationRule` to validate the input for String-based `AccountKey`s.
 ///
 /// You can use this configuration to set up [ValidationRule](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule)
 /// used for validation for any string-based ``AccountKey``. Input fields (e.g., placed in signup or edit forms) use those rules to validate the received string input
@@ -28,16 +28,16 @@ import SpeziValidation
 /// }
 /// ```
 ///
-/// - Note: When using built-in views like ``SignupForm`` that use the ``GeneralizedDataEntryView``, validation is automatically configured to `String`-based inputs.
+/// - Note: When using built-in views like ``SignupForm``, validation is automatically configured to `String`-based inputs.
 ///
 /// ### Default Values
 /// The configuration provides the following default validation rules depending on the context:
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
 ///     and [minimalEmail](https://swiftpackageindex.com/stanfordspezi/speziviews/0.6.1/documentation/spezivalidation/validationrule/minimalemail) rules
-///     if the `Key` is of type ``UserIdKey`` and the user id type is ``UserIdType/emailAddress`` or if the `Key` is of type ``EmailAddressKey``.
+///     if the `Key` is the ``AccountDetails/userId`` and the user id type is ``UserIdType/emailAddress`` or if the `Key` is the  ``AccountDetails/email``.
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) (intercepting)
 ///     and [minimalPassword](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/minimalpassword)] rules
-///     if the `Key` is of type ``PasswordKey``.
+///     if the `Key` is the ``AccountDetails/password``.
 /// * [nonEmpty](https://swiftpackageindex.com/stanfordspezi/speziviews/documentation/spezivalidation/validationrule/nonempty) rule otherwise.
 public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfigurationKey, OptionalComputedKnowledgeSource where Key.Value == String {
     // We use always compute, as we don't want our computation result to get stored. We don't have a mutable view anyways.
@@ -84,16 +84,16 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
     }
 
 
-    public static func compute<Repository: SharedRepository<Anchor>>(from repository: Repository) -> FieldValidationRules<Key>? {
+    public static func compute(from repository: AccountServiceConfigurationStorage) -> FieldValidationRules<Key>? {
         if let value = repository.get(Self.self) {
             return value // either the user configured a value themselves
         }
 
         // or we return a default based on the Key type and the current configuration environment
-        if Key.self == UserIdKey.self && repository[UserIdConfiguration.self].idType == .emailAddress
-            || Key.self == EmailAddressKey.self {
+        if Key.self == AccountKeys.userId.self && repository[UserIdConfiguration.self].idType == .emailAddress
+            || Key.self == AccountKeys.email {
             return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalEmail)
-        } else if Key.self == PasswordKey.self {
+        } else if Key.self == AccountKeys.password {
             return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalPassword)
         } else {
             // we cannot statically determine here if the user may have configured the Key to be required

@@ -10,11 +10,11 @@ import SpeziPersonalInfo
 import SwiftUI
 
 
-/// A simple account summary displayed in the ``AccountSetup`` view when there is already a signed in user account.
-public struct AccountSummaryBox: View {
+/// A simple account summary displayed in the `AccountSetup` view when there is already a signed in user account.
+struct AccountSummaryBox: View {
     private let model: AccountDisplayModel
 
-    public var body: some View {
+    var body: some View {
         HStack(spacing: 16) {
             Group {
                 if let profileViewName = model.profileViewName {
@@ -24,14 +24,22 @@ public struct AccountSummaryBox: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-                        .foregroundColor(Color(.systemGray3))
+#if os(macOS)
+                        .foregroundColor(Color(.systemGray))
+#else
+                        .foregroundColor(Color(uiColor: .systemGray3))
+#endif
                         .accessibilityHidden(true)
                 }
             }
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(model.accountHeadline)
+                if let accountHeadline = model.accountHeadline {
+                    Text(accountHeadline)
+                } else {
+                    Text("Anonymous User", bundle: .module)
+                }
                 if let subheadline = model.accountSubheadline {
                     Text(subheadline)
                         .font(.subheadline)
@@ -52,37 +60,44 @@ public struct AccountSummaryBox: View {
 
     /// Create a new `AccountSummaryBox`
     /// - Parameter details: The ``AccountDetails`` to render.
-    public init(details: AccountDetails) {
+    init(details: AccountDetails) {
         self.model = AccountDisplayModel(details: details)
     }
 }
 
 
 #if DEBUG
-struct AccountSummary_Previews: PreviewProvider {
-    static let emailDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
+#Preview {
+    var emailDetails = AccountDetails()
+    emailDetails.userId = "lelandstanford@stanford.edu"
+    emailDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static let usernameDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andreas.bauer")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService(.username))
+    return AccountSummaryBox(details: emailDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
+}
 
-    static let usernameWithoutNameDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andreas.bauer")
-        .build(owner: MockUserIdPasswordAccountService(.username))
+#Preview {
+    var usernameDetails = AccountDetails()
+    usernameDetails.userId = "leland.stanford"
+    usernameDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-    static let emailOnlyDetails = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .build(owner: MockUserIdPasswordAccountService())
+    return AccountSummaryBox(details: usernameDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
+}
 
-    static var previews: some View {
-        AccountSummaryBox(details: emailDetails)
-        AccountSummaryBox(details: usernameDetails)
-        AccountSummaryBox(details: usernameWithoutNameDetails)
-        AccountSummaryBox(details: emailOnlyDetails)
-    }
+#Preview {
+    var usernameWithoutNameDetails = AccountDetails()
+    usernameWithoutNameDetails.userId = "leland.stanford"
+
+    return AccountSummaryBox(details: usernameWithoutNameDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
+}
+
+#Preview {
+    var emailOnlyDetails = AccountDetails()
+    emailOnlyDetails.userId = "lelandstanford@stanford.edu"
+
+    return AccountSummaryBox(details: emailOnlyDetails)
+        .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 #endif

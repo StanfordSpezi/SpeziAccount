@@ -9,7 +9,9 @@
 import Foundation
 
 
-/// Determines the type and kind of the ``UserIdKey``.
+/// Determines the type and kind of the `userId`.
+///
+/// Refer to the documentation of ``AccountDetails/userId``.
 public enum UserIdType {
     /// An user id that is the user's email address at the same time.
     case emailAddress

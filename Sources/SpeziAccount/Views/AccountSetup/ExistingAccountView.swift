@@ -12,48 +12,40 @@ import SwiftUI
 
 struct ExistingAccountView<Continue: View>: View {
     private let accountDetails: AccountDetails
-
-    private var service: any AccountService {
-        accountDetails.accountService
-    }
-
     private let continueButton: Continue
+
+    @Environment(Account.self)
+    private var account
 
     @State private var viewState: ViewState = .idle
 
     var body: some View {
         VStack {
-            VStack {
-                service.viewStyle.makeAnyAccountSummary(service, details: accountDetails)
-
-                AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
-                    try await service.logout()
+            ZStack {
+                VStack {
+                    AccountSummaryBox(details: accountDetails)
+                    Spacer()
+                        .frame(maxHeight: 180)
                 }
-                    .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                    .padding()
+
+                VStack {
+                    Spacer()
+                    continueButton
+                    AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
+                        let service = account.accountService
+                        try await service.logout()
+                    }
+                        .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                        .padding(8)
+                    Spacer()
+                        .frame(height: 20)
+                }
             }
         }
             .viewStateAlert(state: $viewState)
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    if Continue.self != EmptyView.self {
-                        VStack {
-                            continueButton
-                                .padding()
-                            Spacer()
-                                .frame(height: 30)
-                        }
-                    } else {
-                        EmptyView()
-                    }
-                }
-            }
     }
 
     /// Creates a new `ExistingAccountView` to render an already signed in user.
-    ///
-    /// - Note: When using a non empty `Continue` button, this view must be placed within a `NavigationStack`
-    ///     in order to render the toolbar.
     /// - Parameters:
     ///   - details: The ``AccountDetails`` to render.
     ///   - continue: An optional `Continue` button.
@@ -64,37 +56,36 @@ struct ExistingAccountView<Continue: View>: View {
 }
 
 
-extension AccountSetupViewStyle {
-    @MainActor
-    fileprivate func makeAnyAccountSummary(_ service: any AccountService, details: AccountDetails) -> AnyView {
-        AnyView(self.makeAccountSummary(service, details: details))
-    }
+#if DEBUG
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
+
+    return ExistingAccountView(details: details)
+        .padding(.horizontal, ViewSizing.outerHorizontalPadding)
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
 }
 
+#Preview {
+    var details = AccountDetails()
+    details.userId = "lelandstanford@stanford.edu"
+    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
 
-#if DEBUG
-struct ExistingAccountView_Previews: PreviewProvider {
-    static let details = AccountDetails.Builder()
-        .set(\.userId, value: "andi.bauer@tum.de")
-        .set(\.name, value: PersonNameComponents(givenName: "Andreas", familyName: "Bauer"))
-        .build(owner: MockUserIdPasswordAccountService())
-
-    static var previews: some View {
-        ExistingAccountView(details: details)
-
-        NavigationStack {
-            ExistingAccountView(details: details)
+    return ExistingAccountView(details: details) {
+        Button {
+            print("Pressed")
+        } label: {
+            Text(verbatim: "Continue")
+                .frame(maxWidth: .infinity, minHeight: 38)
         }
-
-        NavigationStack {
-            ExistingAccountView(details: details) {
-                Button(action: {}, label: {
-                    Text(verbatim: "Continue")
-                        .frame(maxWidth: .infinity, minHeight: 38)
-                })
-                .buttonStyle(.borderedProminent)
-            }
-        }
+            .buttonStyle(.borderedProminent)
     }
+        .padding(.horizontal, ViewSizing.outerHorizontalPadding)
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
 }
 #endif

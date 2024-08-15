@@ -7,58 +7,27 @@
 //
 
 import Spezi
-import SwiftUI
 
 
-/// A `AccountService` is a set of components that is capable of setting up and managing the ``AccountDetails`` for the global ``Account`` context.
+/// A component that manages user details.
+///
+/// An `AccountService` is a set of components that is capable of setting up and managing the ``AccountDetails`` for the global ``Account`` context.
 ///
 /// This protocol imposes the minimal requirements for an `AccountService` where most of the account-related procedures
-/// are entirely application defined. This protocol requires functionality for account signup, modifications,
-/// logout and removal.
-///
-/// You may improve the user experience or rely on user interface defaults if you adopt protocols like
-/// ``EmbeddableAccountService`` or ``UserIdPasswordAccountService``.
+/// are entirely application defined.
+/// This protocol only imposed requirements for account logout, deletion and modification functionalities.
 ///
 /// - Important: Every user account is expected to have a primary and unique user identifier.
-///     SpeziAccount requires a stable and internal ``AccountIdKey`` unique user identifier and offers
-///     a user visible ``UserIdKey`` which can be customized using the ``UserIdConfiguration``.
+///     SpeziAccount requires a stable and internal ``AccountDetails/accountId`` unique user identifier and offers
+///     a user visible ``AccountDetails/userId`` which can be customized using the ``UserIdConfiguration``.
 ///
 /// You can learn more about creating an account service at: <doc:Creating-your-own-Account-Service>.
 ///
-/// ## Topics
-///
-/// ### Result Builder
-/// - ``AccountServiceBuilder``
-public protocol AccountService: Module, Hashable, CustomStringConvertible, Sendable {
-    /// The ``AccountSetupViewStyle`` will be used to customized the look and feel of the ``AccountSetup`` view.
-    associatedtype ViewStyle: AccountSetupViewStyle
-
-    /// An identifier to uniquely identify an `AccountService`.
-    ///
-    /// This identifier is used to uniquely identify an account service that persists across process instances.
-    ///
-    /// - Important: A default implementation is defined that relies on the type name. If you rename the account service
-    ///     type without supplying a manual `id` implementation, components like a ``AccountStorageConstraint`` won't
-    ///     be able to associate existing user details with this account service.
-    var id: String { get }
-
+/// - Note: The in-memory account service ``InMemoryAccountService`` that is useful for previews and testing is also a great example
+///     on how to implement a account service.
+public protocol AccountService: Module, CustomStringConvertible, Sendable, EnvironmentAccessible {
     /// The configuration of the account service.
     var configuration: AccountServiceConfiguration { get }
-
-    /// A ``AccountSetupViewStyle`` that is capable of rendering UI elements associated with the account service.
-    ///
-    /// - Note: Define this as a computed property to resolve the cyclic type dependence.
-    var viewStyle: ViewStyle { get }
-
-
-    /// Create a new user account for the provided ``SignupDetails``.
-    ///
-    /// - Note: You must call ``Account/supplyUserDetails(_:isNewUser:)`` eventually once the user context was established after this call.
-    /// - Parameter signupDetails: The signup details
-    /// - Throws: Throw an `Error` type conforming to `LocalizedError` if the signup operation was unsuccessful,
-    ///     inorder to present a localized description to the user.
-    ///     Make sure to remain in a state where the user can easily retry the signup operation.
-    func signUp(signupDetails: SignupDetails) async throws
 
     /// This method implements account logout functionality.
     ///
@@ -86,27 +55,8 @@ public protocol AccountService: Module, Hashable, CustomStringConvertible, Senda
 
 
 extension AccountService {
-    /// Default implementation that uses the type name as an unique identifier.
-    public var id: String {
-        description
-    }
-
-    var objId: ObjectIdentifier {
-        ObjectIdentifier(self)
-    }
-
     /// Default `CustomStringConvertible` returning the type name.
     public var description: String {
         "\(Self.self)"
-    }
-
-    /// Default `Equatable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
-    public static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    /// Default `Hashable` implementation by relying on the hashable ``AccountService/id-83c6c`` property.
-    public func hash(into hasher: inout Hasher) {
-        id.hash(into: &hasher)
     }
 }
