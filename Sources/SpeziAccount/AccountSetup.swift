@@ -122,8 +122,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onChange(of: account.signedIn) {
+            .onChange(of: [account.signedIn, account.details?.isAnonymous]) {
                 guard let details = account.details,
+                      !details.isAnonymous,
                       case .setupShown = setupState else {
                     return
                 }

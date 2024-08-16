@@ -181,8 +181,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
 
-        XCTAssertTrue(app.buttons["Finish"].waitForExistence(timeout: 2.0))
-        app.buttons["Finish"].tap()
+        // important: if the sheet isn't dismissed it may indicate that the completion closure of the AccountSetup view
+        // is no longer getting called. This is implicitly tested here.
 
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Account Id, Stable"].exists)
