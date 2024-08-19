@@ -81,9 +81,6 @@ struct LoginSetupView<PasswordReset: View>: View {
             .sheet(isPresented: $presentingPasswordForgetSheet) {
                 passwordReset
             }
-            .onTapGesture {
-                focusedField = nil
-            }
     }
 
 
