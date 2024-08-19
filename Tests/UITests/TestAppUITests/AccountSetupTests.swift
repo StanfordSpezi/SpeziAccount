@@ -64,9 +64,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.alerts["Credentials do not match"].scrollViews.otherElements.buttons["OK"].tap()
 
         // retype password
-        try app.secureTextFields["Password"].delete(count: Defaults.password.dropLast(3).count, dismissKeyboard: false)
-        app.typeText(Defaults.password)
-        app.dismissKeyboard()
+        try app.secureTextFields["Password"].delete(count: Defaults.password.dropLast(3).count, options: .disableKeyboardDismiss)
+        try app.secureTextFields["Password"].enter(value: Defaults.password, options: .skipTextFieldSelection)
 
         // this takes us back to the home screen
         XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
@@ -256,13 +255,11 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertFalse(app.staticTexts["This field cannot be empty."].exists)
 
         // verify empty validation appearing
-        try app.collectionViews.textFields["E-Mail Address"].enter(value: "a", dismissKeyboard: false)
-        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
-        app.dismissKeyboard()
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: "a", options: .disableKeyboardDismiss)
+        try app.collectionViews.textFields["E-Mail Address"].delete(count: 1, options: .skipTextFieldSelection)
 
-        try app.collectionViews.secureTextFields["Password"].enter(value: "a", dismissKeyboard: false)
-        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
-        app.dismissKeyboard()
+        try app.collectionViews.secureTextFields["Password"].enter(value: "a", options: .disableKeyboardDismiss)
+        try app.collectionViews.secureTextFields["Password"].delete(count: 1, options: .skipTextFieldSelection)
 
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 2.0))
         XCTAssertEqual(app.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
@@ -275,16 +272,14 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         let password = "123456789"
 
         // enter email with validation
-        try app.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), dismissKeyboard: false)
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropLast(13)), options: .disableKeyboardDismiss)
         XCTAssertTrue(app.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
-        app.typeText(String(email.dropFirst(13))) // we stay focused
-        app.dismissKeyboard()
+        try app.collectionViews.textFields["E-Mail Address"].enter(value: String(email.dropFirst(13)), options: .skipTextFieldSelection)
 
         // enter password with validation
-        try app.collectionViews.secureTextFields["Password"].enter(value: String(password.dropLast(5)), dismissKeyboard: false)
+        try app.collectionViews.secureTextFields["Password"].enter(value: String(password.dropLast(5)), options: .disableKeyboardDismiss)
         XCTAssertTrue(app.staticTexts["Your password must be at least 8 characters long."].waitForExistence(timeout: 2.0))
-        app.typeText(String(password.dropFirst(4))) // stay focused, such that password field will not reset after regaining focus
-        app.dismissKeyboard()
+        try app.collectionViews.secureTextFields["Password"].enter(value: String(password.dropFirst(4)), options: .skipTextFieldSelection)
 
 #if os(visionOS)
         app.scrollUpInSetup()
@@ -322,15 +317,13 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
         XCTAssertFalse(app.collectionViews.buttons["Signup"].isEnabled)
 
-        try app.textFields["enter first name"].enter(value: "a", dismissKeyboard: false)
-        app.typeText(XCUIKeyboardKey.delete.rawValue) // we have remaining focus
-        app.dismissKeyboard()
+        try app.textFields["enter first name"].enter(value: "a", options: .disableKeyboardDismiss)
+        try app.textFields["enter first name"].delete(count: 1, options: .skipTextFieldSelection)
 
         XCTAssertTrue(app.staticTexts["This field cannot be empty."].waitForExistence(timeout: 1.0))
 
-        try app.textFields["enter last name"].enter(value: "a", dismissKeyboard: false)
-        app.typeText(XCUIKeyboardKey.delete.rawValue)
-        app.dismissKeyboard()
+        try app.textFields["enter last name"].enter(value: "a", options: .disableKeyboardDismiss)
+        try app.textFields["enter last name"].delete(count: 1, options: .skipTextFieldSelection)
 
         XCTAssertEqual(app.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
     }
