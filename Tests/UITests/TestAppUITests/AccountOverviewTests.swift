@@ -260,7 +260,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
 
         // edit email
+        #if !os(visionOS)
         try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss, .tapFromRight])
+        #else
+        try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss])
+        #endif
 
         // failed validation
         XCTAssertTrue(app.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
