@@ -260,14 +260,17 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertFalse(app.navigationBars.buttons["Done"].isEnabled)
 
         // edit email
-        try app.textFields["E-Mail Address"].delete(count: 12, dismissKeyboard: false)
+        #if !os(visionOS)
+        try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss, .tapFromRight])
+        #else
+        try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss])
+        #endif
 
         // failed validation
         XCTAssertTrue(app.staticTexts["The provided email is invalid."].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.buttons["Done"].isEnabled)
 
-        app.typeText("tum.de") // we still have keyboard focus
-        app.dismissKeyboard()
+        try app.textFields["E-Mail Address"].enter(value: "tum.de", options: .skipTextFieldSelection)
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()
 
@@ -349,15 +352,14 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.secureTextFields["enter password"].exists)
         XCTAssertTrue(app.secureTextFields["re-enter password"].exists)
 
-        try app.secureTextFields["enter password"].enter(value: "12345", dismissKeyboard: false)
+        try app.secureTextFields["enter password"].enter(value: "12345", options: .disableKeyboardDismiss)
         XCTAssertTrue(app.staticTexts.matching(identifier: warningLength).firstMatch.waitForExistence(timeout: 2.0))
         XCTAssertEqual(app.staticTexts.matching(identifier: warningLength).count, 2) // additional red warning.
-        app.typeText("6789")
-        app.dismissKeyboard()
+        try app.secureTextFields["enter password"].enter(value: "6789", options: .skipTextFieldSelection)
 
-        try app.secureTextFields["re-enter password"].enter(value: "12345", dismissKeyboard: false)
+        try app.secureTextFields["re-enter password"].enter(value: "12345", options: .disableKeyboardDismiss)
         XCTAssertTrue(app.staticTexts["Passwords do not match."].waitForExistence(timeout: 2.0))
-        app.typeText("6789")
+        try app.secureTextFields["re-enter password"].enter(value: "6789", options: .skipTextFieldSelection)
 
         XCTAssertTrue(app.buttons["Done"].waitForExistence(timeout: 2.0))
         app.buttons["Done"].tap()

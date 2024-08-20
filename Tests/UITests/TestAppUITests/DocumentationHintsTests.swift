@@ -33,9 +33,16 @@ final class DocumentationHintsTests: XCTestCase {
         app.buttons["Open Documentation"].tap()
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+#if os(visionOS)
+        sleep(3)
+#endif
         XCTAssert(safari.wait(for: .runningForeground, timeout: 5))
+        XCTAssertTrue(safari.staticTexts["Swift Package Index"].waitForExistence(timeout: 10.0))
+        XCTAssertTrue(safari.staticTexts["Initial Setup"].waitForExistence(timeout: 2.0)) // The initial setup article
+        safari.terminate()
 
         app.activate()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
     }
 
     @MainActor
