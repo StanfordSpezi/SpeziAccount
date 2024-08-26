@@ -16,10 +16,11 @@ final class AccountDetailsTests: XCTestCase {
 
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
-        decoder.userInfo[.accountDetailsKeys] = details.keys
+
+        let configuration = AccountDetails.DecodingConfiguration(keys: details.keys)
 
         let data = try encoder.encode(details)
-        let decoded = try decoder.decode(AccountDetails.self, from: data)
+        let decoded = try decoder.decode(AccountDetails.self, from: data, configuration: configuration)
 
         XCTAssertDetails(decoded, details)
         XCTAssertFalse(decoded.isNewUser) // flags are never encoded
@@ -33,19 +34,22 @@ final class AccountDetailsTests: XCTestCase {
             "GenderIdentityKey": AccountKeys.genderIdentity
         ]
 
+        let encodingConfiguration = AccountDetails.EncodingConfiguration(identifierMapping: mapping)
+        let decodingConfiguration = AccountDetails.DecodingConfiguration(
+            keys: [AccountKeys.genderIdentity],
+            identifierMapping: mapping
+        )
+
         let encoder = JSONEncoder()
-        encoder.userInfo[.accountKeyIdentifierMapping] = mapping
-
         let decoder = JSONDecoder()
-        decoder.userInfo[.accountDetailsKeys] = [AccountKeys.genderIdentity]
-        decoder.userInfo[.accountKeyIdentifierMapping] = mapping
 
 
-        let data = try encoder.encode(details)
+
+        let data = try encoder.encode(details, configuration: encodingConfiguration)
         let string = try XCTUnwrap(String(data: data, encoding: .utf8))
         XCTAssertEqual(string, "{\"GenderIdentityKey\":\"female\"}")
 
-        let decoded = try decoder.decode(AccountDetails.self, from: data)
+        let decoded = try decoder.decode(AccountDetails.self, from: data, configuration: decodingConfiguration)
 
         XCTAssertEqual(decoded.genderIdentity, details.genderIdentity)
     }

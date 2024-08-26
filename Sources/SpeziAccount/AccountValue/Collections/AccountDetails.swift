@@ -129,7 +129,8 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 /// - ``add(contentsOf:merge:)``
 /// - ``add(contentsOf:filterFor:merge:)-358td``
 /// - ``add(contentsOf:filterFor:merge:)-7dmho``
-/// - ``set(_:value:)``
+/// - ``set(_:value:)-24wpe``
+/// - ``set(_:value:)-8yml1``
 ///
 /// ### Removing Details
 ///
@@ -164,14 +165,13 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 ///
 /// ### Codable
 ///
-/// - ``init(from:)``
+/// - ``DecodingConfiguration``
+/// - ``init(from:configuration:)``
+/// - ``EncodingConfiguration``
 /// - ``encode(to:)``
-/// - ``decodingErrors``
-/// - ``Swift/CodingUserInfoKey/accountDetailsKeys``
-/// - ``Swift/CodingUserInfoKey/accountKeyIdentifierMapping``
-/// - ``Swift/CodingUserInfoKey/lazyAccountDetailsDecoding``
-/// - ``Swift/CodingUserInfoKey/requireAllKeys``
+/// - ``encode(to:configuration:)``
 /// - ``AccountKeyCodingKey``
+/// - ``decodingErrors``
 public struct AccountDetails {
     fileprivate var storage: AccountStorage
 
@@ -264,7 +264,7 @@ extension AccountDetails: SendableSharedRepository {
     public func get<Source: KnowledgeSource<Anchor>>(_ source: Source.Type) -> Source.Value? where Source.Value: Sendable {
         storage.get(source)
     }
-    
+
     public mutating func set<Source: KnowledgeSource<Anchor>>(_ source: Source.Type, value newValue: Source.Value?) where Source.Value: Sendable {
         storage.set(source, value: newValue)
     }
