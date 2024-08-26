@@ -11,11 +11,12 @@ import SwiftUI
 
 
 struct NameOverview: View {
-    private let model: AccountOverviewFormViewModel
     private let accountDetails: AccountDetails
 
     @Environment(Account.self)
     private var account
+    @Environment(AccountOverviewFormViewModel.self)
+    private var model
 
 
     var body: some View {
@@ -63,8 +64,7 @@ struct NameOverview: View {
     }
 
 
-    init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
-        self.model = model
+    init(details accountDetails: AccountDetails) {
         self.accountDetails = accountDetails
     }
 }
@@ -78,7 +78,8 @@ struct NameOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
+            NameOverview(details: details)
+                .environment(AccountOverviewFormViewModel(account: account, details: details))
         }
     }
         .previewWith {
@@ -92,7 +93,8 @@ struct NameOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
+            NameOverview(details: details)
+                .environment(AccountOverviewFormViewModel(account: account, details: details))
         }
     }
         .previewWith {

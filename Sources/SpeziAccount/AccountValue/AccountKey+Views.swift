@@ -39,7 +39,17 @@ extension AccountKey {
         return AnyView(DataDisplay(value))
     }
 
+    static func securityViewWithCurrentStoredValueIfPresent(from details: AccountDetails) -> AnyView? {
+        let value = details[Self.self]
+
+        if let securityView = DataDisplay as? any SecurityView.Type {
+            return AnyView(securityView.init()) // TODO: pass the current value!
+        }
+        return nil
+    }
+
     static func singleEditView(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) -> AnyView {
+        // TODO: pass as environment object
         AnyView(SingleEditView<Self>(model: model, details: accountDetails))
     }
 }

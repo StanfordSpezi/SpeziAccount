@@ -14,10 +14,11 @@ import SwiftUI
 struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
-    private let model: AccountOverviewFormViewModel
 
     @Environment(Account.self)
     private var account
+    @Environment(AccountOverviewFormViewModel.self)
+    private var model
     @Environment(\.editMode)
     private var editMode
 
@@ -58,15 +59,17 @@ struct AccountKeyOverviewRow: View {
             if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                 view
                     .environment(\.accountViewType, .overview(mode: .display))
+            } else if let view = accountKey.securityViewWithCurrentStoredValueIfPresent(from: accountDetails) {
+                view
+                    .environment(\.accountViewType, .overview(mode: .display))
             }
         }
     }
 
 
-    init(details accountDetails: AccountDetails, for accountKey: any AccountKey.Type, model: AccountOverviewFormViewModel) {
+    init(details accountDetails: AccountDetails, for accountKey: any AccountKey.Type) {
         self.accountDetails = accountDetails
         self.accountKey = accountKey
-        self.model = model
     }
 
 
@@ -92,7 +95,8 @@ private let key = AccountKeys.genderIdentity
     return AccountDetailsReader { account, details in
         let model = AccountOverviewFormViewModel(account: account, details: details)
 
-        AccountKeyOverviewRow(details: details, for: key, model: model)
+        AccountKeyOverviewRow(details: details, for: key)
+            .environment(model)
             .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
     }
         .previewWith {

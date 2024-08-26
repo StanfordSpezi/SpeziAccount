@@ -363,6 +363,9 @@
         }
       }
     },
+    "Changing the password requires a signed in user account." : {
+
+    },
     "CLOSE" : {
       "localizations" : {
         "de" : {
@@ -1017,6 +1020,9 @@
         }
       }
     },
+    "No Account" : {
+
+    },
     "Numeric Key" : {
       "localizations" : {
         "de" : {
@@ -1174,6 +1180,9 @@
           }
         }
       }
+    },
+    "Setup Password" : {
+
     },
     "SIGN_IN_AND_SECURITY" : {
       "localizations" : {

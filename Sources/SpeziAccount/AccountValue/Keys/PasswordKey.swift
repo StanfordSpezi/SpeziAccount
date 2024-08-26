@@ -11,6 +11,39 @@ import SpeziViews
 import SwiftUI
 
 
+private struct ConfigureView: SecurityView {
+    typealias Value = String
+
+    @Environment(Account.self)
+    private var account
+
+    @State private var presentingPasswordSheet = false
+
+    private var label: Text {
+        if account.details?.configuredCredentials.contains(where: { $0 == AccountKeys.password }) == true {
+            Text("CHANGE_PASSWORD", bundle: .module)
+        } else {
+            Text("Setup Password", bundle: .module)
+        }
+    }
+
+    var body: some View {
+        Button(action: {
+            presentingPasswordSheet = true
+        }) {
+            label
+        }
+            .sheet(isPresented: $presentingPasswordSheet) {
+                PasswordChangeSheet()
+            }
+    }
+
+    init() { // TODO: does that make sense?
+        // password will be never present, configuring/changing password is done via other mechanisms
+    }
+}
+
+
 private struct EntryView: DataEntryView {
     @Environment(\.accountViewType)
     private var accountViewType
@@ -69,6 +102,7 @@ extension AccountDetails {
         name: LocalizedStringResource("UP_PASSWORD", bundle: .atURL(from: .module)),
         category: .credentials,
         as: String.self,
+        displayView: ConfigureView.self,
         entryView: EntryView.self
     )
     public var password: String?

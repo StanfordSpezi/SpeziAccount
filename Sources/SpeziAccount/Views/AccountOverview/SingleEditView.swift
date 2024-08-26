@@ -14,7 +14,7 @@ import SwiftUI
 
 @MainActor
 struct SingleEditView<Key: AccountKey>: View {
-    private let model: AccountOverviewFormViewModel
+    private let model: AccountOverviewFormViewModel // TODO: pass as environment object
     private let accountDetails: AccountDetails
 
     @Environment(Account.self)

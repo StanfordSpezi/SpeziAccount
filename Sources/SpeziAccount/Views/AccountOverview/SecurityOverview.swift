@@ -14,14 +14,14 @@ import SwiftUI
 @available(macOS, unavailable)
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
-    private let model: AccountOverviewFormViewModel
 
 
     @Environment(Account.self)
     private var account
+    @Environment(AccountOverviewFormViewModel.self)
+    private var model
 
     @State private var viewState: ViewState = .idle
-    @State private var presentingPasswordChangeSheet = false
 
 
     var body: some View {
@@ -34,22 +34,11 @@ struct SecurityOverview: View {
 
             ForEach(forEachWrappers, id: \.id) { wrapper in
                 Section {
-                    if wrapper.accountKey == AccountKeys.password {
-                        // we have a special case for the PasswordKey, as we currently don't expose the capabilities required to the subviews!
-                        Button(action: {
-                            presentingPasswordChangeSheet = true
-                        }) {
-                            Text("CHANGE_PASSWORD", bundle: .module)
-                        }
-                            .sheet(isPresented: $presentingPasswordChangeSheet) {
-                                PasswordChangeSheet(model: model, details: accountDetails)
-                            }
-                    } else {
-                        // This view currently doesn't implement an EditMode. Current intention is that the
-                        // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
-                        // to manage and change the respective account value.
-                        AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
-                    }
+                    Text("Collect \(wrapper)")
+                    // This view currently doesn't implement an EditMode. Current intention is that the
+                    // DataDisplay view of `.credentials` account values just build toggles or NavigationLinks
+                    // to manage and change the respective account value.
+                    AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey)
                 }
             }
                 .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
@@ -66,8 +55,7 @@ struct SecurityOverview: View {
     }
 
 
-    init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
-        self.model = model
+    init(details accountDetails: AccountDetails) {
         self.accountDetails = accountDetails
     }
 }
@@ -82,7 +70,8 @@ struct SecurityOverview: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            SecurityOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
+            SecurityOverview(details: details)
+                .environment(AccountOverviewFormViewModel(account: account, details: details))
         }
     }
         .previewWith {
