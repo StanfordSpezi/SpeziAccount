@@ -43,8 +43,6 @@ final class AccountDetailsTests: XCTestCase {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
 
-
-
         let data = try encoder.encode(details, configuration: encodingConfiguration)
         let string = try XCTUnwrap(String(data: data, encoding: .utf8))
         XCTAssertEqual(string, "{\"GenderIdentityKey\":\"female\"}")

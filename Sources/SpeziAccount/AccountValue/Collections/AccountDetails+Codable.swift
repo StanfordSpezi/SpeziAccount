@@ -61,7 +61,6 @@ extension AccountDetails {
         /// The decode implementation of `AccountDetails` needs prior knowledge of what keys to expect and which type they are.
         /// Therefore, you need a list of all ``AccountKey``s to expect.
         public let keys: [any AccountKey.Type]
-        // TODO: encoder with configuration!!!!
         /// Customize the identifier mapping.
         ///
         /// Instead of using the ``AccountKey/identifier`` defined by the account key, you can provide a custom mapping when encoding and decoding.
