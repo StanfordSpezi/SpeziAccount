@@ -146,6 +146,12 @@ extension AccountDetails {
 }
 
 
+extension AccountDetails.DecodingConfiguration: Sendable {}
+
+
+extension AccountDetails.EncodingConfiguration: Sendable {}
+
+
 extension AccountDetails: CodableWithConfiguration, Encodable {
     /// Decodes the contents of a account details collection.
     ///
