@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
+
 
 extension AccountDetails {
     /// Use an `AccountKey` as a `CodingKey`.
@@ -43,49 +45,134 @@ extension AccountDetails {
 }
 
 
-extension AccountDetails: Codable {
+extension AccountDetails {
+    /// The configuration that is required to decode account details.
+    ///
+    /// ```swift
+    /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
+    ///
+    /// let decoder = JSONDecoder()
+    /// let configuration = AccountDetails.DecodingConfiguration(keys: keys)
+    /// try decoder.decode(AccountDetails.self, from: data, configuration: configuration)
+    /// ```
+    public struct DecodingConfiguration {
+        /// The list of keys to decode.
+        ///
+        /// The decode implementation of `AccountDetails` needs prior knowledge of what keys to expect and which type they are.
+        /// Therefore, you need a list of all ``AccountKey``s to expect.
+        public let keys: [any AccountKey.Type]
+        /// Customize the identifier mapping.
+        ///
+        /// Instead of using the ``AccountKey/identifier`` defined by the account key, you can provide a custom mapping when encoding and decoding.
+        /// Identifiers that are not specified but requested to be decoded or encoded will fallback to the identifier provided by the account key.
+        ///
+        /// - Important: You must specify the `identifierMapping` for both the encoder and decoder.
+        public let identifierMapping: [String: any AccountKey.Type]? // swiftlint:disable:this discouraged_optional_collection
+        /// Decode `AccountDetails` with a best effort approach.
+        ///
+        /// By default, decoding `AccountDetails` throws an error if any of the values fail to decode. In certain situations, it might be useful to allow certain values to fail decoding
+        /// and nonetheless use the details that succeeded decoding.
+        /// You can opt into this behavior using this option.
+        ///
+        /// - Note: You can access all decoding errors using the ``AccountDetails/decodingErrors`` property. Make sure to reset this property to nil.
+        ///
+        /// ```swift
+        /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
+        /// let decoder = JSONDecoder()
+        /// let configuration = AccountDetails.DecodingConfiguration(keys: keys, lazyDecoding: true)
+        ///
+        /// let decoded = try decoder.decode(AccountDetails.self, from: data, configuration: configuration)
+        /// if let errors = decoded.decodingErrors {
+        ///     // handle errors ...
+        ///     decoded.decodingErrors = nil
+        /// }
+        /// ```
+        public let lazyDecoding: Bool
+        /// Require that all `accountDetailsKeys` are present.
+        ///
+        /// If this option is set to `true`, decoding will fail if a key present in ``keys`` is not found while decoding.
+        /// A value of `false` (the default) will decode only the keys found.
+        public let requireAllKeys: Bool
+
+        /// Create a new decoding configuration.
+        /// - Parameters:
+        ///   - keys: The list of keys to decode.
+        ///   - identifierMapping: Customize the identifier mapping.
+        ///   - lazyDecoding: Decode `AccountDetails` with a best effort approach.
+        ///   - requireAllKeys: Require that all `accountDetailsKeys` are present.
+        public init(
+            keys: [any AccountKey.Type],
+            identifierMapping: [String: any AccountKey.Type]? = nil, // swiftlint:disable:this discouraged_optional_collection
+            lazyDecoding: Bool = false,
+            requireAllKeys: Bool = false
+        ) {
+            self.keys = keys
+            self.identifierMapping = identifierMapping
+            self.lazyDecoding = lazyDecoding
+            self.requireAllKeys = requireAllKeys
+        }
+    }
+
+    /// Supply additional configuration when encoding.
+    ///
+    /// ```swift
+    /// let details = AccountDetails()
+    /// let mapping: [String: any AccountKey.Type] = [
+    ///     "DateOfBirthKey": AccountKeys.dateOfBirth
+    /// ]
+    ///
+    /// let encoder = JSONEncoder()
+    /// let configuration = AccountDetails.EncodingConfiguration(identifierMapping: mapping)
+    /// try encoder.encode(details, configuration: configuration)
+    /// ```
+    public struct EncodingConfiguration {
+        /// Customize the identifier mapping.
+        ///
+        /// Instead of using the ``AccountKey/identifier`` defined by the account key, you can provide a custom mapping when encoding and decoding.
+        /// Identifiers that are not specified but requested to be decoded or encoded will fallback to the identifier provided by the account key.
+        ///
+        /// - Important: You must specify the `identifierMapping` for both the encoder and decoder.
+        public let identifierMapping: [String: any AccountKey.Type]? // swiftlint:disable:this discouraged_optional_collection
+
+        /// Create a new encoding configuration.
+        /// - Parameters:
+        ///   - identifierMapping: Customize the identifier mapping.
+        public init(
+            identifierMapping: [String: any AccountKey.Type]? = nil // swiftlint:disable:this discouraged_optional_collection
+        ) {
+            self.identifierMapping = identifierMapping
+        }
+    }
+}
+
+
+extension AccountDetails.DecodingConfiguration: Sendable {}
+
+
+extension AccountDetails.EncodingConfiguration: Sendable {}
+
+
+extension AccountDetails: CodableWithConfiguration, Encodable {
     /// Decodes the contents of a account details collection.
     ///
-    /// - Warning: Decoding an `AccountDetails` requires knowledge of the ``AccountKey``s to decode. Therefore,
-    ///     you must supply the keys using the the ``Swift/CodingUserInfoKey/accountDetailsKeys`` userInfo key.
+    /// Use the ``DecodingConfiguration`` to supply mandatory options, like providing the list of ``AccountKey``s to decode.
     ///
-    /// - Note: You can opt into lazy decoding using the ``Swift/CodingUserInfoKey/lazyAccountDetailsDecoding`` userInfo key.
+    /// - Note: You can opt into lazy decoding using the ``DecodingConfiguration/lazyDecoding`` option or customize the identifier mapping
+    ///     using ``DecodingConfiguration/identifierMapping``.
     ///
-    /// - Note: You can customize the identifier mapping using ``Swift/CodingUserInfoKey/accountKeyIdentifierMapping``.
-    ///
-    /// - Parameter decoder: The decoder.
-    public init(from decoder: any Decoder) throws {
-        guard let anyKeys = decoder.userInfo[.accountDetailsKeys] else {
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: decoder.codingPath,
-                debugDescription: """
-                                  AccountKeys unspecified. Do decode AccountDetails you must specify requested AccountKey types \
-                                  via the `accountDetailsKeys` CodingUserInfoKey.
-                                  """
-            ))
-        }
-        
-        guard let keys = anyKeys as? [any AccountKey.Type] else {
-            throw DecodingError.dataCorrupted(.init(
-                codingPath: decoder.codingPath,
-                debugDescription: """
-                                  Supplied `accountDetailsKeys` of type \(type(of: anyKeys)) did not match expected type \
-                                  of \([any AccountKey.Type].self).
-                                  """
-            ))
-        }
-
-        let requireKeys = decoder.userInfo[.requireAllKeys] as? Bool == true
-        let mapping = decoder.userInfo[.accountKeyIdentifierMapping] as? [String: any AccountKey.Type]
-
+    /// - Parameters:
+    ///   - decoder: The decoder.
+    ///   - configuration: The decoding configuration.
+    public init(from decoder: any Decoder, configuration: DecodingConfiguration) throws {
         let container = try decoder.container(keyedBy: AccountKeyCodingKey.self)
 
-        var visitor = DecoderVisitor(container, required: requireKeys, mapping: mapping.map { .init(mapping: $0) })
-        let details = keys.acceptAll(&visitor)
+        let mapping = configuration.identifierMapping.map { IdentifierMapping(mapping: $0) }
+
+        var visitor = DecoderVisitor(container, required: configuration.requireAllKeys, mapping: mapping)
+        let details = configuration.keys.acceptAll(&visitor)
 
         if let error = visitor.errors.first {
-            if let lazyDecoding = decoder.userInfo[.lazyAccountDetailsDecoding] as? Bool,
-               lazyDecoding {
+            if configuration.lazyDecoding {
                 self = details
                 self.decodingErrors = visitor.errors
             } else {
@@ -100,15 +187,27 @@ extension AccountDetails: Codable {
     ///
     /// This implementation iterates over all ``AccountKey``s and encodes them with their respective `Codable` implementation.
     ///
-    /// - Note: You can customize the identifier mapping using ``Swift/CodingUserInfoKey/accountKeyIdentifierMapping``.
+    /// - Note: You can customize the identifier mapping using the ``EncodingConfiguration``.
     ///
     /// - Parameter encoder: The encoder.
     public func encode(to encoder: any Encoder) throws {
-        let mapping = encoder.userInfo[.accountKeyIdentifierMapping] as? [String: any AccountKey.Type]
+        try encode(to: encoder, configuration: EncodingConfiguration())
+    }
 
+    /// Encode the contents of the collection.
+    ///
+    /// This implementation iterates over all ``AccountKey``s and encodes them with their respective `Codable` implementation.
+    /// Further, it uses the custom identifier mapping from ``EncodingConfiguration/identifierMapping``.
+    ///
+    /// - Parameters:
+    ///   - encoder: The encoder.
+    ///   - configuration: The encoding configuration.
+    public func encode(to encoder: any Encoder, configuration: EncodingConfiguration) throws {
         let container = encoder.container(keyedBy: AccountKeyCodingKey.self)
 
-        var visitor = EncoderVisitor(container, mapping: mapping.map { .init(mapping: $0) })
+        let mapping = configuration.identifierMapping.map { IdentifierMapping(mapping: $0) }
+
+        var visitor = EncoderVisitor(container, mapping: mapping)
         let result = acceptAll(&visitor)
 
         if case let .failure(error) = result {
@@ -201,88 +300,4 @@ extension AccountDetails {
             details
         }
     }
-}
-
-
-extension CodingUserInfoKey {
-    /// Provide the keys to decode to a decoder for `AccountDetails`.
-    ///
-    /// The decode implementation of `AccountDetails` needs prior knowledge of what keys to expect and which type they are.
-    /// Therefore, you need a list of all ``AccountKey``s to expect. You can use this userInfo key to supply this list.
-    ///
-    /// ```swift
-    /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
-    /// let decoder = JSONDecoder()
-    /// decoder.userInfo[.accountDetailsKeys] = keys
-    /// ```
-    public static let accountDetailsKeys: CodingUserInfoKey = {
-        guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.details-keys") else {
-            preconditionFailure("Unable to create `accountDetailsKeys` CodingUserInfoKey!")
-        }
-        return key
-    }()
-
-    /// Customize the identifier mapping.
-    ///
-    /// Instead of using the ``AccountKey/identifier`` defined by the account key, you can provide a custom mapping using this user info when encoding and decoding.
-    /// Identifiers that are not specified but requested to be decoded or encoded will fallback to the identifier provided by the account key.
-    ///
-    /// - Important: You must specify the `accountKeyIdentifierMapping` userInfo for both the encoder and decoder.
-    ///
-    /// ```swift
-    /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
-    /// let decoder = JSONDecoder()
-    /// decoder.userInfo[.accountDetailsKeys] = keys
-    /// decoder.userInfo[.accountKeyIdentifierMapping] = ["PersonNameKey": AccountKeys.name, "DateOfBirthKey": AccountKeys.dateOfBirth]
-    /// ```
-    public static let accountKeyIdentifierMapping: CodingUserInfoKey = {
-        guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.identifier-override") else {
-            preconditionFailure("Unable to create `accountKeyIdentifierMapping` CodingUserInfoKey!")
-        }
-        return key
-    }()
-
-
-    /// Decode `AccountDetails` with a best effort approach.
-    ///
-    /// By default, decoding `AccountDetails` throws an error if any of the values fail to decode. In certain situations, it might be useful to allow certain values to fail decoding
-    /// and nonetheless use the details that succeeded decoding.
-    /// You can opt into this behavior using this userInfo key.
-    ///
-    /// - Note: You can access all decoding errors using the ``AccountDetails/decodingErrors`` property. Make sure to reset this property to nil.
-    ///
-    /// ```swift
-    /// let decoder = JSONDecoder()
-    /// decoder.userInfo[.lazyAccountDetailsDecoding] = true
-    ///
-    /// var decoded = decoder.decode(AccountDetails.self, from: data)
-    /// if let errors = decoded.decodingErrors {
-    ///     // handle errors
-    ///     decoded.decodingErrors = nil
-    /// }
-    /// ```
-    public static let lazyAccountDetailsDecoding: CodingUserInfoKey = {
-        guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.collect-errors-oob") else {
-            preconditionFailure("Unable to create `collectCodingErrorsOutOfBand` CodingUserInfoKey!")
-        }
-        return key
-    }()
-
-    /// Require that all `accountDetailsKeys` are present.
-    ///
-    /// If this key is set to `true`, decoding will fail with a key present present in ``Swift/CodingUserInfoKey/accountDetailsKeys`` is not found while decoding.
-    /// A value of `false` (the default) will decode only the keys found.
-    ///
-    /// ```swift
-    /// let keys: [any AccountKey.Type] = [AccountKeys.name, AccountKeys.dateOfBirth]
-    /// let decoder = JSONDecoder()
-    /// decoder.userInfo[.accountDetailsKeys] = keys
-    /// decoder.userInfo[.requireAllKeys] = true
-    /// ```
-    public static let requireAllKeys: CodingUserInfoKey = {
-        guard let key = CodingUserInfoKey(rawValue: "edu.stanford.spezi.account.require-all-keys") else {
-            preconditionFailure("Unable to create `requireAllKeys` CodingUserInfoKey!")
-        }
-        return key
-    }()
 }

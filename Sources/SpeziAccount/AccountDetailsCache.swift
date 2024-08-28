@@ -53,11 +53,13 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
         }
 
         let decoder = JSONDecoder()
-        decoder.userInfo[.accountDetailsKeys] = keys
+
+        let configuration = AccountDetails.DecodingConfiguration(keys: keys)
 
         do {
             let details = try localStorage.read(
                 AccountDetails.self,
+                configuration: configuration,
                 decoder: decoder,
                 storageKey: Self.key(for: accountId),
                 settings: storageSettings
