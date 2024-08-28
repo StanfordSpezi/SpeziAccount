@@ -81,7 +81,7 @@ extension AccountDetails {
         /// let decoder = JSONDecoder()
         /// let configuration = AccountDetails.DecodingConfiguration(keys: keys, lazyDecoding: true)
         ///
-        /// let decoded = try decoder.decode(AccountDetails.self, from: data)
+        /// let decoded = try decoder.decode(AccountDetails.self, from: data, configuration: configuration)
         /// if let errors = decoded.decodingErrors {
         ///     // handle errors ...
         ///     decoded.decodingErrors = nil
