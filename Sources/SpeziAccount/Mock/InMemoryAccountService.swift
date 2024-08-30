@@ -387,9 +387,12 @@ public final class InMemoryAccountService: AccountService {
             details.userId = userId
         }
 
-        if storage.password == nil {
+        if let password = storage.password {
+            details.configuredCredentials = [AccountKeys.password]
+        } else {
             details.isAnonymous = true
         }
+
         return details
     }
 }

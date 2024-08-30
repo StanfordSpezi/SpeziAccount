@@ -14,12 +14,10 @@ import SwiftUI
 
 @MainActor
 struct PasswordChangeSheet: View {
-    private let accountDetails: AccountDetails
-    private let model: AccountOverviewFormViewModel
-
-
     @Environment(Account.self)
     private var account
+    @Environment(AccountOverviewFormViewModel.self)
+    private var model
     @Environment(\.dismiss)
     private var dismiss
 
@@ -32,45 +30,63 @@ struct PasswordChangeSheet: View {
     @State private var repeatPassword: String = ""
 
     private var passwordValidations: [ValidationRule] {
-        accountDetails.accountServiceConfiguration.fieldValidationRules(for: AccountKeys.password) ?? []
+        // TODO: Details optional access?
+        account.details?.accountServiceConfiguration.fieldValidationRules(for: AccountKeys.password) ?? []
     }
 
     var body: some View {
         NavigationStack {
-            Form {
-                passwordFieldsSection
-                    .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
-                    .focused($isFocused)
-                    .environment(\.accountViewType, .overview(mode: .new))
-                    .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+            Group {
+                if let details = account.details {
+                    Form {
+                        passwordFieldsSection(for: details)
+                            .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
+                            .focused($isFocused)
+                            .environment(\.accountViewType, .overview(mode: .new))
+                            .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+                    }
+                    .viewStateAlert(state: $viewState)
+                    .onDisappear {
+                        model.resetModelState() // clears modified details
+                    }
+                    .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
+                } else {
+                    ContentUnavailableView(
+                        "No Account",
+                        systemImage: "person.crop.square.fill",
+                        description: Text("Changing the password requires a signed in user account.")
+                    )
+                }
             }
-                .viewStateAlert(state: $viewState)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
-#if !os(macOS)
+    #if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
-#endif
+    #endif
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        AsyncButton(state: $viewState, action: submitPasswordChange) {
-                            Text("DONE", bundle: .module)
-                        }
-                    }
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Text("CANCEL", bundle: .module)
-                        }
-                    }
+                    toolbarContent
                 }
-                .onDisappear {
-                    model.resetModelState() // clears modified details
-                }
-                .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier })
         }
     }
 
-    @ViewBuilder private var passwordFieldsSection: some View {
+    @ToolbarContentBuilder private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            AsyncButton(state: $viewState, action: submitPasswordChange) {
+                Text("DONE", bundle: .module)
+            }
+        }
+        ToolbarItem(placement: .cancellationAction) {
+            Button(action: {
+                dismiss()
+            }) {
+                Text("CANCEL", bundle: .module)
+            }
+        }
+    }
+
+    init() {} // TODO: make public?
+
+    @ViewBuilder
+    private func passwordFieldsSection(for details: AccountDetails) -> some View {
         Section {
             Grid {
                 AccountKeys.password.DataEntry($newPassword)
@@ -95,14 +111,8 @@ struct PasswordChangeSheet: View {
                     .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
             }
         } footer: {
-            PasswordValidationRuleFooter(configuration: accountDetails.accountServiceConfiguration)
+            PasswordValidationRuleFooter(configuration: details.accountServiceConfiguration)
         }
-    }
-
-
-    init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
-        self.model = model
-        self.accountDetails = accountDetails
     }
 
     func submitPasswordChange() async throws {
@@ -110,11 +120,15 @@ struct PasswordChangeSheet: View {
             return
         }
 
+        guard let details = account.details else {
+            return
+        }
+
         isFocused = false
 
         account.logger.debug("Saving updated password to AccountService!")
 
-        try await model.updateAccountDetails(details: accountDetails, using: account)
+        try await model.updateAccountDetails(details: details, using: account)
         dismiss()
     }
 
@@ -139,7 +153,8 @@ struct PasswordChangeSheet: View {
 
     return NavigationStack {
         AccountDetailsReader { account, details in
-            PasswordChangeSheet(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
+            PasswordChangeSheet()
+                .environment(AccountOverviewFormViewModel(account: account, details: details))
         }
     }
         .previewWith {

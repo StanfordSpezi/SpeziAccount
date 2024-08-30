@@ -155,6 +155,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         defaultSections
 
         sectionsView
+            .environment(model)
             .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
             .receiveValidation(in: $validation)
             .focused($isFocused)
@@ -194,7 +195,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             Section {
                 if displayName {
                     NavigationLink {
-                        NameOverview(model: model, details: accountDetails)
+                        NameOverview(details: accountDetails)
+                            .environment(model)
                     } label: {
                         Label {
                             model.accountIdentifierLabel(configuration: account.configuration, accountDetails)
@@ -206,7 +208,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
                 if displaySecurity {
                     NavigationLink {
-                        SecurityOverview(model: model, details: accountDetails)
+                        SecurityOverview(details: accountDetails)
+                            .environment(model)
                     } label: {
                         Label {
                             Text("SIGN_IN_AND_SECURITY", bundle: .module)
@@ -229,7 +232,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                     }
                     
                     ForEach(forEachWrappers) { wrapper in
-                        AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey, model: model)
+                        AccountKeyOverviewRow(details: accountDetails, for: wrapper.accountKey)
                     }
                         .onDelete { indexSet in
                             model.deleteAccountKeys(at: indexSet, in: accountKeys)
