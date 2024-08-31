@@ -32,8 +32,7 @@ struct ExistingAccountView<Continue: View>: View {
                     Spacer()
                     continueButton
                     AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
-                        let service = account.accountService
-                        try await service.logout()
+                        try await account.accountService.logout()
                     }
                         .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                         .padding(8)

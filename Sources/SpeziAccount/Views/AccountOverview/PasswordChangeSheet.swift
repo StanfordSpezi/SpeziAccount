@@ -114,7 +114,15 @@ struct PasswordChangeSheet: View {
 
         account.logger.debug("Saving updated password to AccountService!")
 
-        try await model.updateAccountDetails(details: accountDetails, using: account)
+        do {
+            try await model.updateAccountDetails(details: accountDetails, using: account)
+        } catch {
+            if error is CancellationError {
+                return
+            }
+            throw error
+        }
+        
         dismiss()
     }
 
