@@ -119,7 +119,7 @@ public final class ExternalAccountStorage {
     /// - Returns: The account details retrieved from the external storage. In the case that the details are not yet loaded, the ``AccountDetails/isIncomplete`` flag is
     ///     set and shall be merged into the details the account service aims to supply. Make sure to not persistently store these account details containing the ``AccountDetails/isIncomplete``
     ///     flag set to true.
-    public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails {
+    public func retrieveExternalStorage(for accountId: String, _ keys: [any AccountKey.Type]) async -> AccountDetails {
         guard !keys.isEmpty else {
             return AccountDetails()
         }
@@ -128,7 +128,7 @@ public final class ExternalAccountStorage {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
-        guard let details = try await storageProvider.load(accountId, keys) else {
+        guard let details = await storageProvider.load(accountId, keys) else {
             // the storage provider currently doesn't have a local copy, they will notify us with updated details later on
             var details = AccountDetails()
             details.isIncomplete = true
@@ -144,8 +144,8 @@ public final class ExternalAccountStorage {
     ///   - accountId: The account id for which account details should be retrieved from the external storage.
     ///   - keys: The list of keys that are known to be stored externally.
     @_disfavoredOverload
-    public func retrieveExternalStorage<Keys: AcceptingAccountKeyVisitor>(for accountId: String, _ keys: Keys) async throws -> AccountDetails {
-        try await retrieveExternalStorage(for: accountId, keys._keys)
+    public func retrieveExternalStorage<Keys: AcceptingAccountKeyVisitor>(for accountId: String, _ keys: Keys) async -> AccountDetails {
+        await retrieveExternalStorage(for: accountId, keys._keys)
     }
 
 
