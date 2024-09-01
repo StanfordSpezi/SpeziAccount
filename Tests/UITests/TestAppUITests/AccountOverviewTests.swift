@@ -263,7 +263,9 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         #if !os(visionOS)
         try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss, .tapFromRight])
         #else
-        try app.textFields["E-Mail Address"].delete(count: 12, options: [.disableKeyboardDismiss])
+        // on visionOS we tap the cursor after the dot. We just split it up into two 6 character deletes
+        try app.textFields["E-Mail Address"].delete(count: 6, options: [.disableKeyboardDismiss])
+        try app.textFields["E-Mail Address"].delete(count: 6, options: [.disableKeyboardDismiss])
         #endif
 
         // failed validation

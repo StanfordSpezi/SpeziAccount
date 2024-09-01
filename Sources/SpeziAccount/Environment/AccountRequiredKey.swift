@@ -17,7 +17,7 @@ struct AccountRequiredKey: EnvironmentKey {
 extension EnvironmentValues {
     /// An environment variable that indicates if an account was configured to be required for the app.
     ///
-    /// Fore more information have a look at ``SwiftUI/View/accountRequired(_:setupSheet:)``.
+    /// Fore more information have a look at ``SwiftUI/View/accountRequired(_:considerAnonymousAccounts:setupSheet:)``.
     public var accountRequired: Bool {
         get {
             self[AccountRequiredKey.self]

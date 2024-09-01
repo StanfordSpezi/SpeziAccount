@@ -286,7 +286,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 #endif
 
         // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
-        XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
+        XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 2.0))
         app.collectionViews.buttons["Signup"].tap()
 
         XCTAssertTrue(app.staticTexts[email].waitForExistence(timeout: 4.0))
