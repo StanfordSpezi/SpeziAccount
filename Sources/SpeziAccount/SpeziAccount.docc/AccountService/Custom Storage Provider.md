@@ -88,6 +88,6 @@ Make sure to implement your `AccountService` the following way
 * Make sure to subscribe to updates from the storage provider using the `AsyncStream` ``ExternalAccountStorage/updatedDetails``.
 * Create a new record by calling ``ExternalAccountStorage/requestExternalStorage(of:for:)``.
 * Update externally stored details by calling ``ExternalAccountStorage/updateExternalStorage(with:for:)``.
-* Retrieve externally stored details by calling ``ExternalAccountStorage/retrieveExternalStorage(for:_:)-8gbg`` 
+* Retrieve externally stored details by calling ``ExternalAccountStorage/retrieveExternalStorage(for:_:)-5ngpm`` 
 
 > Note: Refer to the documentation of ``ExternalAccountStorage`` for more information.

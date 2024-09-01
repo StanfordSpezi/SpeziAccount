@@ -365,7 +365,7 @@ public final class InMemoryAccountService: AccountService {
         unsupportedKeys.removeAll(Self.supportedKeys)
         if !unsupportedKeys.isEmpty {
             let externalStorage = externalStorage
-            let externallyStored = try await externalStorage.retrieveExternalStorage(for: user.accountId.uuidString, unsupportedKeys)
+            let externallyStored = await externalStorage.retrieveExternalStorage(for: user.accountId.uuidString, unsupportedKeys)
             details.add(contentsOf: externallyStored)
         }
 

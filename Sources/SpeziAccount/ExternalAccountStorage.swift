@@ -22,8 +22,8 @@ import Spezi
 /// - ``updatedDetails``
 /// - ``requestExternalStorage(of:for:)``
 /// - ``updateExternalStorage(with:for:)``
-/// - ``retrieveExternalStorage(for:_:)-8gbg``
-/// - ``retrieveExternalStorage(for:_:)-8zvkq``
+/// - ``retrieveExternalStorage(for:_:)-5ngpm``
+/// - ``retrieveExternalStorage(for:_:)-1x0ps``
 ///
 /// ### Communicate changes as a Storage Provider
 /// - ``notifyAboutUpdatedDetails(for:_:)``

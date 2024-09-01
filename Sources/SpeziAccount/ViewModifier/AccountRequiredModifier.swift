@@ -23,7 +23,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
 
     @State private var presentingSheet = false
 
-    private var shouldPresentSheet: Bool {
+    @MainActor private var shouldPresentSheet: Bool {
         guard let account, enabled else {
             return false
         }
@@ -58,7 +58,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
 
                 guard account != nil else {
                     logger.error("""
-                                 accountRequired(_:setupSheet:) modifier was enabled but `Account` was not configured. \
+                                 accountRequired(_:considerAnonymousAccounts:setupSheet:) modifier was enabled but `Account` was not configured. \
                                  Make sure to include the `AccountConfiguration` the configuration section of your App delegate.
                                  """)
                     return
