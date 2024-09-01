@@ -25,7 +25,7 @@ private final class TestProvider: AccountStorageProvider {
         XCTFail("\(#function) not implemented")
     }
 
-    func load(_ accountId: String, _ keys: [any SpeziAccount.AccountKey.Type]) async throws -> SpeziAccount.AccountDetails? {
+    func load(_ accountId: String, _ keys: [any SpeziAccount.AccountKey.Type]) async -> SpeziAccount.AccountDetails? {
         XCTFail("\(#function) not implemented")
         return nil
     }

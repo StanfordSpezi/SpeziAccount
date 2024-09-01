@@ -40,8 +40,7 @@ public protocol AccountStorageProvider: Module {
     ///   - keys: The keys to load.
     /// - Returns: The externally ``AccountDetails`` if they could be loaded instantly (e.g., local cache). Otherwise, if retrieval requires an external network connection,
     ///     return `nil` and supply the account details by calling ``ExternalAccountStorage/notifyAboutUpdatedDetails(for:_:)`` once they arrive.
-    /// - Throws: A `LocalizedError`.
-    func load(_ accountId: String, _ keys: [any AccountKey.Type]) async throws -> AccountDetails?
+    func load(_ accountId: String, _ keys: [any AccountKey.Type]) async -> AccountDetails?
 
     /// Store associated account data.
     ///

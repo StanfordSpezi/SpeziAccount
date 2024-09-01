@@ -19,13 +19,10 @@ private struct MockUserIdPasswordEmbeddedView: View {
 
     var body: some View {
         AccountSetupProviderView { credential in
-            let service = service
             try await service.login(userId: credential.userId, password: credential.password)
         } signup: { signupDetails in
-            let service = service
             try await service.signUp(with: signupDetails)
         } resetPassword: { userId in
-            let service = service
             try await service.resetPassword(userId: userId)
         }
     }

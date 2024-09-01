@@ -16,7 +16,7 @@ import SwiftUI
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 @MainActor
 @available(macOS, unavailable)
-struct AccountOverviewSections<AdditionalSections: View>: View {
+struct AccountOverviewSections<AdditionalSections: View>: View { // swiftlint:disable:this type_body_length
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
     private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
     private let additionalSections: AdditionalSections
@@ -123,7 +123,14 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await account.accountService.logout()
+                    do {
+                        try await account.accountService.logout()
+                    } catch {
+                        if error is CancellationError {
+                            return
+                        }
+                        throw error
+                    }
                     dismiss()
                 }) {
                     Text("UP_LOGOUT", bundle: .module)
@@ -137,7 +144,14 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    try await account.accountService.delete()
+                    do {
+                        try await account.accountService.delete()
+                    } catch {
+                        if error is CancellationError {
+                            return
+                        }
+                        throw error
+                    }
                     dismiss()
                 }) {
                     Text("DELETE", bundle: .module)
@@ -279,7 +293,14 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         
         account.logger.debug("Exiting edit mode and saving \(model.modifiedDetailsBuilder.count) changes to AccountService!")
         
-        try await model.updateAccountDetails(details: accountDetails, using: account, editMode: editMode)
+        do {
+            try await model.updateAccountDetails(details: accountDetails, using: account, editMode: editMode)
+        } catch {
+            if error is CancellationError {
+                return
+            }
+            throw error
+        }
     }
     
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing

@@ -77,7 +77,14 @@ struct SingleEditView<Key: AccountKey>: View {
 
         account.logger.debug("Saving updated \(Key.self) value!")
 
-        try await model.updateAccountDetails(details: accountDetails, using: account)
+        do {
+            try await model.updateAccountDetails(details: accountDetails, using: account)
+        } catch {
+            if error is CancellationError {
+                return
+            }
+            throw error
+        }
         dismiss()
     }
 }

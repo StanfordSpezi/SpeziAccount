@@ -175,8 +175,14 @@ public struct FollowUpInfoSheet: View {
 
         account.logger.debug("Finished additional account setup. Saving \(detailsBuilder.count) changes!")
 
-        let service = account.accountService
-        try await service.updateAccountDetails(modifications)
+        do {
+            try await account.accountService.updateAccountDetails(modifications)
+        } catch {
+            if error is CancellationError {
+                return
+            }
+            throw error
+        }
 
         onComplete(modifications)
 
