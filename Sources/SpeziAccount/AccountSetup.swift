@@ -11,7 +11,7 @@ import SpeziViews
 import SwiftUI
 
 
-internal enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:this type_name
+public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:this type_name
     case generic
     case setupShown
     case requiringAdditionalInfo(_ keys: [any AccountKey.Type])
@@ -274,7 +274,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
 
 extension EnvironmentValues {
-    internal var _accountSetupState: _AccountSetupState { // swiftlint:disable:this identifier_name missing_docs
+    public var _accountSetupState: _AccountSetupState { // swiftlint:disable:this identifier_name missing_docs
         get {
             self[_AccountSetupState.self]
         }
