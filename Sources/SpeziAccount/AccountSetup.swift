@@ -88,38 +88,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
-                VStack {
-                    if hasSetupComponents {
-                        header
-                            .environment(\._accountSetupState, setupState)
-                    }
-                    Spacer()
-                    if let details = account.details, !details.isAnonymous {
-                        switch setupState {
-                        case let .requiringAdditionalInfo(keys):
-                            followUpInformationSheet(details, requiredKeys: keys)
-                        case .loadingExistingAccount:
-                            // We allow the outer view to navigate away upon signup, before we show the existing account view
-                            existingAccountLoading
-                        default:
-                            if viewState == .processing {
-                                ProgressView()
-                            } else {
-                                ExistingAccountView(details: details) {
-                                    continueButton
-                                }
-                            }
-                        }
-                    } else {
-                        accountSetupView
-                            .onAppear {
-                                setupState = .setupShown
-                            }
-                    }
-                    Spacer()
-                    Spacer()
-                    Spacer()
-                }
+                scrollableContentView
                     .padding(.horizontal, ViewSizing.outerHorizontalPadding)
                     .frame(minHeight: proxy.size.height)
                     .frame(maxWidth: .infinity)
@@ -134,6 +103,41 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 handleSuccessfulSetup(details)
             }
             .viewStateAlert(state: $viewState)
+    }
+    
+    @ViewBuilder private var scrollableContentView: some View {
+        VStack {
+            if hasSetupComponents {
+                header
+                    .environment(\._accountSetupState, setupState)
+            }
+            Spacer()
+            if let details = account.details, !details.isAnonymous {
+                switch setupState {
+                case let .requiringAdditionalInfo(keys):
+                    followUpInformationSheet(details, requiredKeys: keys)
+                case .loadingExistingAccount:
+                    // We allow the outer view to navigate away upon signup, before we show the existing account view
+                    existingAccountLoading
+                default:
+                    if viewState == .processing {
+                        ProgressView()
+                    } else {
+                        ExistingAccountView(details: details) {
+                            continueButton
+                        }
+                    }
+                }
+            } else {
+                accountSetupView
+                    .onAppear {
+                        setupState = .setupShown
+                    }
+            }
+            Spacer()
+            Spacer()
+            Spacer()
+        }
     }
 
     @ViewBuilder private var accountSetupView: some View {
