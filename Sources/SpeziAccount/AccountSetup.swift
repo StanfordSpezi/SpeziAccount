@@ -93,9 +93,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                         header
                             .environment(\._accountSetupState, setupState)
                     }
-
                     Spacer()
-                    
                     if let details = account.details, !details.isAnonymous {
                         switch setupState {
                         case let .requiringAdditionalInfo(keys):
