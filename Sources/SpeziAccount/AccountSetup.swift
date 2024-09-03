@@ -95,7 +95,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     }
 
                     Spacer()
-
+                    
                     if let details = account.details, !details.isAnonymous {
                         switch setupState {
                         case let .requiringAdditionalInfo(keys):
@@ -104,9 +104,14 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                             // We allow the outer view to navigate away upon signup, before we show the existing account view
                             existingAccountLoading
                         default:
-                            ExistingAccountView(details: details) {
-                                continueButton
+                            if viewState == .processing {
+                                ProgressView()
+                            } else {
+                                ExistingAccountView(details: details) {
+                                    continueButton
+                                }
                             }
+                            
                         }
                     } else {
                         accountSetupView
@@ -131,7 +136,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     return
                 }
 
-                handleSuccessfulSetup(details)
+                Task {
+                    await handleSuccessfulSetup(details)
+                }
             }
             .viewStateAlert(state: $viewState)
     }
@@ -217,7 +224,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 if !followUpSheet { // follow up information was completed!
                     Task { @MainActor in
                         do {
+                            viewState = .processing
                             try await setupCompleteClosure(details)
+                            viewState = .idle
                             setupState = .loadingExistingAccount
                         } catch {
                             viewState = .error(AnyLocalizedError(error: error))
@@ -227,13 +236,14 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
     }
 
-    private func handleSuccessfulSetup(_ details: AccountDetails) {
+    @MainActor
+    private func handleSuccessfulSetup(_ details: AccountDetails) async {
         var includeCollected: AccountValueConfiguration.IncludeCollectedType
         let ignoreCollected: [any AccountKey.Type]
 
         switch followUpBehavior {
         case .disabled:
-            handleSetupCompleted(details)
+            await handleSetupCompleted(details)
             return
         case .minimal:
             includeCollected = .onlyRequired
@@ -256,18 +266,19 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         if !missingKeys.isEmpty {
             setupState = .requiringAdditionalInfo(missingKeys)
         } else {
-            handleSetupCompleted(details)
+            await handleSetupCompleted(details)
         }
     }
 
-    private func handleSetupCompleted(_ details: AccountDetails) {
-        Task { @MainActor in
-            do {
-                try await setupCompleteClosure(details)
-                setupState = .loadingExistingAccount
-            } catch {
-                viewState = .error(AnyLocalizedError(error: error))
-            }
+    @MainActor
+    private func handleSetupCompleted(_ details: AccountDetails) async {
+        do {
+            viewState = .processing
+            try await setupCompleteClosure(details)
+            viewState = .idle
+            setupState = .loadingExistingAccount
+        } catch {
+            viewState = .error(AnyLocalizedError(error: error))
         }
     }
 }
