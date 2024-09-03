@@ -111,7 +111,6 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                                     continueButton
                                 }
                             }
-                            
                         }
                     } else {
                         accountSetupView
@@ -119,7 +118,6 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                                 setupState = .setupShown
                             }
                     }
-
                     Spacer()
                     Spacer()
                     Spacer()
@@ -135,7 +133,6 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                       case .setupShown = setupState else {
                     return
                 }
-
                 handleSuccessfulSetup(details)
             }
             .viewStateAlert(state: $viewState)
@@ -220,16 +217,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
             .onChange(of: followUpSheet) {
                 if !followUpSheet { // follow up information was completed!
-                    Task { @MainActor in
-                        do {
-                            viewState = .processing
-                            try await setupCompleteClosure(details)
-                            viewState = .idle
-                            setupState = .loadingExistingAccount
-                        } catch {
-                            viewState = .error(AnyLocalizedError(error: error))
-                        }
-                    }
+                    handleSetupCompleted(details)
                 }
             }
     }
