@@ -136,9 +136,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     return
                 }
 
-                Task {
-                    await handleSuccessfulSetup(details)
-                }
+                handleSuccessfulSetup(details)
             }
             .viewStateAlert(state: $viewState)
     }
@@ -236,14 +234,13 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
     }
 
-    @MainActor
-    private func handleSuccessfulSetup(_ details: AccountDetails) async {
+    private func handleSuccessfulSetup(_ details: AccountDetails) {
         var includeCollected: AccountValueConfiguration.IncludeCollectedType
         let ignoreCollected: [any AccountKey.Type]
 
         switch followUpBehavior {
         case .disabled:
-            await handleSetupCompleted(details)
+            handleSetupCompleted(details)
             return
         case .minimal:
             includeCollected = .onlyRequired
@@ -266,19 +263,20 @@ public struct AccountSetup<Header: View, Continue: View>: View {
         if !missingKeys.isEmpty {
             setupState = .requiringAdditionalInfo(missingKeys)
         } else {
-            await handleSetupCompleted(details)
+            handleSetupCompleted(details)
         }
     }
 
-    @MainActor
-    private func handleSetupCompleted(_ details: AccountDetails) async {
-        do {
-            viewState = .processing
-            try await setupCompleteClosure(details)
-            viewState = .idle
-            setupState = .loadingExistingAccount
-        } catch {
-            viewState = .error(AnyLocalizedError(error: error))
+    private func handleSetupCompleted(_ details: AccountDetails) {
+        viewState = .processing
+        Task { @MainActor in
+            do {
+                try await setupCompleteClosure(details)
+                viewState = .idle
+                setupState = .loadingExistingAccount
+            } catch {
+                viewState = .error(AnyLocalizedError(error: error))
+            }
         }
     }
 }
