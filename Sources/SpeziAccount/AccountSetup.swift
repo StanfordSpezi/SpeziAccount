@@ -7,10 +7,11 @@
 //
 
 import OrderedCollections
+import SpeziViews
 import SwiftUI
 
 
-public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:this type_name
+internal enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:this type_name
     case generic
     case setupShown
     case requiringAdditionalInfo(_ keys: [any AccountKey.Type])
@@ -66,7 +67,7 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
 /// - ``DefaultAccountSetupHeader``
 @MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
-    private let setupCompleteClosure: (AccountDetails) -> Void
+    private let setupCompleteClosure: (AccountDetails) async throws -> Void
     private let header: Header
     private let continueButton: Continue
 
@@ -78,6 +79,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var setupState: _AccountSetupState = .generic
     @State private var compliance: SignupProviderCompliance?
     @State private var followUpSheet = false
+    @State private var viewState = ViewState.idle
 
     private var hasSetupComponents: Bool {
         account.accountSetupComponents.contains { $0.configuration.isEnabled }
@@ -131,6 +133,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
                 handleSuccessfulSetup(details)
             }
+            .viewStateAlert(state: $viewState)
     }
 
     @ViewBuilder private var accountSetupView: some View {
@@ -189,7 +192,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
     ///     displayed with an already associated account.
     public init(
-        setupComplete: @escaping (AccountDetails) -> Void = { _ in },
+        setupComplete: @escaping (AccountDetails) async throws -> Void = { _ in },
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
     ) {
@@ -212,8 +215,14 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
             .onChange(of: followUpSheet) {
                 if !followUpSheet { // follow up information was completed!
-                    setupState = .loadingExistingAccount
-                    setupCompleteClosure(details)
+                    Task { @MainActor in
+                        do {
+                            try await setupCompleteClosure(details)
+                            setupState = .loadingExistingAccount
+                        } catch {
+                            viewState = .error(AnyLocalizedError(error: error))
+                        }
+                    }
                 }
             }
     }
@@ -252,14 +261,20 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     private func handleSetupCompleted(_ details: AccountDetails) {
-        setupState = .loadingExistingAccount
-        setupCompleteClosure(details)
+        Task { @MainActor in
+            do {
+                try await setupCompleteClosure(details)
+                setupState = .loadingExistingAccount
+            } catch {
+                viewState = .error(AnyLocalizedError(error: error))
+            }
+        }
     }
 }
 
 
 extension EnvironmentValues {
-    public var _accountSetupState: _AccountSetupState { // swiftlint:disable:this identifier_name missing_docs
+    internal var _accountSetupState: _AccountSetupState { // swiftlint:disable:this identifier_name missing_docs
         get {
             self[_AccountSetupState.self]
         }

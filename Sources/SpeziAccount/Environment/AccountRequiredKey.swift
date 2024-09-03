@@ -9,7 +9,7 @@
 import SwiftUI
 
 
-struct AccountRequiredKey: EnvironmentKey {
+private struct AccountRequiredKey: EnvironmentKey {
     static let defaultValue = false
 }
 
