@@ -78,7 +78,7 @@ Refer to the <doc:Creating-your-own-Account-Service> article if you plan on impl
 - ``AccountOverview``
 - ``AccountHeader``
 - ``FollowUpInfoSheet``
-- ``SwiftUI/View/accountRequired(_:considerAnonymousAccounts:setupSheet:)``
+- ``SwiftUI/View/accountRequired(_:isValid:setupSheet:)``
 - ``SwiftUI/EnvironmentValues/accountRequired``
 
 ### Environment & Preferences
