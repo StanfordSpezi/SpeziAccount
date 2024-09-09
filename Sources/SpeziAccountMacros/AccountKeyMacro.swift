@@ -83,14 +83,14 @@ extension AccountKeyMacro: PeerMacro {
               extensionIdentifier.name == "AccountDetails" else {
             throw DiagnosticsError(
                 syntax: declaration,
-                message: "'@AccountKey' can only be applied to 'var' declarations inside of 'AccountDetails'",
+                message: "'@AccountKey' can only be applied to 'var' declarations inside of an extension to 'AccountDetails'",
                 id: .invalidSyntax
             )
         }
 #endif
 
         guard let typeAnnotation = binding.typeAnnotation else {
-            throw DiagnosticsError(syntax: binding, message: "Variable binding is missing the type annotation", id: .invalidSyntax)
+            throw DiagnosticsError(syntax: binding, message: "Variable binding is missing a type annotation", id: .invalidSyntax)
         }
 
         guard case let .argumentList(argumentList) = node.arguments else {
