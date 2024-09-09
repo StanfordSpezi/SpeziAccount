@@ -33,10 +33,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -75,10 +75,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -111,10 +111,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 public var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -147,10 +147,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var accountId: String {
                     get {
-                        self [__Key_accountId.self]
+                        self[__Key_accountId.self]
                     }
                     set {
-                        self [__Key_accountId.self] = newValue
+                        self[__Key_accountId.self] = newValue
                     }
                 }
             
@@ -180,10 +180,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var accountId: String {
                     get {
-                        self [__Key_accountId.self]
+                        self[__Key_accountId.self]
                     }
                     set {
-                        self [__Key_accountId.self] = newValue
+                        self[__Key_accountId.self] = newValue
                     }
                 }
             }
@@ -215,10 +215,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 public var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
 
@@ -280,10 +280,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -349,6 +349,66 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
+            macros: testMacros
+        )
+    }
+
+
+    func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
+        assertMacroExpansion(
+            """
+            @AccountKey(
+                name: "Gender Identity",
+                category: .personalDetails,
+                as: GenderIdentity.self,
+                initial: .default(.preferNotToState),
+                displayView: DataDisplay.self,
+                entryView: DataEntry.self
+            )
+            extension AccountDetails {
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(message: "'@AccountKey' can only be applied to a 'var' declaration", line: 1, column: 1)
+            ],
+            macros: testMacros
+        )
+
+        assertMacroExpansion(
+            """
+            extension NotAccountDetails {
+                @AccountKey(
+                    name: "Gender Identity",
+                    category: .personalDetails,
+                    as: GenderIdentity.self,
+                    initial: .default(.preferNotToState),
+                    displayView: DataDisplay.self,
+                    entryView: DataEntry.self
+                )
+                var genderIdentity: GenderIdentity?
+            }
+            """,
+            expandedSource:
+            """
+            extension NotAccountDetails {
+                var genderIdentity: GenderIdentity? {
+                    get {
+                        self[__Key_genderIdentity.self]
+                    }
+                    set {
+                        self[__Key_genderIdentity.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(message: "'@AccountKey' can only be applied to 'var' declarations inside of 'AccountDetails'", line: 2, column: 5)
+            ],
             macros: testMacros
         )
     }
