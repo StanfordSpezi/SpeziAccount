@@ -74,8 +74,10 @@ extension AccountKeyMacro: PeerMacro {
             )
         }
 
+#if compiler(>=6)
+        // with previous compilers the `lexicalContext` is empty
         guard let rootContext = context.lexicalContext.first,
-                let extensionDecl = rootContext.as(ExtensionDeclSyntax.self),
+              let extensionDecl = rootContext.as(ExtensionDeclSyntax.self),
               let extendedTypeIdentifier = extensionDecl.extendedType.as(IdentifierTypeSyntax.self),
               let extensionIdentifier = extendedTypeIdentifier.name.identifier,
               extensionIdentifier.name == "AccountDetails" else {
@@ -85,6 +87,7 @@ extension AccountKeyMacro: PeerMacro {
                 id: .invalidSyntax
             )
         }
+#endif
 
         guard let typeAnnotation = binding.typeAnnotation else {
             throw DiagnosticsError(syntax: binding, message: "Variable binding is missing the type annotation", id: .invalidSyntax)
