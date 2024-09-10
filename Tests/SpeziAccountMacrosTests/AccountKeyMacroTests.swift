@@ -352,6 +352,96 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             macros: testMacros
         )
     }
+
+
+    func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
+        assertMacroExpansion(
+            """
+            @AccountKey(
+                name: "Gender Identity",
+                category: .personalDetails,
+                as: GenderIdentity.self,
+                initial: .default(.preferNotToState),
+                displayView: DataDisplay.self,
+                entryView: DataEntry.self
+            )
+            extension AccountDetails {
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(message: "'@AccountKey' can only be applied to a 'var' declaration", line: 1, column: 1)
+            ],
+            macros: testMacros
+        )
+
+        assertMacroExpansion(
+            """
+            extension NotAccountDetails {
+                @AccountKey(
+                    name: "Gender Identity",
+                    category: .personalDetails,
+                    as: GenderIdentity.self,
+                    initial: .default(.preferNotToState),
+                    displayView: DataDisplay.self,
+                    entryView: DataEntry.self
+                )
+                var genderIdentity: GenderIdentity?
+            }
+            """,
+            expandedSource:
+            """
+            extension NotAccountDetails {
+                var genderIdentity: GenderIdentity? {
+                    get {
+                        self [__Key_genderIdentity.self]
+                    }
+                    set {
+                        self [__Key_genderIdentity.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "'@AccountKey' can only be applied to 'var' declarations inside of an extension to 'AccountDetails'",
+                    line: 2,
+                    column: 5
+                )
+            ],
+            macros: testMacros
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
+                var genderIdentity: GenderIdentity? = .male
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var genderIdentity: GenderIdentity? {
+                    get {
+                        self [__Key_genderIdentity.self]
+                    }
+                    set {
+                        self [__Key_genderIdentity.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(message: "Variable binding cannot have a initializer", line: 3, column: 41)
+            ],
+            macros: testMacros
+        )
+    }
 }
 
 #endif

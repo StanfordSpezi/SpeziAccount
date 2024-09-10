@@ -37,7 +37,7 @@ final class DocumentationHintsTests: XCTestCase {
         sleep(3)
 #endif
         XCTAssert(safari.wait(for: .runningForeground, timeout: 5))
-        XCTAssertTrue(safari.staticTexts["Swift Package Index"].waitForExistence(timeout: 10.0))
+        XCTAssertTrue(safari.staticTexts["Swift Package Index"].waitForExistence(timeout: 15.0))
         XCTAssertTrue(safari.staticTexts["Initial Setup"].waitForExistence(timeout: 2.0)) // The initial setup article
         safari.terminate()
 

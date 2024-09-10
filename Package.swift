@@ -39,7 +39,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax", from: "510.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-prerelease-2024-08-14"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0")
     ] + swiftLintPackage(),
     targets: [
