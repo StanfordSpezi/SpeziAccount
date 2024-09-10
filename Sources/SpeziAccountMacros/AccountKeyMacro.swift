@@ -93,6 +93,10 @@ extension AccountKeyMacro: PeerMacro {
             throw DiagnosticsError(syntax: binding, message: "Variable binding is missing a type annotation", id: .invalidSyntax)
         }
 
+        if let initializer = binding.initializer {
+            throw DiagnosticsError(syntax: initializer, message: "Variable binding cannot have a initializer", id: .invalidSyntax)
+        }
+
         guard case let .argumentList(argumentList) = node.arguments else {
             throw DiagnosticsError(syntax: node, message: "Unexpected arguments passed to '@AccountKey'", id: .invalidSyntax)
         }
