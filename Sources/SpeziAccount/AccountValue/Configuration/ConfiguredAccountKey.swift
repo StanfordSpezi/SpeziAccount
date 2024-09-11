@@ -38,7 +38,7 @@ public struct ConfiguredAccountKey {
     /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
     /// - Returns: Returns the ``AccountKey`` configuration.
     public static func requires<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .required))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .required))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/collected``.
@@ -46,7 +46,7 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
     public static func collects<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .collected))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .collected))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/supported``.
@@ -54,7 +54,7 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
     public static func supports<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .supported))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .supported))
     }
     
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/hidden``.
@@ -62,7 +62,7 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
     public static func hidden<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .hidden))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .hidden))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.

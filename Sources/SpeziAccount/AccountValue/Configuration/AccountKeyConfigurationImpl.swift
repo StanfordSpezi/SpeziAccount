@@ -30,9 +30,9 @@ struct AccountKeyConfigurationImpl<Key: AccountKey>: AccountKeyConfiguration {
 
     let keyPathDescription: String
 
-    init(_ keyPath: KeyPath<AccountKeys, Key.Type>, type: AccountKeyRequirement) {
+    init(_ keyPath: KeyPath<AccountKeys, Key.Type>, requirement: AccountKeyRequirement) {
         self.key = Key.self
-        self.requirement = type
+        self.requirement = requirement
         self.keyPathDescription = keyPath.shortDescription
     }
 }
