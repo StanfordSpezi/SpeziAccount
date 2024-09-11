@@ -23,6 +23,10 @@ public enum AccountKeyRequirement {
     /// The account value is **not** collected at signup. However, it is displayed in the account overview
     /// and a user can supply a value by editing their account details.
     case supported
+    /// The associated account value **can** be provided by the user at a later point in time.
+    ///
+    /// The account value is **not** collected at signup. It is also not displayed in the account overview.
+    case hidden
 }
 
 

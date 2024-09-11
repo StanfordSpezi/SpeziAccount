@@ -58,6 +58,8 @@ extension AccountKeyConfigurationImpl {
             return ".collects(\(keyPathDescription))"
         case .supported:
             return ".supports(\(keyPathDescription))"
+        case .hidden:
+            return ".hidden(\(keyPathDescription))"
         }
     }
 

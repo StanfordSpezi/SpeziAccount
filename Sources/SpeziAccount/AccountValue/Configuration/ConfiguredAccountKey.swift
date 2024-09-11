@@ -56,6 +56,14 @@ public struct ConfiguredAccountKey {
     public static func supports<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
         .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .supported))
     }
+    
+    /// Configure an ``AccountKey`` as ``AccountKeyRequirement/hidden``.
+    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Returns: Returns the ``AccountKey`` configuration.
+    @_disfavoredOverload
+    public static func hidden<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .hidden))
+    }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
     /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
