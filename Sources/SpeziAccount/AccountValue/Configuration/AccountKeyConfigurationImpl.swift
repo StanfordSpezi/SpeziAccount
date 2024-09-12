@@ -30,9 +30,9 @@ struct AccountKeyConfigurationImpl<Key: AccountKey>: AccountKeyConfiguration {
 
     let keyPathDescription: String
 
-    init(_ keyPath: KeyPath<AccountKeys, Key.Type>, requirement: AccountKeyRequirement) {
+    init(_ keyPath: KeyPath<AccountKeys, Key.Type>, type: AccountKeyRequirement) {
         self.key = Key.self
-        self.requirement = requirement
+        self.requirement = type
         self.keyPathDescription = keyPath.shortDescription
     }
 }
@@ -58,8 +58,6 @@ extension AccountKeyConfigurationImpl {
             return ".collects(\(keyPathDescription))"
         case .supported:
             return ".supports(\(keyPathDescription))"
-        case .hidden:
-            return ".hidden(\(keyPathDescription))"
         }
     }
 
