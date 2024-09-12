@@ -46,7 +46,7 @@ class AccountOverviewFormViewModel {
 
 
     init(_ valueConfiguration: AccountValueConfiguration, _ serviceConfiguration: AccountServiceConfiguration) {
-        self.categorizedAccountKeys = valueConfiguration.allCategorized(filteredBy: [.required, .collected, .supported])
+        self.categorizedAccountKeys = valueConfiguration.allCategorized()
         self.accountServiceConfiguration = serviceConfiguration
     }
 
