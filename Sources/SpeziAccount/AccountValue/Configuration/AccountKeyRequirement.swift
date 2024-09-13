@@ -26,7 +26,7 @@ public enum AccountKeyRequirement {
     /// The associated account value **can** be provided by the user at a later point in time.
     ///
     /// The account value is **not** collected at signup. It is also not displayed in the account overview.
-    case hidden
+    case manual
 }
 
 
