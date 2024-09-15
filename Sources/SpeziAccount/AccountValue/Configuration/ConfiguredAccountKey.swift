@@ -38,7 +38,7 @@ public struct ConfiguredAccountKey {
     /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
     /// - Returns: Returns the ``AccountKey`` configuration.
     public static func requires<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .required))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .required))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/collected``.
@@ -46,7 +46,7 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
     public static func collects<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .collected))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .collected))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/supported``.
@@ -54,7 +54,15 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
     public static func supports<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, type: .supported))
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .supported))
+    }
+    
+    /// Configure an ``AccountKey`` as ``AccountKeyRequirement/manual``.
+    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Returns: Returns the ``AccountKey`` configuration.
+    @_disfavoredOverload
+    public static func manual<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
+        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .manual))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
@@ -71,6 +79,14 @@ public struct ConfiguredAccountKey {
     /// - Returns: Returns the ``AccountKey`` configuration.
     @available(*, deprecated, renamed: "requires", message: "A 'RequiredAccountKey' must always be supplied as required using requires(_:)")
     public static func supports<Key: RequiredAccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
+        requires(keyPath)
+    }
+    
+    /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
+    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Returns: Returns the ``AccountKey`` configuration.
+    @available(*, deprecated, renamed: "requires", message: "A 'RequiredAccountKey' must always be supplied as required using requires(_:)")
+    public static func manual<Key: RequiredAccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
         requires(keyPath)
     }
 }

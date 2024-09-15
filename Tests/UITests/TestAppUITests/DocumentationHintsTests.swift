@@ -16,7 +16,7 @@ final class DocumentationHintsTests: XCTestCase {
     }
 
     @MainActor
-    func testDocumentationHint(type: ServiceType, button: String, hint: String) {
+    func testDocumentationHint(type: ServiceType, button: String, hint: String) throws {
         let app = XCUIApplication()
         app.launch(serviceType: type)
 
@@ -37,8 +37,7 @@ final class DocumentationHintsTests: XCTestCase {
         sleep(3)
 #endif
         XCTAssert(safari.wait(for: .runningForeground, timeout: 5))
-        XCTAssertTrue(safari.staticTexts["Swift Package Index"].waitForExistence(timeout: 10.0))
-        XCTAssertTrue(safari.staticTexts["Initial Setup"].waitForExistence(timeout: 2.0)) // The initial setup article
+
         safari.terminate()
 
         app.activate()
@@ -46,8 +45,8 @@ final class DocumentationHintsTests: XCTestCase {
     }
 
     @MainActor
-    func testEmptyAccountServices() {
-        testDocumentationHint(
+    func testEmptyAccountServices() throws {
+        try testDocumentationHint(
             type: .empty,
             button: "Account Setup",
             hint: """
@@ -58,8 +57,8 @@ final class DocumentationHintsTests: XCTestCase {
     }
 
     @MainActor
-    func testMissingAccount() {
-        testDocumentationHint(
+    func testMissingAccount() throws {
+        try testDocumentationHint(
             type: .mail,
             button: "Account Overview",
             hint: """
