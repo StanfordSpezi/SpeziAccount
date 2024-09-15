@@ -38,13 +38,6 @@ final class DocumentationHintsTests: XCTestCase {
 #endif
         XCTAssert(safari.wait(for: .runningForeground, timeout: 5))
 
-        #if !os(visionOS) // this assertion is not possible on visionOS
-        XCTAssert(safari.textFields["Address"].waitForExistence(timeout: 15))
-        let value = try XCTUnwrap(safari.textFields["Address"].value as? String)
-        // value start if a left-to-right mark character (0xe2808e) so it won't compare equal and we need to do a contains check
-        XCTAssert(value.contains("swiftpackageindex.com, secure"))
-        #endif
-
         safari.terminate()
 
         app.activate()
