@@ -143,8 +143,8 @@ extension AccountKey where Value: BinaryFloatingPoint {
 
 #if DEBUG
 #Preview {
-    @State var value = 3.15
-    return List {
+    @Previewable @State var value = 3.15
+    List {
         FloatingPointEntryView<MockDoubleKey>($value)
     }
         .previewWith {

@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Spezi open source project
@@ -11,13 +11,6 @@
 import CompilerPluginSupport
 import class Foundation.ProcessInfo
 import PackageDescription
-
-
-#if swift(<6)
-let swiftConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
-#else
-let swiftConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
-#endif
 
 
 let package = Package(
@@ -50,9 +43,6 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftDiagnostics", package: "swift-syntax")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -73,9 +63,6 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -87,9 +74,6 @@ let package = Package(
                 .product(name: "XCTSpezi", package: "Spezi"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -98,9 +82,6 @@ let package = Package(
                 "SpeziAccountMacros",
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )

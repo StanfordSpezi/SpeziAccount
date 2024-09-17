@@ -93,8 +93,8 @@ extension AccountKey where Value: FixedWidthInteger {
 
 #if DEBUG
 #Preview {
-    @State var value = 3
-    return List {
+    @Previewable @State var value = 3
+    List {
         FixedWidthIntegerEntryView<MockNumericKey>($value)
     }
         .previewWith {

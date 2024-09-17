@@ -46,8 +46,8 @@ extension AccountKey where Value == String {
 
 #if DEBUG
 #Preview {
-    @State var value = "Hello World"
-    return List {
+    @Previewable @State var value = "Hello World"
+    List {
         StringEntryView(\.userId, $value)
             .validate(input: value, rules: .nonEmpty)
     }
