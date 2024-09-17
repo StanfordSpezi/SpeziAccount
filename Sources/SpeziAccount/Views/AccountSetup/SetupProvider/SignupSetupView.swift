@@ -55,20 +55,20 @@ struct SignupSetupView<Credential: Sendable>: View {
 
 #if DEBUG
 #Preview {
-    @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
-    @State var presentingSignup = false
+    @Previewable @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
+    @Previewable @State var presentingSignup = false
 
-    return SignupSetupView(style: $style, login: { _ in }, presentingSignup: $presentingSignup)
+    SignupSetupView(style: $style, login: { _ in }, presentingSignup: $presentingSignup)
         .previewWith {
             AccountConfiguration(service: InMemoryAccountService())
         }
 }
 
 #Preview {
-    @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
-    @State var presentingSignup = false
+    @Previewable @State var style: PresentedSetupStyle<UserIdPasswordCredential> = .signup
+    @Previewable @State var presentingSignup = false
 
-    return SignupSetupView(style: $style, login: nil, presentingSignup: $presentingSignup)
+    SignupSetupView(style: $style, login: nil, presentingSignup: $presentingSignup)
         .previewWith {
             AccountConfiguration(service: InMemoryAccountService())
         }

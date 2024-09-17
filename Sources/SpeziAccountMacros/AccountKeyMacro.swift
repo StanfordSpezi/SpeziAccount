@@ -142,7 +142,7 @@ extension AccountKeyMacro: PeerMacro {
 
 
         let modifier: TokenSyntax? = variableDeclaration.modifiers
-            .compactMap { modifier in
+            .compactMap { (modifier: DeclModifierSyntax) -> TokenSyntax? in
                 guard case let .keyword(keyword) = modifier.name.tokenKind else {
                     return nil
                 }
