@@ -32,15 +32,15 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.2"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.7.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.6.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.2.0"),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.1.2"),
-        .package(url: "https://github.com/apple/swift-atomics", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax", from: "600.0.0-prerelease-2024-08-14"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0-beta.2"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.6.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.2.0"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-prerelease-2024-08-14"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
