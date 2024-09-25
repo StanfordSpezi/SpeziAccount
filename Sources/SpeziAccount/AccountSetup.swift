@@ -80,6 +80,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var compliance: SignupProviderCompliance?
     @State private var followUpSheet = false
     @State private var isCompletingSetup = false
+    @State private var accountSetupTask: Task<Void, Never>?
 
     private var hasSetupComponents: Bool {
         account.accountSetupComponents.contains { $0.configuration.isEnabled }
@@ -102,6 +103,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 }
                 handleSuccessfulSetup(details)
             }
+            .onDisappear {
+                accountSetupTask?.cancel()
+            }
     }
     
     @ViewBuilder private var scrollableContentView: some View {
@@ -117,7 +121,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     followUpInformationSheet(details, requiredKeys: keys)
                 case .loadingExistingAccount:
                     // We allow the outer view to navigate away upon signup, before we show the existing account view
-                    existingAccountLoading
+                    ProgressView()
+                        .task {
+                            try? await Task.sleep(for: .seconds(2))
+                            setupState = .generic
+                        }
                 default:
                     if isCompletingSetup {
                         ProgressView()
@@ -169,15 +177,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 }
         }
     }
-
-    @ViewBuilder private var existingAccountLoading: some View {
-        ProgressView()
-            .task {
-                try? await Task.sleep(for: .seconds(2))
-                setupState = .generic
-            }
-    }
-
+    
 
     fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
         self.setupCompleteClosure = { _ in }
@@ -258,7 +258,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
     private func handleSetupCompleted(_ details: AccountDetails) {
         isCompletingSetup = true
-        Task { @MainActor in
+        accountSetupTask = Task { @MainActor in
             await setupCompleteClosure(details)
             isCompletingSetup = false
         }

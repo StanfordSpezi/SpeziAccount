@@ -15,7 +15,7 @@ private let logger = Logger(subsystem: "edu.stanford.sepzi.SepziAccount", catego
 
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     private let enabled: Bool
-    private let isValid: (AccountDetails) -> Bool
+    private let accountSetupIsComplete: (AccountDetails) -> Bool
     private let setupSheet: SetupSheet
 
     @Environment(Account.self)
@@ -39,11 +39,11 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
 
     init(
         enabled: Bool,
-        isValid: @escaping (AccountDetails) -> Bool,
+        accountSetupIsComplete: @escaping (AccountDetails) -> Bool,
         @ViewBuilder setupSheet: () -> SetupSheet
     ) {
         self.enabled = enabled
-        self.isValid = isValid
+        self.accountSetupIsComplete = accountSetupIsComplete
         self.setupSheet = setupSheet()
     }
 
@@ -98,9 +98,15 @@ extension View {
     /// - Returns: The modified view.
     public func accountRequired<SetupSheet: View>(
         _ required: Bool = true,
-        isValid: @escaping (AccountDetails) -> Bool = { !$0.isAnonymous },
+        accountSetupIsComplete: @escaping (AccountDetails) -> Bool = { !$0.isAnonymous },
         @ViewBuilder setupSheet: () -> SetupSheet
     ) -> some View {
-        modifier(AccountRequiredModifier(enabled: required, isValid: isValid, setupSheet: setupSheet))
+        modifier(
+            AccountRequiredModifier(
+                enabled: required,
+                accountSetupIsComplete: accountSetupIsComplete,
+                setupSheet: setupSheet
+            )
+        )
     }
 }
