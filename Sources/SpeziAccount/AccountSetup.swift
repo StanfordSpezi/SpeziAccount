@@ -7,6 +7,7 @@
 //
 
 import OrderedCollections
+import SpeziViews
 import SwiftUI
 
 
@@ -66,7 +67,7 @@ public enum _AccountSetupState: EnvironmentKey, Sendable { // swiftlint:disable:
 /// - ``DefaultAccountSetupHeader``
 @MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
-    private let setupCompleteClosure: (AccountDetails) -> Void
+    private let setupCompleteClosure: (AccountDetails) async -> Void
     private let header: Header
     private let continueButton: Continue
 
@@ -78,6 +79,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @State private var setupState: _AccountSetupState = .generic
     @State private var compliance: SignupProviderCompliance?
     @State private var followUpSheet = false
+    @State private var isCompletingSetup = false
+    @State private var accountSetupTask: Task<Void, Never>?
 
     private var hasSetupComponents: Bool {
         account.accountSetupComponents.contains { $0.configuration.isEnabled }
@@ -86,37 +89,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     public var body: some View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
-                VStack {
-                    if hasSetupComponents {
-                        header
-                            .environment(\._accountSetupState, setupState)
-                    }
-
-                    Spacer()
-
-                    if let details = account.details, !details.isAnonymous {
-                        switch setupState {
-                        case let .requiringAdditionalInfo(keys):
-                            followUpInformationSheet(details, requiredKeys: keys)
-                        case .loadingExistingAccount:
-                            // We allow the outer view to navigate away upon signup, before we show the existing account view
-                            existingAccountLoading
-                        default:
-                            ExistingAccountView(details: details) {
-                                continueButton
-                            }
-                        }
-                    } else {
-                        accountSetupView
-                            .onAppear {
-                                setupState = .setupShown
-                            }
-                    }
-
-                    Spacer()
-                    Spacer()
-                    Spacer()
-                }
+                scrollableContentView
                     .padding(.horizontal, ViewSizing.outerHorizontalPadding)
                     .frame(minHeight: proxy.size.height)
                     .frame(maxWidth: .infinity)
@@ -128,9 +101,50 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                       case .setupShown = setupState else {
                     return
                 }
-
                 handleSuccessfulSetup(details)
             }
+            .onDisappear {
+                accountSetupTask?.cancel()
+            }
+    }
+    
+    @ViewBuilder private var scrollableContentView: some View {
+        VStack {
+            if hasSetupComponents {
+                header
+                    .environment(\._accountSetupState, setupState)
+            }
+            Spacer()
+            if let details = account.details, !details.isAnonymous {
+                switch setupState {
+                case let .requiringAdditionalInfo(keys):
+                    followUpInformationSheet(details, requiredKeys: keys)
+                case .loadingExistingAccount:
+                    // We allow the outer view to navigate away upon signup, before we show the existing account view
+                    ProgressView()
+                        .task {
+                            try? await Task.sleep(for: .seconds(2))
+                            setupState = .generic
+                        }
+                default:
+                    if isCompletingSetup {
+                        ProgressView()
+                    } else {
+                        ExistingAccountView(details: details) {
+                            continueButton
+                        }
+                    }
+                }
+            } else {
+                accountSetupView
+                    .onAppear {
+                        setupState = .setupShown
+                    }
+            }
+            Spacer()
+            Spacer()
+            Spacer()
+        }
     }
 
     @ViewBuilder private var accountSetupView: some View {
@@ -163,15 +177,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 }
         }
     }
-
-    @ViewBuilder private var existingAccountLoading: some View {
-        ProgressView()
-            .task {
-                try? await Task.sleep(for: .seconds(2))
-                setupState = .generic
-            }
-    }
-
+    
 
     fileprivate init(state: _AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
         self.setupCompleteClosure = { _ in }
@@ -189,7 +195,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
     ///     displayed with an already associated account.
     public init(
-        setupComplete: @escaping (AccountDetails) -> Void = { _ in },
+        setupComplete: @escaping (AccountDetails) async -> Void = { _ in },
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
     ) {
@@ -212,8 +218,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
             .onChange(of: followUpSheet) {
                 if !followUpSheet { // follow up information was completed!
-                    setupState = .loadingExistingAccount
-                    setupCompleteClosure(details)
+                    handleSetupCompleted(details)
                 }
             }
     }
@@ -252,8 +257,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     private func handleSetupCompleted(_ details: AccountDetails) {
-        setupState = .loadingExistingAccount
-        setupCompleteClosure(details)
+        isCompletingSetup = true
+        accountSetupTask = Task { @MainActor in
+            await setupCompleteClosure(details)
+            isCompletingSetup = false
+        }
     }
 }
 
