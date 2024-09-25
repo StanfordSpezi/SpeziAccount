@@ -583,9 +583,6 @@
         }
       }
     },
-    "Date of Birth" : {
-
-    },
     "DELETE" : {
       "localizations" : {
         "de" : {
@@ -667,9 +664,6 @@
           }
         }
       }
-    },
-    "E-Mail and Password" : {
-
     },
     "EDIT" : {
       "localizations" : {

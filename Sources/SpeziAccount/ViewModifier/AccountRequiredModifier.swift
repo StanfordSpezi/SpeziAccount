@@ -33,7 +33,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
         }
 
         // we present the sheet if the account is not valid (yet)
-        return !isValid(details)
+        return !accountSetupIsComplete(details)
     }
 
 
