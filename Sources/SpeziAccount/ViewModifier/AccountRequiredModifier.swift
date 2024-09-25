@@ -10,7 +10,7 @@ import OSLog
 import SwiftUI
 
 
-private let logger = Logger(subsystem: "edu.stanford.sepzi.SepziAccount", category: "AccountRequiredModifier")
+private let logger = Logger(subsystem: "edu.stanford.spezi.SpeziAccount", category: "AccountRequiredModifier")
 
 
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {

@@ -92,6 +92,11 @@ struct AccountTestsView: View {
                 } label: {
                     Text(verbatim: "License Information")
                 }
+                if let invitationCode = account.details?.invitationCode {
+                    LabeledContent("Invitation Code") {
+                        Text(invitationCode)
+                    }
+                }
             }
         }
     }

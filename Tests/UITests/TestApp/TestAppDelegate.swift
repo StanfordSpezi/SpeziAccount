@@ -32,7 +32,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.biography)
+                .supports(\.biography),
+                .manual(\.invitationCode)
             ]
         case .allRequired:
 #if os(visionOS)
