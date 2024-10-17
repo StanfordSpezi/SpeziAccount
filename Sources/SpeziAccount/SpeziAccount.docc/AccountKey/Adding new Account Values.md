@@ -143,7 +143,7 @@ A ``AccountKey/DataEntry`` view is automatically provide if:
     A simple number entry will appear. You have to implement your own view if you have special formatting requirements.
 * The `Value` is a [`BinaryFloatingPoint`](https://developer.apple.com/documentation/swift/binaryfloatingpoint) (e.g., `Double` or `Float`).
     A simple decimal entry will appear. You have to implement your own view if you have special formatting requirements.
-* The `Value` conforms to the ``PickerValue`` protocols. This is provides a Picker UI for enum types.
+* The `Value` conforms to the `PickerValue` protocols. This is provides a Picker UI for enum types.
     `PickerValue` is shorthand to conform to the [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable),
     [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
     and [`Hashable`](https://developer.apple.com/documentation/swift/hashable) protocols.
@@ -209,6 +209,6 @@ Still, you are required to evaluate to which extent validation has to be handled
 
 ### Available Environment Keys
 
-- ``SwiftUI/EnvironmentValues/accountViewType``
-- ``SwiftUI/EnvironmentValues/passwordFieldType``
-- ``SwiftUI/EnvironmentValues/accountServiceConfiguration``
+- ``SwiftUICore/EnvironmentValues/accountViewType``
+- ``SwiftUICore/EnvironmentValues/passwordFieldType``
+- ``SwiftUICore/EnvironmentValues/accountServiceConfiguration``

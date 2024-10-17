@@ -250,7 +250,7 @@ actor MyAccountService: AccountService {
 
 ### UI Customization
 
-- ``SwiftUI/View/reportSignupProviderCompliance(_:)``
+- ``SwiftUICore/View/reportSignupProviderCompliance(_:)``
 - ``SignupProviderCompliance``
 
 ### Credentials
