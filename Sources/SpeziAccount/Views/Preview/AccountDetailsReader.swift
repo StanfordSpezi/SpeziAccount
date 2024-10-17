@@ -10,21 +10,23 @@
 import SwiftUI
 
 
-#if DEBUG
-struct AccountDetailsReader<Content: View>: View {
-    private let bodyClosure: (Account, AccountDetails) -> Content
+/// Read the account details from the SwiftUI environment.
+@_spi(TestingSupport)
+public struct AccountDetailsReader<Content: View>: View {
+    private let content: (Account, AccountDetails) -> Content
     
     @Environment(Account.self)
     private var account
 
-    var body: some View {
+    public var body: some View {
         if let details = account.details {
-            bodyClosure(account, details)
+            content(account, details)
         }
     }
-
-    init(@ViewBuilder _ bodyClosure: @escaping (Account, AccountDetails) -> Content) {
-        self.bodyClosure = bodyClosure
+    
+    /// Pass in a view builder that receives the account and account details of the environment.
+    /// - Parameter bodyClosure: The view builder.
+    public init(@ViewBuilder _ content: @escaping (Account, AccountDetails) -> Content) {
+        self.content = content
     }
 }
-#endif

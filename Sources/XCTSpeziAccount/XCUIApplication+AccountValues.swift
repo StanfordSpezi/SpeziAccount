@@ -1,7 +1,7 @@
 //
 // This source file is part of the Spezi open-source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2024 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -10,13 +10,22 @@ import XCTest
 
 
 extension XCUIApplication {
-    func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
+    /// Update the gender identity picker.
+    /// - Parameters:
+    ///   - from: The currently selected value.
+    ///   - to: The new selected value.
+    ///   - file: The file where this is executed.
+    ///   - line: The line where this is executed.
+    public func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
         staticTexts[from].tap()
         XCTAssertTrue(buttons[to].waitForExistence(timeout: 0.5), "Couldn't locate gender identity dropdown", file: file, line: line)
         buttons[to].tap()
     }
-
-    func changeDatePreviousMonthFirstDay() {
+    
+    /// Change the date of birth.
+    ///
+    /// Typically it will select the first day of the previous month. This method will make sure to add a date of birth is none is added yet.
+    public func changeDateOfBirth() {
         // add date button is presented if date is not required or doesn't exists yet
         if buttons["Add Date of Birth"].exists { // uses the accessibility label
             buttons["Add Date of Birth"].tap()

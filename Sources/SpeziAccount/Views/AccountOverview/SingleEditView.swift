@@ -91,17 +91,13 @@ struct SingleEditView<Key: AccountKey>: View {
 
 #if DEBUG
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return NavigationStack {
+    NavigationStack {
         AccountDetailsReader { account, details in
             SingleEditView(for: \.name, model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock())
         }
 }
 #endif

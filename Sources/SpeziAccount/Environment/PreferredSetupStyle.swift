@@ -15,7 +15,7 @@ import SwiftUI
 /// In some situations, views might be able to present themselves such that login or signup operations are favored.
 /// For example, an `AccountSetup` view that is displayed in the onboarding flow, might favor a presentation that highlights signup functionality.
 ///
-/// - Note: Use the ``SwiftUI/View/preferredAccountSetupStyle(_:)`` to set the preferred account setup style.
+/// - Note: Use the ``SwiftUICore/View/preferredAccountSetupStyle(_:)`` to set the preferred account setup style.
 public enum PreferredSetupStyle {
     /// Let the view automatically decide on how to present itself.
     ///

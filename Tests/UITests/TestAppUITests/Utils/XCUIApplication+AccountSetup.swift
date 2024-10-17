@@ -10,31 +10,25 @@ import XCTest
 
 
 extension XCUIApplication {
-    func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
-        try login(userId: email, password: password, field: "E-Mail Address")
-    }
-
-    func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password) throws {
-        try login(userId: username, password: password, field: "Username")
-    }
-
-
-    private func login<UserId: StringProtocol, Password: StringProtocol>(userId: UserId, password: Password, field: String) throws {
-        XCTAssertTrue(textFields[field].exists)
-        XCTAssertTrue(secureTextFields["Password"].exists)
-
-        try textFields[field].enter(value: String(userId))
-        try secureTextFields["Password"].enter(value: String(password))
-
-        XCTAssertTrue(buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
-        XCTAssertTrue(buttons["Login"].isEnabled)
-        buttons["Login"].tap()
-    }
-
     func openSignup() {
         XCTAssertTrue(buttons["Signup"].waitForExistence(timeout: 3.0))
         buttons["Signup"].tap()
 
         XCTAssertTrue(staticTexts["Please fill out the details below to create your new account."].waitForExistence(timeout: 3.0))
+    }
+
+    func fillSignupForm(
+        email: String,
+        password: String,
+        name: PersonNameComponents? = nil,
+        genderIdentity: String? = nil,
+        supplyDateOfBirth: Bool = false,
+        biography: String
+    ) throws {
+        fillSignupForm(email: email, password: password, name: name, genderIdentity: genderIdentity, supplyDateOfBirth: supplyDateOfBirth)
+
+        if let biography {
+            try textFields["Biography"].enter(value: biography)
+        }
     }
 }

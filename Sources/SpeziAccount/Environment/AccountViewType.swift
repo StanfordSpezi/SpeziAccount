@@ -11,7 +11,7 @@ import SwiftUI
 
 /// Defines the type of `SpeziAccount` view a ``DataEntryView`` or ``DataDisplayView`` is placed in.
 ///
-/// Access this property inside supporting views using the ``SwiftUI/EnvironmentValues/accountViewType`` environment key.
+/// Access this property inside supporting views using the ``SwiftUICore/EnvironmentValues/accountViewType`` environment key.
 ///
 /// ```swift
 /// struct MyView: View {

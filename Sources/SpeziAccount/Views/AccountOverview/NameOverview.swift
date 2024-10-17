@@ -72,31 +72,24 @@ struct NameOverview: View {
 
 #if DEBUG
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return NavigationStack {
+    NavigationStack {
         AccountDetailsReader { account, details in
             NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock())
         }
 }
 
 #Preview {
-    var detailsWithoutName = AccountDetails()
-    detailsWithoutName.userId = "lelandstanford@stanford.edu"
-
-    return NavigationStack {
+    NavigationStack {
         AccountDetailsReader { account, details in
             NameOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: detailsWithoutName)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(name: nil))
         }
 }
 #endif

@@ -57,11 +57,7 @@ struct ExistingAccountView<Continue: View>: View {
 
 #if DEBUG
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return ExistingAccountView(details: details)
+    ExistingAccountView(details: .createMock())
         .padding(.horizontal, ViewSizing.outerHorizontalPadding)
         .previewWith {
             AccountConfiguration(service: InMemoryAccountService())
@@ -69,11 +65,7 @@ struct ExistingAccountView<Continue: View>: View {
 }
 
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return ExistingAccountView(details: details) {
+    ExistingAccountView(details: .createMock()) {
         Button {
             print("Pressed")
         } label: {

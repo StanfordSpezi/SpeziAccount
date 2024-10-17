@@ -47,7 +47,7 @@ private struct SignupProviderComplianceKey: PreferenceKey {
 ///
 /// The `SignupProviderCompliance` is used by the ``AccountSetup`` view to reason about the compliance of the signup provider.
 ///
-/// Use the ``SwiftUI/View/reportSignupProviderCompliance(_:)`` to set the compliance for your custom signup provider, if necessary.
+/// Use the ``SwiftUICore/View/reportSignupProviderCompliance(_:)`` to set the compliance for your custom signup provider, if necessary.
 ///
 /// - Note: The compliance preference is automatically set when using the ``SignupForm`` or the ``SignInWithAppleButton``.
 public struct SignupProviderCompliance {

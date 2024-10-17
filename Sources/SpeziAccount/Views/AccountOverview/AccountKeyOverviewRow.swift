@@ -84,19 +84,14 @@ struct AccountKeyOverviewRow: View {
 #if DEBUG && !os(macOS)
 private let key = AccountKeys.genderIdentity
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    details.genderIdentity = .male
-
-    return AccountDetailsReader { account, details in
+    AccountDetailsReader { account, details in
         let model = AccountOverviewFormViewModel(account: account, details: details)
 
         AccountKeyOverviewRow(details: details, for: key, model: model)
             .injectEnvironmentObjects(configuration: details.accountServiceConfiguration, model: model)
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(genderIdentity: .male))
         }
 }
 #endif

@@ -44,11 +44,9 @@ public struct SuccessfulPasswordResetView: View {
 
 
 #if DEBUG
-struct DefaultSuccessfulPasswordResetView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            SuccessfulPasswordResetView()
-        }
+#Preview {
+    NavigationStack {
+        SuccessfulPasswordResetView()
     }
 }
 #endif

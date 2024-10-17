@@ -321,12 +321,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View { // swiftlint:di
 
 #if DEBUG && !os(macOS)
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    details.genderIdentity = .male
-
-    return NavigationStack {
+    NavigationStack {
         AccountOverview {
             Section(header: Text(verbatim: "App")) {
                 NavigationLink {
@@ -343,17 +338,12 @@ struct AccountOverviewSections<AdditionalSections: View>: View { // swiftlint:di
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(genderIdentity: .male))
         }
 }
 
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    details.genderIdentity = .male
-
-    return NavigationStack {
+    NavigationStack {
         AccountOverview(deletion: .belowLogout) {
             Section(header: Text(verbatim: "App")) {
                 NavigationLink {
@@ -370,7 +360,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View { // swiftlint:di
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(genderIdentity: .male))
         }
 }
 #endif

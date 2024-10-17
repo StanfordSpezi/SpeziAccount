@@ -53,12 +53,9 @@ public struct DefaultAccountSetupHeader: View {
 }
 
 #Preview {
-    var details = AccountDetails()
-    details.userId = "myUser"
-
-    return DefaultAccountSetupHeader()
+    DefaultAccountSetupHeader()
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(userId: "myUser", name: nil))
         }
 }
 #endif
