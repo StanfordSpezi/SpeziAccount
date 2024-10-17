@@ -33,10 +33,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -75,10 +75,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -111,10 +111,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 public var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -147,10 +147,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var accountId: String {
                     get {
-                        self [__Key_accountId.self]
+                        self[__Key_accountId.self]
                     }
                     set {
-                        self [__Key_accountId.self] = newValue
+                        self[__Key_accountId.self] = newValue
                     }
                 }
             
@@ -180,10 +180,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var accountId: String {
                     get {
-                        self [__Key_accountId.self]
+                        self[__Key_accountId.self]
                     }
                     set {
-                        self [__Key_accountId.self] = newValue
+                        self[__Key_accountId.self] = newValue
                     }
                 }
             }
@@ -215,10 +215,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 public var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
 
@@ -280,10 +280,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             
@@ -398,10 +398,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension NotAccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             }
@@ -428,10 +428,10 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             extension AccountDetails {
                 var genderIdentity: GenderIdentity? {
                     get {
-                        self [__Key_genderIdentity.self]
+                        self[__Key_genderIdentity.self]
                     }
                     set {
-                        self [__Key_genderIdentity.self] = newValue
+                        self[__Key_genderIdentity.self] = newValue
                     }
                 }
             }
