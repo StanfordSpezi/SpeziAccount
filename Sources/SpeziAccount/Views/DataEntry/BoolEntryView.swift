@@ -50,15 +50,15 @@ extension AccountKey where Value == Bool {
 
 #if DEBUG
 #Preview {
-    @State var value = false
-    return Form {
+    @Previewable @State var value = false
+    Form {
         BoolEntryView<MockBoolKey>($value)
     }
 }
 
 #Preview {
-    @State var value = true
-    return Form {
+    @Previewable @State var value = true
+    Form {
         BoolEntryView<MockBoolKey>($value)
     }
 }

@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 
 //
 // This source file is part of the Spezi open source project
@@ -13,13 +13,6 @@ import class Foundation.ProcessInfo
 import PackageDescription
 
 
-#if swift(<6)
-let swiftConcurrency: SwiftSetting = .enableExperimentalFeature("StrictConcurrency")
-#else
-let swiftConcurrency: SwiftSetting = .enableUpcomingFeature("StrictConcurrency")
-#endif
-
-
 let package = Package(
     name: "SpeziAccount",
     defaultLocalization: "en",
@@ -32,15 +25,15 @@ let package = Package(
         .library(name: "SpeziAccount", targets: ["SpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation", from: "2.0.0-beta.2"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi", from: "1.7.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews", from: "1.6.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage", from: "1.2.0"),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions", from: "1.1.1"),
-        .package(url: "https://github.com/apple/swift-collections", from: "1.1.2"),
-        .package(url: "https://github.com/apple/swift-atomics", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax", from: "510.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0")
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0-beta.2"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.6.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.2.0"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-prerelease-2024-08-14"),
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
@@ -49,9 +42,6 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftDiagnostics", package: "swift-syntax")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         ),
@@ -73,9 +63,6 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -87,9 +74,6 @@ let package = Package(
                 .product(name: "XCTSpezi", package: "Spezi"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
-            swiftSettings: [
-                swiftConcurrency
-            ],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -98,9 +82,6 @@ let package = Package(
                 "SpeziAccountMacros",
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
-            ],
-            swiftSettings: [
-                swiftConcurrency
             ],
             plugins: [] + swiftLintPlugin()
         )

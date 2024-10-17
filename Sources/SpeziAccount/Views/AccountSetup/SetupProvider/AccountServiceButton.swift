@@ -11,7 +11,7 @@ import SwiftUI
 
 
 public struct AccountServiceButton<Label: View>: View {
-    private let action: () async throws -> Void
+    private let action: @MainActor () async throws -> Void
     private let label: Label
 
     @Binding private var state: ViewState
@@ -31,7 +31,7 @@ public struct AccountServiceButton<Label: View>: View {
     public init(
         _ titleKey: LocalizedStringResource,
         systemImage: String = "person.crop.square",
-        action: @escaping () async -> Void
+        action: @escaping @MainActor  () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(titleKey, systemImage: systemImage, state: .constant(.idle), action: action)
     }
@@ -40,7 +40,7 @@ public struct AccountServiceButton<Label: View>: View {
         _ titleKey: LocalizedStringResource,
         systemImage: String = "person.crop.square",
         state: Binding<ViewState>,
-        action: @escaping () async throws -> Void
+        action: @escaping @MainActor  () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
             SwiftUI.Label {
@@ -54,7 +54,7 @@ public struct AccountServiceButton<Label: View>: View {
     public init(
         _ titleKey: LocalizedStringResource,
         image: ImageResource,
-        action: @escaping () async -> Void
+        action: @escaping @MainActor () async -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(titleKey, image: image, state: .constant(.idle), action: action)
     }
@@ -63,7 +63,7 @@ public struct AccountServiceButton<Label: View>: View {
         _ titleKey: LocalizedStringResource,
         image: ImageResource,
         state: Binding<ViewState>,
-        action: @escaping () async throws -> Void
+        action: @escaping @MainActor () async throws -> Void
     ) where Label == SwiftUI.Label<Text, Image> {
         self.init(state: state, action: action) {
             SwiftUI.Label {
@@ -75,7 +75,7 @@ public struct AccountServiceButton<Label: View>: View {
     }
 
     public init(
-        action: @escaping () async -> Void,
+        action: @escaping @MainActor () async -> Void,
         @ViewBuilder label: () -> Label
     ) {
         self.init(state: .constant(.idle), action: action, label: label)
@@ -83,7 +83,7 @@ public struct AccountServiceButton<Label: View>: View {
 
     public init(
         state: Binding<ViewState>,
-        action: @escaping () async throws -> Void,
+        action: @escaping @MainActor () async throws -> Void,
         @ViewBuilder label: () -> Label
     ) {
         self.action = action

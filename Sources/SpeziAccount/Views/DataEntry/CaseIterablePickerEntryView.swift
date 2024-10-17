@@ -87,9 +87,9 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 
 #if DEBUG
 #Preview {
-    @State var genderIdentity: GenderIdentity = .male
+    @Previewable @State var genderIdentity: GenderIdentity = .male
 
-    return Form {
+    Form {
         Grid {
             CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
         }
@@ -97,9 +97,9 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 }
 
 #Preview {
-    @State var genderIdentity: GenderIdentity = .male
+    @Previewable @State var genderIdentity: GenderIdentity = .male
 
-    return Grid {
+    Grid {
         CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
     }
         .padding(32)

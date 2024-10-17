@@ -26,7 +26,7 @@ extension AccountKeyMacro: AccessorMacro {
         guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
               let binding = variableDeclaration.bindings.first,
               let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            throw DiagnosticsError(syntax: declaration, message: "'@AccountKey' was unable to determine the property name", id: .invalidSyntax)
+            return [] // diagnostic is provided by the peer macro expansion
         }
 
         let getAccessor: AccessorDeclSyntax =
@@ -53,14 +53,48 @@ extension AccountKeyMacro: PeerMacro {
         providingPeersOf declaration: some DeclSyntaxProtocol,
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self),
-              let binding = variableDeclaration.bindings.first,
-              let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
-            throw DiagnosticsError(syntax: declaration, message: "'@AccountKey' was unable to determine the property name", id: .invalidSyntax)
+        guard let variableDeclaration = declaration.as(VariableDeclSyntax.self) else {
+            throw DiagnosticsError(syntax: declaration, message: "'@AccountKey' can only be applied to a 'var' declaration", id: .invalidSyntax)
         }
 
+        guard let binding = variableDeclaration.bindings.first,
+              variableDeclaration.bindings.count == 1 else {
+            throw DiagnosticsError(
+                syntax: declaration,
+                message: "'@AccountKey' can only be applied to a 'var' declaration with a single binding",
+                id: .invalidSyntax
+            )
+        }
+
+        guard let identifier = binding.pattern.as(IdentifierPatternSyntax.self)?.identifier else {
+            throw DiagnosticsError(
+                syntax: declaration,
+                message: "'@AccountKey' can only be applied to a 'var' declaration with a simple name",
+                id: .invalidSyntax
+            )
+        }
+
+#if compiler(>=6)
+        // with previous compilers the `lexicalContext` is empty
+        guard let rootContext = context.lexicalContext.first,
+              let extensionDecl = rootContext.as(ExtensionDeclSyntax.self),
+              let extendedTypeIdentifier = extensionDecl.extendedType.as(IdentifierTypeSyntax.self),
+              let extensionIdentifier = extendedTypeIdentifier.name.identifier,
+              extensionIdentifier.name == "AccountDetails" else {
+            throw DiagnosticsError(
+                syntax: declaration,
+                message: "'@AccountKey' can only be applied to 'var' declarations inside of an extension to 'AccountDetails'",
+                id: .invalidSyntax
+            )
+        }
+#endif
+
         guard let typeAnnotation = binding.typeAnnotation else {
-            throw DiagnosticsError(syntax: binding, message: "Variable binding is missing the type annotation", id: .invalidSyntax)
+            throw DiagnosticsError(syntax: binding, message: "Variable binding is missing a type annotation", id: .invalidSyntax)
+        }
+
+        if let initializer = binding.initializer {
+            throw DiagnosticsError(syntax: initializer, message: "Variable binding cannot have a initializer", id: .invalidSyntax)
         }
 
         guard case let .argumentList(argumentList) = node.arguments else {
@@ -108,7 +142,7 @@ extension AccountKeyMacro: PeerMacro {
 
 
         let modifier: TokenSyntax? = variableDeclaration.modifiers
-            .compactMap { modifier in
+            .compactMap { (modifier: DeclModifierSyntax) -> TokenSyntax? in
                 guard case let .keyword(keyword) = modifier.name.tokenKind else {
                     return nil
                 }
