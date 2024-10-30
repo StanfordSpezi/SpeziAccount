@@ -8,6 +8,7 @@
 
 import XCTest
 import XCTestExtensions
+import XCTSpeziAccount
 
 
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
@@ -62,7 +63,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 #if !os(visionOS)
         // on visionOS we are currently unable to tap on date pickers :)
-        app.changeDatePreviousMonthFirstDay()
+        app.changeDateOfBirth()
 #endif
 
         XCTAssertTrue(app.buttons["Add Biography"].exists)

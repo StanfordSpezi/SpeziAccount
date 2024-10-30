@@ -1,7 +1,7 @@
 //
 // This source file is part of the Spezi open-source project
 //
-// SPDX-FileCopyrightText: 2023 Stanford University and the project authors (see CONTRIBUTORS.md)
+// SPDX-FileCopyrightText: 2024 Stanford University and the project authors (see CONTRIBUTORS.md)
 //
 // SPDX-License-Identifier: MIT
 //
@@ -10,7 +10,9 @@ import XCTest
 
 
 extension XCUIApplication {
-    func closeSignupForm(discardChangesIfAsked: Bool = true) throws {
+    /// Close the signup form.
+    /// - Parameter discardChangesIfAsked: Confirms to discard all changes if attempting to close the signup form while data was already entered.
+    public func closeSignupForm(discardChangesIfAsked: Bool = true) throws {
         XCTAssertTrue(navigationBars.buttons["Close"].exists)
         try XCTUnwrap(navigationBars.buttons.matching(identifier: "Close").allElementsBoundByIndex.last).tap()
 
@@ -19,14 +21,20 @@ extension XCUIApplication {
             buttons["Discard Input"].tap()
         }
     }
-
-    func fillSignupForm(
+    
+    /// Fill out the signup form.
+    /// - Parameters:
+    ///   - email: The email address to use.
+    ///   - password: The password to use.
+    ///   - name: Optional name.
+    ///   - genderIdentity: Optional gender identity.
+    ///   - supplyDateOfBirth: Optional, specify a date of birth. If `true` this makes sure a date of birth is specified. Typically it will select the first day of the previous month.
+    public func fillSignupForm(
         email: String,
         password: String,
         name: PersonNameComponents? = nil,
         genderIdentity: String? = nil,
-        supplyDateOfBirth: Bool = false,
-        biography: String? = nil
+        supplyDateOfBirth: Bool = false
     ) throws {
         // we access through collectionViews as there is another E-Mail Address and Password field behind the signup sheet
         XCTAssertTrue(collectionViews.textFields["E-Mail Address"].exists, "Couldn't locate E-Mail Address field")
@@ -44,8 +52,8 @@ extension XCUIApplication {
             }
 
 #if os(visionOS)
-            if genderIdentity != nil || supplyDateOfBirth || biography != nil {
-                scrollUpInSetup()
+            if genderIdentity != nil || supplyDateOfBirth {
+                scrollUpInSignupForm()
             }
 #endif
         }
@@ -56,11 +64,27 @@ extension XCUIApplication {
         }
 
         if supplyDateOfBirth {
-            self.changeDatePreviousMonthFirstDay()
-        }
-
-        if let biography {
-            try textFields["Biography"].enter(value: biography)
+            self.changeDateOfBirth()
         }
     }
+}
+
+
+extension XCUIApplication {
+#if os(visionOS)
+    /// Scrolls up in the  `SignupForm` on visionOS platforms.
+    public func scrollUpInSignupForm() {
+        // swipeUp doesn't work on visionOS, so we improvise
+
+        if staticTexts["Name"].waitForExistence(timeout: 2.0) {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else if staticTexts["Personal Details"].exists {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else {
+            XCTFail("Could not scroll on visionOS")
+        }
+    }
+#endif
 }

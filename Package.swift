@@ -22,14 +22,16 @@ let package = Package(
         .visionOS(.v1)
     ],
     products: [
-        .library(name: "SpeziAccount", targets: ["SpeziAccount"])
+        .library(name: "SpeziAccount", targets: ["SpeziAccount"]),
+        .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0-beta.2"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.6.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.7.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.2.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
+        .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-prerelease-2024-08-14"),
@@ -62,6 +64,14 @@ let package = Package(
             ],
             resources: [
                 .process("Resources")
+            ],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "XCTSpeziAccount",
+            dependencies: [
+                .target(name: "SpeziAccount"),
+                .product(name: "XCTestExtensions", package: "XCTestExtensions")
             ],
             plugins: [] + swiftLintPlugin()
         ),

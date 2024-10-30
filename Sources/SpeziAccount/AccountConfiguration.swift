@@ -19,7 +19,7 @@ import XCTRuntimeAssertions
 /// using the `@Dependency` property wrapper from other Spezi `Module`s.
 ///
 /// - Note: For more information on how to provide an ``AccountService`` refer to the <doc:Creating-your-own-Account-Service> article.
-public final class AccountConfiguration<Service: AccountService> {
+public final class AccountConfiguration {
     @Application(\.logger)
     private var logger
 
@@ -27,10 +27,10 @@ public final class AccountConfiguration<Service: AccountService> {
     var account
     @Dependency(ExternalAccountStorage.self)
     private var externalStorage
-    @Dependency(Service.self)
-    private var accountService
 
+    @Dependency private var accountService: [any Module]
     @Dependency private var storageProvider: [any Module]
+
     @StandardActor private var standard: any Standard
 
 
@@ -43,7 +43,7 @@ public final class AccountConfiguration<Service: AccountService> {
     /// - Parameters:
     ///   - service: The `AccountService` to use with the framework.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    public convenience init(
+    public convenience init<Service: AccountService>(
         service: Service,
         configuration: AccountValueConfiguration
     ) {
@@ -59,7 +59,7 @@ public final class AccountConfiguration<Service: AccountService> {
     ///   - service: The `AccountService` to use with the framework.
     ///   - storageProvider: The storage provider that will be used to store additional account details.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
-    public convenience init<Storage: AccountStorageProvider>(
+    public convenience init<Service: AccountService, Storage: AccountStorageProvider>(
         service: Service,
         storageProvider: Storage,
         configuration: AccountValueConfiguration
@@ -77,7 +77,7 @@ public final class AccountConfiguration<Service: AccountService> {
     ///   - service: The `AccountService` to use with the framework.
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     @_spi(TestingSupport)
-    public convenience init(
+    public convenience init<Service: AccountService>(
         service: Service
     ) {
         self.init(accountService: service, configuration: .default)
@@ -93,7 +93,7 @@ public final class AccountConfiguration<Service: AccountService> {
     /// - Parameters:
     ///   - service: The `AccountService` to use with the framework.
     ///   - storageProvider: The storage provider that will be used to store additional account details.
-    public convenience init<Storage: AccountStorageProvider>(
+    public convenience init<Service: AccountService, Storage: AccountStorageProvider>(
         service: Service,
         storageProvider: Storage
     ) {
@@ -107,7 +107,7 @@ public final class AccountConfiguration<Service: AccountService> {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
-    public convenience init( // swiftlint:disable:this function_default_parameter_at_end
+    public convenience init<Service: AccountService>( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,
         configuration: AccountValueConfiguration = .default,
         activeDetails: AccountDetails
@@ -123,7 +123,7 @@ public final class AccountConfiguration<Service: AccountService> {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
-    public convenience init<Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
+    public convenience init<Service: AccountService, Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
         service: Service,
         storageProvider: Storage,
         configuration: AccountValueConfiguration = .default,
@@ -132,13 +132,15 @@ public final class AccountConfiguration<Service: AccountService> {
         self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
-    init( // swiftlint:disable:this function_default_parameter_at_end
+    init<Service: AccountService>( // swiftlint:disable:this function_default_parameter_at_end
         accountService: Service,
         storageProvider: (any AccountStorageProvider)? = nil,
         configuration: AccountValueConfiguration,
         defaultActiveDetails: AccountDetails? = nil
     ) {
-        self._accountService = Dependency(load: accountService)
+        self._accountService = Dependency {
+            accountService
+        }
         self._storageProvider = Dependency {
             if let storageProvider {
                 storageProvider
@@ -156,15 +158,20 @@ public final class AccountConfiguration<Service: AccountService> {
     /// Configure the module.
     @MainActor
     public func configure() {
+        guard let service = accountService.first as? AccountService,
+              accountService.count == 1 else {
+            preconditionFailure("Unexpected error when trying to configure account service.")
+        }
+
         // Verify account service can store all configured account keys.
         // If applicable, wraps the service into an StandardBackedAccountService
-        verify(configurationRequirements: account.configuration, against: accountService)
+        verify(configurationRequirements: account.configuration, against: service)
     }
 
     @MainActor
     private func verify(
         configurationRequirements configuration: AccountValueConfiguration,
-        against service: Service
+        against service: any AccountService
     ) {
         logger.debug("Checking \(service.description) against the configured account keys.")
 

@@ -21,7 +21,7 @@ jobs:
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziAccount
+      scheme: SpeziAccount-Package
       artifactname: SpeziAccount.xcresult
       resultBundle: SpeziAccount.xcresult
   buildandtest_macos:
@@ -29,7 +29,7 @@ jobs:
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziAccount
+      scheme: SpeziAccount-Package
       destination: 'platform=macOS,arch=arm64'
       artifactname: SpeziAccount-macOS.xcresult
       resultBundle: SpeziAccount-macOS.xcresult
@@ -38,7 +38,7 @@ jobs:
     uses: StanfordSpezi/.github/.github/workflows/xcodebuild-or-fastlane.yml@v2
     with:
       runsonlabels: '["macOS", "self-hosted"]'
-      scheme: SpeziAccount
+      scheme: SpeziAccount-Package
       destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
       resultBundle: SpeziAccount-visionOS.xcresult
       artifactname: SpeziAccount-visionOS.xcresult

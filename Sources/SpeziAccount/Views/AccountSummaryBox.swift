@@ -68,36 +68,22 @@ struct AccountSummaryBox: View {
 
 #if DEBUG
 #Preview {
-    var emailDetails = AccountDetails()
-    emailDetails.userId = "lelandstanford@stanford.edu"
-    emailDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return AccountSummaryBox(details: emailDetails)
+    AccountSummaryBox(details: .createMock())
         .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
-    var usernameDetails = AccountDetails()
-    usernameDetails.userId = "leland.stanford"
-    usernameDetails.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-
-    return AccountSummaryBox(details: usernameDetails)
+    AccountSummaryBox(details: .createMock(userId: "leland.stanford"))
         .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
-    var usernameWithoutNameDetails = AccountDetails()
-    usernameWithoutNameDetails.userId = "leland.stanford"
-
-    return AccountSummaryBox(details: usernameWithoutNameDetails)
+    AccountSummaryBox(details: .createMock(userId: "leland.stanford", name: nil))
         .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 
 #Preview {
-    var emailOnlyDetails = AccountDetails()
-    emailOnlyDetails.userId = "lelandstanford@stanford.edu"
-
-    return AccountSummaryBox(details: emailOnlyDetails)
+    AccountSummaryBox(details: .createMock(name: nil))
         .padding(.horizontal, ViewSizing.innerHorizontalPadding)
 }
 #endif

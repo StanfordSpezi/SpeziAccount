@@ -7,34 +7,33 @@
 //
 
 import XCTest
+import XCTSpeziAccount
 
 
 extension XCUIApplication {
-    func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
-        try login(userId: email, password: password, field: "E-Mail Address")
-    }
-
-    func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password) throws {
-        try login(userId: username, password: password, field: "Username")
-    }
-
-
-    private func login<UserId: StringProtocol, Password: StringProtocol>(userId: UserId, password: Password, field: String) throws {
-        XCTAssertTrue(textFields[field].exists)
-        XCTAssertTrue(secureTextFields["Password"].exists)
-
-        try textFields[field].enter(value: String(userId))
-        try secureTextFields["Password"].enter(value: String(password))
-
-        XCTAssertTrue(buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
-        XCTAssertTrue(buttons["Login"].isEnabled)
-        buttons["Login"].tap()
-    }
-
     func openSignup() {
         XCTAssertTrue(buttons["Signup"].waitForExistence(timeout: 3.0))
         buttons["Signup"].tap()
 
         XCTAssertTrue(staticTexts["Please fill out the details below to create your new account."].waitForExistence(timeout: 3.0))
+    }
+
+    func fillSignupForm( // swiftlint:disable:this function_default_parameter_at_end
+        email: String,
+        password: String,
+        name: PersonNameComponents? = nil,
+        genderIdentity: String? = nil,
+        supplyDateOfBirth: Bool = false,
+        biography: String
+    ) throws {
+        try fillSignupForm(email: email, password: password, name: name, genderIdentity: genderIdentity, supplyDateOfBirth: supplyDateOfBirth)
+
+#if os(visionOS)
+        if name != nil && genderIdentity == nil && !supplyDateOfBirth {
+            scrollUpInSignupForm() // fillSignupForm didn't scroll, so we need to here
+        }
+#endif
+
+        try textFields["Biography"].enter(value: biography)
     }
 }

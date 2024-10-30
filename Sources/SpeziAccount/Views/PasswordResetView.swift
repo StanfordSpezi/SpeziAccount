@@ -164,9 +164,9 @@ public struct PasswordResetView<SuccessView: View>: View {
         PasswordResetView { userId in
             print("Reset password for \(userId)")
         }
-        .previewWith {
-            AccountConfiguration(service: InMemoryAccountService())
-        }
+            .previewWith {
+                AccountConfiguration(service: InMemoryAccountService())
+            }
     }
 }
 
@@ -175,9 +175,9 @@ public struct PasswordResetView<SuccessView: View>: View {
         PasswordResetView(requestSubmitted: true) { userId in
             print("Reset password for \(userId)")
         }
-        .previewWith {
-            AccountConfiguration(service: InMemoryAccountService())
-        }
+            .previewWith {
+                AccountConfiguration(service: InMemoryAccountService())
+            }
     }
 }
 #endif
