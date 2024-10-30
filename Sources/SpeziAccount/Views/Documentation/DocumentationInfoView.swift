@@ -10,17 +10,18 @@
 import SwiftUI
 
 
-struct DocumentationInfoView: View {
-    private let infoText: Text
+struct DocumentationInfoView<Label: View, Description: View>: View {
+    private let label: Label
+    private let description: Description
     private let url: URL
 
 
     var body: some View {
-        VStack {
-            infoText
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-
+        ContentUnavailableView {
+            label
+        } description: {
+            description
+        } actions: {
             Button {
 #if os(macOS)
                 NSWorkspace.shared.open(url)
@@ -30,20 +31,14 @@ struct DocumentationInfoView: View {
             } label: {
                 Text("OPEN_DOCUMENTATION", bundle: .module)
             }
-                .padding()
         }
     }
 
 
-    init(infoText: Text, url: URL) {
-        self.infoText = infoText
+    init(url: URL, @ViewBuilder label: () -> Label, @ViewBuilder description: () -> Description) {
         self.url = url
-    }
-
-
-    init(infoText: LocalizedStringResource, url: URL) {
-        self.infoText = Text(infoText)
-        self.url = url
+        self.label = label()
+        self.description = description()
     }
 }
 
@@ -52,5 +47,9 @@ struct DocumentationInfoView: View {
     guard let url = URL(string: "https://google.com") else {
         return EmptyView()
     }
-    return DocumentationInfoView(infoText: Text(verbatim: "This is an info text."), url: url)
+    return DocumentationInfoView(url: url) {
+        Text(verbatim: "This is an info text.")
+    } description: {
+        Text(verbatim: "This is more description")
+    }
 }
