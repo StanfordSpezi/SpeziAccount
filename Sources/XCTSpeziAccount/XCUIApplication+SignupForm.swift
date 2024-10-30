@@ -53,7 +53,7 @@ extension XCUIApplication {
 
 #if os(visionOS)
             if genderIdentity != nil || supplyDateOfBirth {
-                scrollUpInSetup()
+                scrollUpInSignupForm()
             }
 #endif
         }
