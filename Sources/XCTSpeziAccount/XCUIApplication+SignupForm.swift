@@ -52,7 +52,7 @@ extension XCUIApplication {
             }
 
 #if os(visionOS)
-            if genderIdentity != nil || supplyDateOfBirth || biography != nil {
+            if genderIdentity != nil || supplyDateOfBirth {
                 scrollUpInSetup()
             }
 #endif
@@ -67,4 +67,24 @@ extension XCUIApplication {
             self.changeDateOfBirth()
         }
     }
+}
+
+
+extension XCUIApplication {
+#if os(visionOS)
+    /// Scrolls up in the  `SignupForm` on visionOS platforms.
+    public func scrollUpInSignupForm() {
+        // swipeUp doesn't work on visionOS, so we improvise
+
+        if staticTexts["Name"].waitForExistence(timeout: 2.0) {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else if staticTexts["Personal Details"].exists {
+            XCTAssertTrue(staticTexts["Create a new Account"].exists)
+            staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
+        } else {
+            XCTFail("Could not scroll on visionOS")
+        }
+    }
+#endif
 }

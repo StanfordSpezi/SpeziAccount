@@ -8,6 +8,7 @@
 
 import XCTest
 import XCTestExtensions
+import XCTSpeziAccount
 
 
 final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_length
@@ -174,7 +175,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         )
 
 #if os(visionOS)
-        app.scrollUpInSetup()
+        app.scrollUpInSignupForm()
 #endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
@@ -282,7 +283,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         try app.collectionViews.secureTextFields["Password"].enter(value: String(password.dropFirst(4)), options: .skipTextFieldSelection)
 
 #if os(visionOS)
-        app.scrollUpInSetup()
+        app.scrollUpInSignupForm()
 #endif
 
         // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
@@ -311,7 +312,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openSignup()
 
 #if os(visionOS)
-        app.scrollUpInSetup()
+        app.scrollUpInSignupForm()
 #endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].exists)
@@ -342,7 +343,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         try app.fillSignupForm(email: Defaults.email, password: Defaults.password)
 
 #if os(visionOS)
-        app.scrollUpInSetup()
+        app.scrollUpInSignupForm()
 #endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
@@ -473,7 +474,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         try app.textFields["enter first name"].delete(count: 6)
 
 #if os(visionOS)
-        app.scrollUpInSetup()
+        app.scrollUpInSignupForm()
 #endif
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
@@ -561,25 +562,6 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.staticTexts["User Id"].exists)
     }
-}
-
-
-extension XCUIApplication {
-#if os(visionOS)
-    func scrollUpInSetup() {
-        // swipeUp doesn't work on visionOS, so we improvise
-
-        if staticTexts["Name"].waitForExistence(timeout: 2.0) {
-            XCTAssertTrue(staticTexts["Create a new Account"].exists)
-            staticTexts["Name"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
-        } else if staticTexts["Personal Details"].exists {
-            XCTAssertTrue(staticTexts["Create a new Account"].exists)
-            staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Create a new Account"].firstMatch)
-        } else {
-            XCTFail("Could not scroll on visionOS")
-        }
-    }
-#endif
 }
 
 

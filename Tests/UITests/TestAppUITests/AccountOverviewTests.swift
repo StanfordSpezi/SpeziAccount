@@ -8,6 +8,7 @@
 
 import XCTest
 import XCTestExtensions
+import XCTSpeziAccount
 
 
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length

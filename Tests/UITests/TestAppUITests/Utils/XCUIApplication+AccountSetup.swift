@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import XCTSpeziAccount
 
 
 extension XCUIApplication {
@@ -17,7 +18,7 @@ extension XCUIApplication {
         XCTAssertTrue(staticTexts["Please fill out the details below to create your new account."].waitForExistence(timeout: 3.0))
     }
 
-    func fillSignupForm(
+    func fillSignupForm( // swiftlint:disable:this function_default_parameter_at_end
         email: String,
         password: String,
         name: PersonNameComponents? = nil,
@@ -25,10 +26,14 @@ extension XCUIApplication {
         supplyDateOfBirth: Bool = false,
         biography: String
     ) throws {
-        fillSignupForm(email: email, password: password, name: name, genderIdentity: genderIdentity, supplyDateOfBirth: supplyDateOfBirth)
+        try fillSignupForm(email: email, password: password, name: name, genderIdentity: genderIdentity, supplyDateOfBirth: supplyDateOfBirth)
 
-        if let biography {
-            try textFields["Biography"].enter(value: biography)
+#if os(visionOS)
+        if name != nil && genderIdentity == nil && !supplyDateOfBirth {
+            scrollUpInSignupForm() // fillSignupForm didn't scroll, so we need to here
         }
+#endif
+
+        try textFields["Biography"].enter(value: biography)
     }
 }

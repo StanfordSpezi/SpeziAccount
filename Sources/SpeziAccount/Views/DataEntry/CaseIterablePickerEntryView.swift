@@ -18,7 +18,7 @@ public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where 
     @Binding private var value: Key.Value
 
     public var body: some View {
-        CaseIterablePicker(Key.name, value: $value)
+        CaseIterablePicker(Key.name, selection: $value)
     }
 
     /// Create a new entry view.
