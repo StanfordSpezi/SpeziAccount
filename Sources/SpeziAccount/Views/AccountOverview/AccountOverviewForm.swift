@@ -12,6 +12,7 @@ import SpeziViews
 import SwiftUI
 
 
+@available(macOS, unavailable)
 struct AccountOverviewForm<AdditionalSections: View>: View {
     private let model: AccountOverviewFormViewModel
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
