@@ -16,7 +16,7 @@ final class DocumentationHintsTests: XCTestCase {
     }
 
     @MainActor
-    func testDocumentationHint(type: ServiceType, button: String, hint: String) throws {
+    func testDocumentationHint(type: ServiceType, button: String, title: String, hint: String) throws {
         let app = XCUIApplication()
         app.launch(serviceType: type)
 
@@ -24,6 +24,8 @@ final class DocumentationHintsTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.buttons[button].tap()
+
+        XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 2.0))
 
         // Note for the `hint`, you have to escape any ' characters!
         let predicate = NSPredicate(format: "label LIKE '\(hint)'") // hint may be longer than 128 characters.
@@ -49,10 +51,8 @@ final class DocumentationHintsTests: XCTestCase {
         try testDocumentationHint(
             type: .empty,
             button: "Account Setup",
-            hint: """
-                  **No Account Services set up.**\\n\\n\
-                  Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!
-                  """
+            title: "No Account Service",
+            hint: "Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
         )
     }
 
@@ -61,10 +61,8 @@ final class DocumentationHintsTests: XCTestCase {
         try testDocumentationHint(
             type: .mail,
             button: "Account Overview",
-            hint: """
-                  **Couldn\\'t find a user account.**\\n\\nThis view requires an active user account.\\n\
-                  Refer to the documentation of the AccountSetup view on how to setup a user account!
-                  """
+            title: "No User Account",
+            hint: "This view requires an active user account.\\nRefer to the documentation of the AccountSetup view on how to setup a user account!"
         )
     }
 }

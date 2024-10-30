@@ -64,11 +64,6 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             .viewStateAlert(state: $destructiveViewState)
             .receiveValidation(in: $validation)
             .focused($isFocused)
-            .overlay {
-                if account.details == nil {
-                    MissingAccountDetailsWarning()
-                }
-            }
             .toolbar {
                 if !isProcessing {
                     ToolbarItem(placement: .cancellationAction) {

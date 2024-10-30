@@ -91,6 +91,9 @@ public struct AccountOverview<AdditionalSections: View>: View {
                     additionalSections
                 }
             }
+            if account.details == nil {
+                MissingAccountDetailsWarning()
+            }
         }
             .onChange(of: account.signedIn, initial: true) {
                 if let details = account.details {
