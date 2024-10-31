@@ -20,10 +20,16 @@ struct MissingAccountDetailsWarning: View {
     }
 
     var body: some View {
-        DocumentationInfoView(
-            infoText: Text("MISSING_ACCOUNT_DETAILS", bundle: .module),
-            url: documentationUrl
-        )
+        DocumentationInfoView(url: documentationUrl) {
+            Label {
+                Text("No User Account", bundle: .module)
+            } icon: {
+                Image(systemName: "richtext.page")
+                    .accessibilityHidden(true)
+            }
+        } description: {
+            Text("MISSING_ACCOUNT_DETAILS", bundle: .module)
+        }
     }
 }
 

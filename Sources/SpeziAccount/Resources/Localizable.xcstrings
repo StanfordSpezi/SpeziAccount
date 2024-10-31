@@ -889,19 +889,19 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "**Kein Benutzerkonto gefunden.**\n\nDiese Oberfläche erfordert ein aktives Benutzerkonto.\nBitte kontaktiere die Dokumentation für die AccountSetup Oberfläche, um ein Benutzerkonto einzurichten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "**Couldn't find a user account.**\n\nThis view requires an active user account.\nRefer to the documentation of the AccountSetup view on how to setup a user account!"
+            "value" : "This view requires an active user account.\nRefer to the documentation of the AccountSetup view on how to setup a user account!"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "**No se pudo encontrar una cuenta de usuario.**\n\nEsta pagina require una cuenta de usuario activa.\n¡Consulte la documentación de la pagina 'AccountSetup' sobre cómo configurar una nueva cuenta de usuario!"
           }
         }
@@ -911,19 +911,19 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "**Es wurden keine Account Services konfiguriert.**\n\nBitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "**No Account Services set up.**\n\nPlease refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
+            "value" : "Please refer to the documentation of the SpeziAccount package on how to set up an AccountService!"
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "**No hay servicios de cuenta configurados.**\n\n¡Por favor, consulte la documentación del paquete SpeziAccount sobre cómo configurar un servicio de cuenta!"
           }
         }
@@ -1016,6 +1016,12 @@
           }
         }
       }
+    },
+    "No Account Service" : {
+
+    },
+    "No User Account" : {
+
     },
     "Numeric Key" : {
       "localizations" : {

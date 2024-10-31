@@ -6,8 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
-import SpeziViews
 import SwiftUI
 
 
@@ -84,36 +82,28 @@ public struct AccountOverview<AdditionalSections: View>: View {
     @Environment(Account.self)
     private var account
 
-    
+    @State private var model: AccountOverviewFormViewModel?
+
     public var body: some View {
-        VStack {
-            if let details = account.details {
-                Form {
-                    // Splitting everything into a separate subview was actually necessary for the EditMode to work.
-                    // Not even the example that Apple provides for the EditMode works. See https://developer.apple.com/forums/thread/716434
-                    AccountOverviewSections(
-                        account: account,
-                        details: details,
-                        close: closeBehavior,
-                        deletion: deletionBehavior
-                    ) {
-                        additionalSections
-                    }
+        ZStack {
+            if let model {
+                AccountOverviewForm(model: model, closeBehavior: closeBehavior, deletionBehavior: deletionBehavior) {
+                    additionalSections
                 }
-                    .padding(.top, -20)
-            } else {
-                Spacer()
+            }
+            if account.details == nil {
                 MissingAccountDetailsWarning()
-                    .padding(.horizontal, ViewSizing.outerHorizontalPadding)
-                Spacer()
-                Spacer()
-                Spacer()
             }
         }
-            .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-#if !os(macOS)
-            .navigationBarTitleDisplayMode(.inline)
-#endif
+            .onChange(of: account.signedIn, initial: true) {
+                if let details = account.details {
+                    if model == nil {
+                        model = AccountOverviewFormViewModel(account: account, details: details)
+                    }
+                } else {
+                    model = nil
+                }
+            }
     }
     
     
