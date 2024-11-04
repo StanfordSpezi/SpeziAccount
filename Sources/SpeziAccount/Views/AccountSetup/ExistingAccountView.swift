@@ -21,26 +21,20 @@ struct ExistingAccountView<Continue: View>: View {
 
     var body: some View {
         VStack {
-            ZStack {
-                VStack {
-                    AccountSummaryBox(details: accountDetails)
-                    Spacer()
-                        .frame(maxHeight: 180)
-                }
+            AccountSummaryBox(details: accountDetails)
+            Spacer()
 
-                VStack {
-                    Spacer()
-                    continueButton
-                    AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
-                        try await account.accountService.logout()
-                    }
-                        .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                        .padding(8)
-                    Spacer()
-                        .frame(height: 20)
-                }
+            continueButton
+
+            AsyncButton(.init("UP_LOGOUT", bundle: .atURL(from: .module)), role: .destructive, state: $viewState) {
+                try await account.accountService.logout()
             }
+                .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+                .padding(8)
+            Spacer()
+                .frame(height: 20)
         }
+            .padding(.top, 80)
             .viewStateAlert(state: $viewState)
     }
 

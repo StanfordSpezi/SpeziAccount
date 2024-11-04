@@ -9,10 +9,10 @@
 import SwiftUI
 
 
-struct FormHeader: View {
+struct FormHeader<Image: View, Title: View, Instructions: View>: View {
     private let image: Image
-    private let title: Text
-    private let instructions: Text
+    private let title: Title
+    private let instructions: Instructions
 
 
     var body: some View {
@@ -37,21 +37,23 @@ struct FormHeader: View {
             .frame(maxWidth: .infinity)
     }
 
-    init(image: Image, title: Text, instructions: Text) {
-        self.image = image
-        self.title = title
-        self.instructions = instructions
+    init(@ViewBuilder image: () -> Image, @ViewBuilder title: () -> Title, @ViewBuilder instructions: () -> Instructions) {
+        self.image = image()
+        self.title = title()
+        self.instructions = instructions()
     }
 }
 
 
 public struct SignupFormHeader: View {
     public var body: some View {
-        FormHeader(
-            image: Image(systemName: "person.fill.badge.plus"), // swiftlint:disable:this accessibility_label_for_image
-            title: Text("UP_SIGNUP_HEADER", bundle: .module),
-            instructions: Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
-        )
+        FormHeader {
+            Image(systemName: "person.fill.badge.plus") // swiftlint:disable:this accessibility_label_for_image
+        } title: {
+            Text("UP_SIGNUP_HEADER", bundle: .module)
+        } instructions: {
+            Text("UP_SIGNUP_INSTRUCTIONS", bundle: .module)
+        }
     }
 
     public init() {}

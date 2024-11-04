@@ -15,11 +15,13 @@ import SwiftUI
 
 struct FollowUpInfoFormHeader: View {
     var body: some View {
-        FormHeader(
-            image: Image(systemName: "person.crop.rectangle.badge.plus"), // swiftlint:disable:this accessibility_label_for_image
-            title: Text("FOLLOW_UP_INFORMATION_TITLE", bundle: .module),
-            instructions: Text("FOLLOW_UP_INFORMATION_INSTRUCTIONS", bundle: .module)
-        )
+        FormHeader {
+            Image(systemName: "person.crop.rectangle.badge.plus") // swiftlint:disable:this accessibility_label_for_image
+        } title: {
+            Text("FOLLOW_UP_INFORMATION_TITLE", bundle: .module)
+        } instructions: {
+            Text("FOLLOW_UP_INFORMATION_INSTRUCTIONS", bundle: .module)
+        }
     }
 
     init() {}
