@@ -70,7 +70,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     @Environment(\.followUpBehavior)
     private var followUpBehavior
 
-    @State private var setupState: AccountSetupState = .presentingSignup
+    @State private var setupState: AccountSetupState = .presentingExistingAccount
     @State private var compliance: SignupProviderCompliance?
     @State private var presentFollowUpSheet = false
     @State private var accountSetupTask: Task<Void, Never>?
