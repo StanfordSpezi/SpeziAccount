@@ -89,11 +89,12 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             }
         }
             .onChange(of: [account.signedIn, account.details?.isAnonymous]) {
-                guard let details = account.details,
-                      !details.isAnonymous,
-                      case .presentingSignup = setupState else {
+                guard case .presentingSignup = setupState,
+                      let details = account.details,
+                      !details.isAnonymous else {
                     return
                 }
+
                 handleSuccessfulSetup(details)
             }
             .onDisappear {
@@ -112,18 +113,12 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 switch setupState {
                 case let .requiringAdditionalInfo(keys):
                     followUpInformationSheet(details, requiredKeys: keys)
-                case .loadingExistingAccount:
+                case .loadingExistingAccount, .presentingSignup:
                     ProgressView()
                 case .presentingExistingAccount:
                     ExistingAccountView(details: details) {
                         continueButton
                     }
-                case .presentingSignup:
-                    ProgressView()
-                        .onAppear {
-                            // if this is shown while there is an associated account, we should show that.
-                            setupState = .presentingExistingAccount
-                        }
                 }
             } else {
                 accountSetupView
@@ -247,6 +242,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
 
     private func handleSetupCompleted(_ details: AccountDetails) {
         setupState = .loadingExistingAccount
+        accountSetupTask?.cancel()
         accountSetupTask = Task { @MainActor in
             await setupCompleteClosure(details)
             setupState = .presentingExistingAccount
