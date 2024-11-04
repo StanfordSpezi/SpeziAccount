@@ -55,6 +55,10 @@ import SwiftUI
 ///
 /// ### Header
 /// - ``DefaultAccountSetupHeader``
+///
+/// ### Setup State
+/// - ``SwiftUICore/EnvironmentValues/accountSetupState``
+/// - ``AccountSetupState``
 @MainActor
 public struct AccountSetup<Header: View, Continue: View>: View {
     private let setupCompleteClosure: @MainActor (AccountDetails) async -> Void
