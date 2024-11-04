@@ -29,19 +29,8 @@ public enum PreferredSetupStyle {
 
 
 extension EnvironmentValues {
-    private struct PreferredSetupStyleKey: EnvironmentKey {
-        static let defaultValue: PreferredSetupStyle = .automatic
-    }
-
     /// The preferred style of presenting account setup views.
-    var preferredSetupStyle: PreferredSetupStyle {
-        get {
-            self[PreferredSetupStyleKey.self]
-        }
-        set {
-            self[PreferredSetupStyleKey.self] = newValue
-        }
-    }
+    @Entry var preferredSetupStyle: PreferredSetupStyle = .automatic
 }
 
 

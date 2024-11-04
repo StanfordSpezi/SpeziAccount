@@ -58,12 +58,5 @@ extension EnvironmentValues {
     /// ## Topics
     ///
     /// - ``PasswordFieldType``
-    public var passwordFieldType: PasswordFieldType {
-        get {
-            self[PasswordFieldTypeKey.self]
-        }
-        set {
-            self[PasswordFieldTypeKey.self] = newValue
-        }
-    }
+    @Entry public var passwordFieldType: PasswordFieldType = .password
 }

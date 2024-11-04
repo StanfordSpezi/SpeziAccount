@@ -52,18 +52,7 @@ extension FollowUpBehavior: Sendable, Hashable {}
 
 
 extension EnvironmentValues {
-    private struct FollowUpBehaviorKey: EnvironmentKey {
-        static let defaultValue: FollowUpBehavior = .automatic
-    }
-
-    var followUpBehavior: FollowUpBehavior {
-        get {
-            self[FollowUpBehaviorKey.self]
-        }
-        set {
-            self[FollowUpBehaviorKey.self] = newValue
-        }
-    }
+    @Entry var followUpBehavior: FollowUpBehavior = .automatic
 }
 
 

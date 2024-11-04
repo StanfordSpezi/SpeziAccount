@@ -16,7 +16,7 @@ import SwiftUI
 public struct DefaultAccountSetupHeader: View {
     @Environment(Account.self)
     private var account
-    @Environment(\._accountSetupState)
+    @Environment(\.accountSetupState)
     private var setupState
 
     public var body: some View {
@@ -29,7 +29,7 @@ public struct DefaultAccountSetupHeader: View {
                 .padding(.top, 30)
 
             Group {
-                if account.signedIn, case .generic = setupState {
+                if account.signedIn, case .presentingExistingAccount = setupState {
                     Text("ACCOUNT_WELCOME_SIGNED_IN_SUBTITLE", bundle: .module)
                 } else {
                     Text("ACCOUNT_WELCOME_SUBTITLE", bundle: .module)

@@ -9,21 +9,9 @@
 import SwiftUI
 
 
-private struct AccountRequiredKey: EnvironmentKey {
-    static let defaultValue = false
-}
-
-
 extension EnvironmentValues {
     /// An environment variable that indicates if an account was configured to be required for the app.
     ///
-    /// Fore more information have a look at ``SwiftUICore/View/accountRequired(_:isValid:setupSheet:)``.
-    public var accountRequired: Bool {
-        get {
-            self[AccountRequiredKey.self]
-        }
-        set {
-            self[AccountRequiredKey.self] = newValue
-        }
-    }
+    /// Fore more information have a look at ``SwiftUICore/View/accountRequired(_:accountSetupIsComplete:setupSheet:)``.
+    @Entry public var accountRequired: Bool = false
 }

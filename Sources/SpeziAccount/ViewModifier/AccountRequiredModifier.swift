@@ -96,6 +96,30 @@ extension View {
     ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
     ///     This view is directly used with the standard SwiftUI sheet modifier.
     /// - Returns: The modified view.
+    @available(*, deprecated, renamed: "accountRequired(_:accountSetupIsComplete:setupSheet:)", message: "Please use the new closure-based modifier.")
+    @_disfavoredOverload // modifier with not parameters supplied should automatically choose the new one
+    @_documentation(visibility: internal)
+    public func accountRequired<SetupSheet: View>(
+        _ required: Bool = true,
+        considerAnonymousAccounts: Bool = false,
+        @ViewBuilder setupSheet: () -> SetupSheet
+    ) -> some View {
+        self.accountRequired(required, accountSetupIsComplete: { !$0.isAnonymous || considerAnonymousAccounts }, setupSheet: setupSheet)
+    }
+
+    /// Use this modifier to ensure that there is always an associated account in your app.
+    ///
+    /// If account requirement is set, this modifier will automatically pop open an account setup sheet if
+    /// it is detected that the associated user account was removed.
+    ///
+    /// - Note: This modifier injects the ``SwiftUICore/EnvironmentValues/accountRequired`` property depending on the `required` argument.
+    ///
+    /// - Parameters:
+    ///   - required: The flag indicating if an account is required at all times.
+    ///   - accountSetupIsComplete: Determine if the account setup is complete. While the account setup is not completed, the `setupSheet` will continue to be presented.
+    ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
+    ///     This view is directly used with the standard SwiftUI sheet modifier.
+    /// - Returns: The modified view.
     public func accountRequired<SetupSheet: View>(
         _ required: Bool = true,
         accountSetupIsComplete: @escaping (AccountDetails) -> Bool = { !$0.isAnonymous },

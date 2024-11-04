@@ -32,9 +32,7 @@ enum DefaultCredentials: String, ExpressibleByArgument {
 
 
 /// A collection of feature flags for the Test App.
-struct Features: ParsableArguments, EnvironmentKey {
-    static let defaultValue = Features()
-
+struct Features: ParsableArguments {
     @Option(help: "Define which type of account services are used for the tests.")
     var serviceType: AccountServiceType = .mail
 
@@ -53,12 +51,5 @@ struct Features: ParsableArguments, EnvironmentKey {
 
 
 extension EnvironmentValues {
-    var features: Features {
-        get {
-            self[Features.self]
-        }
-        set {
-            self[Features.self] = newValue
-        }
-    }
+    @Entry var features: Features = .init()
 }
