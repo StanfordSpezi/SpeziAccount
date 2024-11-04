@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,14 +19,13 @@
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
 		A98739032C64EE6000E17A42 /* EntryViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739022C64EE5F00E17A42 /* EntryViewTests.swift */; };
 		A98739052C64F1BB00E17A42 /* EntryViewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739042C64F1B300E17A42 /* EntryViewsTests.swift */; };
+		A994264B2CD25C50002F8BD5 /* XCTSpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = A994264A2CD25C50002F8BD5 /* XCTSpeziAccount */; };
 		A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */; };
 		A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */; };
 		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
 		A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */; };
 		A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */; };
-		A9B6E4032A9BB2720008B232 /* XCUIApplication+AccountValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */; };
 		A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */; };
-		A9B6E4072A9BB2830008B232 /* XCUIApplication+SignupForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */; };
 		A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */; };
 		A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */; };
 		A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* Features.swift */; };
@@ -63,9 +62,7 @@
 		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiographyKey.swift; sourceTree = "<group>"; };
 		A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStandard.swift; sourceTree = "<group>"; };
-		A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+AccountValues.swift"; sourceTree = "<group>"; };
 		A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+AccountSetup.swift"; sourceTree = "<group>"; };
-		A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+SignupForm.swift"; sourceTree = "<group>"; };
 		A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestApp.swift"; sourceTree = "<group>"; };
 		A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationHintsTests.swift; sourceTree = "<group>"; };
 		A9EE7D292A3359E800C2B9A9 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
@@ -85,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A994264B2CD25C50002F8BD5 /* XCTSpeziAccount in Frameworks */,
 				2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -164,9 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				A9B6E3FA2A9B70360008B232 /* Defaults.swift */,
-				A9B6E4022A9BB2720008B232 /* XCUIApplication+AccountValues.swift */,
 				A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */,
-				A9B6E4062A9BB2830008B232 /* XCUIApplication+SignupForm.swift */,
 				A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */,
 			);
 			path = Utils;
@@ -212,6 +208,7 @@
 			name = TestAppUITests;
 			packageProductDependencies = (
 				2F027C9A29D6C91E00234098 /* XCTestExtensions */,
+				A994264A2CD25C50002F8BD5 /* XCTSpeziAccount */,
 			);
 			productName = ExampleUITests;
 			productReference = 2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */;
@@ -225,7 +222,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1410;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1610;
 				TargetAttributes = {
 					2F6D139128F5F384007C25D6 = {
 						CreatedOnToolsVersion = 14.1;
@@ -238,7 +235,6 @@
 				};
 			};
 			buildConfigurationList = 2F6D138D28F5F384007C25D6 /* Build configuration list for PBXProject "UITests" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -250,6 +246,7 @@
 				2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */,
 				A969240D2A9A198800E2128B /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 2F6D139328F5F384007C25D6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -304,9 +301,7 @@
 				A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */,
 				A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */,
 				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
-				A9B6E4072A9BB2830008B232 /* XCUIApplication+SignupForm.swift in Sources */,
 				A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */,
-				A9B6E4032A9BB2720008B232 /* XCUIApplication+AccountValues.swift in Sources */,
 				A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */,
 				A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */,
 			);
@@ -383,6 +378,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -439,6 +435,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -474,7 +471,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
@@ -511,7 +507,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
@@ -520,7 +515,6 @@
 		2F6D13BD28F5F386007C25D6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -535,7 +529,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = TestApp;
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -545,7 +538,6 @@
 		2F6D13BE28F5F386007C25D6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -559,7 +551,6 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = TestApp;
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -626,6 +617,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TEST;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Test;
 		};
@@ -660,7 +652,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
@@ -669,7 +660,6 @@
 		A94FDCE32AFC4A86008026CE /* Test */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -684,7 +674,6 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_TARGET_NAME = TestApp;
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -729,7 +718,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		2F027C9929D6C91D00234098 /* XCRemoteSwiftPackageReference "XCTestExtensions" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/StanfordSpezi/XCTestExtensions";
+			repositoryURL = "https://github.com/StanfordBDHG/XCTestExtensions";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
@@ -759,6 +748,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = A969240D2A9A198800E2128B /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
+		};
+		A994264A2CD25C50002F8BD5 /* XCTSpeziAccount */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = XCTSpeziAccount;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -226,14 +226,11 @@ extension FollowUpInfoSheet.CancelBehavior {
 #if DEBUG
 private let keys: [any AccountKey.Type] = [AccountKeys.name]
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-
-    return NavigationStack {
+    NavigationStack {
         FollowUpInfoSheet(keys: keys)
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(name: nil))
         }
 }
 #endif

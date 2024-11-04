@@ -7,59 +7,18 @@
 //
 
 import SpeziFoundation
+import SpeziViews
 import SwiftUI
-
-
-/// A account value that can be rendered as a picker (like enum values).
-///
-/// In order to provide an Automatic Picker ``DataEntryView``, conform your enum to [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable)
-/// to enumerate all cases, [`CustomLocalizedStringResourceConvertible`](https://developer.apple.com/documentation/foundation/customlocalizedstringresourceconvertible)
-/// to provide a localizable representation for each case and [`Hashable`](https://developer.apple.com/documentation/swift/hashable)
-/// to differentiate cases.
-public typealias PickerValue = CaseIterable & CustomLocalizedStringResourceConvertible & Hashable
-
-
-struct CaseIterablePicker<Value: PickerValue, Label: View>: View where Value.AllCases: RandomAccessCollection {
-    private let label: Label
-
-    @Binding private var value: Value
-
-
-    var body: some View {
-        Picker(selection: $value) {
-            ForEach(Value.allCases, id: \.hashValue) { value in
-                Text(value.localizedStringResource)
-                    .tag(value)
-            }
-        } label: {
-            label
-        }
-    }
-
-    init(value: Binding<Value>, @ViewBuilder label: () -> Label) {
-        self._value = value
-        self.label = label()
-    }
-
-    init(_ titleKey: LocalizedStringResource, value: Binding<Value>) where Label == Text {
-        self.init(value: value) {
-            Text(titleKey)
-        }
-    }
-}
 
 
 /// Entry or modify the value of an `PickerValue`-based `AccountKey`.
 ///
-/// For more information, refer to the documentation of ``PickerValue``.
-///
-/// ## Topics
-/// - ``PickerValue``
+/// For more information, refer to the documentation of `PickerValue`.
 public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where Key.Value: PickerValue, Key.Value.AllCases: RandomAccessCollection {
     @Binding private var value: Key.Value
 
     public var body: some View {
-        CaseIterablePicker(Key.name, value: $value)
+        CaseIterablePicker(Key.name, selection: $value)
     }
 
     /// Create a new entry view.
@@ -80,16 +39,16 @@ public struct CaseIterablePickerEntryView<Key: AccountKey>: DataEntryView where 
 
 
 extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessCollection {
-    /// Default DataEntry view for Values that conform to ``PickerValue`` (typically useful with enums)
+    /// Default DataEntry view for Values that conform to `PickerValue` (typically useful with enums)
     public typealias DataEntry = CaseIterablePickerEntryView<Self>
 }
 
 
 #if DEBUG
 #Preview {
-    @State var genderIdentity: GenderIdentity = .male
+    @Previewable @State var genderIdentity: GenderIdentity = .male
 
-    return Form {
+    Form {
         Grid {
             CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
         }
@@ -97,9 +56,9 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
 }
 
 #Preview {
-    @State var genderIdentity: GenderIdentity = .male
+    @Previewable @State var genderIdentity: GenderIdentity = .male
 
-    return Grid {
+    Grid {
         CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
     }
         .padding(32)

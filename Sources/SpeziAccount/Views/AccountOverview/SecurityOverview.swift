@@ -75,18 +75,13 @@ struct SecurityOverview: View {
 
 #if DEBUG && !os(macOS)
 #Preview {
-    var details = AccountDetails()
-    details.userId = "lelandstanford@stanford.edu"
-    details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
-    details.genderIdentity = .male
-
-    return NavigationStack {
+    NavigationStack {
         AccountDetailsReader { account, details in
             SecurityOverview(model: AccountOverviewFormViewModel(account: account, details: details), details: details)
         }
     }
         .previewWith {
-            AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)
+            AccountConfiguration(service: InMemoryAccountService(), activeDetails: .createMock(genderIdentity: .male))
         }
 }
 #endif

@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import Spezi
 import SwiftUI
 
 
@@ -21,10 +20,16 @@ struct EmptyServicesWarning: View {
     }
 
     var body: some View {
-        DocumentationInfoView(
-            infoText: Text("MISSING_ACCOUNT_SERVICES", bundle: .module),
-            url: documentationUrl
-        )
+        DocumentationInfoView(url: documentationUrl) {
+            Label {
+                Text("No Account Service", bundle: .module)
+            } icon: {
+                Image(systemName: "richtext.page")
+                    .accessibilityHidden(true)
+            }
+        } description: {
+            Text("MISSING_ACCOUNT_SERVICES", bundle: .module)
+        }
     }
 }
 

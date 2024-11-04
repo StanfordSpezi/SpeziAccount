@@ -8,6 +8,7 @@
 
 import XCTest
 import XCTestExtensions
+import XCTSpeziAccount
 
 
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
@@ -36,11 +37,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
         XCTAssertTrue(app.staticTexts["Date of Birth, Mar 9, 1824"].exists)
 
-        XCTAssertTrue(app.staticTexts["License Information"].exists)
-
 #if os(visionOS)
         app.scrollUpInOverview()
 #endif
+        XCTAssertTrue(app.staticTexts["License Information"].exists)
         XCTAssertTrue(app.buttons["Logout"].exists)
     }
 
@@ -62,7 +62,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 #if !os(visionOS)
         // on visionOS we are currently unable to tap on date pickers :)
-        app.changeDatePreviousMonthFirstDay()
+        app.changeDateOfBirth()
 #endif
 
         XCTAssertTrue(app.buttons["Add Biography"].exists)
@@ -381,6 +381,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountOverview()
+
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
 
         XCTAssertTrue(app.buttons["License Information"].exists)
         app.buttons["License Information"].tap()
