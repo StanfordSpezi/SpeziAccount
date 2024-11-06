@@ -181,7 +181,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
     ///     displayed with an already associated account.
     public init(
-        setupComplete: @MainActor @escaping (AccountDetails) async -> Void,
+        setupComplete: @MainActor @escaping (AccountDetails) async -> Void = { _ in },
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
     ) {
