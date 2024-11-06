@@ -164,6 +164,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
     
 
+    // for preview purposes
     fileprivate init(state: AccountSetupState) where Header == DefaultAccountSetupHeader, Continue == EmptyView {
         self.setupCompleteClosure = { _ in }
         self.header = DefaultAccountSetupHeader()
@@ -180,7 +181,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     ///   - continue: A custom continue button you can place. This view will be rendered if the AccountSetup view is
     ///     displayed with an already associated account.
     public init(
-        setupComplete: @MainActor @escaping (AccountDetails) async -> Void = { _ in try? await Task.sleep(for: .seconds(2)) },
+        setupComplete: @MainActor @escaping (AccountDetails) async -> Void,
         @ViewBuilder header: () -> Header = { DefaultAccountSetupHeader() },
         @ViewBuilder `continue`: () -> Continue = { EmptyView() }
     ) {
@@ -241,10 +242,18 @@ public struct AccountSetup<Header: View, Continue: View>: View {
     }
 
     private func handleSetupCompleted(_ details: AccountDetails) {
+        guard accountSetupTask == nil else {
+            return // already in progress
+        }
+
         setupState = .loadingExistingAccount
-        accountSetupTask?.cancel()
         accountSetupTask = Task { @MainActor in
+            defer {
+                accountSetupTask = nil
+            }
+
             await setupCompleteClosure(details)
+            try? await Task.sleep(for: .seconds(2))
             setupState = .presentingExistingAccount
         }
     }
