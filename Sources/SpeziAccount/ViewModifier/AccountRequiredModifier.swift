@@ -15,8 +15,8 @@ private let logger = Logger(subsystem: "edu.stanford.spezi.SpeziAccount", catego
 
 struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
     private let enabled: Bool
+    private let accountSetupIsComplete: (AccountDetails) -> Bool
     private let setupSheet: SetupSheet
-    private let considerAnonymousAccounts: Bool
 
     @Environment(Account.self)
     private var account: Account? // make sure that the modifier can be used when account is not configured
@@ -32,15 +32,19 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
             return true // not signedIn
         }
 
-        // we present the sheet if the account is anonymous and we do not consider anonymous accounts to the fully signed in
-        return details.isAnonymous && !considerAnonymousAccounts
+        // we present the sheet if the account is not valid (yet)
+        return !accountSetupIsComplete(details)
     }
 
 
-    init(enabled: Bool, considerAnonymousAccounts: Bool, @ViewBuilder setupSheet: () -> SetupSheet) {
+    init(
+        enabled: Bool,
+        accountSetupIsComplete: @escaping (AccountDetails) -> Bool,
+        @ViewBuilder setupSheet: () -> SetupSheet
+    ) {
         self.enabled = enabled
+        self.accountSetupIsComplete = accountSetupIsComplete
         self.setupSheet = setupSheet()
-        self.considerAnonymousAccounts = considerAnonymousAccounts
     }
 
 
@@ -58,7 +62,7 @@ struct AccountRequiredModifier<SetupSheet: View>: ViewModifier {
 
                 guard account != nil else {
                     logger.error("""
-                                 accountRequired(_:considerAnonymousAccounts:setupSheet:) modifier was enabled but `Account` was not configured. \
+                                 accountRequired(_:isValid:setupSheet:) modifier was enabled but `Account` was not configured. \
                                  Make sure to include the `AccountConfiguration` the configuration section of your App delegate.
                                  """)
                     return
@@ -92,11 +96,41 @@ extension View {
     ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
     ///     This view is directly used with the standard SwiftUI sheet modifier.
     /// - Returns: The modified view.
+    @available(*, deprecated, renamed: "accountRequired(_:accountSetupIsComplete:setupSheet:)", message: "Please use the new closure-based modifier.")
+    @_disfavoredOverload // modifier with not parameters supplied should automatically choose the new one
+    @_documentation(visibility: internal)
     public func accountRequired<SetupSheet: View>(
         _ required: Bool = true,
         considerAnonymousAccounts: Bool = false,
         @ViewBuilder setupSheet: () -> SetupSheet
     ) -> some View {
-        modifier(AccountRequiredModifier(enabled: required, considerAnonymousAccounts: considerAnonymousAccounts, setupSheet: setupSheet))
+        self.accountRequired(required, accountSetupIsComplete: { !$0.isAnonymous || considerAnonymousAccounts }, setupSheet: setupSheet)
+    }
+
+    /// Use this modifier to ensure that there is always an associated account in your app.
+    ///
+    /// If account requirement is set, this modifier will automatically pop open an account setup sheet if
+    /// it is detected that the associated user account was removed.
+    ///
+    /// - Note: This modifier injects the ``SwiftUICore/EnvironmentValues/accountRequired`` property depending on the `required` argument.
+    ///
+    /// - Parameters:
+    ///   - required: The flag indicating if an account is required at all times.
+    ///   - accountSetupIsComplete: Determine if the account setup is complete. While the account setup is not completed, the `setupSheet` will continue to be presented.
+    ///   - setupSheet: The view that is presented if no account was detected. You may present the ``AccountSetup`` view here.
+    ///     This view is directly used with the standard SwiftUI sheet modifier.
+    /// - Returns: The modified view.
+    public func accountRequired<SetupSheet: View>(
+        _ required: Bool = true,
+        accountSetupIsComplete: @escaping (AccountDetails) -> Bool = { !$0.isAnonymous },
+        @ViewBuilder setupSheet: () -> SetupSheet
+    ) -> some View {
+        modifier(
+            AccountRequiredModifier(
+                enabled: required,
+                accountSetupIsComplete: accountSetupIsComplete,
+                setupSheet: setupSheet
+            )
+        )
     }
 }

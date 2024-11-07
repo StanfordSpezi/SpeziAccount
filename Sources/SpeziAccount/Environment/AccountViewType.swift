@@ -58,20 +58,9 @@ extension AccountViewType: Sendable, Hashable {}
 
 
 extension EnvironmentValues {
-    private struct AccountViewTypeKey: EnvironmentKey {
-        static let defaultValue: AccountViewType? = nil
-    }
-
     /// The type of `SpeziAccount` view a ``DataEntryView`` or ``DataDisplayView`` is placed in.
     ///
     /// ## Topics
     /// - ``AccountViewType``
-    public var accountViewType: AccountViewType? {
-        get {
-            self[AccountViewTypeKey.self]
-        }
-        set {
-            self[AccountViewTypeKey.self] = newValue
-        }
-    }
+    @Entry public var accountViewType: AccountViewType?
 }
