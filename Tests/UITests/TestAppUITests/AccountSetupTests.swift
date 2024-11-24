@@ -525,6 +525,29 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     }
 
     @MainActor
+    func testLoginWithAdditionalStorage() throws {
+        // Ensure AccountSetup properly handles the `incomplete` flag
+        // https://github.com/StanfordSpezi/SpeziAccount/pull/79
+
+        let app = XCUIApplication()
+        app.launch(config: .default, credentials: .create, includeInvitationCode: true)
+
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountSetup()
+
+        try app.login(email: Defaults.email, password: Defaults.password)
+
+        // make sure our incomplete error never pops up
+        XCTAssert(app.alerts["Error"].waitForNonExistence(timeout: 5.0))
+
+        // verify we are back at the start screen
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+    }
+
+    @MainActor
     func testAccountRequiredModifier() throws {
         let app = XCUIApplication()
         app.launch(credentials: .createAndSignIn, accountRequired: true)

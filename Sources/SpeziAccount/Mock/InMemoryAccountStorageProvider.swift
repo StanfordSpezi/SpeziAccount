@@ -25,15 +25,15 @@ public actor InMemoryAccountStorageProvider: AccountStorageProvider {
     public func load(_ accountId: String, _ keys: [any AccountKey.Type]) -> AccountDetails? {
         guard let details = cache[accountId] else {
             guard records[accountId] != nil else {
-                return nil
+                return AccountDetails() // no data present
             }
 
             // simulate loading from external storage
             Task {
                 try await Task.sleep(for: .seconds(1))
-                guard let details = records[accountId] else {
-                    return
-                }
+
+                let details = records[accountId] ?? AccountDetails()
+
                 cache[accountId] = details
                 storage.notifyAboutUpdatedDetails(for: accountId, details)
             }

@@ -35,12 +35,16 @@ private struct CopyVisitor: AccountValueVisitor {
         self.allowOverwrite = allowOverwrite
     }
 
-    mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
-        guard allowOverwrite || !details.contains(Key.self) else {
+    static func copyValue<Key: AccountKey>(to destination: inout AccountDetails, for key: Key.Type, value: Key.Value, allowOverwrite: Bool) {
+        guard allowOverwrite || !destination.contains(Key.self) else {
             return
         }
 
-        details.storage.set(key, value: value)
+        destination.set(key, value: value)
+    }
+
+    mutating func visit<Key: AccountKey>(_ key: Key.Type, _ value: Key.Value) {
+        Self.copyValue(to: &details, for: Key.self, value: value, allowOverwrite: allowOverwrite)
     }
 
     func final() -> AccountStorage {
@@ -65,11 +69,7 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
             return
         }
 
-        guard allowOverwrite || !destination.contains(Key.self) else {
-            return
-        }
-
-        destination.storage.set(key, value: value)
+        CopyVisitor.copyValue(to: &destination, for: Key.self, value: value, allowOverwrite: allowOverwrite)
     }
 
     func final() -> AccountStorage {
@@ -121,6 +121,8 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 ///
 /// - ``isAnonymous``
 /// - ``isNewUser``
+/// - ``isIncomplete``
+/// - ``isVerified``
 /// - ``accountServiceConfiguration``
 /// - ``userIdType``
 ///
@@ -353,6 +355,11 @@ extension AccountDetails {
     public mutating func add(contentsOf values: AccountDetails, merge: Bool = false) {
         var visitor = CopyVisitor(self, allowOverwrite: merge)
         storage = values.acceptAll(&visitor)
+
+        // workaround as AccountDetailsFlagsKey is not an accountKey and won't be copied by the above visitor
+        if values.flags.rawValue != 0 {
+            self.flags.formUnion(values.flags)
+        }
     }
 
     /// Add the contents from another account details collection but filter for specific keys only.

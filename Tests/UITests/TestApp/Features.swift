@@ -47,6 +47,9 @@ struct Features: ParsableArguments {
 
     @Flag(help: "Set no name if default credentials are used")
     var noName = false
+
+    @Flag(help: "Include biography in default details")
+    var includeInvitationCode = false
 }
 
 

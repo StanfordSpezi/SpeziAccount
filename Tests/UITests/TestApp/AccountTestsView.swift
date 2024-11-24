@@ -15,6 +15,17 @@ import SwiftUI
 
 @MainActor
 struct AccountTestsView: View {
+    enum TestError: LocalizedError {
+        case incompleteAccount
+
+        var errorDescription: String? {
+            switch self {
+            case .incompleteAccount:
+                "Incomplete Account Details"
+            }
+        }
+    }
+
     @Environment(\.features)
     private var features
     @Environment(InMemoryAccountService.self)
@@ -28,6 +39,8 @@ struct AccountTestsView: View {
     @State private var showSetup = false
     @State private var showOverview = false
     @State private var accountIdFromAnonymousUser: String?
+
+    @State private var setupState: ViewState = .idle
 
     
     var body: some View {
@@ -65,6 +78,10 @@ struct AccountTestsView: View {
                 var details: AccountDetails = .defaultDetails
                 if features.noName {
                     details.remove(AccountKeys.name)
+                }
+
+                if features.includeInvitationCode {
+                    details.invitationCode = "123456789"
                 }
 
                 do {
@@ -150,11 +167,16 @@ struct AccountTestsView: View {
     @ViewBuilder
     func setupSheet(closeable: Bool = true) -> some View {
         NavigationStack {
-            AccountSetup { _ in
-                showSetup = false
+            AccountSetup { details in
+                if details.isIncomplete {
+                    setupState = .error(TestError.incompleteAccount)
+                } else {
+                    showSetup = false
+                }
             } continue: {
                 finishButton
             }
+                .viewStateAlert(state: $setupState)
                 .toolbar {
                     if closeable {
                         toolbar(closing: $showSetup)

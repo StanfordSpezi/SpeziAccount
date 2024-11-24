@@ -9,7 +9,7 @@
 import SpeziFoundation
 
 
-private struct AccountDetailsFlags: OptionSet, Sendable {
+struct AccountDetailsFlags: OptionSet, Sendable {
     let rawValue: UInt16
 
     init(rawValue: UInt16) {
@@ -34,7 +34,7 @@ extension AccountDetails {
         static let defaultValue: AccountDetailsFlags = []
     }
 
-    fileprivate var flags: AccountDetailsFlags {
+    var flags: AccountDetailsFlags {
         get {
             self[AccountDetailsFlagsKey.self]
         }

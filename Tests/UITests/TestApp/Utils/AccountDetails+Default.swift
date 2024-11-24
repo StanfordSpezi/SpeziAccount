@@ -18,12 +18,18 @@ extension AccountDetails {
         .day(.twoDigits)
 
     static var defaultDetails: AccountDetails {
+        let date: Date
+        do {
+            date = try Date("09.03.1824", strategy: dateStyle)
+        } catch {
+            preconditionFailure("Failed to parse date: \(error)")
+        }
         var details = AccountDetails()
         details.userId = "lelandstanford@stanford.edu"
         details.password = "StanfordRocks123!"
         details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
         details.genderIdentity = .male
-        details.dateOfBirth = try? Date("09.03.1824", strategy: dateStyle)
+        details.dateOfBirth = date
         return details
     }
 }
