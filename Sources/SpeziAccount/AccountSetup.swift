@@ -92,7 +92,8 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 guard case .presentingSignup = setupState,
                       let details = account.details,
                       !details.isAnonymous,
-                      !details.isIncomplete else {
+                      !details.isIncomplete // make sure all details are loaded from the storage provider
+                else {
                     return
                 }
 

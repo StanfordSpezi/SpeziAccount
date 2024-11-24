@@ -366,7 +366,7 @@ public final class InMemoryAccountService: AccountService {
         if !unsupportedKeys.isEmpty {
             let externalStorage = externalStorage
             let externallyStored = await externalStorage.retrieveExternalStorage(for: user.accountId.uuidString, unsupportedKeys)
-            details.add(contentsOf: externallyStored)
+            details.add(contentsOf: externallyStored) // TODO: we do not allow to overwrite flags here!
         }
 
         account.supplyUserDetails(details)
