@@ -88,10 +88,11 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onChange(of: [account.signedIn, account.details?.isAnonymous]) {
+            .onChange(of: [account.signedIn, account.details?.isAnonymous, account.details?.isIncomplete]) {
                 guard case .presentingSignup = setupState,
                       let details = account.details,
-                      !details.isAnonymous else {
+                      !details.isAnonymous,
+                      !details.isIncomplete else {
                     return
                 }
 
