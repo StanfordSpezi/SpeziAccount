@@ -34,7 +34,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-prerelease-2024-08-14"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
     ] + swiftLintPackage(),
     targets: [

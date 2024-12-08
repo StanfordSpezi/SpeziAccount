@@ -94,7 +94,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "createAndSignIn"
+            argument = "create"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--include-invitation-code"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
