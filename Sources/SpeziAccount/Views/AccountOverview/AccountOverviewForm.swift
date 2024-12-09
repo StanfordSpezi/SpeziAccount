@@ -68,16 +68,21 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 if !isProcessing {
                     ToolbarItem(placement: .cancellationAction) {
                         if editMode?.wrappedValue.isEditing == true {
-                            Button(action: {
+                            Button {
                                 model.cancelEditAction(editMode: editMode)
-                            }) {
+                            } label: {
                                 Text("CANCEL", bundle: .module)
                             }
                         } else {
-                            Button(action: {
-                                dismiss()
-                            }) {
-                                Text("CLOSE", bundle: .module)
+                            switch closeBehavior {
+                            case .disabled:
+                                EmptyView()
+                            case .showCloseButton:
+                                Button {
+                                    dismiss()
+                                } label: {
+                                    Text("CLOSE", bundle: .module)
+                                }
                             }
                         }
                     }
