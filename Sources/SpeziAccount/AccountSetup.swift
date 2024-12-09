@@ -139,7 +139,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             EmptyServicesWarning()
         } else {
             VStack {
-                let components = account.accountSetupComponents.reduce(into: [AccountSetupSection: [any AnyAccountSetupComponent]]()) { dict, component in
+                let components = account.accountSetupComponents.reduce(
+                    into: [AccountSetupSection: [any AnyAccountSetupComponent]]()
+                ) { dict, component in
                     guard component.configuration.isEnabled else {
                         return
                     }
