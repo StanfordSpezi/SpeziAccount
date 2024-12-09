@@ -34,6 +34,7 @@ public protocol AccountStorageProvider: Module {
     ///
     /// - Important: This method call must return immediately. Use `await` suspension only be for synchronization.
     ///     Return `nil` if you couldn't immediately retrieve the externally stored account details.
+    ///     If there is no data stored externally, you need to return an empty ``AccountDetails`` value.
     ///
     /// - Parameters:
     ///   - accountId: The primary identifier for stored record.

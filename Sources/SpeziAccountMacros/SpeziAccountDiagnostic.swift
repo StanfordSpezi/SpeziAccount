@@ -35,10 +35,10 @@ struct SpeziAccountDiagnostic: DiagnosticMessage {
 
 
 extension Diagnostic {
-    init<S: SyntaxProtocol>( // swiftlint:disable:this function_default_parameter_at_end
+    init<S: SyntaxProtocol>(
         syntax: S,
         message: String,
-        domain: String = "SpeziAccount",
+        domain: String = "SpeziAccount", // swiftlint:disable:this function_default_parameter_at_end
         id: SpeziAccountDiagnostic.ID,
         severity: SwiftDiagnostics.DiagnosticSeverity = .error
     ) {
@@ -48,10 +48,10 @@ extension Diagnostic {
 
 
 extension DiagnosticsError {
-    init<S: SyntaxProtocol>(  // swiftlint:disable:this function_default_parameter_at_end
+    init<S: SyntaxProtocol>(
         syntax: S,
         message: String,
-        domain: String = "SpeziAccount",
+        domain: String = "SpeziAccount", // swiftlint:disable:this function_default_parameter_at_end
         id: SpeziAccountDiagnostic.ID,
         severity: SwiftDiagnostics.DiagnosticSeverity = .error
     ) {

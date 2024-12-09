@@ -107,9 +107,9 @@ public final class AccountConfiguration {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
-    public convenience init<Service: AccountService>( // swiftlint:disable:this function_default_parameter_at_end
+    public convenience init<Service: AccountService>(
         service: Service,
-        configuration: AccountValueConfiguration = .default,
+        configuration: AccountValueConfiguration = .default, // swiftlint:disable:this function_default_parameter_at_end
         activeDetails: AccountDetails
     ) {
         self.init(accountService: service, configuration: configuration, defaultActiveDetails: activeDetails)
@@ -123,18 +123,18 @@ public final class AccountConfiguration {
     ///   - configuration: The user-defined configuration of account values that all user accounts need to support.
     ///   - activeDetails: The  account details you want to simulate.
     @_spi(TestingSupport)
-    public convenience init<Service: AccountService, Storage: AccountStorageProvider>( // swiftlint:disable:this function_default_parameter_at_end
+    public convenience init<Service: AccountService, Storage: AccountStorageProvider>(
         service: Service,
         storageProvider: Storage,
-        configuration: AccountValueConfiguration = .default,
+        configuration: AccountValueConfiguration = .default, // swiftlint:disable:this function_default_parameter_at_end
         activeDetails: AccountDetails
     ) {
         self.init(accountService: service, storageProvider: storageProvider, configuration: configuration, defaultActiveDetails: activeDetails)
     }
 
-    init<Service: AccountService>( // swiftlint:disable:this function_default_parameter_at_end
+    init<Service: AccountService>(
         accountService: Service,
-        storageProvider: (any AccountStorageProvider)? = nil,
+        storageProvider: (any AccountStorageProvider)? = nil, // swiftlint:disable:this function_default_parameter_at_end
         configuration: AccountValueConfiguration,
         defaultActiveDetails: AccountDetails? = nil
     ) {
