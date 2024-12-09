@@ -76,7 +76,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                         } else {
                             switch closeBehavior {
                             case .disabled:
-                                let _ = ()
+                                EmptyView()
                             case .showCloseButton:
                                 Button {
                                     dismiss()
