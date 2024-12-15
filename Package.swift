@@ -28,7 +28,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.7.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", branch: "feature/list-info-button"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.2.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
