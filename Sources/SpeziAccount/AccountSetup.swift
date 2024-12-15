@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import OrderedCollections
 import SpeziViews
 import SwiftUI
 
@@ -139,20 +138,21 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             EmptyServicesWarning()
         } else {
             VStack {
-                let categorized = account.accountSetupComponents.reduce(into: OrderedDictionary()) { partialResult, component in
+                let components = account.accountSetupComponents.reduce(
+                    into: [AccountSetupSection: [any AnyAccountSetupComponent]]()
+                ) { dict, component in
                     guard component.configuration.isEnabled else {
                         return
                     }
-                    partialResult[component.configuration.section] = component
+                    dict[component.configuration.section, default: []].append(component)
                 }
-
-                ForEach(categorized.keys.sorted(), id: \.self) { placement in
-                    if let component = categorized[placement] {
-                        component.anyView
-
-                        if categorized.keys.last != placement {
-                            ServicesDivider()
-                        }
+                    .sorted { $0.key < $1.key }
+                    .flatMap(\.value)
+                
+                ForEach(0..<components.endIndex, id: \.self) { idx in
+                    components[idx].anyView
+                    if idx < components.endIndex - 1 {
+                        ServicesDivider()
                     }
                 }
             }
