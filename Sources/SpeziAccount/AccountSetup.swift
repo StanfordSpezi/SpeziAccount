@@ -160,7 +160,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
                 .receiveSignupProviderCompliance { compliance in
-                    self.compliance = compliance
+                    Task {@MainActor in
+                        self.compliance = compliance
+                    }
                 }
         }
     }
