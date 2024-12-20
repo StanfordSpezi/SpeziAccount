@@ -99,7 +99,9 @@ struct DateOfBirthPicker: View {
                 }
             }
             .onPreferenceChange(DynamicLayout.self) { value in
-                layout = value
+                Task { @MainActor in
+                    layout = value
+                }
             }
     }
 
