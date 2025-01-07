@@ -15,7 +15,7 @@ import SwiftUI
 
 struct FollowUpInfoFormHeader: View {
     var body: some View {
-        FormHeader {
+        ListHeader {
             Image(systemName: "person.crop.rectangle.badge.plus") // swiftlint:disable:this accessibility_label_for_image
         } title: {
             Text("FOLLOW_UP_INFORMATION_TITLE", bundle: .module)
