@@ -122,7 +122,7 @@ final class SnapshotTesting: XCTestCase {
         assertSnapshot(of: view3, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view3")
         assertSnapshot(of: view4, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view4")
         assertSnapshot(of: view5, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view5")
-
+        
         assertSnapshot(of: view0Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view0-signup")
         assertSnapshot(of: view1Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view1-signup")
         assertSnapshot(of: view2Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view2-signup")
