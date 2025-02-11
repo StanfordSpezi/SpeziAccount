@@ -7,54 +7,53 @@
 //
 
 @testable import SpeziAccount
-import XCTest
+import Testing
 import XCTSpezi
+import Foundation
 
 
-final class AccountDetailsCacheTests: XCTestCase {
+@Suite("AccountDetails Cache Tests")
+struct AccountDetailsCacheTests {
     private static let id = UUID(uuidString: "b730ebce-e153-44fc-a547-d47ac9c9d190")! // swiftlint:disable:this force_unwrapping
 
     @MainActor
+    @Test()
     func testCache() async {
-        continueAfterFailure = true // ensure entries are cleared at the end
-
         let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
             cache
         }
 
-
         let details: AccountDetails = .mock(id: Self.id)
         await cache.clearEntry(for: details.accountId)
 
         let nilEntry = await cache.loadEntry(for: details.accountId, details.keys)
-        XCTAssertNil(nilEntry)
+        #expect(nilEntry == nil)
 
         await cache.communicateRemoteChanges(for: details.accountId, details)
 
         let entry = await cache.loadEntry(for: details.accountId, details.keys)
-        XCTAssertNotNil(entry)
+        #expect(entry != nil)
         if let entry {
-            XCTAssertDetails(entry, details)
+            AssertDetails(entry, details)
         }
 
 
         await cache.purgeMemoryCache(for: details.accountId)
         let entryFromDisk = await cache.loadEntry(for: details.accountId, details.keys)
-        XCTAssertNotNil(entryFromDisk)
+        #expect(entryFromDisk != nil)
         if let entryFromDisk {
-            XCTAssertDetails(entryFromDisk, details)
+            AssertDetails(entryFromDisk, details)
         }
 
         await cache.clearEntry(for: details.accountId)
         let nilEntry2 = await cache.loadEntry(for: details.accountId, details.keys)
-        XCTAssertNil(nilEntry2)
+        #expect(nilEntry2 == nil)
     }
 
     @MainActor
+    @Test()
     func testApplyModifications() async {
-        continueAfterFailure = true // ensure entries are cleared at the end
-
         let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
             cache
@@ -80,16 +79,16 @@ final class AccountDetailsCacheTests: XCTestCase {
 
 
         let localEntry = await cache.loadEntry(for: details.accountId, keys)
-        XCTAssertNotNil(localEntry)
+        #expect(localEntry != nil)
         if let localEntry {
-            XCTAssertDetails(localEntry, details)
+            AssertDetails(localEntry, details)
         }
 
         await cache.purgeMemoryCache(for: details.accountId)
         let diskEntry = await cache.loadEntry(for: details.accountId, keys)
-        XCTAssertNotNil(diskEntry)
+        #expect(diskEntry != nil)
         if let diskEntry {
-            XCTAssertDetails(diskEntry, details)
+            AssertDetails(diskEntry, details)
         }
 
         await cache.clearEntry(for: details.accountId)
