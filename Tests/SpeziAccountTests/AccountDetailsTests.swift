@@ -6,13 +6,13 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 @testable import SpeziAccount
 import Testing
-import Foundation
 
 @Suite("AccountDetails General Tests")
 struct AccountDetailsTests {
-    @Test()
+    @Test
     func testCodable() throws {
         let details: AccountDetails = .mock()
 
@@ -24,11 +24,11 @@ struct AccountDetailsTests {
         let data = try encoder.encode(details)
         let decoded = try decoder.decode(AccountDetails.self, from: data, configuration: configuration)
 
-        AssertDetails(decoded, details)
+        assertDetails(decoded, details)
         #expect(decoded.isNewUser == false) // flags are never encoded
     }
 
-    @Test()
+    @Test
     func testCodableWithCustomMapping() throws {
         var details = AccountDetails()
         details.genderIdentity = .female
@@ -55,7 +55,7 @@ struct AccountDetailsTests {
         #expect(decoded.genderIdentity == details.genderIdentity)
     }
 
-    @Test()
+    @Test
     func testUserIdKeyFallback() throws {
         var details = AccountDetails()
         details.accountId = "Hello World"
@@ -63,7 +63,7 @@ struct AccountDetailsTests {
         #expect(details.userId == "Hello World")
     }
 
-    @Test()
+    @Test
     func testEmailKey() throws {
         var details = AccountDetails()
         details.userId = "username@example.org"

@@ -11,7 +11,7 @@ import Spezi
 import Testing
 import XCTSpezi
 
-
+// swiftlint:disable:next file_types_order
 private final class TestProvider: AccountStorageProvider {
     private let onDisassociate: Testing.Confirmation
     private let onDelete: Testing.Confirmation
@@ -49,7 +49,7 @@ private final actor TestStandard: Standard, AccountNotifyConstraint {
     }
 }
 
-
+// swiftlint:disable closure_body_length
 @MainActor
 @Test("AccountNotifications Test", .timeLimit(.minutes(1)))
 func testAccountNotifications() async throws {
@@ -88,13 +88,13 @@ func testAccountNotifications() async throws {
                 }
                 
                 if case let .associatedAccount(associated) = element1 {
-                    AssertDetails(associated, details)
+                    assertDetails(associated, details)
                 } else {
                     Issue.record("Unexpected second element \(String(describing: element1))")
                 }
                 
                 if case let .disassociatingAccount(disassociated) = element2 {
-                    AssertDetails(disassociated, details)
+                    assertDetails(disassociated, details)
                 } else {
                     Issue.record("Unexpected third element \(String(describing: element2))")
                 }
@@ -111,3 +111,4 @@ func testAccountNotifications() async throws {
         }
     }
 }
+// swiflint:enable closure_body_length

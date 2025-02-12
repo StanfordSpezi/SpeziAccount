@@ -7,21 +7,29 @@
 //
 
 #if os(macOS) // macro tests can only be run on the host machine
-
 import SpeziAccountMacros
+#endif
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
+import Testing
 import XCTest
 
+#if os(macOS)
 let testMacros: [String: any Macro.Type] = [
     "AccountKey": AccountKeyMacro.self,
     "KeyEntry": KeyEntryMacro.self
 ]
+let isRunningMacOS = true
+#else
+let testMacros: [String: any Macro.Type] = [:]
+let isRunningMacOS = false
+#endif
 
-
-final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_body_length
+@Suite("AccountKeyMacro Tests", .enabled(if: isRunningMacOS, "Requires MacOS to run"))
+struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
+    @Test
     func testAccountKeyGeneration() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
@@ -56,8 +64,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testAccountKeyId() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(
@@ -98,8 +107,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testAccountKeyGenerationPublic() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
@@ -134,8 +144,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testRequiredAccountKey() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(name: "Account Id", as: String.self)
@@ -167,8 +178,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testNotMatchingTypes() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(name: "Account Id", category: .credentials, as: Int.self)
@@ -195,8 +207,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testCustomUI() { // swiftlint:disable:this function_body_length
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(
@@ -260,8 +273,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testCustomUINameCollision() { // swiftlint:disable:this function_body_length
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(
@@ -329,8 +343,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
+    @Test
     func testAccountKeysEntry() {
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             @KeyEntry(\\.genderIdentity)
             extension AccountKeys {
@@ -353,9 +368,9 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 
-
+    @Test
     func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             @AccountKey(
                 name: "Gender Identity",
@@ -379,7 +394,7 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             macros: testMacros
         )
 
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension NotAccountDetails {
                 @AccountKey(
@@ -416,7 +431,7 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             macros: testMacros
         )
 
-        assertMacroExpansion(
+        assertMacroExpansionWithSwiftTesting(
             """
             extension AccountDetails {
                 @AccountKey(name: "Gender Identity", category: .personalDetails, as: GenderIdentity.self, initial: .default(.preferNotToState))
@@ -443,5 +458,3 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
         )
     }
 }
-
-#endif

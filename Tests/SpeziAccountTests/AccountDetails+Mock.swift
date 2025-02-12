@@ -24,7 +24,7 @@ extension AccountDetails {
     }
 }
 
-func AssertDetails(_ details1: AccountDetails, _ details2: AccountDetails, sourceLocation: SourceLocation = #_sourceLocation) {
+func assertDetails(_ details1: AccountDetails, _ details2: AccountDetails, sourceLocation: SourceLocation = #_sourceLocation) {
     #expect(details1.accountId == details2.accountId, "accountId \(details1.accountId) not equal to \(details2.accountId)", sourceLocation: sourceLocation)
     #expect(details1.userId == details2.userId, "userId \(details1.userId) not equal to \(details2.userId)", sourceLocation: sourceLocation)
     #expect(details1.password == details2.password, "password \(String(describing: details1.password)) not equal to \(String(describing: details2.password))", sourceLocation: sourceLocation)

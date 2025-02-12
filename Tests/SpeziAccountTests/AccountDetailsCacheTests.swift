@@ -6,18 +6,17 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Foundation
 @testable import SpeziAccount
 import Testing
 import XCTSpezi
-import Foundation
 
-
-@Suite("AccountDetails Cache Tests")
+@Suite("AccountDetails Cache Tests", .serialized)
 struct AccountDetailsCacheTests {
     private static let id = UUID(uuidString: "b730ebce-e153-44fc-a547-d47ac9c9d190")! // swiftlint:disable:this force_unwrapping
 
     @MainActor
-    @Test()
+    @Test
     func testCache() async {
         let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
@@ -35,7 +34,7 @@ struct AccountDetailsCacheTests {
         let entry = await cache.loadEntry(for: details.accountId, details.keys)
         #expect(entry != nil)
         if let entry {
-            AssertDetails(entry, details)
+            assertDetails(entry, details)
         }
 
 
@@ -43,7 +42,7 @@ struct AccountDetailsCacheTests {
         let entryFromDisk = await cache.loadEntry(for: details.accountId, details.keys)
         #expect(entryFromDisk != nil)
         if let entryFromDisk {
-            AssertDetails(entryFromDisk, details)
+            assertDetails(entryFromDisk, details)
         }
 
         await cache.clearEntry(for: details.accountId)
@@ -52,7 +51,7 @@ struct AccountDetailsCacheTests {
     }
 
     @MainActor
-    @Test()
+    @Test
     func testApplyModifications() async {
         let cache = AccountDetailsCache(settings: .unencrypted())
         withDependencyResolution {
@@ -81,14 +80,14 @@ struct AccountDetailsCacheTests {
         let localEntry = await cache.loadEntry(for: details.accountId, keys)
         #expect(localEntry != nil)
         if let localEntry {
-            AssertDetails(localEntry, details)
+            assertDetails(localEntry, details)
         }
 
         await cache.purgeMemoryCache(for: details.accountId)
         let diskEntry = await cache.loadEntry(for: details.accountId, keys)
         #expect(diskEntry != nil)
         if let diskEntry {
-            AssertDetails(diskEntry, details)
+            assertDetails(diskEntry, details)
         }
 
         await cache.clearEntry(for: details.accountId)

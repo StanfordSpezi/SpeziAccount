@@ -14,11 +14,15 @@ import SwiftUI
 import Testing
 import XCTSpezi
 
-@Suite("iOS Snapshot tests")
+#if os(iOS)
+let isRunningIOS = true
+#else
+let isRunningIOS = false
+#endif
+
+@Suite("iOS Snapshot tests", .enabled(if: isRunningIOS, "Requires iOS to run"))
 struct SnapshotTesting {
-    
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testBoolDisplayView() {
         let viewTrue = BoolDisplayView<MockBoolKey>(true)
@@ -26,55 +30,59 @@ struct SnapshotTesting {
         let viewTrueYes = BoolDisplayView<MockBoolKey>(label: .yesNo, true)
         let viewFalseNo = BoolDisplayView<MockBoolKey>(label: .yesNo, false)
 
+#if os(iOS)
         assertSnapshot(of: viewTrue, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewTrue")
         assertSnapshot(of: viewFalse, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewFalse")
         assertSnapshot(of: viewTrueYes, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewTrueYes")
         assertSnapshot(of: viewFalseNo, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewFalseNo")
+#endif
     }
     
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testIntegerDisplayView() {
         let integer = FixedWidthIntegerDisplayView<MockNumericKey>(34)
         let integerWithUnit = FixedWidthIntegerDisplayView<MockNumericKey>(34, unit: Text(verbatim: " cm"))
 
+#if os(iOS)
         assertSnapshot(of: integer, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-integer")
         assertSnapshot(of: integerWithUnit, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-integerWithUnit")
+#endif
     }
     
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testFloatingPointDisplayView() {
         let float = FloatingPointDisplayView<MockDoubleKey>(23.56)
         let floatWithUnit = FloatingPointDisplayView<MockDoubleKey>(223.56, unit: Text(verbatim: " cm"))
 
+#if os(iOS)
         assertSnapshot(of: float, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-float")
         assertSnapshot(of: floatWithUnit, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-floatWithUnit")
+#endif
     }
 
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testStringDisplayView() {
         let view = StringDisplayView(\.userId, "Hello World")
 
+#if os(iOS)
         assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
+#endif
     }
 
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testLocalizedStringDisplayView() {
         let view = LocalizableStringDisplayView(\.genderIdentity, .male)
-
+#if os(iOS)
         assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
+#endif
     }
 
     
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testAccountProviderViewLayoutVariations() {
         let configuration = AccountConfiguration(service: InMemoryAccountService())
@@ -119,6 +127,7 @@ struct SnapshotTesting {
         let view4Signup = view4.preferredAccountSetupStyle(.signup)
         let view5Signup = view5.preferredAccountSetupStyle(.signup)
 
+#if os(iOS)
         assertSnapshot(of: view0, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view0")
         assertSnapshot(of: view1, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view1")
         assertSnapshot(of: view2, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view2")
@@ -132,10 +141,10 @@ struct SnapshotTesting {
         assertSnapshot(of: view3Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view3-signup")
         assertSnapshot(of: view4Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view4-signup")
         assertSnapshot(of: view5Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view5-signup")
+#endif
     }
     
     @MainActor
-    @available(iOS, introduced: 18.0, message: "Requires iOS 18 to run")
     @Test
     func testAccountHeader() {
         let configuration = AccountConfiguration(service: InMemoryAccountService())
@@ -145,6 +154,8 @@ struct SnapshotTesting {
         let view = AccountHeader(caption: "Custom Caption")
             .environment(configuration.account)
 
+#if os(iOS)
         assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
+#endif
     }
 }
