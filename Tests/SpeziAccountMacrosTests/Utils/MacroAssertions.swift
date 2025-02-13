@@ -13,10 +13,10 @@ import SwiftSyntaxMacrosGenericTestSupport
 import Testing
 
 // Adapted function from https://github.com/swiftlang/swift-syntax/blob/main/Sources/SwiftSyntaxMacrosTestSupport/Assertions.swift
-// swiftlint:disable:next function_default_parameter_at_end
 func assertMacroExpansionWithSwiftTesting(
   _ originalSource: String,
   expandedSource expectedExpandedSource: String,
+  // swiftlint:disable:next function_default_parameter_at_end
   diagnostics: [DiagnosticSpec] = [],
   macros: [String: Macro.Type],
   applyFixIts: [String] = [],
