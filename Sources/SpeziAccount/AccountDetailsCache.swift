@@ -43,7 +43,7 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
         if let key = accountDetailsStorageKeys[accountId] {
             return key
         } else {
-            let key = LocalStorageKey<AccountDetails>.init(
+            let key = LocalStorageKey<AccountDetails>(
                 "edu.stanford.spezi.details-cache.\(accountId)",
                 setting: storageSettings,
                 encoder: JSONEncoder(),
