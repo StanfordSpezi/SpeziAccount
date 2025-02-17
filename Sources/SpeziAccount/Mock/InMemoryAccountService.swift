@@ -448,7 +448,7 @@ extension InMemoryAccountService {
     @MainActor
     final class State {
         var presentingSecurityAlert = false
-        var securityContinuation: CheckedContinuation<Void, Error>?
+        var securityContinuation: CheckedContinuation<Void, any Error>?
     }
 
     fileprivate struct UserStorage {

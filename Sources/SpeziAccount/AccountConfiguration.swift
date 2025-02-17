@@ -158,7 +158,7 @@ public final class AccountConfiguration {
     /// Configure the module.
     @MainActor
     public func configure() {
-        guard let service = accountService.first as? AccountService,
+        guard let service = accountService.first as? any AccountService,
               accountService.count == 1 else {
             preconditionFailure("Unexpected error when trying to configure account service.")
         }
