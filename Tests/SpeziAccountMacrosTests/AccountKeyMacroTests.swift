@@ -7,19 +7,20 @@
 //
 
 #if os(macOS) // macro tests can only be run on the host machine
-
 import SpeziAccountMacros
+import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
-import XCTest
+import SwiftSyntaxMacrosGenericTestSupport
+import Testing
 
-let testMacros: [String: any Macro.Type] = [
-    "AccountKey": AccountKeyMacro.self,
-    "KeyEntry": KeyEntryMacro.self
+let testMacrosSpecs: [String: MacroSpec] = [
+    "AccountKey": MacroSpec(type: AccountKeyMacro.self),
+    "KeyEntry": MacroSpec(type: KeyEntryMacro.self)
 ]
 
-
-final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_body_length
+@Suite("AccountKeyMacro Tests")
+struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
+    @Test
     func testAccountKeyGeneration() {
         assertMacroExpansion(
             """
@@ -52,10 +53,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testAccountKeyId() {
         assertMacroExpansion(
             """
@@ -94,10 +97,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testAccountKeyGenerationPublic() {
         assertMacroExpansion(
             """
@@ -130,10 +135,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testRequiredAccountKey() {
         assertMacroExpansion(
             """
@@ -163,10 +170,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testNotMatchingTypes() {
         assertMacroExpansion(
             """
@@ -191,10 +200,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             diagnostics: [
                 DiagnosticSpec(message: "Value type 'Int is expected to match the property binding type annotation 'String'", line: 2, column: 65)
             ],
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testCustomUI() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
@@ -256,10 +267,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testCustomUINameCollision() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
@@ -325,10 +338,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 DiagnosticSpec(message: "The type name 'DataDisplay' is ambiguous. Please disambiguate or rename.", line: 7, column: 22),
                 DiagnosticSpec(message: "The type name 'DataEntry' is ambiguous. Please disambiguate or rename.", line: 8, column: 20)
             ],
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
+    @Test
     func testAccountKeysEntry() {
         assertMacroExpansion(
             """
@@ -349,11 +364,12 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                 }
             }
             """,
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 
-
+    @Test
     func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
@@ -376,7 +392,8 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             diagnostics: [
                 DiagnosticSpec(message: "'@AccountKey' can only be applied to a 'var' declaration", line: 1, column: 1)
             ],
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
 
         assertMacroExpansion(
@@ -413,7 +430,8 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
                     column: 5
                 )
             ],
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
 
         assertMacroExpansion(
@@ -439,7 +457,8 @@ final class AccountKeyMacroTests: XCTestCase { // swiftlint:disable:this type_bo
             diagnostics: [
                 DiagnosticSpec(message: "Variable binding cannot have a initializer", line: 3, column: 41)
             ],
-            macros: testMacros
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
         )
     }
 }
