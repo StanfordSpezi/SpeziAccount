@@ -11,12 +11,19 @@ import SnapshotTesting
 @_spi(TestingSupport)
 @testable import SpeziAccount
 import SwiftUI
-import XCTest
+import Testing
 import XCTSpezi
 
+#if os(iOS)
+let isRunningIOS = true
+#else
+let isRunningIOS = false
+#endif
 
-final class SnapshotTesting: XCTestCase {
+@Suite("iOS Snapshot tests", .enabled(if: isRunningIOS, "Requires iOS to run"))
+struct SnapshotTesting {
     @MainActor
+    @Test
     func testBoolDisplayView() {
         let viewTrue = BoolDisplayView<MockBoolKey>(true)
         let viewFalse = BoolDisplayView<MockBoolKey>(false)
@@ -30,8 +37,9 @@ final class SnapshotTesting: XCTestCase {
         assertSnapshot(of: viewFalseNo, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-viewFalseNo")
 #endif
     }
-
+    
     @MainActor
+    @Test
     func testIntegerDisplayView() {
         let integer = FixedWidthIntegerDisplayView<MockNumericKey>(34)
         let integerWithUnit = FixedWidthIntegerDisplayView<MockNumericKey>(34, unit: Text(verbatim: " cm"))
@@ -41,8 +49,9 @@ final class SnapshotTesting: XCTestCase {
         assertSnapshot(of: integerWithUnit, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-integerWithUnit")
 #endif
     }
-
+    
     @MainActor
+    @Test
     func testFloatingPointDisplayView() {
         let float = FloatingPointDisplayView<MockDoubleKey>(23.56)
         let floatWithUnit = FloatingPointDisplayView<MockDoubleKey>(223.56, unit: Text(verbatim: " cm"))
@@ -54,6 +63,7 @@ final class SnapshotTesting: XCTestCase {
     }
 
     @MainActor
+    @Test
     func testStringDisplayView() {
         let view = StringDisplayView(\.userId, "Hello World")
 
@@ -63,15 +73,17 @@ final class SnapshotTesting: XCTestCase {
     }
 
     @MainActor
+    @Test
     func testLocalizedStringDisplayView() {
         let view = LocalizableStringDisplayView(\.genderIdentity, .male)
-
 #if os(iOS)
         assertSnapshot(of: view, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone")
 #endif
     }
 
+    
     @MainActor
+    @Test
     func testAccountProviderViewLayoutVariations() {
         let configuration = AccountConfiguration(service: InMemoryAccountService())
         withDependencyResolution {
@@ -131,8 +143,9 @@ final class SnapshotTesting: XCTestCase {
         assertSnapshot(of: view5Signup, as: .image(layout: .device(config: .iPhone13Pro)), named: "iphone-view5-signup")
 #endif
     }
-
+    
     @MainActor
+    @Test
     func testAccountHeader() {
         let configuration = AccountConfiguration(service: InMemoryAccountService())
         withDependencyResolution {
