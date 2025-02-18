@@ -89,9 +89,9 @@ public final class Account {
     }
 
     /// The account setup components specified via the ``IdentityProvider`` property wrapper that are shown in the ``AccountSetup`` view.
-    let accountSetupComponents: [AnyAccountSetupComponent]
+    let accountSetupComponents: [any AnyAccountSetupComponent]
     /// A security related modifier (see ``SecurityRelatedModifier``).
-    let securityRelatedModifiers: [AnySecurityModifier]
+    let securityRelatedModifiers: [any AnySecurityModifier]
 
     /// Initialize a new `Account` object by providing all properties individually.
     /// - Parameters:
@@ -112,14 +112,14 @@ public final class Account {
 
         let mirror = Mirror(reflecting: service)
         self.accountSetupComponents = mirror.children.reduce(into: []) { partialResult, property in
-            guard let provider = property.value as? AnyIdentityProvider else {
+            guard let provider = property.value as? any AnyIdentityProvider else {
                 return
             }
 
             partialResult.append(provider.component)
         }
         self.securityRelatedModifiers = mirror.children.reduce(into: [], { partialResult, property in
-            guard let modifier = property.value as? AnySecurityRelatedModifier else {
+            guard let modifier = property.value as? any AnySecurityRelatedModifier else {
                 return
             }
 

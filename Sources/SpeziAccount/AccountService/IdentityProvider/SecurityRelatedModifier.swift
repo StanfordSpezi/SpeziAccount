@@ -10,7 +10,7 @@ import SwiftUI
 
 
 protocol AnySecurityRelatedModifier {
-    var securityModifier: AnySecurityModifier { get }
+    var securityModifier: any AnySecurityModifier { get }
 }
 
 

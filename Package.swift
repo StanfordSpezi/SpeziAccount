@@ -29,7 +29,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.7.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "1.2.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
@@ -45,6 +45,7 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftDiagnostics", package: "swift-syntax")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -56,7 +57,6 @@ let package = Package(
                 .product(name: "SpeziPersonalInfo", package: "SpeziViews"),
                 .product(name: "SpeziValidation", package: "SpeziViews"),
                 .product(name: "SpeziLocalStorage", package: "SpeziStorage"),
-                .product(name: "SpeziSecureStorage", package: "SpeziStorage"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Atomics", package: "swift-atomics"),
@@ -65,6 +65,7 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .target(
@@ -73,6 +74,7 @@ let package = Package(
                 .target(name: "SpeziAccount"),
                 .product(name: "XCTestExtensions", package: "XCTestExtensions")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -84,6 +86,7 @@ let package = Package(
                 .product(name: "XCTSpezi", package: "Spezi"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
         .testTarget(
@@ -93,6 +96,7 @@ let package = Package(
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         )
     ]

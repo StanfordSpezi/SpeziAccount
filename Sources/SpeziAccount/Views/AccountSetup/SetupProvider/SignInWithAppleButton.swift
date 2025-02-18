@@ -75,7 +75,7 @@ public struct SignInWithAppleButton: View {
                 } catch {
                     compliance = nil
 
-                    if let localizedError = error as? LocalizedError {
+                    if let localizedError = error as? any LocalizedError {
                         viewState = .error(localizedError)
                     } else {
                         viewState = .error(AnyLocalizedError(

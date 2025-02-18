@@ -151,7 +151,7 @@ extension AccountDetailsBuilder: Collection {
     }
 
 
-    subscript(position: Index) -> AnyRepositoryValue {
+    subscript(position: Index) -> any AnyRepositoryValue {
         storage[position]
     }
 }

@@ -24,21 +24,34 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
 
     /// In-memory cache to avoid contacting the disk too often.
     private var localCache: [String: AccountDetails] = [:]
+    
+    private var accountDetailsStorageKeys: [String: LocalStorageKey<AccountDetails>] = [:]
 
 
     private let storageSettings: LocalStorageSetting
 
 
     public init() {
-        self.init(settings: .encryptedUsingKeyChain(userPresence: false, excludedFromBackup: false))
+        self.init(settings: .encryptedUsingKeychain(userPresence: false, excludeFromBackup: false))
     }
 
     public init(settings: LocalStorageSetting) {
         self.storageSettings = settings
     }
 
-    private static func key(for accountId: String) -> String {
-        "edu.stanford.spezi.details-cache.\(accountId)"
+    private func key(for accountId: String) -> LocalStorageKey<AccountDetails> {
+        if let key = accountDetailsStorageKeys[accountId] {
+            return key
+        } else {
+            let key = LocalStorageKey<AccountDetails>(
+                "edu.stanford.spezi.details-cache.\(accountId)",
+                setting: storageSettings,
+                encoder: JSONEncoder(),
+                decoder: JSONDecoder()
+            )
+            accountDetailsStorageKeys[accountId] = key
+            return key
+        }
     }
 
     /// Retrieve an entry from the cache.
@@ -51,20 +64,11 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
         if let details = localCache[accountId] {
             return details
         }
-
-        let decoder = JSONDecoder()
-
-        let configuration = AccountDetails.DecodingConfiguration(keys: keys)
-
         do {
-            let details = try localStorage.read(
-                AccountDetails.self,
-                configuration: configuration,
-                decoder: decoder,
-                storageKey: Self.key(for: accountId),
-                settings: storageSettings
+            let details = try localStorage.load(
+                key(for: accountId),
+                configuration: AccountDetails.DecodingConfiguration(keys: keys)
             )
-
             localCache[accountId] = details
             return details
         } catch {
@@ -74,7 +78,6 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
             }
             logger.error("Failed to read cached account details from disk: \(error)")
         }
-
         return nil
     }
 
@@ -84,7 +87,7 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
     public func clearEntry(for accountId: String) {
         localCache.removeValue(forKey: accountId)
         do {
-            try localStorage.delete(storageKey: Self.key(for: accountId))
+            try localStorage.delete(key(for: accountId))
         } catch {
             logger.error("Failed to clear cached account details from disk: \(error)")
         }
@@ -126,13 +129,8 @@ public actor AccountDetailsCache: Module, DefaultInitializable {
     ///   - details: The updated account details.
     public func communicateRemoteChanges(for accountId: String, _ details: AccountDetails) {
         localCache[accountId] = details
-
         do {
-            try localStorage.store(
-                details,
-                storageKey: Self.key(for: accountId),
-                settings: storageSettings
-            )
+            try localStorage.store(details, for: key(for: accountId))
         } catch {
             logger.error("Failed to update cached account details to disk: \(error)")
         }
