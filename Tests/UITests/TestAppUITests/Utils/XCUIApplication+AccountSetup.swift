@@ -18,12 +18,12 @@ extension XCUIApplication {
         XCTAssertTrue(staticTexts["Please fill out the details below to create your new account."].waitForExistence(timeout: 3.0))
     }
 
-    func fillSignupForm( // swiftlint:disable:this function_default_parameter_at_end
+    func fillSignupForm(
         email: String,
         password: String,
         name: PersonNameComponents? = nil,
         genderIdentity: String? = nil,
-        supplyDateOfBirth: Bool = false,
+        supplyDateOfBirth: Bool = false, // swiftlint:disable:this function_default_parameter_at_end
         biography: String
     ) throws {
         try fillSignupForm(email: email, password: password, name: name, genderIdentity: genderIdentity, supplyDateOfBirth: supplyDateOfBirth)

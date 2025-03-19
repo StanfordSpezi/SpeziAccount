@@ -75,7 +75,7 @@ public struct SignInWithAppleButton: View {
                 } catch {
                     compliance = nil
 
-                    if let localizedError = error as? LocalizedError {
+                    if let localizedError = error as? any LocalizedError {
                         viewState = .error(localizedError)
                     } else {
                         viewState = .error(AnyLocalizedError(
@@ -114,8 +114,8 @@ public struct SignInWithAppleButton: View {
     ///   - state: A view state binding that is used to set the error state if the `onCompletion` handler returns an error.
     ///   - onRequest: The authorization request for an Apple ID.
     ///   - onCompletion: The completion handler that the system calls when the sign-in completes.
-    public init( // swiftlint:disable:this function_default_parameter_at_end
-        _ label: AuthenticationServices.SignInWithAppleButton.Label? = nil,
+    public init(
+        _ label: AuthenticationServices.SignInWithAppleButton.Label? = nil, // swiftlint:disable:this function_default_parameter_at_end
         state: Binding<ViewState>,
         onRequest: @escaping (ASAuthorizationAppleIDRequest) -> Void,
         onCompletion: @escaping ((Result<ASAuthorization, any Error>) async throws -> Void)

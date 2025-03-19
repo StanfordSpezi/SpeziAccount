@@ -147,7 +147,7 @@ extension View {
         preference(key: SignupProviderComplianceKey.self, value: compliance.map { .init($0) })
     }
 
-    func receiveSignupProviderCompliance(receive action: @escaping (SignupProviderCompliance?) -> Void) -> some View {
+    func receiveSignupProviderCompliance(receive action: @escaping @Sendable (SignupProviderCompliance?) -> Void) -> some View {
         onPreferenceChange(SignupProviderComplianceKey.self) { compliance in
             action(compliance?.compliance)
         }

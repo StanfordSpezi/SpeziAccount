@@ -448,7 +448,7 @@ extension InMemoryAccountService {
     @MainActor
     final class State {
         var presentingSecurityAlert = false
-        var securityContinuation: CheckedContinuation<Void, Error>?
+        var securityContinuation: CheckedContinuation<Void, any Error>?
     }
 
     fileprivate struct UserStorage {
@@ -459,8 +459,8 @@ extension InMemoryAccountService {
         var genderIdentity: GenderIdentity?
         var dateOfBirth: Date?
 
-        init( // swiftlint:disable:this function_default_parameter_at_end
-            accountId: UUID = UUID(),
+        init(
+            accountId: UUID = UUID(), // swiftlint:disable:this function_default_parameter_at_end
             userId: String?,
             password: String?,
             name: PersonNameComponents? = nil,

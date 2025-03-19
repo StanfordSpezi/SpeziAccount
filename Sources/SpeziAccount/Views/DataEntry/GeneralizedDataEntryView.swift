@@ -46,7 +46,7 @@ struct GeneralizedDataEntryView<Key: AccountKey>: View {
     var body: some View {
         Group {
             if let stringValue = value as? String,
-               let stringEntryView = self as? GeneralizedStringEntryView {
+               let stringEntryView = self as? any GeneralizedStringEntryView {
                 // if we have a string value, we have to check if FieldValidationRules is configured and
                 // inject a ValidationEngine into the environment
                 Key.DataEntry($value)

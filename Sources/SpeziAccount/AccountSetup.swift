@@ -6,7 +6,6 @@
 // SPDX-License-Identifier: MIT
 //
 
-import OrderedCollections
 import SpeziViews
 import SwiftUI
 
@@ -88,10 +87,12 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                     .frame(maxWidth: .infinity)
             }
         }
-            .onChange(of: [account.signedIn, account.details?.isAnonymous]) {
+            .onChange(of: [account.signedIn, account.details?.isAnonymous, account.details?.isIncomplete]) {
                 guard case .presentingSignup = setupState,
                       let details = account.details,
-                      !details.isAnonymous else {
+                      !details.isAnonymous,
+                      !details.isIncomplete // make sure all details are loaded from the storage provider 
+                else {
                     return
                 }
 
@@ -137,20 +138,21 @@ public struct AccountSetup<Header: View, Continue: View>: View {
             EmptyServicesWarning()
         } else {
             VStack {
-                let categorized = account.accountSetupComponents.reduce(into: OrderedDictionary()) { partialResult, component in
+                let components = account.accountSetupComponents.reduce(
+                    into: [AccountSetupSection: [any AnyAccountSetupComponent]]()
+                ) { dict, component in
                     guard component.configuration.isEnabled else {
                         return
                     }
-                    partialResult[component.configuration.section] = component
+                    dict[component.configuration.section, default: []].append(component)
                 }
-
-                ForEach(categorized.keys.sorted(), id: \.self) { placement in
-                    if let component = categorized[placement] {
-                        component.anyView
-
-                        if categorized.keys.last != placement {
-                            ServicesDivider()
-                        }
+                    .sorted { $0.key < $1.key }
+                    .flatMap(\.value)
+                
+                ForEach(0..<components.endIndex, id: \.self) { idx in
+                    components[idx].anyView
+                    if idx < components.endIndex - 1 {
+                        ServicesDivider()
                     }
                 }
             }
@@ -158,7 +160,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
                 .receiveSignupProviderCompliance { compliance in
-                    self.compliance = compliance
+                    Task {@MainActor in
+                        self.compliance = compliance
+                    }
                 }
         }
     }

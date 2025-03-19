@@ -12,11 +12,11 @@ import SpeziFoundation
 extension AccountDetails {
     private struct DecodingErrors: KnowledgeSource {
         typealias Anchor = AccountAnchor
-        typealias Value = [(any AccountKey.Type, Error)]
+        typealias Value = [(any AccountKey.Type, any Error)]
     }
 
     /// Errors occurred while decoding `AccountDetails`
-    public var decodingErrors: [(any AccountKey.Type, Error)]? { // swiftlint:disable:this discouraged_optional_collection
+    public var decodingErrors: [(any AccountKey.Type, any Error)]? { // swiftlint:disable:this discouraged_optional_collection
         get {
             self[DecodingErrors.self]
         }

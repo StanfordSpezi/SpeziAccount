@@ -235,7 +235,7 @@ extension AccountDetails {
     private struct EncoderVisitor: AccountValueVisitor {
         private let mapping: IdentifierMapping?
         private var container: KeyedEncodingContainer<AccountKeyCodingKey>
-        private var firstError: Error?
+        private var firstError: (any Error)?
 
         init(_ container: KeyedEncodingContainer<AccountKeyCodingKey>, mapping: IdentifierMapping?) {
             self.container = container
@@ -254,7 +254,7 @@ extension AccountDetails {
             }
         }
 
-        func final() -> Result<Void, Error> {
+        func final() -> Result<Void, any Error> {
             if let firstError {
                 .failure(firstError)
             } else {
@@ -269,7 +269,7 @@ extension AccountDetails {
         private let mapping: IdentifierMapping?
         private var details = AccountDetails()
 
-        private(set) var errors: [(any AccountKey.Type, Error)] = []
+        private(set) var errors: [(any AccountKey.Type, any Error)] = []
 
         init(_ container: KeyedDecodingContainer<AccountKeyCodingKey>, required: Bool, mapping: IdentifierMapping?) {
             self.container = container

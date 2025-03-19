@@ -31,18 +31,20 @@ enum DefaultCredentials: String {
 
 
 extension XCUIApplication {
-    func launch( // swiftlint:disable:this function_default_parameter_at_end
+    func launch(
         serviceType: ServiceType = .mail,
         config: Config = .default,
         credentials: DefaultCredentials? = nil,
         accountRequired: Bool = false,
         noName: Bool = false,
+        includeInvitationCode: Bool = false, // swiftlint:disable:this function_default_parameter_at_end
         flags: String...
     ) {
         launchArguments = ["--service-type", serviceType.rawValue, "--configuration-type", config.rawValue]
         launchArguments += credentials.map { ["--credentials", $0.rawValue] } ?? []
         launchArguments += (accountRequired ? ["--account-required-modifier"] : [])
         launchArguments += (noName ? ["--no-name"] : [])
+        launchArguments += (includeInvitationCode ? ["--include-invitation-code"] : [])
         launchArguments += flags
         launch()
     }
