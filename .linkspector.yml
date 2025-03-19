@@ -1,0 +1,11 @@
+dirs:
+  - .
+useGitIgnore: true
+ignorePatterns:
+  - pattern: '^doc:.*$'
+  - pattern: '^http://localhost.*$'
+replacementPatterns:
+  - pattern: '(.*)#gh-dark-mode-only'
+    replacement: '$1'
+  - pattern: '(.*)#gh-light-mode-only'
+    replacement: '$1'
