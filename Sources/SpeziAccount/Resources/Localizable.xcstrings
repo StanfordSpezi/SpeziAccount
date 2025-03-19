@@ -1,6 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
       "localizations" : {
         "de" : {
@@ -1115,6 +1125,22 @@
         }
       }
     },
+    "PHONE_NUMBER" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
+    },
     "REMOVE_DEFAULT_ERROR" : {
       "localizations" : {
         "de" : {
@@ -1891,6 +1917,16 @@
         }
       }
     },
+    "VALIDATION_PHONE_NUMBER" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The provided phone number is invalid."
+          }
+        }
+      }
+    },
     "VALIDATION_RULE_ALWAYS_ACCEPT" : {
       "localizations" : {
         "de" : {
@@ -1978,6 +2014,9 @@
           }
         }
       }
+    },
+    "Your country" : {
+
     }
   },
   "version" : "1.0"

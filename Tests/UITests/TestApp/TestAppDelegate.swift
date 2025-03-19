@@ -32,6 +32,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
+                .collects(\.phoneNumber),
                 .supports(\.biography),
                 .manual(\.invitationCode)
             ]
@@ -42,6 +43,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
+                .collects(\.phoneNumber),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
 
@@ -51,6 +53,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
+                .collects(\.phoneNumber),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
 #endif
@@ -61,6 +64,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
+                .collects(\.phoneNumber),
                 .requires(\.biography)
             ]
 #else
@@ -69,6 +73,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .requires(\.dateOfBirth),
+                .collects(\.phoneNumber),
                 .requires(\.biography)
             ]
 #endif
