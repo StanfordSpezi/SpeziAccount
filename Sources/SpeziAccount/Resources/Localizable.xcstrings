@@ -404,7 +404,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anonym användare\t"
+            "value" : "Anonym användare"
           }
         }
       }
@@ -600,7 +600,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta inmatning\t"
+            "value" : "Förkasta inmatning"
           }
         }
       }
