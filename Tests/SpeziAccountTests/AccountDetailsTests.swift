@@ -86,4 +86,15 @@ struct AccountDetailsTests {
         }
         #expect(usernameDetails.email == nil)
     }
+
+    @Test
+    func testPhoneNumberKey() throws {
+        var details = AccountDetails()
+        details.phoneNumber = "+16501234567"
+
+        #expect(details.phoneNumber == "+16501234567")
+        
+        details.phoneNumber = nil
+        #expect(details.phoneNumber == nil)
+    }
 }
