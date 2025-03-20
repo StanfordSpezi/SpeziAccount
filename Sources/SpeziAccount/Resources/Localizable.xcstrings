@@ -164,7 +164,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontoinformation & Detaljer"
+            "value" : "Kontoinformation & detaljer"
           }
         }
       }
@@ -248,7 +248,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunde inte spara kontoinformation!"
+            "value" : "Kunde inte spara kontoinformationen!"
           }
         }
       }
@@ -360,7 +360,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg Till Datum"
+            "value" : "Lägg till datum"
           }
         }
       }
@@ -404,7 +404,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anonym Användare"
+            "value" : "Anonym användare\t"
           }
         }
       }
@@ -544,7 +544,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta Ändringar"
+            "value" : "Förkasta ändringar"
           }
         }
       }
@@ -600,7 +600,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förkasta Inmatning"
+            "value" : "Förkasta inmatning\t"
           }
         }
       }
@@ -656,7 +656,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortsätt Redigera"
+            "value" : "Fortsätt redigera"
           }
         }
       }
@@ -796,7 +796,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Radera Konto"
+            "value" : "Radera konto"
           }
         }
       }
@@ -846,7 +846,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dubbel Nyckel"
+            "value" : "Dubbel nyckel"
           }
         }
       }
@@ -958,7 +958,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slutför Kontoinställningar"
+            "value" : "Slutför kontoinställningar"
           }
         }
       }
@@ -1408,7 +1408,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppna Dokumentation"
+            "value" : "Öppna dokumentation"
           }
         }
       }
@@ -1548,7 +1548,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inloggning & Säkerhet"
+            "value" : "Inloggning & säkerhet"
           }
         }
       }
