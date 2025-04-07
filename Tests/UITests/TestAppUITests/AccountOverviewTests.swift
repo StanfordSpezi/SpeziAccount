@@ -70,12 +70,31 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.textFields["Biography"].exists)
         try app.textFields["Biography"].enter(value: "Hello Stanford")
+        
+        XCTAssertTrue(app.buttons["Add Phone Number"].exists)
+        app.buttons["Add Phone Number"].tap()
+        
+        XCTAssertTrue(app.buttons["Add Phone Number"].exists)
+        app.buttons["Add Phone Number"].tap()
+        
+        XCTAssertTrue(app.textFields["Phone Number"].exists)
+        try app.textFields["Phone Number"].enter(value: "6502345678")
+        
+        XCTAssertTrue(app.buttons["Send Verification Code"].exists)
+        app.buttons["Send Verification Code"].tap()
 
+        XCTAssertTrue(app.textFields["pin-0"].exists)
+        try app.textFields["pin-0"].enter(value: "012345")
+        
+        XCTAssertTrue(app.buttons["Verify Phone Number"].exists)
+        app.buttons["Verify Phone Number"].tap()
+        
         XCTAssertTrue(app.navigationBars.buttons["Done"].exists)
         app.navigationBars.buttons["Done"].tap()
 
         XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].waitForExistence(timeout: 4.0))
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
+        XCTAssertTrue(app.staticTexts["Phone Number, +16502345678"].exists)
     }
 
     @MainActor

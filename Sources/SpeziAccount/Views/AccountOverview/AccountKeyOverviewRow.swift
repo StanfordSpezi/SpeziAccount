@@ -23,8 +23,8 @@ struct AccountKeyOverviewRow: View {
 
     var body: some View {
         if editMode?.wrappedValue.isEditing == true {
-            // we place everything in the same HStack, such that animations are smooth
-            let hStack = VStack {
+            // we place everything in the same Group, such that animations are smooth
+            let group = Group {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
                     Group {
                         if let view = accountKey.dataEntryViewFromBuilder(builder: model.modifiedDetailsBuilder) {
@@ -49,10 +49,10 @@ struct AccountKeyOverviewRow: View {
 
             // for some reason, SwiftUI doesn't update the view when the `deleteDisabled` changes in our scenario
             if isDeleteDisabled(for: accountKey) {
-                hStack
+                group
                     .deleteDisabled(true)
             } else {
-                hStack
+                group
             }
         } else {
             if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {

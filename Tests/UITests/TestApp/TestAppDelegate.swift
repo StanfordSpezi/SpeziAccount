@@ -32,7 +32,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .collects(\.phoneNumber),
+                .supports(\.phoneNumbers),
                 .supports(\.biography),
                 .manual(\.invitationCode)
             ]
@@ -43,7 +43,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .collects(\.phoneNumber),
+                .collects(\.phoneNumbers),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
 
@@ -53,7 +53,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .collects(\.phoneNumber),
+                .supports(\.phoneNumbers),
                 .supports(\.biography) // that's special case for checking follow up info on e.g. login
             ]
 #endif
@@ -64,7 +64,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .collects(\.phoneNumber),
+                .supports(\.phoneNumbers),
                 .requires(\.biography)
             ]
 #else
@@ -73,7 +73,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .requires(\.dateOfBirth),
-                .collects(\.phoneNumber),
+                .supports(\.phoneNumbers),
                 .requires(\.biography)
             ]
 #endif
@@ -100,6 +100,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 storageProvider: InMemoryAccountStorageProvider(),
                 configuration: configuredValues
             )
+            PhoneVerificationProvider()
         }
     }
 }

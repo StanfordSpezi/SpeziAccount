@@ -1,15 +1,8 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@"
-          }
-        }
-      }
+    "" : {
+
     },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
       "localizations" : {
@@ -275,6 +268,9 @@
         }
       }
     },
+    "Add Phone Number" : {
+
+    },
     "ADD_DATE" : {
       "localizations" : {
         "de" : {
@@ -328,6 +324,9 @@
           }
         }
       }
+    },
+    "Cancel" : {
+
     },
     "CANCEL" : {
       "localizations" : {
@@ -637,6 +636,12 @@
         }
       }
     },
+    "Discard" : {
+
+    },
+    "Discard Changes?" : {
+
+    },
     "DONE" : {
       "localizations" : {
         "de" : {
@@ -696,6 +701,15 @@
           }
         }
       }
+    },
+    "Enter Verification Code" : {
+
+    },
+    "Enter your %lld digit verification code you received via text message." : {
+
+    },
+    "Enter your phone number and we'll send you a verification code to add the number to your account." : {
+
     },
     "FOLLOW_UP_INFORMATION_COMPLETE" : {
       "localizations" : {
@@ -1125,11 +1139,33 @@
         }
       }
     },
+    "Phone" : {
+
+    },
+    "Phone Number" : {
+
+    },
     "PHONE_NUMBER" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
+    },
+    "PHONE_NUMBERS" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Telefonnummer"
           }
         },
@@ -1206,6 +1242,9 @@
           }
         }
       }
+    },
+    "Send Verification Message" : {
+
     },
     "SIGN_IN_AND_SECURITY" : {
       "localizations" : {
@@ -1918,6 +1957,7 @@
       }
     },
     "VALIDATION_PHONE_NUMBER" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1993,6 +2033,9 @@
         }
       }
     },
+    "Verify Phone Number" : {
+
+    },
     "YES" : {
       "localizations" : {
         "de" : {
@@ -2014,6 +2057,9 @@
           }
         }
       }
+    },
+    "You have unsaved changes. Are you sure you want to discard them?" : {
+
     },
     "Your country" : {
 

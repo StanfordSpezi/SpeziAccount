@@ -35,7 +35,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
+        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.0.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
@@ -60,6 +61,7 @@ let package = Package(
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Atomics", package: "swift-atomics"),
+                .product(name: "PhoneNumberKit", package: "PhoneNumberKit"),
                 .target(name: "SpeziAccountMacros")
             ],
             resources: [

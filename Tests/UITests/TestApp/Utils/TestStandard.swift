@@ -12,7 +12,7 @@ import SwiftUI
 
 
 // mock implementation of the AccountStorageConstraint
-actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
+actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, EnvironmentAccessible {
     @MainActor
     @Observable
     final class Storage {
@@ -35,5 +35,17 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
         default:
             break
         }
+    }
+    
+    @MainActor
+    func startVerification(_ data: [String: String]) async throws {
+        print("startVerification")
+        // noop
+    }
+    
+    @MainActor
+    func completeVerification(_ data: [String: String]) async throws {
+        print("completeVerification")
+        // noop
     }
 }

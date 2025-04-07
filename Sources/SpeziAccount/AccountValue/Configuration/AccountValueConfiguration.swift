@@ -141,7 +141,7 @@ extension Array where Element == ConfiguredAccountKey {
         .requires(\.name),
         .collects(\.dateOfBirth),
         .collects(\.genderIdentity),
-        .collects(\.phoneNumber)
+        .collects(\.phoneNumbers)
     ]
 }
 
