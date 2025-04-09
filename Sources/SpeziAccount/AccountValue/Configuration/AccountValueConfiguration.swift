@@ -140,8 +140,7 @@ extension Array where Element == ConfiguredAccountKey {
         .requires(\.password),
         .requires(\.name),
         .collects(\.dateOfBirth),
-        .collects(\.genderIdentity),
-        .collects(\.phoneNumbers)
+        .collects(\.genderIdentity)
     ]
 }
 

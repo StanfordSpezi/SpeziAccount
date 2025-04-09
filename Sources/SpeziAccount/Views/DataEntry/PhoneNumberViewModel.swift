@@ -6,26 +6,44 @@
 // SPDX-License-Identifier: MIT
 //
 
+import PhoneNumberKit
 import SwiftUI
 
-enum VerificationStep {
+public enum VerificationStep {
     case phoneNumber
     case verificationCode
 }
 
-@Observable class PhoneNumberViewModel {
-    var phoneNumber: String
-    var displayedPhoneNumber: String
-    var selectedRegion: String
-    var verificationCode: String
-    var currentStep: VerificationStep
+@Observable public class PhoneNumberViewModel {
+    public var phoneNumber: String
+    public var displayedPhoneNumber: String
+    public var selectedRegion: String
+    public var verificationCode: String
+    public var currentStep: VerificationStep
+    public var presentSheet: Bool
+    public var showDiscardAlert: Bool
+    public var phoneNumberUtility: PhoneNumberUtility
+    var accountDetailsBuilder: AccountDetailsBuilder?
     
-    init() {
+    public init() {
         phoneNumber = ""
         displayedPhoneNumber = ""
         selectedRegion = "US"
         verificationCode = ""
         currentStep = .phoneNumber
+        presentSheet = false
+        showDiscardAlert = false
+        phoneNumberUtility = PhoneNumberUtility()
+    }
+    
+    public func resetState() {
+        self.phoneNumber = ""
+        self.displayedPhoneNumber = ""
+        self.selectedRegion = "US"
+        self.verificationCode = ""
+        self.currentStep = .phoneNumber
+        self.presentSheet = false
+        self.showDiscardAlert = false
     }
     
     func countryFlag(for country: String) -> String {

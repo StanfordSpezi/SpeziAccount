@@ -14,7 +14,6 @@ import SwiftUI
 struct PhoneNumberEntryField: View {
     @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     @State private var presentSheet = false
-    let phoneNumberUtility: PhoneNumberUtility
     
     var body: some View {
         HStack(spacing: 15) {
@@ -25,7 +24,7 @@ struct PhoneNumberEntryField: View {
             .background(Color(uiColor: .secondarySystemBackground))
             .mask(RoundedRectangle(cornerRadius: 8))
             .sheet(isPresented: $presentSheet) {
-                CountryListSheet(phoneNumberUtility: phoneNumberUtility)
+                CountryListSheet()
             }
     }
     
@@ -37,7 +36,7 @@ struct PhoneNumberEntryField: View {
             Text(
                 phoneNumberViewModel.countryFlag(for: phoneNumberViewModel.selectedRegion) +
                 " " +
-                "+\(phoneNumberUtility.countryCode(for: phoneNumberViewModel.selectedRegion)?.description ?? "")"
+                "+\(phoneNumberViewModel.phoneNumberUtility.countryCode(for: phoneNumberViewModel.selectedRegion)?.description ?? "")"
             )
                 .foregroundColor(.secondary)
                 .padding([.leading, .trailing], 15)
@@ -64,7 +63,7 @@ struct PhoneNumberEntryField: View {
         )
             .validate(input: phoneNumberViewModel.displayedPhoneNumber, rules: [
                 ValidationRule(
-                    rule: {[phoneNumberUtility = phoneNumberUtility, region = phoneNumberViewModel.selectedRegion] phoneNumber in
+                    rule: {[phoneNumberUtility = phoneNumberViewModel.phoneNumberUtility, region = phoneNumberViewModel.selectedRegion] phoneNumber in
                         phoneNumberUtility.isValidPhoneNumber(phoneNumber, withRegion: region) || phoneNumber.isEmpty
                     },
                     message: "The entered phone number is invalid."
@@ -74,9 +73,9 @@ struct PhoneNumberEntryField: View {
             .keyboardType(.phonePad)
             .onChange(of: phoneNumberViewModel.displayedPhoneNumber) { _, newValue in
                 do {
-                    let number = try phoneNumberUtility.parse(newValue, withRegion: phoneNumberViewModel.selectedRegion)
-                    phoneNumberViewModel.displayedPhoneNumber = phoneNumberUtility.format(number, toType: .national)
-                    phoneNumberViewModel.phoneNumber = phoneNumberUtility.format(number, toType: .e164)
+                    let number = try phoneNumberViewModel.phoneNumberUtility.parse(newValue, withRegion: phoneNumberViewModel.selectedRegion)
+                    phoneNumberViewModel.displayedPhoneNumber = phoneNumberViewModel.phoneNumberUtility.format(number, toType: .national)
+                    phoneNumberViewModel.phoneNumber = phoneNumberViewModel.phoneNumberUtility.format(number, toType: .e164)
                 } catch {
                     phoneNumberViewModel.phoneNumber = ""
                 }
@@ -88,6 +87,6 @@ struct PhoneNumberEntryField: View {
 
 #if DEBUG
 #Preview {
-    PhoneNumberEntryField(phoneNumberUtility: PhoneNumberUtility())
+    PhoneNumberEntryField()
 }
 #endif

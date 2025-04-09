@@ -15,14 +15,13 @@ struct CountryListSheet: View {
     @State private var searchCountry = ""
     @State private var allCountries: [String] = []
     @Environment(\.dismiss) private var dismiss
-    let phoneNumberUtility: PhoneNumberUtility
 
     var filteredCountries: [String] {
         if searchCountry.isEmpty {
             return allCountries
         } else {
             return allCountries.filter { country in
-                let countryCode = phoneNumberUtility.countryCode(for: country)?.description ?? ""
+                let countryCode = phoneNumberViewModel.phoneNumberUtility.countryCode(for: country)?.description ?? ""
                 return country.lowercased().contains(searchCountry.lowercased()) ||
                 countryCode.contains(searchCountry)
             }
@@ -38,7 +37,7 @@ struct CountryListSheet: View {
                     Text(country)
                         .font(.headline)
                     Spacer()
-                    Text("+" + (phoneNumberUtility.countryCode(for: country)?.description ?? ""))
+                    Text("+" + (phoneNumberViewModel.phoneNumberUtility.countryCode(for: country)?.description ?? ""))
                         .foregroundColor(.secondary)
                 }
                     .onTapGesture {
@@ -53,7 +52,7 @@ struct CountryListSheet: View {
             .padding(.top, 5)
             .presentationDetents([.medium, .large])
             .task {
-                allCountries = phoneNumberUtility.allCountries()
+                allCountries = phoneNumberViewModel.phoneNumberUtility.allCountries()
             }
             .onDisappear {
                 searchCountry = ""
@@ -64,6 +63,6 @@ struct CountryListSheet: View {
 
 #if DEBUG
 #Preview {
-    CountryListSheet(phoneNumberUtility: PhoneNumberUtility())
+    CountryListSheet()
 }
 #endif

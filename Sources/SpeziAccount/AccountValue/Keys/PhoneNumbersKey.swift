@@ -16,17 +16,26 @@ private struct DisplayView: DataDisplayView {
     private var phoneNumbers: [String]
     
     var body: some View {
-        ForEach(phoneNumbers, id: \.self) { number in
-            ListRow("Phone") {
-                Text(number)
-            }
-        }
+        EmptyView()
     }
     
     init(_ value: [String]) {
         self.phoneNumbers = value
     }
 }
+
+private struct EntryView: DataEntryView {
+    @Binding private var value: [String]
+    
+    var body: some View {
+        EmptyView()
+    }
+    
+    init(_ value: Binding<[String]>) {
+        self._value = value
+    }
+}
+
 
 extension AccountDetails {
 #if compiler(<6)
@@ -38,18 +47,7 @@ extension AccountDetails {
 
         public static let name = LocalizedStringResource("PHONE_NUMBERS", bundle: .atURL(from: .module))
         public static let identifier = "phoneNumbers"
-        public static let category: AccountKeyCategory = .contactDetails
-        public struct DataEntry: DataEntryView {
-            @Binding private var value: Value
-
-            public var body: some View {
-                PhoneNumberEntryView($value)
-            }
-
-            public init(_ value: Binding<Value>) {
-                self._value = value
-            }
-        }
+        public static let category: AccountKeyCategory = .other
     }
 #endif
 
@@ -59,10 +57,9 @@ extension AccountDetails {
     /// The phone numbers of a user.
     @AccountKey(
         name: LocalizedStringResource("PHONE_NUMBERS", bundle: .atURL(from: .module)),
-        category: .contactDetails,
         as: PhoneNumbersArray.self,
         displayView: DisplayView.self,
-        entryView: PhoneNumbersEntryView.self
+        entryView: EntryView.self
     )
     public var phoneNumbers: PhoneNumbersArray?
 #else

@@ -40,4 +40,13 @@ public class PhoneVerificationProvider: Module, EnvironmentAccessible {
             fatalError("A \(type(of: standard).self) must conform to `PhoneVerificationConstraint` to verify phone numbers.")
         }
     }
+    
+    @MainActor
+    public func deletePhoneNumber(number: String) async throws {
+        if let phoneVerificationConstraint = standard as? any PhoneVerificationConstraint {
+            try await phoneVerificationConstraint.delete(number)
+        } else {
+            fatalError("A \(type(of: standard).self) must conform to `PhoneVerificationConstraint` to verify phone numbers.")
+        }
+    }
 }

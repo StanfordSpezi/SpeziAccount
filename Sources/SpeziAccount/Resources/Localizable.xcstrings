@@ -1145,6 +1145,9 @@
     "Phone Number" : {
 
     },
+    "Phone numbers" : {
+
+    },
     "PHONE_NUMBER" : {
       "localizations" : {
         "de" : {
@@ -1267,6 +1270,9 @@
           }
         }
       }
+    },
+    "The entered phone number is invalid." : {
+
     },
     "The input can only consist of digits." : {
       "localizations" : {

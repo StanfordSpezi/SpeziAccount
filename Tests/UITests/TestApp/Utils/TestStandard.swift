@@ -39,13 +39,16 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     
     @MainActor
     func startVerification(_ data: [String: String]) async throws {
-        print("startVerification")
         // noop
     }
     
     @MainActor
     func completeVerification(_ data: [String: String]) async throws {
-        print("completeVerification")
+        // noop
+    }
+    
+    @MainActor
+    func delete(_ number: String) async throws {
         // noop
     }
 }

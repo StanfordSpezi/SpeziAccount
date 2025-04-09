@@ -32,9 +32,9 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.name),
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.phoneNumbers),
                 .supports(\.biography),
-                .manual(\.invitationCode)
+                .manual(\.invitationCode),
+                .manual(\.phoneNumbers),
             ]
         case .allRequired:
 #if os(visionOS)
@@ -43,8 +43,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .collects(\.phoneNumbers),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .manual(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 
 #else
@@ -53,8 +53,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.phoneNumbers),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .manual(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 #endif
         case .allRequiredWithBio:
@@ -64,8 +64,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.phoneNumbers),
-                .requires(\.biography)
+                .requires(\.biography),
+                .manual(\.phoneNumbers)
             ]
 #else
             return [
@@ -73,8 +73,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .requires(\.dateOfBirth),
-                .supports(\.phoneNumbers),
-                .requires(\.biography)
+                .requires(\.biography),
+                .manual(\.phoneNumbers),
             ]
 #endif
         }

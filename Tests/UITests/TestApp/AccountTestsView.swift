@@ -35,6 +35,9 @@ struct AccountTestsView: View {
     private var account
     @Environment(TestStandard.self)
     private var standard
+    
+    @Environment(\.editMode)
+    private var editMode
 
     @State private var showSetup = false
     @State private var showOverview = false
@@ -42,6 +45,7 @@ struct AccountTestsView: View {
 
     @State private var setupState: ViewState = .idle
 
+    @State private var phoneNumberViewModel = PhoneNumberViewModel()
     
     var body: some View {
         NavigationStack {
@@ -101,8 +105,11 @@ struct AccountTestsView: View {
     }
 
     @ViewBuilder var overviewSheet: some View {
+        @Bindable var phoneNumberViewModel = phoneNumberViewModel
         NavigationStack {
             AccountOverview(close: .showCloseButton) {
+                PhoneNumbersView(maxPhoneNumbers: 3)
+                
                 NavigationLink {
                     Text(verbatim: "")
                         .navigationTitle(Text(verbatim: "Package Dependencies"))
@@ -115,6 +122,13 @@ struct AccountTestsView: View {
                     }
                 }
             }
+                .sheet(isPresented: $phoneNumberViewModel.presentSheet,
+                       onDismiss: {
+                    phoneNumberViewModel.resetState()
+                }, content: {
+                        PhoneNumberSteps()
+                })
+                .environment(phoneNumberViewModel)
         }
     }
 

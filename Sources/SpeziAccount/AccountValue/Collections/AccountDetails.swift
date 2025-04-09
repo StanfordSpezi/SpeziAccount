@@ -116,7 +116,6 @@ private struct CopyKeyVisitor: AccountKeyVisitor {
 /// - ``dateOfBirth``
 /// - ``genderIdentity``
 /// - ``email``
-/// - ``phoneNumber``
 /// - ``phoneNumbers``
 ///
 /// ### Account Metadata
