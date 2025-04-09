@@ -70,6 +70,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .animation(nil, value: editMode?.wrappedValue)
 
         additionalSections
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
+            .animation(nil, value: editMode?.wrappedValue)
 
         if showLogoutButton {
             Section {
