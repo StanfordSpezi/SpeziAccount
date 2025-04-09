@@ -74,9 +74,6 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Add Phone Number"].exists)
         app.buttons["Add Phone Number"].tap()
         
-        XCTAssertTrue(app.buttons["Add Phone Number"].exists)
-        app.buttons["Add Phone Number"].tap()
-        
         XCTAssertTrue(app.textFields["Phone Number"].exists)
         try app.textFields["Phone Number"].enter(value: "6502345678")
         

@@ -88,13 +88,13 @@ struct AccountDetailsTests {
     }
 
     @Test
-    func testPhoneNumberKey() throws {
+    func testPhoneNumbersKey() throws {
         var details = AccountDetails()
-        details.phoneNumber = "+16501234567"
+        details.phoneNumbers = ["+16501234567"]
 
-        #expect(details.phoneNumber == "+16501234567")
+        #expect(details.phoneNumbers == ["+16501234567"])
         
-        details.phoneNumber = nil
-        #expect(details.phoneNumber == nil)
+        details.phoneNumbers = nil
+        #expect(details.phoneNumbers == nil)
     }
 }
