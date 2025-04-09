@@ -59,9 +59,6 @@ extension AccountDetails {
     public struct __Key_userId: RequiredAccountKey { // swiftlint:disable:this type_name
         public typealias Value = String
 
-        public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
-        public static let identifier = "userId"
-        public static let category: AccountKeyCategory = .credentials
         public struct DataDisplay: DataDisplayView {
             private let value: Value
 
@@ -73,6 +70,7 @@ extension AccountDetails {
                 self.value = value
             }
         }
+        
         public struct DataEntry: DataEntryView {
             @Binding private var value: Value
 
@@ -84,6 +82,10 @@ extension AccountDetails {
                 self._value = value
             }
         }
+        
+        public static let name = LocalizedStringResource("USER_ID", bundle: .atURL(from: .module))
+        public static let identifier = "userId"
+        public static let category: AccountKeyCategory = .credentials
     }
 #endif
 

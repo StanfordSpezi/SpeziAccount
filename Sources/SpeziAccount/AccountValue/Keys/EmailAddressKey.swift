@@ -34,9 +34,6 @@ extension AccountDetails {
     public struct __Key_email: AccountKey { // swiftlint:disable:this type_name
         public typealias Value = String
 
-        public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
-        public static let identifier = "email"
-        public static let category: AccountKeyCategory = .contactDetails
         public struct DataEntry: DataEntryView {
             @Binding private var value: Value
 
@@ -48,6 +45,10 @@ extension AccountDetails {
                 self._value = value
             }
         }
+        
+        public static let name = LocalizedStringResource("USER_ID_EMAIL", bundle: .atURL(from: .module))
+        public static let identifier = "email"
+        public static let category: AccountKeyCategory = .contactDetails
     }
 #endif
 
