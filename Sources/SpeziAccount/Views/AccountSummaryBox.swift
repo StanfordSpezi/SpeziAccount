@@ -7,6 +7,7 @@
 //
 
 import SpeziPersonalInfo
+import SpeziViews
 import SwiftUI
 
 
@@ -15,7 +16,7 @@ struct AccountSummaryBox: View {
     private let model: AccountDisplayModel
 
     var body: some View {
-        FormHeader {
+        ListHeader {
             if let profileViewName = model.profileViewName {
                 UserProfileView(name: profileViewName)
                     .frame(height: 80)
