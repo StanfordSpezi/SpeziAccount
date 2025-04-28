@@ -17,6 +17,20 @@ import SwiftSyntaxMacros
 public struct AccountKeyMacro {}
 
 
+private struct AccountKeyOption: RawRepresentable, Hashable {
+    static let read = AccountKeyOption(rawValue: "read")
+    static let write = AccountKeyOption(rawValue: "write")
+
+    static let `default` = AccountKeyOption(rawValue: "default") // special case
+
+    var rawValue: String
+
+    init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+}
+
+
 extension AccountKeyMacro: AccessorMacro {
     public static func expansion(
         of node: AttributeSyntax,
@@ -110,6 +124,7 @@ extension AccountKeyMacro: PeerMacro {
         // optional arguments
         let storageIdentifier = argumentList.first(where: { $0.label?.text == "id" })
         let category = argumentList.first(where: { $0.label?.text == "category" })
+        let options = argumentList.first(where: { $0.label?.text == "options" })
         let initial = argumentList.first { $0.label?.text == "initial" }
         let displayViewType = argumentList.first { $0.label?.text == "displayView" }
         let entryView = argumentList.first { $0.label?.text == "entryView" }
@@ -136,6 +151,30 @@ extension AccountKeyMacro: PeerMacro {
                 message: "Value type '\(valueTypeName) is expected to match the property binding type annotation '\(valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>")'",
                 id: .invalidApplication
             )
+        }
+
+
+        let accountKeyOptions: Set<AccountKeyOption>
+        if let options {
+            accountKeyOptions = options.expression.accountKeyOptions
+
+            if displayViewTypeName != nil && !accountKeyOptions.contains(.read) {
+                throw DiagnosticsError(
+                    syntax: options,
+                    message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `read` option.",
+                    id: .invalidApplication
+                )
+            }
+
+            if entryViewTypeName != nil && !accountKeyOptions.contains(.write) {
+                throw DiagnosticsError(
+                    syntax: options,
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `read` option.",
+                    id: .invalidApplication
+                )
+            }
+        } else {
+            accountKeyOptions = [.read, .write]
         }
 
 
@@ -198,6 +237,11 @@ extension AccountKeyMacro: PeerMacro {
                 """
             }
 
+            let optionsExpr = options?.expression ?? ExprSyntax(MemberAccessExprSyntax(declName: .init(baseName: .identifier("default"))))
+            """
+            \(raw: rawModifier)static let options: AccountKeyOptions = \(optionsExpr)
+            """
+
             if let displayViewTypeName {
                 """
                 \(raw: rawModifier)struct DataDisplay: DataDisplayView {
@@ -209,6 +253,18 @@ extension AccountKeyMacro: PeerMacro {
                 
                     \(raw: rawModifier)init(_ value: Value) {
                         self.value = value
+                    }
+                }
+                """
+            } else if !accountKeyOptions.contains(.read) {
+                """
+                \(raw: rawModifier)struct DataDisplay: DataDisplayView {
+                    \(raw: rawModifier)var body: some View {
+                        fatalError("'\\(\(name.expression))' does not support read access.")
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Value) {
+                        fatalError("'\\(\(name.expression))' does not support read access.")
                     }
                 }
                 """
@@ -225,6 +281,18 @@ extension AccountKeyMacro: PeerMacro {
                 
                     \(raw: rawModifier)init(_ value: Binding<Value>) {
                         self._value = value
+                    }
+                }
+                """
+            } else if !accountKeyOptions.contains(.write) {
+                """
+                \(raw: rawModifier)struct DataEntry: DataEntryView {
+                    \(raw: rawModifier)var body: some View {
+                        fatalError("'\\(\(name.expression))' does not support write access.")
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Binding<Value>) {
+                        fatalError("'\\(\(name.expression))' does not support write access.")
                     }
                 }
                 """
@@ -273,7 +341,58 @@ extension LabeledExprSyntax {
 
 
 extension ExprSyntaxProtocol {
-    var forceToText: String? {
-        String(data: Data(syntaxTextBytes), encoding: .utf8)
+    var forceToText: String {
+        String(decoding: syntaxTextBytes, as: UTF8.self)
+    }
+}
+
+
+extension ExprSyntax {
+    fileprivate var accountKeyOptions: Set<AccountKeyOption> {
+        /*
+         We cover either of these two cases where `expression` is this `ExprSyntax` node.
+
+         ├─expression: MemberAccessExprSyntax
+         │ ├─period: period
+         │ ╰─declName: DeclReferenceExprSyntax
+         │   ╰─baseName: identifier("default")
+
+         ├─expression: ArrayExprSyntax
+         │ ├─leftSquare: leftSquare
+         │ ├─elements: ArrayElementListSyntax
+         │ │ ├─[0]: ArrayElementSyntax
+         │ │ │ ├─expression: MemberAccessExprSyntax
+         │ │ │ │ ├─period: period
+         │ │ │ │ ╰─declName: DeclReferenceExprSyntax
+         │ │ │ │   ╰─baseName: identifier("read")
+         │ │ │ ╰─trailingComma: comma
+         │ │ ╰─[1]: ArrayElementSyntax
+         │ │   ╰─expression: MemberAccessExprSyntax
+         │ │     ├─period: period
+         │ │     ╰─declName: DeclReferenceExprSyntax
+         │ │       ╰─baseName: identifier("write")
+         │ ╰─rightSquare: rightSquare
+         */
+        var options: Set<AccountKeyOption>
+        if let memberAccess = self.as(MemberAccessExprSyntax.self) {
+            options = [AccountKeyOption(rawValue: memberAccess.declName.forceToText)]
+        } else if let array = self.as(ArrayExprSyntax.self) {
+            options = Set(array.elements.compactMap { arrayElement in
+                guard let memberAccess = arrayElement.expression.as(MemberAccessExprSyntax.self) else {
+                    return nil
+                }
+
+                return AccountKeyOption(rawValue: memberAccess.declName.forceToText)
+            })
+        } else {
+            return []
+        }
+
+        if options.contains(.default) {
+            options.remove(.default)
+            options.formUnion([.read, .write])
+        }
+
+        return options
     }
 }
