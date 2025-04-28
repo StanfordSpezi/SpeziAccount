@@ -36,26 +36,28 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.
     /// - Note: Refer to the <doc:Adding-new-Account-Values> article for a list of ``DataDisplayView`` that are automatically provided.
     associatedtype DataDisplay: DataDisplayView<Value>
-
+    
     /// The view that is used to enter a value for this account value.
     ///
     /// This view is used in views like the ``SignupForm`` to enter the account value.
     /// - Note: Refer to the <doc:Adding-new-Account-Values> article for a list of ``DataDisplayView`` that are automatically provided.
     associatedtype DataEntry: DataEntryView<Value>
-
+    
     /// The user-visible, localized name of the account key.
     static var name: LocalizedStringResource { get }
-
+    
     /// A string-based identifier that is meant to be stable. Used by storage modules.
     ///
     /// By default this maps to the type name.
     static var identifier: String { get }
-
+    
     /// The category of the account key.
     ///
     /// The ``AccountKeyCategory`` is used to group ``DataEntryView``s in views like the ``SignupForm``.
     /// Use ``AccountKeyCategory/other`` to move the ``DataEntry`` view to a unnamed group at the bottom.
     static var category: AccountKeyCategory { get }
+    
+    static var options: AccountKeyOptions { get }
 
     /// The initial value that is used when supplying a new account value.
     ///

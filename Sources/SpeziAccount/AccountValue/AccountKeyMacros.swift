@@ -42,16 +42,18 @@ public struct _EmptyDataView: DataDisplayView, DataEntryView { // swiftlint:disa
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The AccountKeyOptions.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - initial: The initial value used when entering
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
 ///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this account key.
 @attached(accessor, names: named(get), named(set))
-@attached(peer, names: prefixed(__Key_))
+@attached(peer, names: prefixed(__Key_)) // TODO: property docs
 public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Value.Type,
     initial: InitialValue<Value>,
     displayView: DataDisplay.Type = _EmptyDataView.self,
