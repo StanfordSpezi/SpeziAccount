@@ -54,10 +54,6 @@ class AccountOverviewFormViewModel {
         self.init(account.configuration, details.accountServiceConfiguration)
     }
 
-
-    // TODO: disable them if they are in edit mode!!!
-    // TODO: throw an Localized Error if attempting to write a non-mutable account key!
-
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
         var result = categorizedAccountKeys[category, default: []]
             .sorted(using: AccountOverviewValuesComparator(details: details, added: addedAccountKeys, removed: removedAccountKeys))
