@@ -35,59 +35,129 @@ public struct ConfiguredAccountKey {
 
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required``.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
     /// - Returns: Returns the ``AccountKey`` configuration.
-    public static func requires<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .required))
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
+    public static func requires<Key: AccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        precondition(
+            Key.options.contains([.display, .mutable]),
+            "AccountKey can only be required if its mutable and able to be displayed. Make sure that `mutable` and `display` options are set.",
+            file: file,
+            line: line
+        )
+        return .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .required))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/collected``.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
-    public static func collects<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .collected))
+    public static func collects<Key: AccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        precondition(
+            Key.options.contains([.display, .mutable]),
+            "AccountKey can only be collected if its mutable and able to be displayed. Make sure that `mutable` and `display` options are set.",
+            file: file,
+            line: line
+        )
+        return .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .collected))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/supported``.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
-    public static func supports<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .supported))
+    public static func supports<Key: AccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        precondition(
+            Key.options.contains([.display, .mutable]),
+            "AccountKey can only be supported if its able to be displayed. Make sure that the `display` option is set.",
+            file: file,
+            line: line
+        )
+        return .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .supported))
     }
     
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/manual``.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @_disfavoredOverload
-    public static func manual<Key: AccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .manual))
+    public static func manual<Key: AccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        // just making sure we are consistent
+        _ = file
+        _ = line
+        return .init(configuration: AccountKeyConfigurationImpl(keyPath, requirement: .manual))
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @available(*, deprecated, renamed: "requires", message: "A 'RequiredAccountKey' must always be supplied as required using requires(_:)")
-    public static func collects<Key: RequiredAccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
+    public static func collects<Key: RequiredAccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
         // sadly we can't make this a compiler error. using `unavailable` makes it unavailable as an overload completely.
-        requires(keyPath)
+        requires(keyPath, file: file, line: line)
     }
 
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @available(*, deprecated, renamed: "requires", message: "A 'RequiredAccountKey' must always be supplied as required using requires(_:)")
-    public static func supports<Key: RequiredAccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        requires(keyPath)
+    public static func supports<Key: RequiredAccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        requires(keyPath, file: file, line: line)
     }
     
     /// Configure an ``AccountKey`` as ``AccountKeyRequirement/required`` as ``RequiredAccountKey`` can only be configured as required.
-    /// - Parameter keyPath: The `KeyPath` referencing the ``AccountKey``.
+    /// - Parameters:
+    ///   - keyPath: The `KeyPath` referencing the ``AccountKey``.
+    ///   - file: The file where the requirement is defined.
+    ///   - line: The line in which the requirement is defined.
     /// - Returns: Returns the ``AccountKey`` configuration.
     @available(*, deprecated, renamed: "requires", message: "A 'RequiredAccountKey' must always be supplied as required using requires(_:)")
-    public static func manual<Key: RequiredAccountKey>(_ keyPath: KeyPath<AccountKeys, Key.Type>) -> ConfiguredAccountKey {
-        requires(keyPath)
+    public static func manual<Key: RequiredAccountKey>(
+        _ keyPath: KeyPath<AccountKeys, Key.Type>,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> ConfiguredAccountKey {
+        requires(keyPath, file: file, line: line)
     }
 }
 
