@@ -56,7 +56,10 @@ public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable
     /// The ``AccountKeyCategory`` is used to group ``DataEntryView``s in views like the ``SignupForm``.
     /// Use ``AccountKeyCategory/other`` to move the ``DataEntry`` view to a unnamed group at the bottom.
     static var category: AccountKeyCategory { get }
-    
+
+    /// Options to configure the behavior of the account key.
+    ///
+    /// Refer to ``AccountKeyOptions`` for more information.
     static var options: AccountKeyOptions { get }
 
     /// The initial value that is used when supplying a new account value.

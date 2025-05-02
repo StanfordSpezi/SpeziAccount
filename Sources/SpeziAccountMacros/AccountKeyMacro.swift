@@ -13,13 +13,9 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 
 
-/// The `@AccountKey` macro.
-public struct AccountKeyMacro {}
-
-
 private struct AccountKeyOption: RawRepresentable, Hashable {
-    static let read = AccountKeyOption(rawValue: "read")
-    static let write = AccountKeyOption(rawValue: "write")
+    static let display = AccountKeyOption(rawValue: "display")
+    static let mutable = AccountKeyOption(rawValue: "mutable")
 
     static let `default` = AccountKeyOption(rawValue: "default") // special case
 
@@ -29,6 +25,10 @@ private struct AccountKeyOption: RawRepresentable, Hashable {
         self.rawValue = rawValue
     }
 }
+
+
+/// The `@AccountKey` macro.
+public struct AccountKeyMacro {}
 
 
 extension AccountKeyMacro: AccessorMacro {
@@ -158,23 +158,23 @@ extension AccountKeyMacro: PeerMacro {
         if let options {
             accountKeyOptions = options.expression.accountKeyOptions
 
-            if displayViewTypeName != nil && !accountKeyOptions.contains(.read) {
+            if displayViewTypeName != nil && !accountKeyOptions.contains(.display) {
                 throw DiagnosticsError(
                     syntax: options,
-                    message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `read` option.",
+                    message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `display` option.",
                     id: .invalidApplication
                 )
             }
 
-            if entryViewTypeName != nil && !accountKeyOptions.contains(.write) {
+            if entryViewTypeName != nil && !accountKeyOptions.contains([.display, .mutable]) {
                 throw DiagnosticsError(
                     syntax: options,
-                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `read` option.",
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `display` and `mutable` option.",
                     id: .invalidApplication
                 )
             }
         } else {
-            accountKeyOptions = [.read, .write]
+            accountKeyOptions = [.display, .mutable]
         }
 
 
@@ -256,15 +256,15 @@ extension AccountKeyMacro: PeerMacro {
                     }
                 }
                 """
-            } else if !accountKeyOptions.contains(.read) {
+            } else if !accountKeyOptions.contains(.display) {
                 """
                 \(raw: rawModifier)struct DataDisplay: DataDisplayView {
                     \(raw: rawModifier)var body: some View {
-                        fatalError("'\\(\(name.expression))' does not support read access.")
+                        fatalError("'\\(\(name.expression))' does not support display access.")
                     }
                 
                     \(raw: rawModifier)init(_ value: Value) {
-                        fatalError("'\\(\(name.expression))' does not support read access.")
+                        fatalError("'\\(\(name.expression))' does not support display access.")
                     }
                 }
                 """
@@ -284,15 +284,27 @@ extension AccountKeyMacro: PeerMacro {
                     }
                 }
                 """
-            } else if !accountKeyOptions.contains(.write) {
+            } else if !accountKeyOptions.contains(.mutable) {
                 """
                 \(raw: rawModifier)struct DataEntry: DataEntryView {
                     \(raw: rawModifier)var body: some View {
-                        fatalError("'\\(\(name.expression))' does not support write access.")
+                        fatalError("'\\(\(name.expression))' does not support mutable access.")
                     }
                 
                     \(raw: rawModifier)init(_ value: Binding<Value>) {
-                        fatalError("'\\(\(name.expression))' does not support write access.")
+                        fatalError("'\\(\(name.expression))' does not support mutable access.")
+                    }
+                }
+                """
+            } else if !accountKeyOptions.contains(.display) {
+                """
+                \(raw: rawModifier)struct DataEntry: DataEntryView {
+                    \(raw: rawModifier)var body: some View {
+                        fatalError("'\\(\(name.expression))' does not support display access.")
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Binding<Value>) {
+                        fatalError("'\\(\(name.expression))' does not support display access.")
                     }
                 }
                 """
@@ -370,7 +382,7 @@ extension ExprSyntax {
          │ │   ╰─expression: MemberAccessExprSyntax
          │ │     ├─period: period
          │ │     ╰─declName: DeclReferenceExprSyntax
-         │ │       ╰─baseName: identifier("write")
+         │ │       ╰─baseName: identifier("mutable")
          │ ╰─rightSquare: rightSquare
          */
         var options: Set<AccountKeyOption>
@@ -390,7 +402,7 @@ extension ExprSyntax {
 
         if options.contains(.default) {
             options.remove(.default)
-            options.formUnion([.read, .write])
+            options.formUnion([.display, .mutable])
         }
 
         return options
