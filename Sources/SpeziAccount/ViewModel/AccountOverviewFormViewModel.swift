@@ -46,7 +46,7 @@ class AccountOverviewFormViewModel {
 
 
     init(_ valueConfiguration: AccountValueConfiguration, _ serviceConfiguration: AccountServiceConfiguration) {
-        self.categorizedAccountKeys = valueConfiguration.allCategorized(filteredBy: [.required, .collected, .supported])
+        self.categorizedAccountKeys = valueConfiguration.allCategorizedForDisplay(filteredBy: [.required, .collected, .supported])
         self.accountServiceConfiguration = serviceConfiguration
     }
 
@@ -54,6 +54,9 @@ class AccountOverviewFormViewModel {
         self.init(account.configuration, details.accountServiceConfiguration)
     }
 
+
+    // TODO: disable them if they are in edit mode!!!
+    // TODO: throw an Localized Error if attempting to write a non-mutable account key!
 
     func accountKeys(by category: AccountKeyCategory, using details: AccountDetails) -> [any AccountKey.Type] {
         var result = categorizedAccountKeys[category, default: []]
@@ -85,7 +88,9 @@ class AccountOverviewFormViewModel {
             value.sorted(using: AccountOverviewValuesComparator(details: accountDetails, added: addedAccountKeys, removed: removedAccountKeys))
         }
     }
-
+    
+    /// The list of account keys that are **potentially** editable.
+    /// - Parameter accountDetails: The current account details.
     func editableAccountKeys(details accountDetails: AccountDetails) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
         baseSortedAccountKeys(details: accountDetails).filter { category, _ in
             category != .credentials && category != .name
