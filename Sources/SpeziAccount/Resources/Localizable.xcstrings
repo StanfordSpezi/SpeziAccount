@@ -23,6 +23,12 @@
             "state" : "translated",
             "value" : "Operación de cuenta fallida"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontoåtgärd misslyckades"
+          }
         }
       }
     },
@@ -44,6 +50,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡Tu identificador principal de cuenta no puede ser cambiado!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din primära kontoidentifierare kan inte ändras eftersom den måste vara stabil!"
           }
         }
       }
@@ -67,6 +79,12 @@
             "state" : "translated",
             "value" : "Exponer cualquier problema con el representante del servicio de cuentas."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rapportera ett problem till utvecklaren av kontotjänsten."
+          }
         }
       }
     },
@@ -88,6 +106,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Falta información en la cuenta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontouppgifter saknas"
           }
         }
       }
@@ -111,6 +135,12 @@
             "state" : "translated",
             "value" : "No se proporciono la siguiente información requerida para la cuenta: %@."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Följande obligatoriska kontouppgifter angavs inte: %@."
+          }
         }
       }
     },
@@ -132,6 +162,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Información y Detalles de la Cuenta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontoinformation & detaljer"
           }
         }
       }
@@ -155,6 +191,12 @@
             "state" : "translated",
             "value" : "Identificador de Cuenta"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontoidentifierare"
+          }
         }
       }
     },
@@ -176,6 +218,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Resumen de la Cuenta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontoöversikt"
           }
         }
       }
@@ -199,6 +247,12 @@
             "state" : "translated",
             "value" : "¡No se pudieron guardar los detalles de la cuenta!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunde inte spara kontoinformationen!"
+          }
         }
       }
     },
@@ -220,6 +274,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tu Cuenta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditt Konto"
           }
         }
       }
@@ -243,6 +303,12 @@
             "state" : "translated",
             "value" : "Ya has iniciado una sesión con la cuenta que se muestra abajo. Continúa o cambia tu cuenta cerrando la sesión."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du är redan inloggad med kontot som visas nedan. Fortsätt eller byt konto genom att logga ut."
+          }
         }
       }
     },
@@ -264,6 +330,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por favor inicia sesión en tu cuenta. O crea una nueva si aún no tienes una."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in på ditt konto. Eller skapa ett nytt om du inte redan har ett."
           }
         }
       }
@@ -290,6 +362,12 @@
             "state" : "translated",
             "value" : "Agregar Fecha"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till datum"
+          }
         }
       }
     },
@@ -306,6 +384,12 @@
             "state" : "translated",
             "value" : "Already got an Account?"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du redan ett konto?"
+          }
         }
       }
     },
@@ -321,6 +405,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anonymous User"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anonym användare"
           }
         }
       }
@@ -347,6 +437,12 @@
             "state" : "translated",
             "value" : "Cancelar"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt"
+          }
         }
       }
     },
@@ -368,6 +464,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cambiar Contraseña"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Byt lösenord"
           }
         }
       }
@@ -391,6 +493,12 @@
             "state" : "translated",
             "value" : "Cerrar"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stäng"
+          }
         }
       }
     },
@@ -412,6 +520,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡Esta información de la cuenta es necesaria. Si abortas, se cerrará automáticamente tu sesión!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här kontoinformationen krävs. Om du avbryter kommer du automatiskt att loggas ut!"
           }
         }
       }
@@ -435,6 +549,12 @@
             "state" : "translated",
             "value" : "Descartar Cambios"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förkasta ändringar"
+          }
         }
       }
     },
@@ -456,6 +576,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Estás seguro de que deseas descartar tus cambios?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Är du säker på att du vill förkasta dina ändringar?"
           }
         }
       }
@@ -479,6 +605,12 @@
             "state" : "translated",
             "value" : "Descartar Información"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förkasta inmatning"
+          }
         }
       }
     },
@@ -500,6 +632,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Estás seguro de que deseas descartar tu información?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Är du säker på att du vill förkasta din inmatning?"
           }
         }
       }
@@ -523,6 +661,12 @@
             "state" : "translated",
             "value" : "Continuar Editando"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsätt redigera"
+          }
         }
       }
     },
@@ -544,6 +688,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Estás seguro de que deseas cerrar sesión?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Är du säker på att du vill logga ut?"
           }
         }
       }
@@ -567,6 +717,12 @@
             "state" : "translated",
             "value" : "¿Estás seguro de que deseas eliminar tu cuenta?"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Är du säker på att du vill ta bort ditt konto?"
+          }
         }
       }
     },
@@ -588,6 +744,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Este cambio es permanente y no podrás recuperar la información de tu cuenta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna ändring är permanent och du kommer inte att kunna återställa din kontoinformation."
           }
         }
       }
@@ -611,6 +773,12 @@
             "state" : "translated",
             "value" : "Eliminar"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radera"
+          }
         }
       }
     },
@@ -632,6 +800,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eliminar Cuenta"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radera konto"
           }
         }
       }
@@ -661,6 +835,12 @@
             "state" : "translated",
             "value" : "Hecho"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klart"
+          }
         }
       }
     },
@@ -676,6 +856,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Double Key"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dubbel nyckel"
           }
         }
       }
@@ -698,6 +884,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redigera"
           }
         }
       }
@@ -730,6 +922,12 @@
             "state" : "translated",
             "value" : "Completar"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutför"
+          }
         }
       }
     },
@@ -751,6 +949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por favor, rellena los detalles a continuación para completar la configuración de tu cuenta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll i uppgifterna nedan för att slutföra inställningen av ditt konto."
           }
         }
       }
@@ -774,6 +978,12 @@
             "state" : "translated",
             "value" : "Finalizar Configuración de Cuenta"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutför kontoinställningar"
+          }
         }
       }
     },
@@ -795,6 +1005,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Femenino"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kvinna"
           }
         }
       }
@@ -818,6 +1034,12 @@
             "state" : "translated",
             "value" : "Masculino"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Man"
+          }
         }
       }
     },
@@ -839,6 +1061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Binario"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ickebinär"
           }
         }
       }
@@ -862,6 +1090,12 @@
             "state" : "translated",
             "value" : "Prefiero no responder"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Väljer att inte svara"
+          }
         }
       }
     },
@@ -883,6 +1117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Identidad de Género"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Könsidentitet"
           }
         }
       }
@@ -906,6 +1146,12 @@
             "state" : "translated",
             "value" : "Transgénero"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transperson"
+          }
         }
       }
     },
@@ -927,6 +1173,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "**No se pudo encontrar una cuenta de usuario.**\n\nEsta pagina require una cuenta de usuario activa.\n¡Consulte la documentación de la pagina 'AccountSetup' sobre cómo configurar una nueva cuenta de usuario!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här vyn kräver ett aktivt användarkonto.\nSe dokumentationen för AccountSetup-vyn för hur du skapar ett användarkonto!"
           }
         }
       }
@@ -950,6 +1202,12 @@
             "state" : "needs_review",
             "value" : "**No hay servicios de cuenta configurados.**\n\n¡Por favor, consulte la documentación del paquete SpeziAccount sobre cómo configurar un servicio de cuenta!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se dokumentationen för SpeziAccount-paketet för hur du skapar en AccountService!"
+          }
         }
       }
     },
@@ -971,6 +1229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namn"
           }
         }
       }
@@ -994,6 +1258,12 @@
             "state" : "translated",
             "value" : "Nueva Contraseña"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ny"
+          }
         }
       }
     },
@@ -1015,6 +1285,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entre contraseña"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ange lösenord"
           }
         }
       }
@@ -1038,14 +1314,34 @@
             "state" : "translated",
             "value" : "No"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nej"
+          }
         }
       }
     },
     "No Account Service" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen kontotjänst"
+          }
+        }
+      }
     },
     "No User Account" : {
-
+      "localizations" : {
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget användarkonto"
+          }
+        }
+      }
     },
     "Numeric Key" : {
       "localizations" : {
@@ -1059,6 +1355,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Numeric Key"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numerisk Nyckel"
           }
         }
       }
@@ -1076,6 +1378,12 @@
             "state" : "translated",
             "value" : "Off"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Av"
+          }
         }
       }
     },
@@ -1091,6 +1399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "On"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På"
           }
         }
       }
@@ -1114,6 +1428,12 @@
             "state" : "translated",
             "value" : "Abrir Documentación"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna dokumentation"
+          }
         }
       }
     },
@@ -1135,6 +1455,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "o"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "eller"
           }
         }
       }
@@ -1199,6 +1525,12 @@
             "state" : "translated",
             "value" : "¡No se pudo eliminar la cuenta!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att ta bort kontot!"
+          }
         }
       }
     },
@@ -1221,6 +1553,12 @@
             "state" : "translated",
             "value" : "Verificar contraseña"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifiera"
+          }
         }
       }
     },
@@ -1242,6 +1580,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escriba la contraseña otra vez"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ange lösenord igen"
           }
         }
       }
@@ -1268,6 +1612,12 @@
             "state" : "translated",
             "value" : "Inicio de Sesión y Seguridad"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inloggning & säkerhet"
+          }
         }
       }
     },
@@ -1286,6 +1636,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The input can only consist of digits."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inmatningen kan bara bestå av siffror."
           }
         }
       }
@@ -1310,6 +1666,12 @@
             "state" : "translated",
             "value" : "The internal account identifier is meant to be generated!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det interna kontoidentifieraren är avsedd att genereras!"
+          }
         }
       }
     },
@@ -1333,6 +1695,12 @@
             "state" : "translated",
             "value" : "The internal account identifier is not meant to be user facing!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det interna kontoidentifieraren är inte avsedd att visas för användaren!"
+          }
         }
       }
     },
@@ -1349,6 +1717,12 @@
             "state" : "translated",
             "value" : "This field is required."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detta fält är obligatoriskt."
+          }
         }
       }
     },
@@ -1364,6 +1738,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toggle"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Växla"
           }
         }
       }
@@ -1387,6 +1767,12 @@
             "state" : "translated",
             "value" : "Por favor, escribe tu %@ de tu cuenta. Se enviará un correo electrónico para restablecer la contraseña a la dirección de correo electrónico vinculado."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange din %@ för ditt konto. Ett e-postmeddelande för lösenordsåterställning kommer att skickas till den länkade e-postadressen."
+          }
         }
       }
     },
@@ -1408,6 +1794,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡No pude restablecer la contraseña!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att återställa lösenordet!"
           }
         }
       }
@@ -1431,6 +1823,12 @@
             "state" : "translated",
             "value" : "Se ha enviado un enlace para restablecer la contraseña."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickat en länk för lösenordsåterställning."
+          }
         }
       }
     },
@@ -1452,6 +1850,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fecha de Nacimiento"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Födelsedatum"
           }
         }
       }
@@ -1475,6 +1879,12 @@
             "state" : "translated",
             "value" : "escribir tu apellido"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ange efternamn"
+          }
         }
       }
     },
@@ -1496,6 +1906,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apellido"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efternamn"
           }
         }
       }
@@ -1519,6 +1935,12 @@
             "state" : "translated",
             "value" : "escribir tu nombre"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ange förnamn"
+          }
         }
       }
     },
@@ -1540,6 +1962,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förnamn"
           }
         }
       }
@@ -1563,6 +1991,12 @@
             "state" : "translated",
             "value" : "Detalles de Contacto"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontaktuppgifter"
+          }
         }
       }
     },
@@ -1584,6 +2018,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Credenciales"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autentiseringsuppgifter"
           }
         }
       }
@@ -1607,6 +2047,12 @@
             "state" : "translated",
             "value" : "¿Olvidaste tu contraseña?"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glömt lösenord?"
+          }
         }
       }
     },
@@ -1628,6 +2074,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Iniciar sesión"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga in"
           }
         }
       }
@@ -1651,6 +2103,12 @@
             "state" : "translated",
             "value" : "¡No pude iniciar sesión!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att logga in!"
+          }
         }
       }
     },
@@ -1672,6 +2130,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cerrar sesión"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Logga ut"
           }
         }
       }
@@ -1695,6 +2159,12 @@
             "state" : "translated",
             "value" : "¡No se pudo cerrar la sesión!"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att logga ut!"
+          }
         }
       }
     },
@@ -1716,6 +2186,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre y Apellido"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Namn"
           }
         }
       }
@@ -1739,6 +2215,12 @@
             "state" : "translated",
             "value" : "¿Aún no tienes una cuenta?"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Har du inget konto ännu?"
+          }
         }
       }
     },
@@ -1760,6 +2242,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contraseña"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösenord"
           }
         }
       }
@@ -1783,6 +2271,12 @@
             "state" : "translated",
             "value" : "Detalles Personales"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personliga uppgifter"
+          }
         }
       }
     },
@@ -1804,6 +2298,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restablecer Contraseña"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Återställ Lösenord"
           }
         }
       }
@@ -1827,6 +2327,12 @@
             "state" : "translated",
             "value" : "Inscribirse"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrera dig"
+          }
         }
       }
     },
@@ -1848,6 +2354,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¡No pude registrar!"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det gick inte att registrera dig!"
           }
         }
       }
@@ -1871,6 +2383,12 @@
             "state" : "translated",
             "value" : "Crear una nueva cuenta"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skapa ett nytt konto"
+          }
         }
       }
     },
@@ -1892,6 +2410,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Por favor, rellena los detalles a continuación para crear tu nueva cuenta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fyll i uppgifterna nedan för att skapa ditt nya konto."
           }
         }
       }
@@ -1915,6 +2439,12 @@
             "state" : "translated",
             "value" : "Identificador de Usuario"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User Identifier"
+          }
         }
       }
     },
@@ -1937,6 +2467,12 @@
             "state" : "translated",
             "value" : "Dirección de Correo Electrónico"
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E-postadress"
+          }
         }
       }
     },
@@ -1958,6 +2494,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre de Usuario"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Användarnamn"
           }
         }
       }
@@ -1992,6 +2534,12 @@
             "state" : "translated",
             "value" : "Esta regla siempre acepta todas las entradas."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denna regel accepterar alltid."
+          }
         }
       }
     },
@@ -2014,6 +2562,12 @@
             "state" : "translated",
             "value" : "Las contraseñas no coinciden."
           }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösenorden matchar inte."
+          }
         }
       }
     },
@@ -2035,6 +2589,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Agregar %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till %@"
           }
         }
       }
@@ -2060,6 +2620,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sí"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja"
           }
         }
       }

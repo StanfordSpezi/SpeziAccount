@@ -26,15 +26,15 @@ let package = Package(
         .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.0.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.1.3"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.7.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
         .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.0.0")
     ] + swiftLintPackage(),
@@ -87,6 +87,9 @@ let package = Package(
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "XCTSpezi", package: "Spezi"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
+            resources: [
+                .process("__Snapshots__")
             ],
             swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()

@@ -16,4 +16,5 @@ public struct MockBoolKey: AccountKey {
     public static let name: LocalizedStringResource = "Toggle"
     public static let identifier = "mockBool"
     public static let category: AccountKeyCategory = .other
+    public static let options: AccountKeyOptions = .default
 }
