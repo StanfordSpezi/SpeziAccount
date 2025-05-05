@@ -47,7 +47,7 @@ public struct AccountKeyCategory {
         self.categoryTitle = categoryTitle
     }
 
-    /// Instantiate a new ``AccountKeyCategory``.
+    /// Instantiate a new `AccountKeyCategory`.
     /// - Parameter categoryTitle: The localized section title. The key is also used a identifier for the `Identifiable` conformance.
     public init(title categoryTitle: LocalizedStringResource) {
         self.categoryTitle = categoryTitle

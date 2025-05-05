@@ -1155,11 +1155,27 @@
         }
       }
     },
+    "Invalid Modification" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültige Änderungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid Modification"
+          }
+        }
+      }
+    },
     "MISSING_ACCOUNT_DETAILS" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "**Kein Benutzerkonto gefunden.**\n\nDiese Oberfläche erfordert ein aktives Benutzerkonto.\nBitte kontaktiere die Dokumentation für die AccountSetup Oberfläche, um ein Benutzerkonto einzurichten."
           }
         },
@@ -1187,7 +1203,7 @@
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "**Es wurden keine Account Services konfiguriert.**\n\nBitte kontaktiere die Dokumentation von SpeziAccount für mehr Informationen zur Konfiguration eines AccountServices!"
           }
         },
@@ -1325,6 +1341,18 @@
     },
     "No Account Service" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Account Service"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Account Service"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1335,6 +1363,18 @@
     },
     "No User Account" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Benutzerkonto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No User Account"
+          }
+        },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1474,34 +1514,21 @@
     "Phone numbers" : {
 
     },
-    "PHONE_NUMBER" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Telefonnummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phone Number"
-          }
-        }
-      }
-    },
     "PHONE_NUMBERS" : {
+
+    },
+    "Please raise an issue with the App developer." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Telefonnummer"
+            "state" : "translated",
+            "value" : "Melde dieses Problem dem App Entwickler."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phone Number"
+            "value" : "Please raise an issue with the App developer."
           }
         }
       }
@@ -1623,6 +1650,22 @@
     },
     "The entered phone number is invalid." : {
 
+    },
+    "The following account values are not mutable: %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Folgenden Werte können nicht bearbeitet werden: %@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The following account values are not mutable: %@."
+          }
+        }
+      }
     },
     "The input can only consist of digits." : {
       "localizations" : {

@@ -350,7 +350,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testAccountKeyOptions() {
+    func testAccountKeyOptions() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -390,7 +390,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Name", options: [.read, .write], as: String.self, initial: .default("Hello World"))
+                @AccountKey(name: "Name", options: [.display, .mutable], as: String.self, initial: .default("Hello World"))
                 var name: String?
             }
             """,
@@ -415,7 +415,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default("Hello World")
                     }
-                    static let options: AccountKeyOptions = [.read, .write]
+                    static let options: AccountKeyOptions = [.display, .mutable]
                 }
             }
             """,
@@ -426,7 +426,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Name", options: [.read], as: String.self, initial: .default("Hello World"))
+                @AccountKey(name: "Name", options: [.display], as: String.self, initial: .default("Hello World"))
                 var name: String?
             }
             """,
@@ -451,14 +451,14 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default("Hello World")
                     }
-                    static let options: AccountKeyOptions = [.read]
+                    static let options: AccountKeyOptions = [.display]
                     struct DataEntry: DataEntryView {
                         var body: some View {
-                            fatalError("'\\("Name")' does not support write access.")
+                            fatalError("'\\("Name")' does not support mutable access.")
                         }
             
                         init(_ value: Binding<Value>) {
-                            fatalError("'\\("Name")' does not support write access.")
+                            fatalError("'\\("Name")' does not support mutable access.")
                         }
                     }
                 }
@@ -471,7 +471,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Name", options: .write, as: String.self, initial: .default("Hello World"))
+                @AccountKey(name: "Name", options: .mutable, as: String.self, initial: .default("Hello World"))
                 var name: String?
             }
             """,
@@ -496,14 +496,23 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default("Hello World")
                     }
-                    static let options: AccountKeyOptions = .write
+                    static let options: AccountKeyOptions = .mutable
                     struct DataDisplay: DataDisplayView {
                         var body: some View {
-                            fatalError("'\\("Name")' does not support read access.")
+                            fatalError("'\\("Name")' does not support display access.")
                         }
             
                         init(_ value: Value) {
-                            fatalError("'\\("Name")' does not support read access.")
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+                    }
+                    struct DataEntry: DataEntryView {
+                        var body: some View {
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+            
+                        init(_ value: Binding<Value>) {
+                            fatalError("'\\("Name")' does not support display access.")
                         }
                     }
                 }
@@ -515,11 +524,11 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testAccountKeyOptionsDiagnostics() {
+    func testAccountKeyOptionsDiagnostics() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Name", options: [.read], as: String.self, initial: .default("Hello World"), entryView: CustomView.self)
+                @AccountKey(name: "Name", options: [.display], as: String.self, initial: .default("Hello World"), entryView: CustomView.self)
                 var name: String?
             }
             """,
@@ -537,7 +546,11 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `read` option.", line: 2, column: 31)
+                DiagnosticSpec(
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `display` and `mutable` option.",
+                    line: 2,
+                    column: 31
+                )
             ],
             macroSpecs: testMacrosSpecs,
             failureHandler: { Issue.record("\($0.message)") }
@@ -546,7 +559,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
         assertMacroExpansion(
             """
             extension AccountDetails {
-                @AccountKey(name: "Name", options: [.write], as: String.self, initial: .default("Hello World"), displayView: CustomView.self)
+                @AccountKey(name: "Name", options: [.mutable], as: String.self, initial: .default("Hello World"), displayView: CustomView.self)
                 var name: String?
             }
             """,
@@ -564,7 +577,42 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `read` option.", line: 2, column: 31)
+                DiagnosticSpec(
+                    message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `display` option.",
+                    line: 2,
+                    column: 31
+                )
+            ],
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.mutable], as: String.self, initial: .default("Hello World"), entryView: CustomView.self)
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `display` and `mutable` option.",
+                    line: 2,
+                    column: 31
+                )
             ],
             macroSpecs: testMacrosSpecs,
             failureHandler: { Issue.record("\($0.message)") }
@@ -692,3 +740,5 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
 }
 
 #endif
+
+// swiftlint:disable:this file_length

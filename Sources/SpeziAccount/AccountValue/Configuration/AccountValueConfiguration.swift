@@ -58,20 +58,29 @@ public struct AccountValueConfiguration {
         }
     }
 
-    func allCategorized(filteredBy filter: [AccountKeyRequirement]? = nil) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        // swiftlint:disable:previous discouraged_optional_collection
-        if let filter {
-            return self.reduce(into: [:]) { result, configuration in
-                guard filter.contains(configuration.requirement) else {
-                    return
-                }
+    func allCategorizedForDisplay(
+        filteredBy filter: Set<AccountKeyRequirement>? = nil // swiftlint:disable:this discouraged_optional_collection
+    ) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
+        let requiredOptions: AccountKeyOptions = if let filter, !filter.isDisjoint(with: [.required, .collected]) {
+            // if we are filtering for requirements that do not allow for `mutable` to be missing, we need to enforce and filter for that
+            [.display, .mutable]
+        } else {
+            .display
+        }
 
-                result[configuration.key.category, default: []] += [configuration.key]
+        let collection: some Collection<any AccountKeyConfiguration> = if let filter {
+            self.lazy.filter { configuration in
+                configuration.key.options.contains(requiredOptions)
+                    && filter.contains(configuration.requirement)
             }
         } else {
-            return self.reduce(into: [:]) { result, configuration in
-                result[configuration.key.category, default: []] += [configuration.key]
+            self.lazy.filter { configuration in
+                configuration.key.options.contains(requiredOptions)
             }
+        }
+
+        return collection.reduce(into: [:]) { result, configuration in
+            result[configuration.key.category, default: []] += [configuration.key]
         }
     }
 
@@ -84,7 +93,8 @@ public struct AccountValueConfiguration {
             .union(Set(ignoring.map { ObjectIdentifier($0) }))
 
         let missingKeys = filter { entry in
-            entry.key.category != .credentials // generally, don't collect credentials!
+            entry.key.options.contains([.display, .mutable]) // do not consider details that are not capable of being displayed or mutated
+                && entry.key.category != .credentials // generally, don't collect credentials!
                 && (entry.requirement == .required || entry.requirement == .collected) // not interested in supported keys
                 && !keysPresent.contains(ObjectIdentifier(entry.key)) // missing on the current details
         }
