@@ -88,7 +88,7 @@ public struct ConfiguredAccountKey {
         line: UInt = #line
     ) -> ConfiguredAccountKey {
         precondition(
-            Key.options.contains([.display, .mutable]),
+            Key.options.contains([.display]),
             "AccountKey can only be supported if its able to be displayed. Make sure that the `display` option is set.",
             file: file,
             line: line
