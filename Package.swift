@@ -30,7 +30,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.7.3"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.0"),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "1.1.1"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", branch: "lukas/fix"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
@@ -57,7 +57,7 @@ let package = Package(
                 .product(name: "SpeziPersonalInfo", package: "SpeziViews"),
                 .product(name: "SpeziValidation", package: "SpeziViews"),
                 .product(name: "SpeziLocalStorage", package: "SpeziStorage"),
-                .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
+                .product(name: "RuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .target(name: "SpeziAccountMacros")
