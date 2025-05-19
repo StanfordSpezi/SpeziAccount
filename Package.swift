@@ -26,10 +26,10 @@ let package = Package(
         .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", branch: "lukas/orderedarray-unsafe-operations"),
-        .package(url: "https://github.com/StanfordSpezi/Spezi.git", branch: "lukas/fix-test-issue"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.1.7"),
+        .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.2"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", branch: "lukas/RuntimeAssertions"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
