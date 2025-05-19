@@ -7,8 +7,8 @@
 //
 
 import Foundation
+import RuntimeAssertions
 import Spezi
-import XCTRuntimeAssertions
 
 
 /// Configure the `SpeziAccount` framework.
