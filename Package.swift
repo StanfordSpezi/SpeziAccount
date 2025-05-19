@@ -30,7 +30,7 @@ let package = Package(
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", branch: "lukas/fix-test-issue"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", branch: "lukas/RuntimeAssertions"),
-        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", branch: "lukas/fix"),
+        .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
