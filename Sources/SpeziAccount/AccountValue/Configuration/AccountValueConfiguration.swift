@@ -58,16 +58,10 @@ public struct AccountValueConfiguration {
         }
     }
 
-    func allCategorizedForDisplay(
-        filteredBy filter: Set<AccountKeyRequirement>? = nil // swiftlint:disable:this discouraged_optional_collection
+    func allCategorized(
+        filteredBy filter: Set<AccountKeyRequirement>? = nil, // swiftlint:disable:this discouraged_optional_collection
+        requiredOptions: AccountKeyOptions = .display
     ) -> OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        let requiredOptions: AccountKeyOptions = if let filter, !filter.isDisjoint(with: [.required, .collected]) {
-            // if we are filtering for requirements that do not allow for `mutable` to be missing, we need to enforce and filter for that
-            [.display, .mutable]
-        } else {
-            .display
-        }
-
         let collection: some Collection<any AccountKeyConfiguration> = if let filter {
             self.lazy.filter { configuration in
                 configuration.key.options.contains(requiredOptions)

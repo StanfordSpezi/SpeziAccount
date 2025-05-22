@@ -46,7 +46,10 @@ class AccountOverviewFormViewModel {
 
 
     init(_ valueConfiguration: AccountValueConfiguration, _ serviceConfiguration: AccountServiceConfiguration) {
-        self.categorizedAccountKeys = valueConfiguration.allCategorizedForDisplay(filteredBy: [.required, .collected, .supported])
+        self.categorizedAccountKeys = valueConfiguration.allCategorized(
+            filteredBy: [.required, .collected, .supported],
+            requiredOptions: .display // we just manually check later if we display mutable account keys in edit mode
+        )
         self.accountServiceConfiguration = serviceConfiguration
     }
 
