@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import SpeziViews
 import SwiftUI
 
 
@@ -14,23 +15,65 @@ enum FocusPin: Hashable {
 }
 
 struct OTCEntryView: View {
+    @State private var viewState = ViewState.idle
     @FocusState private var focusState: FocusPin?
+    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     private let codeLength: Int
     @State private var pins: [String]
+    @State private var resendTimeOut = 30
+    
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     
     var body: some View {
-        HStack(spacing: 15) {
-            ForEach(0..<codeLength, id: \.self) { index in
-                individualPin(index: index)
+        VStack {
+            HStack(spacing: 15) {
+                ForEach(0..<codeLength, id: \.self) { index in
+                    individualPin(index: index)
+                }
             }
-        }
             .onChange(of: pins) { _, _ in
                 updateCode()
             }
             .onAppear {
                 focusState = .pin(0)
+            }
+            Spacer()
+            Text("Didn't receive a verification code?")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if resendTimeOut > 0 {
+                Text("Please wait for \(resendTimeOut) seconds to resend again.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            AsyncButton(action: {
+                do {
+                    try await phoneVerificationProvider.startVerification(data: [
+                        "phoneNumber": phoneNumberViewModel.phoneNumber
+                    ])
+                    resendTimeOut = 30
+                } catch {
+                    viewState = .error(
+                        AnyLocalizedError(
+                            error: error,
+                            defaultErrorDescription: "Failed to send verification message. Please check your phone number and try again."
+                        )
+                    )
+                }
+            }) {
+                Text("Resend Verification Message")
+                    .frame(maxWidth: .infinity, minHeight: 38)
+            }
+            .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
+            .viewStateAlert(state: $viewState)
+            Spacer()
+        }
+            .onReceive(timer) { _ in
+                if resendTimeOut > 0 {
+                    resendTimeOut -= 1
+                }
             }
     }
     

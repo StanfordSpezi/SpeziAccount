@@ -810,6 +810,9 @@
         }
       }
     },
+    "Didn't receive a verification code?" : {
+
+    },
     "Discard" : {
 
     },
@@ -1514,6 +1517,23 @@
     "Phone numbers" : {
 
     },
+    "PHONE_NUMBER" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telefonnummer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone Number"
+          }
+        }
+      }
+    },
     "PHONE_NUMBERS" : {
 
     },
@@ -1532,6 +1552,9 @@
           }
         }
       }
+    },
+    "Please wait for %lld seconds to resend again." : {
+
     },
     "REMOVE_DEFAULT_ERROR" : {
       "localizations" : {
@@ -1617,6 +1640,9 @@
         }
       }
     },
+    "Resend Verification Message" : {
+
+    },
     "Send Verification Message" : {
 
     },
@@ -1647,6 +1673,9 @@
           }
         }
       }
+    },
+    "Test" : {
+
     },
     "The entered phone number is invalid." : {
 

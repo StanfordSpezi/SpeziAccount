@@ -6,10 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
+import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
-import Spezi
 
 
 public struct PhoneNumberSteps: View {
@@ -19,6 +19,7 @@ public struct PhoneNumberSteps: View {
     
     public var body: some View {
         @Bindable var phoneNumberViewModel = phoneNumberViewModel
+        // swiftlint:disable:next closure_body_length
         NavigationStack {
             Group {
                 switch phoneNumberViewModel.currentStep {

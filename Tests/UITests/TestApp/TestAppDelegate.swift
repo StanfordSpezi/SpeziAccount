@@ -33,8 +33,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
                 .supports(\.biography),
-                .manual(\.invitationCode),
-                .manual(\.phoneNumbers),
+                .supports(\.phoneNumbers),
+                .manual(\.invitationCode)
             ]
         case .allRequired:
 #if os(visionOS)
@@ -44,7 +44,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
                 .supports(\.biography),
-                .manual(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 
 #else
@@ -54,7 +54,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
                 .supports(\.biography),
-                .manual(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 #endif
         case .allRequiredWithBio:
@@ -64,8 +64,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .requires(\.biography),
-                .manual(\.phoneNumbers)
+                .requires(\.biography)
             ]
 #else
             return [
@@ -73,8 +72,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .requires(\.dateOfBirth),
-                .requires(\.biography),
-                .manual(\.phoneNumbers),
+                .requires(\.biography)
             ]
 #endif
         }

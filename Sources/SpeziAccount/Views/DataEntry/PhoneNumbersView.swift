@@ -76,10 +76,6 @@ public struct PhoneNumbersView: View {
                 Text("Phone numbers")
             }
                 .viewStateAlert(state: $viewState)
-                .task {
-                    accountDetailsBuilder.set(AccountKeys.phoneNumbers, value: account.details?.phoneNumbers ?? [])
-                    phoneNumberViewModel.accountDetailsBuilder = accountDetailsBuilder
-                }
         }
     }
     
