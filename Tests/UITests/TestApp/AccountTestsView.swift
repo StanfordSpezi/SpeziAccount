@@ -35,6 +35,9 @@ struct AccountTestsView: View {
     private var account
     @Environment(TestStandard.self)
     private var standard
+    
+    @Environment(\.editMode)
+    private var editMode
 
     @State private var showSetup = false
     @State private var showOverview = false

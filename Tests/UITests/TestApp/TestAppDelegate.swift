@@ -33,6 +33,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
                 .supports(\.biography),
+                .supports(\.phoneNumbers),
                 .manual(\.invitationCode)
             ]
         case .allRequired:
@@ -42,7 +43,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 
 #else
@@ -51,7 +53,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 #endif
         case .allRequiredWithBio:
@@ -95,6 +98,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 storageProvider: InMemoryAccountStorageProvider(),
                 configuration: configuredValues
             )
+            PhoneVerificationProvider()
         }
     }
 }

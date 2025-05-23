@@ -25,6 +25,8 @@ public enum AccountOperationError: LocalizedError {
     ///
     /// The stable ``AccountDetails/accountId`` was tried to be modified.
     case accountIdChanged
+    /// Tried to modify account details that are not supported to be modified from the client side.
+    case mutatingNonMutableAccountKeys(_ keyNames: [String])
 
 
     public var errorDescription: String? {
@@ -43,22 +45,31 @@ public enum AccountOperationError: LocalizedError {
     private var errorDescriptionValue: String.LocalizationValue {
         switch self {
         case .missingAccountValue:
-            return "ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION"
+            "ACCOUNT_ERROR_VALUES_MISSING_VALUE_DESCRIPTION"
         case .accountIdChanged:
-            return "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION"
+            "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION"
+        case .mutatingNonMutableAccountKeys:
+            "Invalid Modification"
         }
     }
 
     private var failureReasonValue: String.LocalizationValue {
         switch self {
         case let .missingAccountValue(keyName):
-            return "ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON \(keyName.joined(separator: ", "))"
+            "ACCOUNT_ERROR_VALUES_MISSING_VALUE_REASON \(keyName.joined(separator: ", "))"
         case .accountIdChanged:
-            return "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON"
+            "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_REASON"
+        case let .mutatingNonMutableAccountKeys(keyName):
+            "The following account values are not mutable: \(keyName.joined(separator: ", "))."
         }
     }
 
     private var recoverySuggestionValue: String.LocalizationValue {
-        "ACCOUNT_ERROR_RECOVERY"
+        switch self {
+        case .missingAccountValue, .accountIdChanged:
+            "ACCOUNT_ERROR_RECOVERY"
+        case .mutatingNonMutableAccountKeys:
+            "Please raise an issue with the App developer."
+        }
     }
 }

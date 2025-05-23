@@ -188,6 +188,7 @@ Still, you are required to evaluate to which extent validation has to be handled
 - ``InitialValue``
 - ``AccountKey``
 - ``RequiredAccountKey``
+- ``AccountKeyOptions``
 
 ### Displaying Account Keys
 
