@@ -390,6 +390,24 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.buttons["License Information"].tap()
         XCTAssertTrue(app.navigationBars.staticTexts["Package Dependencies"].waitForExistence(timeout: 3.0))
     }
+
+    @MainActor
+    func testDisplayOnlyOption() throws {
+        let app = XCUIApplication()
+        app.launch(config: .keysWithOptions, credentials: .createAndSignIn)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        XCTAssertTrue(
+            app.staticTexts["Set initial details!"].waitForExistence(timeout: 2.0),
+            "Application seems to have failed to supply the storage provider with an initial value for the display-only key."
+        )
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.staticTexts["Display-Only, This is displayed."].exists)
+    }
 }
 
 

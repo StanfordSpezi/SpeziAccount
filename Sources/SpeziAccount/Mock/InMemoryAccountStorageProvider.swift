@@ -22,6 +22,22 @@ public actor InMemoryAccountStorageProvider: AccountStorageProvider {
 
     public init() {}
 
+    /// Used in testing to simulate a remote update and inject stored values into the storage provider
+    ///
+    /// This will case the account service to be notified about updated details.
+    /// - Parameters:
+    ///   - accountId: The account id.
+    ///   - modifications: The modifications to apply.
+    public func simulateRemoteUpdate(for accountId: String, _ modifications: AccountModifications) {
+        self.store(accountId, modifications)
+
+        guard let details = records[accountId] else {
+            fatalError("Inconsistent state!")
+        }
+
+        storage.notifyAboutUpdatedDetails(for: accountId, details)
+    }
+
     public func load(_ accountId: String, _ keys: [any AccountKey.Type]) -> AccountDetails? {
         guard let details = cache[accountId] else {
             guard records[accountId] != nil else {
