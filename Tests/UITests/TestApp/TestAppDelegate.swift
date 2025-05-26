@@ -75,6 +75,12 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.biography)
             ]
 #endif
+        case .keysWithOptions:
+            return [
+                .requires(\.userId),
+                .supports(\.displayOnlyOption),
+                .manual(\.mutableOnlyOption)
+            ]
         }
     }
 
@@ -92,7 +98,7 @@ class TestAppDelegate: SpeziAppDelegate {
     }
 
     override var configuration: Configuration {
-        Configuration(standard: TestStandard()) {
+        Configuration(standard: TestStandard(features: self.features)) {
             AccountConfiguration(
                 service: InMemoryAccountService(.emailAddress, configure: provider),
                 storageProvider: InMemoryAccountStorageProvider(),

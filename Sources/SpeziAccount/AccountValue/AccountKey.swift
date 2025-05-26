@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: MIT
 //
 
+import RuntimeAssertions
 import SpeziFoundation
 import SwiftUI
-import XCTRuntimeAssertions
 
 
 /// A typed storage key to store values associated with an user account.
