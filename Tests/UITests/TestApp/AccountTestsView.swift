@@ -145,9 +145,14 @@ struct AccountTestsView: View {
             }
         }
         let standard = standard
-        if standard.deleteNotified {
+        if standard.hasReportedInformation {
             Section {
-                Text(verbatim: "Got notified about deletion!")
+                if standard.deleteNotified {
+                    Text(verbatim: "Got notified about deletion!")
+                }
+                if standard.suppliedInitialDetails {
+                    Text(verbatim: "Set initial details!")
+                }
             }
         }
     }

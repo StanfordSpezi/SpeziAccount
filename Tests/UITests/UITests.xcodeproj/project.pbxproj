@@ -16,6 +16,7 @@
 		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
 		2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2FAD38BF2A455FC200E79ED1 /* SpeziAccount */; };
 		9B345FB82C94BF470067C977 /* InvitationCodeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */; };
+		A9684D6C2DE1DBDF00432CD3 /* OptionsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */; };
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
 		A98739032C64EE6000E17A42 /* EntryViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739022C64EE5F00E17A42 /* EntryViewTests.swift */; };
 		A98739052C64F1BB00E17A42 /* EntryViewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739042C64F1B300E17A42 /* EntryViewsTests.swift */; };
@@ -55,6 +56,7 @@
 		2FE750C92A8720CE00723EAE /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
 		636D985F2AF188E00020B8BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitationCodeKey.swift; sourceTree = "<group>"; };
+		A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsKey.swift; sourceTree = "<group>"; };
 		A98739022C64EE5F00E17A42 /* EntryViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewTests.swift; sourceTree = "<group>"; };
 		A98739042C64F1B300E17A42 /* EntryViewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewsTests.swift; sourceTree = "<group>"; };
 		A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetupTests.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		2F027C9629D6C63300234098 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */,
 				A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */,
 				9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */,
 				A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */,
@@ -284,6 +287,7 @@
 				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
 				A98739032C64EE6000E17A42 /* EntryViewTests.swift in Sources */,
 				A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */,
+				A9684D6C2DE1DBDF00432CD3 /* OptionsKey.swift in Sources */,
 				9B345FB82C94BF470067C977 /* InvitationCodeKey.swift in Sources */,
 				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
 				2F027C8929D6C2AD00234098 /* AccountDetails+Default.swift in Sources */,
