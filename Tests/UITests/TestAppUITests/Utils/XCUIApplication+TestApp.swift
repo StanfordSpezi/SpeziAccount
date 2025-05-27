@@ -21,6 +21,7 @@ enum Config: String {
     case `default`
     case allRequired
     case allRequiredWithBio
+    case keysWithOptions
 }
 
 enum DefaultCredentials: String {

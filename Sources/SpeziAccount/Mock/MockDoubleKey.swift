@@ -16,4 +16,5 @@ public struct MockDoubleKey: AccountKey {
     public static let name: LocalizedStringResource = "Double Key"
     public static let identifier = "mockDouble"
     public static let category: AccountKeyCategory = .other
+    public static let options: AccountKeyOptions = .default
 }

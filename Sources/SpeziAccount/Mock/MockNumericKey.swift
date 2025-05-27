@@ -16,4 +16,5 @@ public struct MockNumericKey: AccountKey {
     public static let name: LocalizedStringResource = "Numeric Key"
     public static let identifier = "mockNumeric"
     public static let category: AccountKeyCategory = .other
+    public static let options: AccountKeyOptions = .default
 }

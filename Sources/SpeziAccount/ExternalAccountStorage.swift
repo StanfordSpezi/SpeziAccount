@@ -105,6 +105,12 @@ public final class ExternalAccountStorage {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
         }
 
+        // just a save-guard and helper for debugging
+        let unsupported = details.keys.filter { !$0.options.contains(.mutable) }
+        if !unsupported.isEmpty {
+            throw AccountOperationError.mutatingNonMutableAccountKeys(unsupported.map { $0.identifier })
+        }
+
         try await storageProvider.store(accountId, details)
     }
 
@@ -157,6 +163,13 @@ public final class ExternalAccountStorage {
     public func updateExternalStorage(with modifications: AccountModifications, for accountId: String) async throws {
         guard let storageProvider else {
             preconditionFailure("An External AccountStorageProvider was assumed to be present. However no provider was configured.")
+        }
+
+        // just a save-guard and helper for debugging
+        let unsupported = modifications.modifiedDetails.keys.filter { !$0.options.contains(.mutable) }
+            + modifications.removedAccountKeys.filter { !$0.options.contains(.mutable) }
+        if !unsupported.isEmpty {
+            throw AccountOperationError.mutatingNonMutableAccountKeys(unsupported.map { $0.identifier })
         }
 
         try await storageProvider.store(accountId, modifications)

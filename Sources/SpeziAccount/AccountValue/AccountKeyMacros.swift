@@ -42,6 +42,7 @@ public struct _EmptyDataView: DataDisplayView, DataEntryView { // swiftlint:disa
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The ``AccountKeyOptions`` allowing to customize display and mutation behavior.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - initial: The initial value used when entering
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
@@ -52,6 +53,7 @@ public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntr
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Value.Type,
     initial: InitialValue<Value>,
     displayView: DataDisplay.Type = _EmptyDataView.self,
@@ -78,6 +80,7 @@ public macro AccountKey<Value, DataDisplay: DataDisplayView, DataEntry: DataEntr
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The ``AccountKeyOptions`` allowing to customize display and mutation behavior.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
 ///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
@@ -87,6 +90,7 @@ public macro AccountKey<Value: StringProtocol, DataDisplay: DataDisplayView, Dat
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Value.Type,
     displayView: DataDisplay.Type = _EmptyDataView.self,
     entryView: DataEntry.Type = _EmptyDataView.self
@@ -112,6 +116,7 @@ public macro AccountKey<Value: StringProtocol, DataDisplay: DataDisplayView, Dat
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The ``AccountKeyOptions`` allowing to customize display and mutation behavior.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
 ///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
@@ -121,6 +126,7 @@ public macro AccountKey<DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Bool.Type,
     displayView: DataDisplay.Type = _EmptyDataView.self,
     entryView: DataEntry.Type = _EmptyDataView.self
@@ -146,6 +152,7 @@ public macro AccountKey<DataDisplay: DataDisplayView, DataEntry: DataEntryView>(
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The ``AccountKeyOptions`` allowing to customize display and mutation behavior.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
 ///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
@@ -155,6 +162,7 @@ public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView,
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Value.Type,
     displayView: DataDisplay.Type = _EmptyDataView.self,
     entryView: DataEntry.Type = _EmptyDataView.self
@@ -180,6 +188,7 @@ public macro AccountKey<Value: AdditiveArithmetic, DataDisplay: DataDisplayView,
 ///   - id: A stable, string-based identifier that is used by storage providers.
 ///   - name: The user-visible, localized name of the account key.
 ///   - category: The category the account key belongs to. It will be used to visually group similar account details together.
+///   - options: The ``AccountKeyOptions`` allowing to customize display and mutation behavior.
 ///   - value: The value type. This type must be equal to the type annotation of the property.
 ///   - displayView: A customized ``DataDisplayView`` that is used to display existing values of this account key.
 ///   - entryView: A customized ``DataEntryView`` that is used to enter new or edit existing values of this a
@@ -189,6 +198,7 @@ public macro AccountKey<Value: ExpressibleByArrayLiteral, DataDisplay: DataDispl
     id: String? = nil,
     name: LocalizedStringResource,
     category: AccountKeyCategory = .other,
+    options: AccountKeyOptions = .default,
     as value: Value.Type,
     displayView: DataDisplay.Type = _EmptyDataView.self,
     entryView: DataEntry.Type = _EmptyDataView.self

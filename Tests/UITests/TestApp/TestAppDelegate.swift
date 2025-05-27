@@ -33,6 +33,7 @@ class TestAppDelegate: SpeziAppDelegate {
                 .collects(\.genderIdentity),
                 .collects(\.dateOfBirth),
                 .supports(\.biography),
+                .supports(\.phoneNumbers),
                 .manual(\.invitationCode)
             ]
         case .allRequired:
@@ -42,7 +43,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 
 #else
@@ -51,7 +53,8 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.name),
                 .requires(\.genderIdentity),
                 .collects(\.dateOfBirth),
-                .supports(\.biography) // that's special case for checking follow up info on e.g. login
+                .supports(\.biography),
+                .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
 #endif
         case .allRequiredWithBio:
@@ -72,6 +75,12 @@ class TestAppDelegate: SpeziAppDelegate {
                 .requires(\.biography)
             ]
 #endif
+        case .keysWithOptions:
+            return [
+                .requires(\.userId),
+                .supports(\.displayOnlyOption),
+                .manual(\.mutableOnlyOption)
+            ]
         }
     }
 
@@ -89,12 +98,13 @@ class TestAppDelegate: SpeziAppDelegate {
     }
 
     override var configuration: Configuration {
-        Configuration(standard: TestStandard()) {
+        Configuration(standard: TestStandard(features: self.features)) {
             AccountConfiguration(
                 service: InMemoryAccountService(.emailAddress, configure: provider),
                 storageProvider: InMemoryAccountStorageProvider(),
                 configuration: configuredValues
             )
+            PhoneVerificationProvider()
         }
     }
 }
