@@ -22,7 +22,7 @@ struct AccountKeyOverviewRow: View {
     private var editMode
 
     var body: some View {
-        if editMode?.wrappedValue.isEditing == true {
+        if editMode?.wrappedValue.isEditing == true && accountKey.options.contains(.mutable) {
             // we place everything in the same HStack, such that animations are smooth
             let hStack = VStack {
                 if accountDetails.contains(accountKey) && !model.removedAccountKeys.contains(accountKey) {
@@ -38,7 +38,7 @@ struct AccountKeyOverviewRow: View {
                     accountKey.emptyDataEntryView()
                         .deleteDisabled(false)
                         .environment(\.accountViewType, .overview(mode: .new))
-                } else {
+                } else if accountKey.options.contains(.mutable) { // client side mutation allowed
                     Button(action: {
                         model.addAccountDetail(for: accountKey)
                     }) {
@@ -71,13 +71,13 @@ struct AccountKeyOverviewRow: View {
 
 
     @MainActor
-    func isDeleteDisabled(for key: any AccountKey.Type) -> Bool {
+    private func isDeleteDisabled(for key: any AccountKey.Type) -> Bool {
         if accountDetails.contains(key) && !model.removedAccountKeys.contains(key) {
             return account.configuration[key]?.requirement == .required
         }
 
-        // if not in the addedAccountKeys, it's a "add" button
-        return !model.addedAccountKeys.contains(key)
+        // if not in the addedAccountKeys, it's a "add" button (which we shouldn't delete)
+        return !key.options.contains(.mutable) || !model.addedAccountKeys.contains(key)
     }
 }
 

@@ -50,6 +50,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
                     }
+                    static let options: AccountKeyOptions = .default
                 }
             }
             """,
@@ -94,6 +95,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
                     }
+                    static let options: AccountKeyOptions = .default
                 }
             }
             """,
@@ -132,6 +134,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     public static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
                     }
+                    public static let options: AccountKeyOptions = .default
                 }
             }
             """,
@@ -167,6 +170,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static let name: LocalizedStringResource = "Account Id"
                     static let identifier: String = "accountId"
                     static let category: AccountKeyCategory = .other
+                    static let options: AccountKeyOptions = .default
                 }
             }
             """,
@@ -242,6 +246,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     public static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
                     }
+                    public static let options: AccountKeyOptions = .default
                     public struct DataDisplay: DataDisplayView {
                         private let value: Value
 
@@ -309,6 +314,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                     static var initialValue: InitialValue<Value> {
                         .default(.preferNotToState)
                     }
+                    static let options: AccountKeyOptions = .default
                     struct DataDisplay: DataDisplayView {
                         private let value: Value
             
@@ -337,6 +343,276 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
             diagnostics: [
                 DiagnosticSpec(message: "The type name 'DataDisplay' is ambiguous. Please disambiguate or rename.", line: 7, column: 22),
                 DiagnosticSpec(message: "The type name 'DataEntry' is ambiguous. Please disambiguate or rename.", line: 8, column: 20)
+            ],
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+    }
+
+    @Test
+    func testAccountKeyOptions() { // swiftlint:disable:this function_body_length
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: .default, as: String.self, initial: .default("Hello World"))
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            
+                struct __Key_name: AccountKey {
+                    typealias Value = String
+            
+                    static let name: LocalizedStringResource = "Name"
+                    static let identifier: String = "name"
+                    static let category: AccountKeyCategory = .other
+                    static var initialValue: InitialValue<Value> {
+                        .default("Hello World")
+                    }
+                    static let options: AccountKeyOptions = .default
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.display, .mutable], as: String.self, initial: .default("Hello World"))
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            
+                struct __Key_name: AccountKey {
+                    typealias Value = String
+            
+                    static let name: LocalizedStringResource = "Name"
+                    static let identifier: String = "name"
+                    static let category: AccountKeyCategory = .other
+                    static var initialValue: InitialValue<Value> {
+                        .default("Hello World")
+                    }
+                    static let options: AccountKeyOptions = [.display, .mutable]
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.display], as: String.self, initial: .default("Hello World"))
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            
+                struct __Key_name: AccountKey {
+                    typealias Value = String
+            
+                    static let name: LocalizedStringResource = "Name"
+                    static let identifier: String = "name"
+                    static let category: AccountKeyCategory = .other
+                    static var initialValue: InitialValue<Value> {
+                        .default("Hello World")
+                    }
+                    static let options: AccountKeyOptions = [.display]
+                    struct DataEntry: DataEntryView {
+                        var body: some View {
+                            fatalError("'\\("Name")' does not support mutable access.")
+                        }
+            
+                        init(_ value: Binding<Value>) {
+                            fatalError("'\\("Name")' does not support mutable access.")
+                        }
+                    }
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: .mutable, as: String.self, initial: .default("Hello World"))
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            
+                struct __Key_name: AccountKey {
+                    typealias Value = String
+            
+                    static let name: LocalizedStringResource = "Name"
+                    static let identifier: String = "name"
+                    static let category: AccountKeyCategory = .other
+                    static var initialValue: InitialValue<Value> {
+                        .default("Hello World")
+                    }
+                    static let options: AccountKeyOptions = .mutable
+                    struct DataDisplay: DataDisplayView {
+                        var body: some View {
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+            
+                        init(_ value: Value) {
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+                    }
+                    struct DataEntry: DataEntryView {
+                        var body: some View {
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+            
+                        init(_ value: Binding<Value>) {
+                            fatalError("'\\("Name")' does not support display access.")
+                        }
+                    }
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+    }
+
+    @Test
+    func testAccountKeyOptionsDiagnostics() { // swiftlint:disable:this function_body_length
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.display], as: String.self, initial: .default("Hello World"), entryView: CustomView.self)
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `display` and `mutable` option.",
+                    line: 2,
+                    column: 31
+                )
+            ],
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.mutable], as: String.self, initial: .default("Hello World"), displayView: CustomView.self)
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "Cannot provide a `displayView` if the `@AccountKey` does not specify `display` option.",
+                    line: 2,
+                    column: 31
+                )
+            ],
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Name", options: [.mutable], as: String.self, initial: .default("Hello World"), entryView: CustomView.self)
+                var name: String?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var name: String? {
+                    get {
+                        self[__Key_name.self]
+                    }
+                    set {
+                        self[__Key_name.self] = newValue
+                    }
+                }
+            }
+            """,
+            diagnostics: [
+                DiagnosticSpec(
+                    message: "Cannot provide a `entryView` if the `@AccountKey` does not specify `display` and `mutable` option.",
+                    line: 2,
+                    column: 31
+                )
             ],
             macroSpecs: testMacrosSpecs,
             failureHandler: { Issue.record("\($0.message)") }
@@ -464,3 +740,5 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
 }
 
 #endif
+
+// swiftlint:disable:this file_length

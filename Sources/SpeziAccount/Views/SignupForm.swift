@@ -37,7 +37,10 @@ public struct SignupForm<Header: View>: View {
     @State private var presentingCloseConfirmation = false
 
     @MainActor private var accountKeyByCategory: OrderedDictionary<AccountKeyCategory, [any AccountKey.Type]> {
-        var result = account.configuration.allCategorized(filteredBy: [.required, .collected])
+        var result = account.configuration.allCategorized(
+            filteredBy: [.required, .collected],
+            requiredOptions: [.display, .mutable] // all values provided at signup must be mutable, we already enforce this in `ConfiguredAccountKey`
+        )
 
         // do not show fields that are already present on an anonymous account
         if let details = account.details, details.isAnonymous {
