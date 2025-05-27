@@ -16,7 +16,18 @@ private struct DisplayView: DataDisplayView {
     private var phoneNumbers: [String]
     
     var body: some View {
-        PhoneNumbersView()
+        Section {
+            ForEach(phoneNumbers, id: \.self) { phoneNumber in
+                ListRow("Phone") {
+                    Text(phoneNumber)
+                }
+            }
+            NavigationLink {
+                PhoneNumbersDetailView(phoneNumbers: phoneNumbers)
+            } label: {
+                Text("Edit phone numbers")
+            }
+        }
     }
     
     init(_ value: [String]) {
@@ -34,7 +45,6 @@ extension AccountDetails {
         category: .contactDetails,
         options: .display,
         as: PhoneNumbersArray.self,
-        initial: .default([""]),
         displayView: DisplayView.self
     )
     public var phoneNumbers: PhoneNumbersArray?

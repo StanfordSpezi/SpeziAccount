@@ -12,9 +12,8 @@ import SpeziViews
 import SwiftUI
 
 
-public struct PhoneNumberSteps: View {
+struct PhoneNumberSteps: View {
     @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
-    @Environment(Account.self) private var account
     let codeLength: Int
     
     public var body: some View {
@@ -33,12 +32,6 @@ public struct PhoneNumberSteps: View {
                     VerificationCodeStep(
                         codeLength: codeLength,
                         onVerify: {
-                            guard phoneNumberViewModel.accountDetailsBuilder != nil else {
-                                return
-                            }
-                            let currentNumbers = phoneNumberViewModel.accountDetailsBuilder?.get(AccountKeys.phoneNumbers) ?? []
-                            let newNumbers = currentNumbers.unwrappedArray + [phoneNumberViewModel.phoneNumber]
-                            phoneNumberViewModel.accountDetailsBuilder?.set(AccountKeys.phoneNumbers, value: newNumbers)
                             phoneNumberViewModel.presentSheet = false
                         }
                     )
@@ -82,8 +75,8 @@ public struct PhoneNumberSteps: View {
 
 struct PhoneNumberEntryStep: View {
     @State private var viewState = ViewState.idle
-    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     @Environment(Account.self) private var account
+    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     let onNext: () -> Void
 
@@ -99,9 +92,11 @@ struct PhoneNumberEntryStep: View {
             Spacer()
             AsyncButton(action: {
                 do {
-                    try await phoneVerificationProvider.startVerification(data: [
-                        "phoneNumber": phoneNumberViewModel.phoneNumber
-                    ])
+                    try await phoneVerificationProvider.startVerification(
+                        accountId: account.details?.accountId ?? "",
+                        data: [
+                            "phoneNumber": phoneNumberViewModel.phoneNumber
+                        ])
                     onNext()
                 } catch {
                     viewState = .error(
@@ -142,9 +137,11 @@ struct VerificationCodeStep: View {
             Spacer()
             AsyncButton(action: {
                 do {
-                    try await phoneVerificationProvider.completeVerification(data: [
-                        "phoneNumber": phoneNumberViewModel.phoneNumber,
-                        "code": phoneNumberViewModel.verificationCode
+                    try await phoneVerificationProvider.completeVerification(
+                        accountId: account.details?.accountId ?? "",
+                        data: [
+                            "phoneNumber": phoneNumberViewModel.phoneNumber,
+                            "code": phoneNumberViewModel.verificationCode
                     ])
                     onVerify()
                 } catch {

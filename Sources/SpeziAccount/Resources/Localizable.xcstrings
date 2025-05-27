@@ -754,6 +754,9 @@
         }
       }
     },
+    "Delete" : {
+
+    },
     "DELETE" : {
       "localizations" : {
         "de" : {
@@ -896,6 +899,9 @@
           }
         }
       }
+    },
+    "Edit phone numbers" : {
+
     },
     "Enter Verification Code" : {
 
@@ -1514,7 +1520,7 @@
     "Phone Number" : {
 
     },
-    "Phone numbers" : {
+    "Phone Numbers" : {
 
     },
     "PHONE_NUMBER" : {
@@ -1673,9 +1679,6 @@
           }
         }
       }
-    },
-    "Test" : {
-
     },
     "The entered phone number is invalid." : {
 

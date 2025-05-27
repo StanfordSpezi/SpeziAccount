@@ -21,15 +21,15 @@ public protocol PhoneVerificationConstraint: Standard {
     /// Starts the phone verification process.
     /// - Parameter data: Dictionary containing verification data, typically including the phone number.
     /// - Throws: An error if the verification process cannot be started.
-    func startVerification(_ data: [String: String]) async throws -> Void
+    func startVerification(_ accountId: String, _ data: [String: String]) async throws
     
     /// Completes the phone verification process.
     /// - Parameter data: Dictionary containing verification data, typically including the verification code.
     /// - Throws: An error if the verification process cannot be completed.
-    func completeVerification(_ data: [String: String]) async throws -> Void
+    func completeVerification(_ accountId: String, _ data: [String: String]) async throws
     
     /// Deletes the phone number.
     /// - Parameter number: The phone number.
     /// - Throws: An error if the deletion cannot be completed.
-    func delete(_ number: String) async throws -> Void
+    func delete(_ accountId: String, _ number: String) async throws
 }

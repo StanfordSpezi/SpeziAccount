@@ -9,23 +9,22 @@
 import PhoneNumberKit
 import SwiftUI
 
-public enum VerificationStep {
+enum VerificationStep {
     case phoneNumber
     case verificationCode
 }
 
-@Observable public class PhoneNumberViewModel {
-    public var phoneNumber: String
-    public var displayedPhoneNumber: String
-    public var selectedRegion: String
-    public var verificationCode: String
-    public var currentStep: VerificationStep
-    public var presentSheet: Bool
-    public var showDiscardAlert: Bool
-    public var phoneNumberUtility: PhoneNumberUtility
-    var accountDetailsBuilder: AccountDetailsBuilder?
+@Observable class PhoneNumberViewModel {
+    var phoneNumber: String
+    var displayedPhoneNumber: String
+    var selectedRegion: String
+    var verificationCode: String
+    var currentStep: VerificationStep
+    var presentSheet: Bool
+    var showDiscardAlert: Bool
+    var phoneNumberUtility: PhoneNumberUtility
     
-    public init() {
+    init() {
         phoneNumber = ""
         displayedPhoneNumber = ""
         selectedRegion = "US"
@@ -36,7 +35,7 @@ public enum VerificationStep {
         phoneNumberUtility = PhoneNumberUtility()
     }
     
-    public func resetState() {
+    func resetState() {
         self.phoneNumber = ""
         self.displayedPhoneNumber = ""
         self.selectedRegion = "US"

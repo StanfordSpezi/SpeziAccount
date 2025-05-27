@@ -17,6 +17,7 @@ enum FocusPin: Hashable {
 struct OTCEntryView: View {
     @State private var viewState = ViewState.idle
     @FocusState private var focusState: FocusPin?
+    @Environment(Account.self) private var account
     @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     private let codeLength: Int
@@ -50,9 +51,11 @@ struct OTCEntryView: View {
             }
             AsyncButton(action: {
                 do {
-                    try await phoneVerificationProvider.startVerification(data: [
-                        "phoneNumber": phoneNumberViewModel.phoneNumber
-                    ])
+                    try await phoneVerificationProvider.startVerification(
+                        accountId: account.details?.accountId ?? "",
+                        data: [
+                            "phoneNumber": phoneNumberViewModel.phoneNumber
+                        ])
                     resendTimeOut = 30
                 } catch {
                     viewState = .error(
@@ -66,8 +69,8 @@ struct OTCEntryView: View {
                 Text("Resend Verification Message")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-            .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
-            .viewStateAlert(state: $viewState)
+                .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
+                .viewStateAlert(state: $viewState)
             Spacer()
         }
             .onReceive(timer) { _ in

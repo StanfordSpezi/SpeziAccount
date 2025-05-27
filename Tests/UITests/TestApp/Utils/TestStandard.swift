@@ -67,6 +67,20 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
                 } catch {
                     logger.error("Failed to updated initial account details: \(error)")
                 }
+            } else if features.configurationType == .default {
+                guard let storageProvider else {
+                    logger.error("The account storage provider was never injected!")
+                    break
+                }
+                var modifications = AccountDetails()
+                modifications.phoneNumbers = ["+6502341234"]
+                do {
+                    try await storageProvider.simulateRemoteUpdate(for: details.accountId, AccountModifications(modifiedDetails: modifications))
+                    storage.suppliedInitialDetails = true
+                } catch {
+                    logger.error("Failed to updated initial account details: \(error)")
+                }
+                
             }
         case .disassociatingAccount:
             storage.suppliedInitialDetails = false
@@ -76,17 +90,48 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     }
     
     @MainActor
-    func startVerification(_ data: [String: String]) async throws {
+    func startVerification(_ accountId: String, _ data: [String: String]) async throws {
         // noop
     }
     
     @MainActor
-    func completeVerification(_ data: [String: String]) async throws {
-        // noop
+    func completeVerification(_ accountId: String, _ data: [String: String]) async throws {
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        guard let phoneNumber = data["phoneNumber"] else {
+            logger.error("No phone number provided")
+            return
+        }
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        currentPhoneNumbers.append(phoneNumber)
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+            storage.suppliedInitialDetails = true
+        } catch {
+            logger.error("Failed to updated initial account details: \(error)")
+        }
     }
     
     @MainActor
-    func delete(_ number: String) async throws {
-        // noop
+    func delete(_ accountId: String, _ number: String) async throws {
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        currentPhoneNumbers.removeAll { $0 == number }
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+        } catch {
+            logger.error("Failed to delete phone number: \(error)")
+        }
     }
 }
