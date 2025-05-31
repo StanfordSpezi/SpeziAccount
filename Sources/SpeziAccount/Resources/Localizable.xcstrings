@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "%lld numbers" : {
+
+    },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
       "localizations" : {
         "de" : {
@@ -899,9 +902,6 @@
           }
         }
       }
-    },
-    "Edit phone numbers" : {
-
     },
     "Enter Verification Code" : {
 

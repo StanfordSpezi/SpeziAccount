@@ -17,15 +17,21 @@ private struct DisplayView: DataDisplayView {
     
     var body: some View {
         Section {
-            ForEach(phoneNumbers, id: \.self) { phoneNumber in
-                ListRow("Phone") {
-                    Text(phoneNumber)
-                }
-            }
             NavigationLink {
                 PhoneNumbersDetailView(phoneNumbers: phoneNumbers)
             } label: {
-                Text("Edit phone numbers")
+                HStack {
+                    Text("Phone Numbers")
+                    Spacer()
+                    Group {
+                        if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {
+                            Text(phoneNumber)
+                        } else {
+                            Text("\(phoneNumbers.count) numbers")
+                        }
+                    }
+                        .foregroundColor(.secondary)
+                }
             }
         }
     }

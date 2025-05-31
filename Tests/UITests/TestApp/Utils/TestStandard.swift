@@ -80,7 +80,6 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
                 } catch {
                     logger.error("Failed to updated initial account details: \(error)")
                 }
-                
             }
         case .disassociatingAccount:
             storage.suppliedInitialDetails = false
