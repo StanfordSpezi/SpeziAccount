@@ -8,8 +8,8 @@
 
 import Foundation
 @testable import SpeziAccount
+import SpeziTesting
 import Testing
-import XCTSpezi
 
 @Suite("AccountDetails Cache Tests", .serialized)
 struct AccountDetailsCacheTests {

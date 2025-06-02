@@ -193,6 +193,7 @@ Still, you are required to evaluate to which extent validation has to be handled
 ### Displaying Account Keys
 
 - ``DataDisplayView``
+- ``SetupDisplayView``
 - ``StringDisplayView``
 - ``BoolDisplayView``
 - ``FixedWidthIntegerDisplayView``
