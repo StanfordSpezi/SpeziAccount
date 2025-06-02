@@ -63,7 +63,7 @@ struct AccountKeyOverviewRow: View {
                 }
             }
                 .deleteDisabled(true) // e.g., prevent deletion of non-mutable account keys
-                .disabled(editMode?.wrappedValue.isEditing == true) // TODO: should we force that?
+                .disabled(editMode?.wrappedValue.isEditing == true)
                 .environment(\.accountViewType, .overview(mode: .display))
         }
     }

@@ -23,46 +23,49 @@ extension KeyEntryMacro: MemberMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        guard case let .argumentList(arguments) = node.arguments,
-              let argument = arguments.first,
-              arguments.count == 1 else {
+        guard case let .argumentList(arguments) = node.arguments else {
             throw DiagnosticsError(syntax: node, message: "Unexpected arguments passed to '@KeyEntry'", id: .invalidSyntax)
         }
 
-        guard let keyPathExpression = argument.expression.as(KeyPathExprSyntax.self),
-              let component = keyPathExpression.components.last,
-              keyPathExpression.components.count == 1,
-              let propertyComponent = component.component.as(KeyPathPropertyComponentSyntax.self) else {
-            throw DiagnosticsError(
-                syntax: argument.expression,
-                message: "'@KeyEntry' failed to parse the KeyPath expression in argument 'key'",
-                id: .invalidSyntax
-            )
+        var result: [DeclSyntax] = []
+        result.reserveCapacity(arguments.count * 2)
+
+        for argument in arguments {
+            guard let keyPathExpression = argument.expression.as(KeyPathExprSyntax.self),
+                  let component = keyPathExpression.components.last,
+                  keyPathExpression.components.count == 1,
+                  let propertyComponent = component.component.as(KeyPathPropertyComponentSyntax.self) else {
+                throw DiagnosticsError(
+                    syntax: argument.expression,
+                    message: "'@KeyEntry' failed to parse the KeyPath expression in argument 'key'",
+                    id: .invalidSyntax
+                )
+            }
+
+            let name = propertyComponent.declName.baseName
+
+            let variable: DeclSyntax =
+            """
+            var \(name): AccountDetails.__Key_\(name).Type {
+            AccountDetails.__Key_\(name).self
+            }
+            
+            
+            """
+
+            let staticVariable: DeclSyntax =
+            """
+            static var \(name): AccountDetails.__Key_\(name).Type {
+            AccountDetails.__Key_\(name).self
+            }
+            
+            
+            """
+
+            result.append(variable)
+            result.append(staticVariable)
         }
 
-        let name = propertyComponent.declName.baseName
-
-        let variable: DeclSyntax =
-        """
-        var \(name): AccountDetails.__Key_\(name).Type {
-        AccountDetails.__Key_\(name).self
-        }
-        
-        
-        """
-
-        let staticVariable: DeclSyntax =
-        """
-        static var \(name): AccountDetails.__Key_\(name).Type {
-        AccountDetails.__Key_\(name).self
-        }
-        
-        
-        """
-
-        return [
-            variable,
-            staticVariable
-        ]
+        return result
     }
 }

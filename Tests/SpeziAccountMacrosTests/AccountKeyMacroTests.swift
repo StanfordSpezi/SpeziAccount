@@ -674,6 +674,48 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
+    func testAccountKeyEntriesParameterPack() {
+        assertMacroExpansion(
+            """
+            @KeyEntry(\\.genderIdentity, \\.name, \\.dateOfBirth)
+            extension AccountKeys {
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountKeys {
+            
+                var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
+                    AccountDetails.__Key_genderIdentity.self
+                }
+            
+                static var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
+                    AccountDetails.__Key_genderIdentity.self
+                }
+            
+                var name: AccountDetails.__Key_name.Type {
+                    AccountDetails.__Key_name.self
+                }
+            
+                static var name: AccountDetails.__Key_name.Type {
+                    AccountDetails.__Key_name.self
+                }
+            
+                var dateOfBirth: AccountDetails.__Key_dateOfBirth.Type {
+                    AccountDetails.__Key_dateOfBirth.self
+                }
+            
+                static var dateOfBirth: AccountDetails.__Key_dateOfBirth.Type {
+                    AccountDetails.__Key_dateOfBirth.self
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+    }
+
+    @Test
     func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
         assertMacroExpansion(
             """

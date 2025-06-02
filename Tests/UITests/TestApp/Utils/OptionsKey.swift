@@ -40,8 +40,5 @@ extension AccountDetails {
 }
 
 
-// TODO: support syntax @KeyEntry(\.displayOnlyOption, \.mutableOnlyOption, \.setupDisplayOnly)
-@KeyEntry(\.displayOnlyOption)
-@KeyEntry(\.mutableOnlyOption)
-@KeyEntry(\.setupDisplayOnly)
+@KeyEntry(\.displayOnlyOption, \.mutableOnlyOption, \.setupDisplayOnly)
 extension AccountKeys {}
