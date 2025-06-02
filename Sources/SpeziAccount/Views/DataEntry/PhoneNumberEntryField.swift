@@ -70,7 +70,9 @@ struct PhoneNumberEntryField: View {
                 )
             ])
             .textContentType(.telephoneNumber)
+#if !os(macOS)
             .keyboardType(.phonePad)
+#endif
             .onChange(of: phoneNumberViewModel.displayedPhoneNumber) { _, newValue in
                 do {
                     let number = try phoneNumberViewModel.phoneNumberUtility.parse(newValue, withRegion: phoneNumberViewModel.selectedRegion)

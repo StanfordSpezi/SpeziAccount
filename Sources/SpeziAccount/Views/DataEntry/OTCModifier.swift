@@ -25,7 +25,9 @@ struct OTCModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .multilineTextAlignment(.center)
+#if !os(macOS)
             .keyboardType(.numberPad)
+#endif
             .onChange(of: pin) {
                 limitText(textLimit)
             }

@@ -51,7 +51,7 @@ struct PhoneNumbersDetailView: View {
         }
         .navigationTitle("Phone Numbers")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     phoneNumberViewModel.presentSheet = true
                 } label: {

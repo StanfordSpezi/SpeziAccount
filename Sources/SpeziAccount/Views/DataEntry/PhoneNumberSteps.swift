@@ -38,7 +38,9 @@ struct PhoneNumberSteps: View {
                 }
             }
                 .navigationTitle(phoneNumberViewModel.currentStep == .phoneNumber ? "Add Phone Number" : "Enter Verification Code")
+#if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") {
@@ -133,7 +135,9 @@ struct VerificationCodeStep: View {
                 .font(.caption)
                 .multilineTextAlignment(.center)
             OTCEntryView(codeLength: codeLength)
+#if !os(macOS)
                 .keyboardType(.numberPad)
+#endif
             Spacer()
             AsyncButton(action: {
                 do {
