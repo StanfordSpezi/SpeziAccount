@@ -9,6 +9,15 @@
 import SpeziFoundation
 import SwiftUI
 
+protocol AccountKeyWithSetupView {
+    @MainActor
+    func emptySetupView() -> AnyView
+}
+
+private struct AccountKeyTypeWrapper<Key: AccountKey> {
+    init() {}
+}
+
 
 @MainActor
 extension AccountKey {
@@ -39,7 +48,24 @@ extension AccountKey {
         return AnyView(DataDisplay(value))
     }
 
+    static func setupView() -> AnyView? {
+        let typeWrapper = AccountKeyTypeWrapper<Self>()
+
+        if let setupTypeWrapper = typeWrapper as? any AccountKeyWithSetupView {
+            return setupTypeWrapper.emptySetupView()
+        }
+        return nil
+    }
+
     static func singleEditView(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) -> AnyView {
         AnyView(SingleEditView<Self>(model: model, details: accountDetails))
     }
 }
+
+extension AccountKeyTypeWrapper: AccountKeyWithSetupView where Key.DataDisplay: SetupDisplayView {
+    @MainActor
+    func emptySetupView() -> AnyView {
+        AnyView(Key.DataDisplay(nil))
+    }
+}
+
