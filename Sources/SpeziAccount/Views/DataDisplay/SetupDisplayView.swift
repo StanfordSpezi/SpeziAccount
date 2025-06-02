@@ -26,7 +26,8 @@ public protocol SetupDisplayView<Value>: DataDisplayView {
 }
 
 extension SetupDisplayView {
-   public init(_ value: Value) { // default implementation for `DataDisplayView`.
-      self.init(.some(value))
-   }
+    /// Default implementation with a required value.
+    public init(_ value: Value) { // default implementation for `DataDisplayView`.
+        self.init(.some(value))
+    }
 }

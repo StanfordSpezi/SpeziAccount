@@ -73,4 +73,3 @@ extension AccountKeyTypeWrapper: AccountKeyWithSetupView where Key.DataDisplay: 
         AnyView(Key.DataDisplay(nil))
     }
 }
-
