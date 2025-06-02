@@ -57,6 +57,11 @@ extension AccountKey {
         return nil
     }
 
+    static func hasSetupView() -> Bool {
+        let typeWrapper = AccountKeyTypeWrapper<Self>()
+        return typeWrapper is any AccountKeyWithSetupView
+    }
+
     static func singleEditView(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) -> AnyView {
         AnyView(SingleEditView<Self>(model: model, details: accountDetails))
     }

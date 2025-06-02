@@ -78,6 +78,11 @@ class TestAppDelegate: SpeziAppDelegate {
                 .supports(\.displayOnlyOption),
                 .manual(\.mutableOnlyOption)
             ]
+        case .withSetupView:
+            return [
+                .requires(\.userId),
+                .supports(\.setupDisplayOnly)
+            ]
         }
     }
 

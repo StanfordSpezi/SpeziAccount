@@ -35,7 +35,7 @@ extension KeyEntryMacro: MemberMacro {
               let propertyComponent = component.component.as(KeyPathPropertyComponentSyntax.self) else {
             throw DiagnosticsError(
                 syntax: argument.expression,
-                message: "'@KeyEntry' failed to parse the keypath expression in argument 'key'",
+                message: "'@KeyEntry' failed to parse the KeyPath expression in argument 'key'",
                 id: .invalidSyntax
             )
         }
