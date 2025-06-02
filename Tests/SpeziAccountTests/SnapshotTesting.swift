@@ -10,9 +10,9 @@ import SnapshotTesting
 @_spi(_Testing)
 @_spi(TestingSupport)
 @testable import SpeziAccount
+import SpeziTesting
 import SwiftUI
 import Testing
-import XCTSpezi
 
 #if os(iOS)
 let isRunningIOS = true
