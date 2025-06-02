@@ -14,20 +14,25 @@ struct PhoneNumbersDetailView: View {
     @State private var viewState = ViewState.idle
     @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     @Environment(Account.self) private var account
-    let phoneNumbers: [String]
+    let phoneNumbers: [String]?
     @State private var phoneNumberViewModel = PhoneNumberViewModel()
     
     var body: some View {
         List {
-            ForEach(phoneNumbers, id: \.self) { phoneNumber in
-                ListRow("Phone") {
-                    Text(phoneNumber)
-                }
+            if let phoneNumbers = phoneNumbers {
+                ForEach(phoneNumbers, id: \.self) { phoneNumber in
+                    ListRow("Phone") {
+                        Text(phoneNumber)
+                    }
                     .swipeActions(edge: .trailing) {
                         Button(role: .destructive) {
                             Task {
                                 do {
-                                    try await phoneVerificationProvider.deletePhoneNumber(accountId: account.details?.accountId ?? "", number: phoneNumber)
+                                    let accountId = account.details?.accountId ?? ""
+                                    try await phoneVerificationProvider.deletePhoneNumber(
+                                        accountId: accountId,
+                                        number: phoneNumber
+                                    )
                                 } catch {
                                     viewState = .error(
                                         AnyLocalizedError(
@@ -38,33 +43,32 @@ struct PhoneNumbersDetailView: View {
                                 }
                             }
                         } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
+                            Label("Delete", systemImage: "trash")
                         }
-                        .viewStateAlert(state: $viewState)
                     }
+                }
             }
-                .navigationTitle("Phone Numbers")
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            phoneNumberViewModel.presentSheet = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
-                    }
-                }
-                .sheet(isPresented: $phoneNumberViewModel.presentSheet, onDismiss: { phoneNumberViewModel.resetState() }) {
-                    NavigationStack {
-                        PhoneNumberSteps().environment(phoneNumberViewModel)
-                    }
-                    .presentationDetents([.medium])
-                }
         }
+        .navigationTitle("Phone Numbers")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    phoneNumberViewModel.presentSheet = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+        .sheet(isPresented: $phoneNumberViewModel.presentSheet) {
+            PhoneNumberSteps()
+                .environment(phoneNumberViewModel)
+        }
+        .viewStateAlert(state: $viewState)
     }
+}
     
-    #Preview {
-        NavigationStack {
-            PhoneNumbersDetailView(phoneNumbers: ["+1 (555) 123-4567", "+1 (555) 987-6543"])
-        }
+#Preview {
+    NavigationStack {
+        PhoneNumbersDetailView(phoneNumbers: ["+1 (555) 123-4567", "+1 (555) 987-6543"])
     }
+}

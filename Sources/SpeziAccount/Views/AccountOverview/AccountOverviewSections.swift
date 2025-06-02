@@ -177,11 +177,13 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             // there is always UI presented in EDIT mode
             return false
         }
-        
-        // we don't have to check for `addedAccountKeys` as these are only relevant in edit mode
-        return accountKeys.allSatisfy { element in
-            !accountDetails.contains(element)
-        }
+
+        // If any key uses SetupDisplayView as DataDisplayView, section is not considered empty
+
+
+        // For DisplayView, section is empty only if all are nil
+//        return accountKeys.allSatisfy { !accountDetails.contains($0) }
+        return false
     }
 }
 

@@ -55,8 +55,13 @@ struct AccountKeyOverviewRow: View {
                 group
             }
         } else {
-            if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
+            if let view = accountKey.setupDisplayViewWithoutCurrentStoredValue(from: accountDetails) {
                 view
+                    .deleteDisabled(true)
+                    .environment(\.accountViewType, .overview(mode: .display))
+            } else if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
+                view
+                    .deleteDisabled(true)
                     .environment(\.accountViewType, .overview(mode: .display))
             }
         }

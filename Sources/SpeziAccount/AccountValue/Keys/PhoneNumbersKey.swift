@@ -12,8 +12,13 @@ import SpeziViews
 import SwiftUI
 
 
-private struct DisplayView: DataDisplayView {
-    private var phoneNumbers: [String]
+private struct DisplayView: SetupDisplayView {
+    init(_ value: Value?) {
+        phoneNumbers = value ?? []
+    }
+    
+    typealias Value = [String]
+    private var phoneNumbers: Value
     
     var body: some View {
         Section {
@@ -26,18 +31,16 @@ private struct DisplayView: DataDisplayView {
                     Group {
                         if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {
                             Text(phoneNumber)
-                        } else {
+                        } else if phoneNumbers.count > 1 {
                             Text("\(phoneNumbers.count) numbers")
+                        } else {
+                            EmptyView()
                         }
                     }
-                        .foregroundColor(.secondary)
+                    .foregroundColor(.secondary)
                 }
             }
         }
-    }
-    
-    init(_ value: [String]) {
-        self.phoneNumbers = value
     }
 }
 

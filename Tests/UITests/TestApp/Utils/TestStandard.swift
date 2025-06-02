@@ -67,19 +67,6 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
                 } catch {
                     logger.error("Failed to updated initial account details: \(error)")
                 }
-            } else if features.configurationType == .default {
-                guard let storageProvider else {
-                    logger.error("The account storage provider was never injected!")
-                    break
-                }
-                var modifications = AccountDetails()
-                modifications.phoneNumbers = ["+6502341234"]
-                do {
-                    try await storageProvider.simulateRemoteUpdate(for: details.accountId, AccountModifications(modifiedDetails: modifications))
-                    storage.suppliedInitialDetails = true
-                } catch {
-                    logger.error("Failed to updated initial account details: \(error)")
-                }
             }
         case .disassociatingAccount:
             storage.suppliedInitialDetails = false
@@ -110,9 +97,8 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         modifications.phoneNumbers = currentPhoneNumbers
         do {
             try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
-            storage.suppliedInitialDetails = true
         } catch {
-            logger.error("Failed to updated initial account details: \(error)")
+            logger.error("Failed to update account details: \(error)")
         }
     }
     
