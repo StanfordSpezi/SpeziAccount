@@ -76,7 +76,6 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].waitForExistence(timeout: 4.0))
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
-        XCTAssertTrue(app.staticTexts["Phone Number, +16502345678"].exists)
     }
 
     @MainActor

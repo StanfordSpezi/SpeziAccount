@@ -22,7 +22,9 @@ struct PhoneNumberEntryField: View {
             phoneNumberEntryField
         }
             .padding(6)
+#if !os(macOS)
             .background(Color(uiColor: .secondarySystemBackground))
+#endif
             .mask(RoundedRectangle(cornerRadius: 8))
             .sheet(isPresented: $presentSheet) {
                 CountryListSheet()
@@ -43,10 +45,12 @@ struct PhoneNumberEntryField: View {
                 .padding([.leading, .trailing], 15)
                 .padding([.top, .bottom], 7)
                 .frame(minWidth: 50)
+#if !os(macOS)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color(uiColor: .tertiarySystemFill))
                 )
+#endif
         }
     }
     
