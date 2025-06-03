@@ -11,10 +11,12 @@ import SwiftUI
 
 
 struct CountryListSheet: View {
-    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(PhoneNumberViewModel.self)
+    private var phoneNumberViewModel
+    @Environment(\.dismiss)
+    private var dismiss
     @State private var searchCountry = ""
     @State private var allCountries: [String] = []
-    @Environment(\.dismiss) private var dismiss
 
     var filteredCountries: [String] {
         if searchCountry.isEmpty {

@@ -18,9 +18,12 @@ enum FocusPin: Hashable {
 struct OTCEntryView: View {
     @State private var viewState = ViewState.idle
     @FocusState private var focusState: FocusPin?
-    @Environment(Account.self) private var account
-    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
-    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(Account.self)
+    private var account
+    @Environment(PhoneVerificationProvider.self)
+    private var phoneVerificationProvider
+    @Environment(PhoneNumberViewModel.self)
+    private var phoneNumberViewModel
     private let codeLength: Int
     @State private var pins: [String]
     @State private var resendTimeOut = 30

@@ -14,7 +14,8 @@ enum VerificationStep {
     case verificationCode
 }
 
-@Observable class PhoneNumberViewModel {
+@Observable
+class PhoneNumberViewModel {
     var phoneNumber: String
     var displayedPhoneNumber: String
     var selectedRegion: String

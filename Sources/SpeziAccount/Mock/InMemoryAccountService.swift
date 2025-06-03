@@ -460,7 +460,7 @@ extension InMemoryAccountService {
         var name: PersonNameComponents?
         var genderIdentity: GenderIdentity?
         var dateOfBirth: Date?
-        var phoneNumbers: [String]?
+        var phoneNumbers: [String]? // swiftlint:disable:this discouraged_optional_collection
 
         init(
             accountId: UUID = UUID(), // swiftlint:disable:this function_default_parameter_at_end
@@ -469,7 +469,7 @@ extension InMemoryAccountService {
             name: PersonNameComponents? = nil,
             genderIdentity: GenderIdentity? = nil,
             dateOfBirth: Date? = nil,
-            phoneNumbers: [String]? = nil
+            phoneNumbers: [String]? = nil // swiftlint:disable:this discouraged_optional_collection
         ) {
             self.accountId = accountId
             self.userId = userId

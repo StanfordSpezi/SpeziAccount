@@ -14,15 +14,13 @@ import SwiftUI
 
 
 private struct DisplayView: SetupDisplayView {
-    @Environment(Account.self) private var account
-    @State var phoneNumberViewModel = PhoneNumberViewModel()
-    
-    init(_ value: Value?) {
-        phoneNumbers = value ?? []
-    }
-    
     typealias Value = [String]
+    @Environment(Account.self)
+    private var account
+    @State var phoneNumberViewModel = PhoneNumberViewModel()
+
     private var phoneNumbers: Value
+    
     
     var body: some View {
         Section {
@@ -46,10 +44,16 @@ private struct DisplayView: SetupDisplayView {
             }
         }
     }
+    
+    
+    init(_ value: Value?) {
+        phoneNumbers = value ?? []
+    }
 }
 
 
 extension AccountDetails {
+    /// The type of the phone numbers array.
     public typealias PhoneNumbersArray = [String]
 
     /// The phone numbers of a user.

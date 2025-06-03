@@ -12,7 +12,8 @@ import SwiftUI
 
 
 struct PhoneNumberEntryField: View {
-    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(PhoneNumberViewModel.self)
+    private var phoneNumberViewModel
     @State private var presentSheet = false
     
     var body: some View {

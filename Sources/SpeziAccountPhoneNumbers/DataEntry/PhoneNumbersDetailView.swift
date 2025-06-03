@@ -13,8 +13,10 @@ import SwiftUI
 
 struct PhoneNumbersDetailView: View {
     @State private var viewState = ViewState.idle
-    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
-    @Environment(Account.self) private var account
+    @Environment(PhoneVerificationProvider.self)
+    private var phoneVerificationProvider
+    @Environment(Account.self)
+    private var account
     let phoneNumbers: [String]
     @Binding var phoneNumberViewModel: PhoneNumberViewModel
     
