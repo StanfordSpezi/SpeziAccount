@@ -31,6 +31,7 @@ struct PhoneNumbersDetailView: View {
                         Task {
                             do {
                                 let accountId = account.details?.accountId ?? ""
+                                let phoneNumber = try phoneNumberViewModel.phoneNumberUtility.parse(phoneNumber)
                                 try await phoneVerificationProvider.deletePhoneNumber(
                                     accountId: accountId,
                                     number: phoneNumber

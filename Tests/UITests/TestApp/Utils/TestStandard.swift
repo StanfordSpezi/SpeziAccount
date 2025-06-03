@@ -90,7 +90,8 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         }
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.append(data.phoneNumber.numberString)
+        let e164FormattedNumber = PhoneNumberUtility().format(data.phoneNumber, toType: .e164)
+        currentPhoneNumbers.append(e164FormattedNumber)
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {
