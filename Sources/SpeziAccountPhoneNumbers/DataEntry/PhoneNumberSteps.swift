@@ -37,9 +37,7 @@ struct PhoneNumberEntryStep: View {
                 do {
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: [
-                            "phoneNumber": phoneNumberViewModel.phoneNumber
-                        ]
+                        data: StartVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber)
                     )
                     onNext()
                 } catch {
@@ -88,10 +86,7 @@ struct VerificationCodeStep: View {
                 do {
                     try await phoneVerificationProvider.completeVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: [
-                            "phoneNumber": phoneNumberViewModel.phoneNumber,
-                            "code": phoneNumberViewModel.verificationCode
-                        ]
+                        data: CompleteVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber, code: phoneNumberViewModel.verificationCode)
                     )
                     onVerify()
                 } catch {

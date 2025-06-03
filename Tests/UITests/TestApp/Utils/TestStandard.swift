@@ -77,23 +77,19 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     }
     
     @MainActor
-    func startVerification(_ accountId: String, _ data: [String: String]) async throws {
+    func startVerification(_ accountId: String, _ data: StartVerificationRequest) async throws {
         // noop
     }
     
     @MainActor
-    func completeVerification(_ accountId: String, _ data: [String: String]) async throws {
+    func completeVerification(_ accountId: String, _ data: CompleteVerificationRequest) async throws {
         guard let storageProvider else {
             logger.error("The account storage provider was never injected!")
             return
         }
-        guard let phoneNumber = data["phoneNumber"] else {
-            logger.error("No phone number provided")
-            return
-        }
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.append(phoneNumber)
+        currentPhoneNumbers.append(data.phoneNumber)
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {

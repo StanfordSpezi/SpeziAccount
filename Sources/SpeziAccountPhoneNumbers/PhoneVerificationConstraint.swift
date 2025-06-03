@@ -9,6 +9,26 @@
 import Spezi
 
 
+/// The request for starting phone verification.
+public struct StartVerificationRequest: Sendable, Equatable, Codable {
+    public let phoneNumber: String
+
+    public init(phoneNumber: String) {
+        self.phoneNumber = phoneNumber
+    }
+}
+
+/// The request for completing phone verification.
+public struct CompleteVerificationRequest: Sendable, Equatable, Codable {
+    public let phoneNumber: String
+    public let code: String
+
+    public init(phoneNumber: String, code: String) {
+        self.phoneNumber = phoneNumber
+        self.code = code
+    }
+}
+
 /// A `Spezi` Standard that provides phone number verification functionality.
 ///
 /// Adopt this protocol in your Standard to implement phone number verification services.
@@ -21,12 +41,12 @@ public protocol PhoneVerificationConstraint: Standard {
     /// Starts the phone verification process.
     /// - Parameter data: Dictionary containing verification data, typically including the phone number.
     /// - Throws: An error if the verification process cannot be started.
-    func startVerification(_ accountId: String, _ data: [String: String]) async throws
+    func startVerification(_ accountId: String, _ data: StartVerificationRequest) async throws
     
     /// Completes the phone verification process.
     /// - Parameter data: Dictionary containing verification data, typically including the verification code.
     /// - Throws: An error if the verification process cannot be completed.
-    func completeVerification(_ accountId: String, _ data: [String: String]) async throws
+    func completeVerification(_ accountId: String, _ data: CompleteVerificationRequest) async throws
     
     /// Deletes the phone number.
     /// - Parameter number: The phone number.

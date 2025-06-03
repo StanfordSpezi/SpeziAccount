@@ -70,9 +70,7 @@ struct OTCEntryView: View {
                 do {
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: [
-                            "phoneNumber": phoneNumberViewModel.phoneNumber
-                        ]
+                        data: StartVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber)
                     )
                     resendTimeOut = 30
                 } catch {
@@ -101,7 +99,7 @@ struct OTCEntryView: View {
     private func individualPin(index: Int) -> some View {
         TextField("", text: $pins[index])
             .modifier(OTCModifier(pin: $pins[index]))
-            .accessibilityIdentifier("pin-\(index)")
+            .accessibilityIdentifier("One-Time Code Entry Pin \(index)")
             .onChange(of: $pins[index].wrappedValue) { _, newValue in
                 if !newValue.isEmpty {
                     if index < codeLength - 1 {
