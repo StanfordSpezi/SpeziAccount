@@ -6,24 +6,25 @@
 // SPDX-License-Identifier: MIT
 //
 
+@preconcurrency import PhoneNumberKit
 import Spezi
 
 
 /// The request for starting phone verification.
 public struct StartVerificationRequest: Sendable, Equatable, Codable {
-    public let phoneNumber: String
+    public let phoneNumber: PhoneNumber
 
-    public init(phoneNumber: String) {
+    public init(phoneNumber: PhoneNumber) {
         self.phoneNumber = phoneNumber
     }
 }
 
 /// The request for completing phone verification.
 public struct CompleteVerificationRequest: Sendable, Equatable, Codable {
-    public let phoneNumber: String
+    public let phoneNumber: PhoneNumber
     public let code: String
 
-    public init(phoneNumber: String, code: String) {
+    public init(phoneNumber: PhoneNumber, code: String) {
         self.phoneNumber = phoneNumber
         self.code = code
     }
@@ -51,5 +52,5 @@ public protocol PhoneVerificationConstraint: Standard {
     /// Deletes the phone number.
     /// - Parameter number: The phone number.
     /// - Throws: An error if the deletion cannot be completed.
-    func delete(_ accountId: String, _ number: String) async throws
+    func delete(_ accountId: String, _ number: PhoneNumber) async throws
 }

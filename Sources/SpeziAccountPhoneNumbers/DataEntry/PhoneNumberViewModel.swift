@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
-import PhoneNumberKit
+@preconcurrency import PhoneNumberKit
 import SwiftUI
 
 enum VerificationStep {
@@ -16,7 +16,7 @@ enum VerificationStep {
 
 @Observable
 class PhoneNumberViewModel {
-    var phoneNumber: String
+    var phoneNumber: PhoneNumber?
     var displayedPhoneNumber: String
     var selectedRegion: String
     var verificationCode: String
@@ -26,7 +26,6 @@ class PhoneNumberViewModel {
     var phoneNumberUtility: PhoneNumberUtility
     
     init() {
-        phoneNumber = ""
         displayedPhoneNumber = ""
         selectedRegion = "US"
         verificationCode = ""
@@ -37,7 +36,7 @@ class PhoneNumberViewModel {
     }
     
     func resetState() {
-        self.phoneNumber = ""
+        self.phoneNumber = nil
         self.displayedPhoneNumber = ""
         self.selectedRegion = "US"
         self.verificationCode = ""

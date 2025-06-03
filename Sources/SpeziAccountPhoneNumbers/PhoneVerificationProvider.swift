@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+@preconcurrency import PhoneNumberKit
 import Spezi
 import SwiftUI
 
@@ -34,7 +35,7 @@ public class PhoneVerificationProvider: Module, EnvironmentAccessible {
     }
     
     @MainActor
-    public func deletePhoneNumber(accountId: String, number: String) async throws {
+    public func deletePhoneNumber(accountId: String, number: PhoneNumber) async throws {
         try await phoneVerificationConstraint.delete(accountId, number)
     }
 }

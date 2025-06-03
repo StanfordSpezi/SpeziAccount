@@ -68,9 +68,12 @@ struct OTCEntryView: View {
             }
             AsyncButton(action: {
                 do {
+                    guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
+                        throw NSError(domain: "OTCEntryView", code: 1)
+                    }
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: StartVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber)
+                        data: StartVerificationRequest(phoneNumber: phoneNumber)
                     )
                     resendTimeOut = 30
                 } catch {
@@ -85,7 +88,7 @@ struct OTCEntryView: View {
                 Text("Resend Verification Message")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-            .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
+            .disabled((phoneNumberViewModel.phoneNumber == nil) || resendTimeOut > 0)
             .viewStateAlert(state: $viewState)
         }
     }

@@ -35,9 +35,12 @@ struct PhoneNumberEntryStep: View {
             Spacer()
             AsyncButton(action: {
                 do {
+                    guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
+                        throw NSError(domain: "PhoneNumberEntryStep", code: 1)
+                    }
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: StartVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber)
+                        data: StartVerificationRequest(phoneNumber: phoneNumber)
                     )
                     onNext()
                 } catch {
@@ -53,7 +56,7 @@ struct PhoneNumberEntryStep: View {
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
                 .buttonStyle(.borderedProminent)
-                .disabled(phoneNumberViewModel.phoneNumber.isEmpty)
+                .disabled(phoneNumberViewModel.phoneNumber == nil)
                 .viewStateAlert(state: $viewState)
         }
             .padding()
@@ -84,9 +87,12 @@ struct VerificationCodeStep: View {
             Spacer()
             AsyncButton(action: {
                 do {
+                    guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
+                        throw NSError(domain: "VerificationCodeStep", code: 1)
+                    }
                     try await phoneVerificationProvider.completeVerification(
                         accountId: account.details?.accountId ?? "",
-                        data: CompleteVerificationRequest(phoneNumber: phoneNumberViewModel.phoneNumber, code: phoneNumberViewModel.verificationCode)
+                        data: CompleteVerificationRequest(phoneNumber: phoneNumber, code: phoneNumberViewModel.verificationCode)
                     )
                     onVerify()
                 } catch {
@@ -143,7 +149,7 @@ struct PhoneNumberSteps: View {
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") {
-                            if !phoneNumberViewModel.phoneNumber.isEmpty {
+                            if !(phoneNumberViewModel.phoneNumber == nil) {
                                 phoneNumberViewModel.showDiscardAlert = true
                             } else {
                                 phoneNumberViewModel.presentSheet = false
@@ -164,7 +170,7 @@ struct PhoneNumberSteps: View {
                     Text("You have unsaved changes. Are you sure you want to discard them?")
                 }
         }
-            .interactiveDismissDisabled(!phoneNumberViewModel.phoneNumber.isEmpty)
+            .interactiveDismissDisabled(!(phoneNumberViewModel.phoneNumber == nil))
             .presentationDetents([.medium])
     }
     

@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+@preconcurrency import PhoneNumberKit
 import Spezi
 import SpeziAccount
 import SpeziAccountPhoneNumbers
@@ -89,7 +90,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         }
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.append(data.phoneNumber)
+        currentPhoneNumbers.append(data.phoneNumber.numberString)
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {
@@ -100,14 +101,14 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     }
     
     @MainActor
-    func delete(_ accountId: String, _ number: String) async throws {
+    func delete(_ accountId: String, _ number: PhoneNumber) async throws {
         guard let storageProvider else {
             logger.error("The account storage provider was never injected!")
             return
         }
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.removeAll { $0 == number }
+        currentPhoneNumbers.removeAll { $0 == number.numberString }
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {

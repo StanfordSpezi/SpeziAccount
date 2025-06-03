@@ -82,9 +82,9 @@ struct PhoneNumberEntryField: View {
                 do {
                     let number = try phoneNumberViewModel.phoneNumberUtility.parse(newValue, withRegion: phoneNumberViewModel.selectedRegion)
                     phoneNumberViewModel.displayedPhoneNumber = phoneNumberViewModel.phoneNumberUtility.format(number, toType: .national)
-                    phoneNumberViewModel.phoneNumber = phoneNumberViewModel.phoneNumberUtility.format(number, toType: .e164)
+                    phoneNumberViewModel.phoneNumber = number
                 } catch {
-                    phoneNumberViewModel.phoneNumber = ""
+                    phoneNumberViewModel.phoneNumber = nil
                 }
             }
             .id(phoneNumberViewModel.selectedRegion) // to trigger a update of the validation rule upon changes of selectedRegion
