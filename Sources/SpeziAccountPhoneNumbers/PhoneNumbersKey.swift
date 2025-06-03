@@ -15,6 +15,7 @@ import SwiftUI
 
 private struct DisplayView: SetupDisplayView {
     @Environment(Account.self) private var account
+    @State var phoneNumberViewModel = PhoneNumberViewModel()
     
     init(_ value: Value?) {
         phoneNumbers = value ?? []
@@ -26,14 +27,14 @@ private struct DisplayView: SetupDisplayView {
     var body: some View {
         Section {
             NavigationLink {
-                PhoneNumbersDetailView(phoneNumbers: account.details?.phoneNumbers ?? [])
+                PhoneNumbersDetailView(phoneNumbers: account.details?.phoneNumbers ?? [], phoneNumberViewModel: $phoneNumberViewModel)
             } label: {
                 HStack {
                     Text("Phone Numbers")
                     Spacer()
                     Group {
                         if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {
-                            Text(phoneNumber)
+                            Text(phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
                         } else if phoneNumbers.count > 1 {
                             Text("\(phoneNumbers.count) numbers")
                         } else {

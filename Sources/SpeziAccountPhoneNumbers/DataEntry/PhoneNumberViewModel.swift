@@ -53,4 +53,13 @@ enum VerificationStep {
             .compactMap { UnicodeScalar(flagBase + $0.value)?.description }
             .joined()
     }
+    
+    func formatPhoneNumberForDisplay(_ phoneNumber: String) -> String {
+        do {
+            let number = try phoneNumberUtility.parse(phoneNumber)
+            return phoneNumberUtility.format(number, toType: .national)
+        } catch {
+            return phoneNumber
+        }
+    }
 }

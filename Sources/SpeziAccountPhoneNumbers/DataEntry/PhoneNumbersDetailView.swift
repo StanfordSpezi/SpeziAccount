@@ -16,13 +16,13 @@ struct PhoneNumbersDetailView: View {
     @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     @Environment(Account.self) private var account
     let phoneNumbers: [String]
-    @State private var phoneNumberViewModel = PhoneNumberViewModel()
+    @Binding var phoneNumberViewModel: PhoneNumberViewModel
     
     var body: some View {
         List {
             ForEach(phoneNumbers, id: \.self) { phoneNumber in
                 ListRow("Phone") {
-                    Text(phoneNumber)
+                    Text(phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {
@@ -59,7 +59,7 @@ struct PhoneNumbersDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $phoneNumberViewModel.presentSheet) {
+        .sheet(isPresented: $phoneNumberViewModel.presentSheet, onDismiss: phoneNumberViewModel.resetState) {
             PhoneNumberSteps()
                 .environment(phoneNumberViewModel)
         }
@@ -69,6 +69,9 @@ struct PhoneNumbersDetailView: View {
     
 #Preview {
     NavigationStack {
-        PhoneNumbersDetailView(phoneNumbers: ["+1 (555) 123-4567", "+1 (555) 987-6543"])
+        PhoneNumbersDetailView(
+            phoneNumbers: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
+            phoneNumberViewModel: .constant(PhoneNumberViewModel())
+        )
     }
 }
