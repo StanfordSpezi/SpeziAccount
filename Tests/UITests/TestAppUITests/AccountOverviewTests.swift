@@ -411,7 +411,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Verify Phone Number"].exists)
         app.buttons["Verify Phone Number"].tap()
         
-        XCTAssertTrue(app.staticTexts["+16502345678"].exists)
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
     }
 
     @MainActor
