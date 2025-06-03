@@ -11,6 +11,7 @@ import XCTestExtensions
 import XCTSpeziAccount
 
 
+// swiftlint:disable file_length
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
