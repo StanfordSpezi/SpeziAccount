@@ -243,16 +243,45 @@ extension AccountKeyMacro: PeerMacro {
             """
 
             if let displayViewTypeName {
+                // We generate the display view to always be a `SetupDisplayView` and make it a compile time check if it displays
+                // the setup view by letting the Swift Compiler select the appropriate method while doing overload resolution of `makeSetupView`.
+                // This is a neat trick to do conditional macro generation, based on the type that we don't know while generating but while compiling.
                 """
-                \(raw: rawModifier)struct DataDisplay: DataDisplayView {
-                    private let value: Value
+                \(raw: rawModifier)struct DataDisplay: SetupDisplayView {
+                    \(raw: rawModifier)typealias Value = \(valueTypeInitializer)
+                
+                    private let value: Value?
                     
                     \(raw: rawModifier)var body: some View {
-                        \(displayViewTypeName)(value)
+                        if let value {
+                            \(displayViewTypeName)(value)
+                        } else {
+                            makeSetupView(for: \(displayViewTypeName).self)
+                        }
+                    }
+                
+                    private func makeSetupView<T: DataDisplayView>(for type: T.Type) -> some View {
+                        EmptyView()
+                    }
+                
+                    private func makeSetupView<T: SetupDisplayView>(for type: T.Type) -> some View {
+                        T(nil)
+                    }
+                
+                    \(raw: rawModifier)init(_ value: Value?) {
+                        self.value = value
+                    }
+                }
+                """
+            } else if !accountKeyOptions.contains(.display) {
+                """
+                \(raw: rawModifier)struct DataDisplay: DataDisplayView {
+                    \(raw: rawModifier)var body: some View {
+                        fatalError("'\\(\(name.expression))' does not support display access.")
                     }
                 
                     \(raw: rawModifier)init(_ value: Value) {
-                        self.value = value
+                        fatalError("'\\(\(name.expression))' does not support display access.")
                     }
                 }
                 """

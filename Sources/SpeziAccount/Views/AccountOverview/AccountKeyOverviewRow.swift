@@ -55,15 +55,16 @@ struct AccountKeyOverviewRow: View {
                 group
             }
         } else {
-            if let view = accountKey.setupDisplayViewWithoutCurrentStoredValue(from: accountDetails) {
-                view
-                    .deleteDisabled(true)
-                    .environment(\.accountViewType, .overview(mode: .display))
-            } else if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
-                view
-                    .deleteDisabled(true)
-                    .environment(\.accountViewType, .overview(mode: .display))
+            Group {
+                if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
+                    view
+                } else if let setupView = accountKey.setupView() {
+                    setupView
+                }
             }
+                .deleteDisabled(true) // e.g., prevent deletion of non-mutable account keys
+                .disabled(editMode?.wrappedValue.isEditing == true)
+                .environment(\.accountViewType, .overview(mode: .display))
         }
     }
 

@@ -85,7 +85,7 @@ let package = Package(
                 .target(name: "SpeziAccount"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "Spezi", package: "Spezi"),
-                .product(name: "XCTSpezi", package: "Spezi"),
+                .product(name: "SpeziTesting", package: "Spezi"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
             ],
             resources: [

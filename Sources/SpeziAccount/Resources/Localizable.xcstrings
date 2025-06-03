@@ -1523,23 +1523,6 @@
     "Phone Numbers" : {
 
     },
-    "PHONE_NUMBER" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Telefonnummer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phone Number"
-          }
-        }
-      }
-    },
     "PHONE_NUMBERS" : {
 
     },
