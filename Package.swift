@@ -92,6 +92,7 @@ let package = Package(
             name: "SpeziAccountTests",
             dependencies: [
                 .target(name: "SpeziAccount"),
+                .target(name: "SpeziAccountPhoneNumbers"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "SpeziTesting", package: "Spezi"),
