@@ -385,35 +385,41 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        XCTAssertTrue(app.navigationBars.buttons["Add Phone Number"].exists)
-        app.navigationBars.buttons["Add Phone Number"].tap()
+        try app.addPhoneNumber()
         
-        let phoneField = app.textFields["Phone Number"]
-        XCTAssertTrue(phoneField.exists)
-        phoneField.tap()
-
-        let keyboard = app.keyboards.firstMatch
-        XCTAssertTrue(keyboard.waitForExistence(timeout: 2.0))
-
-        phoneField.typeText("6502345678")
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
         
-        XCTAssertTrue(app.buttons["Send Verification Message"].exists)
-        app.buttons["Send Verification Message"].tap()
-
-        XCTAssertTrue(app.textFields["One-Time Code Entry Pin 0"].exists)
-        try app.textFields["One-Time Code Entry Pin 0"].enter(value: "0")
-        try app.textFields["One-Time Code Entry Pin 1"].enter(value: "1")
-        try app.textFields["One-Time Code Entry Pin 2"].enter(value: "2")
-        try app.textFields["One-Time Code Entry Pin 3"].enter(value: "3")
-        try app.textFields["One-Time Code Entry Pin 4"].enter(value: "4")
-        try app.textFields["One-Time Code Entry Pin 5"].enter(value: "5")
-        
-        XCTAssertTrue(app.buttons["Verify Phone Number"].exists)
-        app.buttons["Verify Phone Number"].tap()
-        
+        app.navigationBars.buttons.firstMatch.tap() // navigate back
         XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
     }
 
+    @MainActor
+    func testRemovePhoneNumber() throws {
+        let app = XCUIApplication()
+        app.launch(credentials: .createAndSignIn)
+        
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+        
+        XCTAssertTrue(app.buttons["Phone Numbers"].exists)
+        app.buttons["Phone Numbers"].tap()
+        
+        try app.addPhoneNumber()
+        
+        let phoneNumberCell = app.staticTexts["(650) 234-5678"].firstMatch
+        phoneNumberCell.swipeLeft()
+        
+        XCTAssertTrue(app.buttons["Delete"].exists)
+        app.buttons["Delete"].tap()
+        
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+        
+        app.navigationBars.buttons.firstMatch.tap() // navigate back
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+    }
+    
     @MainActor
     func testLicenseOverview() throws {
         let app = XCUIApplication()
@@ -476,4 +482,32 @@ extension XCUIApplication {
         staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Leland Stanford"])
     }
 #endif
+    
+    fileprivate func addPhoneNumber() throws {
+        XCTAssertTrue(navigationBars.buttons["Add Phone Number"].exists)
+        navigationBars.buttons["Add Phone Number"].tap()
+        
+        let phoneField = textFields["Phone Number"]
+        XCTAssertTrue(phoneField.exists)
+        phoneField.tap()
+
+        let keyboard = keyboards.firstMatch
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 2.0))
+
+        phoneField.typeText("6502345678")
+        
+        XCTAssertTrue(buttons["Send Verification Message"].exists)
+        buttons["Send Verification Message"].tap()
+
+        XCTAssertTrue(textFields["One-Time Code Entry Pin 0"].exists)
+        try textFields["One-Time Code Entry Pin 0"].enter(value: "0")
+        try textFields["One-Time Code Entry Pin 1"].enter(value: "1")
+        try textFields["One-Time Code Entry Pin 2"].enter(value: "2")
+        try textFields["One-Time Code Entry Pin 3"].enter(value: "3")
+        try textFields["One-Time Code Entry Pin 4"].enter(value: "4")
+        try textFields["One-Time Code Entry Pin 5"].enter(value: "5")
+        
+        XCTAssertTrue(buttons["Verify Phone Number"].exists)
+        buttons["Verify Phone Number"].tap()
+    }
 }
