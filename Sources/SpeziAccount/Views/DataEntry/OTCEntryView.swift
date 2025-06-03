@@ -41,6 +41,19 @@ struct OTCEntryView: View {
                 focusState = .pin(0)
             }
             Spacer()
+            resendSection
+            Spacer()
+        }
+            .onReceive(timer) { _ in
+                if resendTimeOut > 0 {
+                    resendTimeOut -= 1
+                }
+            }
+    }
+
+
+    private var resendSection: some View {
+        VStack {
             Text("Didn't receive a verification code?")
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -55,7 +68,8 @@ struct OTCEntryView: View {
                         accountId: account.details?.accountId ?? "",
                         data: [
                             "phoneNumber": phoneNumberViewModel.phoneNumber
-                        ])
+                        ]
+                    )
                     resendTimeOut = 30
                 } catch {
                     viewState = .error(
@@ -69,15 +83,9 @@ struct OTCEntryView: View {
                 Text("Resend Verification Message")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
-                .viewStateAlert(state: $viewState)
-            Spacer()
+            .disabled(phoneNumberViewModel.phoneNumber.isEmpty || resendTimeOut > 0)
+            .viewStateAlert(state: $viewState)
         }
-            .onReceive(timer) { _ in
-                if resendTimeOut > 0 {
-                    resendTimeOut -= 1
-                }
-            }
     }
     
     init(codeLength: Int = 6) {

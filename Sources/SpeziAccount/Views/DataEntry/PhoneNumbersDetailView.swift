@@ -56,6 +56,7 @@ struct PhoneNumbersDetailView: View {
                     phoneNumberViewModel.presentSheet = true
                 } label: {
                     Image(systemName: "plus")
+                        .accessibilityLabel("Add Phone Number")
                 }
             }
         }

@@ -16,7 +16,7 @@ struct PhoneNumberSteps: View {
     @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
     let codeLength: Int
     
-    public var body: some View {
+    var body: some View {
         @Bindable var phoneNumberViewModel = phoneNumberViewModel
         // swiftlint:disable:next closure_body_length
         NavigationStack {
@@ -69,7 +69,7 @@ struct PhoneNumberSteps: View {
             .presentationDetents([.medium])
     }
     
-    public init(codeLength: Int = 6) {
+    init(codeLength: Int = 6) {
         self.codeLength = codeLength
     }
 }
@@ -98,7 +98,8 @@ struct PhoneNumberEntryStep: View {
                         accountId: account.details?.accountId ?? "",
                         data: [
                             "phoneNumber": phoneNumberViewModel.phoneNumber
-                        ])
+                        ]
+                    )
                     onNext()
                 } catch {
                     viewState = .error(
