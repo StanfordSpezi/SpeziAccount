@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SpeziAccount
 import SpeziFoundation
 import SpeziViews
 import SwiftUI
@@ -52,7 +53,7 @@ extension AccountDetails {
 
     /// The phone numbers of a user.
     @AccountKey(
-        name: LocalizedStringResource("PHONE_NUMBERS", bundle: .atURL(from: .module)),
+        name: "Phone Numbers",
         category: .contactDetails,
         options: .display,
         as: PhoneNumbersArray.self,

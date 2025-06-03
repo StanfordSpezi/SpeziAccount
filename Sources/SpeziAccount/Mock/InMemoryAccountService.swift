@@ -128,7 +128,7 @@ public final class InMemoryAccountService: AccountService {
         \.name
         \.genderIdentity
         \.dateOfBirth
-        \.phoneNumbers
+//        \.phoneNumbers
     }
 
     @Application(\.logger)
@@ -379,7 +379,7 @@ public final class InMemoryAccountService: AccountService {
         details.name = storage.name
         details.genderIdentity = storage.genderIdentity
         details.dateOfBirth = storage.dateOfBirth
-        details.phoneNumbers = storage.phoneNumbers
+//        details.phoneNumbers = storage.phoneNumbers
         details.isNewUser = isNew
 
         if let userId = storage.userId {
@@ -495,7 +495,7 @@ extension InMemoryAccountService.UserStorage {
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
         self.dateOfBirth = modifiedDetails.dateOfBirth ?? dateOfBirth
-        self.phoneNumbers = modifiedDetails.phoneNumbers ?? phoneNumbers
+//        self.phoneNumbers = modifiedDetails.phoneNumbers ?? phoneNumbers
 
         // user Id cannot be removed!
 

@@ -10,6 +10,7 @@ import Spezi
 import SpeziValidation
 import SpeziViews
 import SwiftUI
+import SpeziAccount
 
 
 struct PhoneNumberSteps: View {

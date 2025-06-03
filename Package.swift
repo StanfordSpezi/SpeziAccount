@@ -23,7 +23,8 @@ let package = Package(
     ],
     products: [
         .library(name: "SpeziAccount", targets: ["SpeziAccount"]),
-        .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"])
+        .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"]),
+        .library(name: "SpeziAccountPhoneNumbers", targets: ["SpeziAccountPhoneNumbers"])
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.1.7"),
@@ -61,7 +62,6 @@ let package = Package(
                 .product(name: "RuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Atomics", package: "swift-atomics"),
-                .product(name: "PhoneNumberKit", package: "PhoneNumberKit"),
                 .target(name: "SpeziAccountMacros")
             ],
             resources: [
@@ -75,6 +75,15 @@ let package = Package(
             dependencies: [
                 .target(name: "SpeziAccount"),
                 .product(name: "XCTestExtensions", package: "XCTestExtensions")
+            ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            plugins: [] + swiftLintPlugin()
+        ),
+        .target(
+            name: "SpeziAccountPhoneNumbers",
+            dependencies: [
+                .target(name: "SpeziAccount"),
+                .product(name: "PhoneNumberKit", package: "PhoneNumberKit")
             ],
             swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()

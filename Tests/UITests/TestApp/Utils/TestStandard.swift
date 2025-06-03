@@ -8,6 +8,7 @@
 
 import Spezi
 import SpeziAccount
+import SpeziAccountPhoneNumbers
 import SwiftUI
 
 

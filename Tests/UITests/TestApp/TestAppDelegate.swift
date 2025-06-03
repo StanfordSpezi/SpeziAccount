@@ -9,6 +9,7 @@
 import Foundation
 import Spezi
 import SpeziAccount
+import SpeziAccountPhoneNumbers
 
 
 class TestAppDelegate: SpeziAppDelegate {
