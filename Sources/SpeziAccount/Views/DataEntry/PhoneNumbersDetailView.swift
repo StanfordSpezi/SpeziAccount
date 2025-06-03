@@ -14,37 +14,35 @@ struct PhoneNumbersDetailView: View {
     @State private var viewState = ViewState.idle
     @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     @Environment(Account.self) private var account
-    let phoneNumbers: [String]?
+    let phoneNumbers: [String]
     @State private var phoneNumberViewModel = PhoneNumberViewModel()
     
     var body: some View {
         List {
-            if let phoneNumbers = phoneNumbers {
-                ForEach(phoneNumbers, id: \.self) { phoneNumber in
-                    ListRow("Phone") {
-                        Text(phoneNumber)
-                    }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            Task {
-                                do {
-                                    let accountId = account.details?.accountId ?? ""
-                                    try await phoneVerificationProvider.deletePhoneNumber(
-                                        accountId: accountId,
-                                        number: phoneNumber
+            ForEach(phoneNumbers, id: \.self) { phoneNumber in
+                ListRow("Phone") {
+                    Text(phoneNumber)
+                }
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        Task {
+                            do {
+                                let accountId = account.details?.accountId ?? ""
+                                try await phoneVerificationProvider.deletePhoneNumber(
+                                    accountId: accountId,
+                                    number: phoneNumber
+                                )
+                            } catch {
+                                viewState = .error(
+                                    AnyLocalizedError(
+                                        error: error,
+                                        defaultErrorDescription: "Failed to delete phone number."
                                     )
-                                } catch {
-                                    viewState = .error(
-                                        AnyLocalizedError(
-                                            error: error,
-                                            defaultErrorDescription: "Failed to delete phone number."
-                                        )
-                                    )
-                                }
+                                )
                             }
-                        } label: {
-                            Label("Delete", systemImage: "trash")
                         }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }

@@ -13,6 +13,8 @@ import SwiftUI
 
 
 private struct DisplayView: SetupDisplayView {
+    @Environment(Account.self) private var account
+    
     init(_ value: Value?) {
         phoneNumbers = value ?? []
     }
@@ -23,7 +25,7 @@ private struct DisplayView: SetupDisplayView {
     var body: some View {
         Section {
             NavigationLink {
-                PhoneNumbersDetailView(phoneNumbers: phoneNumbers)
+                PhoneNumbersDetailView(phoneNumbers: account.details?.phoneNumbers ?? [])
             } label: {
                 HStack {
                     Text("Phone Numbers")

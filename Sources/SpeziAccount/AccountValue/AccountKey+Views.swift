@@ -11,7 +11,7 @@ import SwiftUI
 
 protocol AccountKeyWithSetupView {
     @MainActor
-    func emptySetupView() -> AnyView
+    func emptySetupView(details: AccountDetails, key: any AccountKey.Type) -> AnyView
 }
 
 private struct AccountKeyTypeWrapper<Key: AccountKey> {
@@ -48,11 +48,11 @@ extension AccountKey {
         return AnyView(DataDisplay(value))
     }
 
-    static func setupView() -> AnyView? {
+    static func setupView(from details: AccountDetails) -> AnyView? {
         let typeWrapper = AccountKeyTypeWrapper<Self>()
 
         if let setupTypeWrapper = typeWrapper as? any AccountKeyWithSetupView {
-            return setupTypeWrapper.emptySetupView()
+            return setupTypeWrapper.emptySetupView(details: details, key: Self.self)
         }
         return nil
     }
@@ -65,27 +65,12 @@ extension AccountKey {
     static func singleEditView(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) -> AnyView {
         AnyView(SingleEditView<Self>(model: model, details: accountDetails))
     }
-    
-    static func setupDisplayViewWithoutCurrentStoredValue(from details: AccountDetails) -> AnyView? {
-        guard let setupDisplayType = Self.DataDisplay as? any SetupDisplayView.Type else {
-            return nil
-        }
-        
-        func createView<T: SetupDisplayView>(_ type: T.Type, value: Any?) -> AnyView {
-            if let valueType = value as? T.Value {
-                return AnyView(type.init(valueType))
-            }
-            return AnyView(type.init(nil))
-        }
-        
-        let value = details[Self.self]
-        return createView(setupDisplayType, value: value)
-    }
 }
 
 extension AccountKeyTypeWrapper: AccountKeyWithSetupView where Key.DataDisplay: SetupDisplayView {
     @MainActor
-    func emptySetupView() -> AnyView {
-        AnyView(Key.DataDisplay(nil))
+    func emptySetupView(details: AccountDetails, key: any AccountKey.Type) -> AnyView {
+        let value = details[key]
+        return AnyView(Key.DataDisplay(value as? Key.Value))
     }
 }

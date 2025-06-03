@@ -58,7 +58,7 @@ struct AccountKeyOverviewRow: View {
             Group {
                 if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
                     view
-                } else if let setupView = accountKey.setupView() {
+                } else if let setupView = accountKey.setupView(from: accountDetails) {
                     setupView
                 }
             }
