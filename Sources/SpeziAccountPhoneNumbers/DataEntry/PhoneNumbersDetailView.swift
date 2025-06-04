@@ -20,6 +20,7 @@ struct PhoneNumbersDetailView: View {
     let phoneNumbers: [String]
     @Binding var phoneNumberViewModel: PhoneNumberViewModel
     
+    
     var body: some View {
         List {
             ForEach(phoneNumbers, id: \.self) { phoneNumber in
@@ -65,6 +66,15 @@ struct PhoneNumbersDetailView: View {
         .sheet(isPresented: $phoneNumberViewModel.presentSheet, onDismiss: phoneNumberViewModel.resetState) {
             PhoneNumberSteps()
                 .environment(phoneNumberViewModel)
+        }
+        .overlay {
+            if phoneNumbers.isEmpty {
+                ContentUnavailableView {
+                    Label("No Phone Numbers", systemImage: "phone.badge.plus")
+                } description: {
+                    Text("Added phone numbers will appear here. Add a phone number by tapping the plus (+) button in the top right corner.")
+                }
+            }
         }
         .viewStateAlert(state: $viewState)
     }
