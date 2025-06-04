@@ -88,6 +88,11 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
             logger.error("The account storage provider was never injected!")
             return
         }
+        
+        guard data.code == "012345" else {
+            throw VerificationCodeError()
+        }
+        
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
         let e164FormattedNumber = PhoneNumberUtility().format(data.phoneNumber, toType: .e164)
@@ -118,4 +123,6 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
             logger.error("Failed to delete phone number: \(error)")
         }
     }
+    
+    struct VerificationCodeError: Error {}
 }

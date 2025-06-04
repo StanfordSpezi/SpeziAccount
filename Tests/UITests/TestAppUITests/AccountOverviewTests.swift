@@ -386,7 +386,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        try app.addPhoneNumber()
+        try app.addPhoneNumber("6502345678", otc: "012345")
         
         XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
         
@@ -407,7 +407,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        try app.addPhoneNumber()
+        try app.addPhoneNumber("6502345678", otc: "012345")
         
         let phoneNumberCell = app.staticTexts["(650) 234-5678"].firstMatch
         phoneNumberCell.swipeLeft()
@@ -419,6 +419,24 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
         XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+    }
+    
+    @MainActor
+    func testAddPhoneNumberWithWrongOTC() throws {
+        let app = XCUIApplication()
+        app.launch(credentials: .createAndSignIn)
+        
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+        
+        XCTAssertTrue(app.buttons["Phone Numbers"].exists)
+        app.buttons["Phone Numbers"].tap()
+        
+        try app.addPhoneNumber("6502345678", otc: "123456")
+        
+        XCTAssertTrue(app.staticTexts["Failed to verify phone number. Please check your code and try again."].exists)
     }
     
     @MainActor
@@ -484,25 +502,22 @@ extension XCUIApplication {
     }
 #endif
     
-    fileprivate func addPhoneNumber() throws {
+    fileprivate func addPhoneNumber(_ phoneNumber: String, otc: String) throws {
         XCTAssertTrue(navigationBars.buttons["Add Phone Number"].exists)
         navigationBars.buttons["Add Phone Number"].tap()
         
         let phoneField = textFields["Phone Number"]
         XCTAssertTrue(phoneField.exists)
         phoneField.tap()
-        phoneField.typeText("6502345678")
+        phoneField.typeText(phoneNumber)
         
         XCTAssertTrue(buttons["Send Verification Message"].exists)
         buttons["Send Verification Message"].tap()
 
         XCTAssertTrue(textFields["One-Time Code Entry Pin 0"].exists)
-        textFields["One-Time Code Entry Pin 0"].typeText("0")
-        textFields["One-Time Code Entry Pin 1"].typeText("1")
-        textFields["One-Time Code Entry Pin 2"].typeText("2")
-        textFields["One-Time Code Entry Pin 3"].typeText("3")
-        textFields["One-Time Code Entry Pin 4"].typeText("4")
-        textFields["One-Time Code Entry Pin 5"].typeText("5")
+        for (index, pin) in otc.enumerated() {
+            textFields["One-Time Code Entry Pin \(index)"].typeText(String(pin))
+        }
         
         XCTAssertTrue(buttons["Verify Phone Number"].exists)
         buttons["Verify Phone Number"].tap()

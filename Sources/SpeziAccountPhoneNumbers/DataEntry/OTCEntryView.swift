@@ -69,7 +69,10 @@ struct OTCEntryView: View {
             AsyncButton(action: {
                 do {
                     guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
-                        throw NSError(domain: "OTCEntryView", code: 1)
+                        throw AnyLocalizedError(
+                            error: NSError(domain: "PhoneNumberVerification", code: 1, userInfo: nil),
+                            defaultErrorDescription: "Missing phone number"
+                        )
                     }
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",

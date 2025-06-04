@@ -36,7 +36,10 @@ struct PhoneNumberEntryStep: View {
             AsyncButton(action: {
                 do {
                     guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
-                        throw NSError(domain: "PhoneNumberEntryStep", code: 1)
+                        throw AnyLocalizedError(
+                            error: NSError(domain: "PhoneNumberVerification", code: 1, userInfo: nil),
+                            defaultErrorDescription: "Missing phone number"
+                        )
                     }
                     try await phoneVerificationProvider.startVerification(
                         accountId: account.details?.accountId ?? "",
@@ -76,6 +79,7 @@ struct VerificationCodeStep: View {
     let onVerify: () -> Void
     
     var body: some View {
+        // swiftlint:disable:next closure_body_length
         VStack(spacing: 20) {
             Text("Enter your \(codeLength) digit verification code you received via text message.")
                 .font(.caption)
@@ -88,7 +92,10 @@ struct VerificationCodeStep: View {
             AsyncButton(action: {
                 do {
                     guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
-                        throw NSError(domain: "VerificationCodeStep", code: 1)
+                        throw AnyLocalizedError(
+                            error: NSError(domain: "PhoneNumberVerification", code: 1, userInfo: nil),
+                            defaultErrorDescription: "Missing phone number"
+                        )
                     }
                     try await phoneVerificationProvider.completeVerification(
                         accountId: account.details?.accountId ?? "",
