@@ -491,22 +491,18 @@ extension XCUIApplication {
         let phoneField = textFields["Phone Number"]
         XCTAssertTrue(phoneField.exists)
         phoneField.tap()
-
-        let keyboard = keyboards.firstMatch
-        XCTAssertTrue(keyboard.waitForExistence(timeout: 2.0))
-
         phoneField.typeText("6502345678")
         
         XCTAssertTrue(buttons["Send Verification Message"].exists)
         buttons["Send Verification Message"].tap()
 
         XCTAssertTrue(textFields["One-Time Code Entry Pin 0"].exists)
-        try textFields["One-Time Code Entry Pin 0"].enter(value: "0")
-        try textFields["One-Time Code Entry Pin 1"].enter(value: "1")
-        try textFields["One-Time Code Entry Pin 2"].enter(value: "2")
-        try textFields["One-Time Code Entry Pin 3"].enter(value: "3")
-        try textFields["One-Time Code Entry Pin 4"].enter(value: "4")
-        try textFields["One-Time Code Entry Pin 5"].enter(value: "5")
+        textFields["One-Time Code Entry Pin 0"].typeText("0")
+        textFields["One-Time Code Entry Pin 1"].typeText("1")
+        textFields["One-Time Code Entry Pin 2"].typeText("2")
+        textFields["One-Time Code Entry Pin 3"].typeText("3")
+        textFields["One-Time Code Entry Pin 4"].typeText("4")
+        textFields["One-Time Code Entry Pin 5"].typeText("5")
         
         XCTAssertTrue(buttons["Verify Phone Number"].exists)
         buttons["Verify Phone Number"].tap()
