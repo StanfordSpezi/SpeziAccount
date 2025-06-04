@@ -8,6 +8,7 @@
 
 import Foundation
 @testable import SpeziAccount
+import SpeziAccountPhoneNumbers
 import Testing
 
 @Suite("AccountDetails General Tests")
@@ -85,5 +86,15 @@ struct AccountDetailsTests {
             UserIdConfiguration.username
         }
         #expect(usernameDetails.email == nil)
+    }
+
+    @Test
+    func testPhoneNumbersKey() throws {
+        var details = AccountDetails()
+        details.phoneNumbers = ["+16501234567"]
+        #expect(details.phoneNumbers == ["+16501234567"])
+        
+        details.phoneNumbers = nil
+        #expect(details.phoneNumbers == nil)
     }
 }

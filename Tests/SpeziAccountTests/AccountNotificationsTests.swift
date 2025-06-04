@@ -8,8 +8,8 @@
 
 import Spezi
 @testable import SpeziAccount
+import SpeziTesting
 import Testing
-import XCTSpezi
 
 private final class TestProvider: AccountStorageProvider {
     private let onDisassociate: Testing.Confirmation

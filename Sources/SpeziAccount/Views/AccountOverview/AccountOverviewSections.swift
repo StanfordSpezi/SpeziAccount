@@ -70,6 +70,8 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
             .animation(nil, value: editMode?.wrappedValue)
 
         additionalSections
+            .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)
+            .animation(nil, value: editMode?.wrappedValue)
 
         if showLogoutButton {
             Section {
@@ -178,7 +180,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         
         // we don't have to check for `addedAccountKeys` as these are only relevant in edit mode
         return accountKeys.allSatisfy { element in
-            !accountDetails.contains(element)
+            !accountDetails.contains(element) && !element.hasSetupView()
         }
     }
 }

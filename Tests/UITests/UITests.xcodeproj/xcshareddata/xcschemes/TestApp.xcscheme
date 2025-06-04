@@ -86,6 +86,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "withSetupView"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "allRequired"
             isEnabled = "NO">
          </CommandLineArgument>
@@ -98,7 +102,7 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "create"
+            argument = "createAndSignIn"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

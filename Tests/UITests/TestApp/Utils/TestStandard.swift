@@ -6,13 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+@preconcurrency import PhoneNumberKit
 import Spezi
 import SpeziAccount
+import SpeziAccountPhoneNumbers
 import SwiftUI
 
 
 // mock implementation of the AccountStorageConstraint
-actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
+actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, EnvironmentAccessible {
     @MainActor
     @Observable
     final class Storage {
@@ -20,6 +22,8 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
         var suppliedInitialDetails = false
         nonisolated init() {}
     }
+    
+    struct VerificationCodeError: Error {}
 
     private let storage = Storage()
     private nonisolated let features: Features
@@ -72,6 +76,53 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
             storage.suppliedInitialDetails = false
         default:
             break
+        }
+    }
+    
+    @MainActor
+    func startVerification(_ accountId: String, _ data: StartVerificationRequest) async throws {
+        // noop
+    }
+    
+    @MainActor
+    func completeVerification(_ accountId: String, _ data: CompleteVerificationRequest) async throws {
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        
+        guard data.code == "012345" else {
+            throw VerificationCodeError()
+        }
+        
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        let e164FormattedNumber = PhoneNumberUtility().format(data.phoneNumber, toType: .e164)
+        currentPhoneNumbers.append(e164FormattedNumber)
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+        } catch {
+            logger.error("Failed to update account details: \(error)")
+        }
+    }
+    
+    @MainActor
+    func delete(_ accountId: String, _ number: PhoneNumber) async throws {
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        currentPhoneNumbers.removeAll { $0 == number.numberString }
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+        } catch {
+            logger.error("Failed to delete phone number: \(error)")
         }
     }
 }
