@@ -150,7 +150,7 @@ class AccountOverviewFormViewModel {
             }
         }
     }
-    
+
     @available(macOS, unavailable)
     func cancelEditAction(editMode: Binding<EditMode>?) {
         logger.debug("Pressed the cancel button!")

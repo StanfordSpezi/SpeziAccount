@@ -22,6 +22,8 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         var suppliedInitialDetails = false
         nonisolated init() {}
     }
+    
+    struct VerificationCodeError: Error {}
 
     private let storage = Storage()
     private nonisolated let features: Features
@@ -123,6 +125,4 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
             logger.error("Failed to delete phone number: \(error)")
         }
     }
-    
-    struct VerificationCodeError: Error {}
 }
