@@ -383,6 +383,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         app.openAccountOverview()
         
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
+        
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
@@ -403,6 +407,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountOverview()
+        
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
         
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
@@ -430,6 +438,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
         app.openAccountOverview()
+        
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
         
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
