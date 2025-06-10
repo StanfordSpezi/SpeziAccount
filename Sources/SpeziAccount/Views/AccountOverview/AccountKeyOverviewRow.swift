@@ -54,14 +54,8 @@ struct AccountKeyOverviewRow: View {
             } else {
                 hStack
             }
-        } else {
-            Group {
-                if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) {
-                    view
-                } else if let setupView = accountKey.setupView() {
-                    setupView
-                }
-            }
+        } else if let view = accountKey.dataDisplayViewWithCurrentStoredValue(from: accountDetails) ?? accountKey.setupView() {
+            view
                 .deleteDisabled(true) // e.g., prevent deletion of non-mutable account keys
                 .disabled(editMode?.wrappedValue.isEditing == true)
                 .environment(\.accountViewType, .overview(mode: .display))
