@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
       "localizations" : {
         "de" : {
@@ -2504,17 +2501,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Användarnamn"
-          }
-        }
-      }
-    },
-    "VALIDATION_PHONE_NUMBER" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The provided phone number is invalid."
           }
         }
       }
