@@ -518,6 +518,17 @@ extension XCUIApplication {
         XCTAssertTrue(navigationBars.buttons["Add Phone Number"].exists)
         navigationBars.buttons["Add Phone Number"].tap()
         
+        XCTAssertTrue(buttons["Select Country Code"].exists)
+        buttons["Select Country Code"].tap()
+        XCTAssertTrue(searchFields["Your country"].exists)
+        
+        let countryField = searchFields["Your country"]
+        countryField.tap()
+        countryField.typeText("US")
+        
+        XCTAssertTrue(staticTexts["+1"].waitForExistence(timeout: 2.0))
+        staticTexts["+1"].tap()
+        
         let phoneField = textFields["Phone Number"]
         XCTAssertTrue(phoneField.exists)
         phoneField.tap()
