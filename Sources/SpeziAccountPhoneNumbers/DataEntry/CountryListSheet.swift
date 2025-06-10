@@ -32,7 +32,7 @@ struct CountryListSheet: View {
     
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List(filteredCountries, id: \.self) { country in
                 HStack(spacing: 15) {
                     Text(phoneNumberViewModel.countryFlag(for: country))
@@ -49,9 +49,8 @@ struct CountryListSheet: View {
                     }
             }
                 .listStyle(.plain)
-                .searchable(text: $searchCountry, prompt: "Your country")
         }
-            .padding(.top, 5)
+            .searchable(text: $searchCountry, prompt: "Your country")
             .presentationDetents([.medium, .large])
             .task {
                 allCountries = phoneNumberViewModel.phoneNumberUtility.allCountries()
