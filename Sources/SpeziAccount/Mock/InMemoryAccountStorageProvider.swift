@@ -13,7 +13,7 @@ import Spezi
 ///
 /// This ``AccountStorageProvider`` is implemented using an in-memory stored dictionary of ``AccountDetails``. It serves as a minimal
 /// example on how to implement a external storage provider and can be easily integrated in SwiftUI previews and UI tests.
-public actor InMemoryAccountStorageProvider: AccountStorageProvider {
+public actor InMemoryAccountStorageProvider: AccountStorageProvider, EnvironmentAccessible {
     private var records: [String: AccountDetails] = [:]
     private var cache: [String: AccountDetails] = [:] // simulates an in-memory cache
 

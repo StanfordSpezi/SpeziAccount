@@ -27,7 +27,7 @@ import Spezi
 ///
 /// ### Communicate changes as a Storage Provider
 /// - ``notifyAboutUpdatedDetails(for:_:)``
-public final class ExternalAccountStorage {
+public final class ExternalAccountStorage: Module, Sendable {
     /// Capture details that are externally stored, associated with their account id.
     public struct ExternallyStoredDetails: Sendable {
         /// The account id the storage details are associated with.
@@ -184,6 +184,3 @@ public final class ExternalAccountStorage {
         await storageProvider?.disassociate(accountId)
     }
 }
-
-
-extension ExternalAccountStorage: Module, Sendable {}

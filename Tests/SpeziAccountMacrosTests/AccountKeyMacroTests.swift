@@ -247,14 +247,28 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                         .default(.preferNotToState)
                     }
                     public static let options: AccountKeyOptions = .default
-                    public struct DataDisplay: DataDisplayView {
-                        private let value: Value
-
+                    public struct DataDisplay: SetupDisplayView {
+                        public typealias Value = GenderIdentity
+            
+                        private let value: Value?
+            
                         public var body: some View {
-                            TestDisplayUI(value)
+                            if let value {
+                                TestDisplayUI(value)
+                            } else {
+                                makeSetupView(for: TestDisplayUI.self)
+                            }
                         }
-
-                        public init(_ value: Value) {
+            
+                        private func makeSetupView<T: DataDisplayView>(for type: T.Type) -> some View {
+                            EmptyView()
+                        }
+            
+                        private func makeSetupView<T: SetupDisplayView>(for type: T.Type) -> some View {
+                            T(nil)
+                        }
+            
+                        public init(_ value: Value?) {
                             self.value = value
                         }
                     }
@@ -315,14 +329,28 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
                         .default(.preferNotToState)
                     }
                     static let options: AccountKeyOptions = .default
-                    struct DataDisplay: DataDisplayView {
-                        private let value: Value
+                    struct DataDisplay: SetupDisplayView {
+                        typealias Value = GenderIdentity
+            
+                        private let value: Value?
             
                         var body: some View {
-                            DataDisplay(value)
+                            if let value {
+                                DataDisplay(value)
+                            } else {
+                                makeSetupView(for: DataDisplay.self)
+                            }
                         }
             
-                        init(_ value: Value) {
+                        private func makeSetupView<T: DataDisplayView>(for type: T.Type) -> some View {
+                            EmptyView()
+                        }
+            
+                        private func makeSetupView<T: SetupDisplayView>(for type: T.Type) -> some View {
+                            T(nil)
+                        }
+            
+                        init(_ value: Value?) {
                             self.value = value
                         }
                     }
@@ -637,6 +665,48 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
             
                 static var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
                     AccountDetails.__Key_genderIdentity.self
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+    }
+
+    @Test
+    func testAccountKeyEntriesParameterPack() {
+        assertMacroExpansion(
+            """
+            @KeyEntry(\\.genderIdentity, \\.name, \\.dateOfBirth)
+            extension AccountKeys {
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountKeys {
+            
+                var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
+                    AccountDetails.__Key_genderIdentity.self
+                }
+            
+                static var genderIdentity: AccountDetails.__Key_genderIdentity.Type {
+                    AccountDetails.__Key_genderIdentity.self
+                }
+            
+                var name: AccountDetails.__Key_name.Type {
+                    AccountDetails.__Key_name.self
+                }
+            
+                static var name: AccountDetails.__Key_name.Type {
+                    AccountDetails.__Key_name.self
+                }
+            
+                var dateOfBirth: AccountDetails.__Key_dateOfBirth.Type {
+                    AccountDetails.__Key_dateOfBirth.self
+                }
+            
+                static var dateOfBirth: AccountDetails.__Key_dateOfBirth.Type {
+                    AccountDetails.__Key_dateOfBirth.self
                 }
             }
             """,

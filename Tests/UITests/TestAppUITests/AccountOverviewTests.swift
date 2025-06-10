@@ -408,6 +408,22 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.staticTexts["Display-Only, This is displayed."].exists)
     }
+
+    @MainActor
+    func testSetupView() throws {
+        let app = XCUIApplication()
+        app.launch(config: .withSetupView, credentials: .createAndSignIn)
+
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+
+        XCTAssertTrue(app.buttons["Guided Setup"].waitForExistence(timeout: 2.0))
+        app.buttons["Guided Setup"].tap()
+
+        XCTAssertTrue(app.staticTexts["Value, Hello, World!"].waitForExistence(timeout: 2.0))
+    }
 }
 
 

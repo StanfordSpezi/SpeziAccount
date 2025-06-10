@@ -219,6 +219,6 @@ public macro AccountKey<Value: ExpressibleByArrayLiteral, DataDisplay: DataDispl
 ///
 /// - Parameter key: The KeyPath to the AccountKey defined on the ``AccountDetails``.
 @attached(member, names: arbitrary)
-public macro KeyEntry<Value>(
-    _ key: KeyPath<AccountDetails, Value>
+public macro KeyEntry<each Value>(
+    _ key: repeat KeyPath<AccountDetails, each Value>
 ) = #externalMacro(module: "SpeziAccountMacros", type: "KeyEntryMacro")
