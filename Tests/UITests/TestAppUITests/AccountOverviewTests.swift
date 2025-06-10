@@ -420,6 +420,9 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.openAccountOverview()
 
         XCTAssertTrue(app.buttons["Guided Setup"].waitForExistence(timeout: 2.0))
+        app.buttons["Guided Setup"].tap()
+
+        XCTAssertTrue(app.staticTexts["Value, Hello, World!"].waitForExistence(timeout: 2.0))
     }
 }
 
