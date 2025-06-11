@@ -27,6 +27,7 @@ struct OTCModifier: ViewModifier {
             .multilineTextAlignment(.center)
 #if !os(macOS)
             .keyboardType(.numberPad)
+            .textContentType(.oneTimeCode)
 #endif
             .onChange(of: pin) {
                 limitText(textLimit)

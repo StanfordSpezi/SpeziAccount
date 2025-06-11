@@ -47,10 +47,11 @@ struct OTCEntryView: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityRepresentation {
                     TextField(String(), text: createAccessibilityBinding())
+#if !os(macOS)
                         .keyboardType(.numberPad)
                         .textContentType(.oneTimeCode)
+#endif
                         .multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
                         .accessibilityLabel("Verification code entry")
                         .accessibilityHint("Enter your \(codeLength) digit verification code")
                         .accessibilityValue(pins.joined())

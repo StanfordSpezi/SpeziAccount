@@ -15,8 +15,6 @@ import SwiftUI
 
 // mock implementation of the AccountStorageConstraint
 actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, EnvironmentAccessible {
-    @Dependency(Account.self) private var account: Account?
-    
     @MainActor
     @Observable
     final class Storage {
@@ -31,6 +29,9 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     private let storage = Storage()
     private nonisolated let features: Features
 
+    @Dependency(Account.self)
+    private var account: Account?
+    
     @Application(\.logger)
     @MainActor private var logger
 
