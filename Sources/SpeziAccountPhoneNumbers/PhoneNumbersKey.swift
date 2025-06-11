@@ -36,7 +36,6 @@ private struct DisplayView: SetupDisplayView {
                         EmptyView()
                     }
                 }
-                }
             }
         }
     }
