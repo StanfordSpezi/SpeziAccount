@@ -29,7 +29,7 @@ struct OTCEntryView: View {
     @State private var resendTimeOut = 30
     
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-    
+
     
     var body: some View {
         VStack {
@@ -38,12 +38,23 @@ struct OTCEntryView: View {
                     individualPin(index: index)
                 }
             }
-            .onChange(of: pins) { _, _ in
-                updateCode()
-            }
-            .onAppear {
-                focusState = .pin(0)
-            }
+                .onChange(of: pins) { _, _ in
+                    updateCode()
+                }
+                .onAppear {
+                    focusState = .pin(0)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityRepresentation {
+                    TextField(String(), text: createAccessibilityBinding())
+                        .keyboardType(.numberPad)
+                        .textContentType(.oneTimeCode)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .accessibilityLabel("Verification code entry")
+                        .accessibilityHint("Enter your \(codeLength) digit verification code")
+                        .accessibilityValue(pins.joined())
+                }
             Spacer()
             resendSection
             Spacer()
@@ -74,10 +85,7 @@ struct OTCEntryView: View {
                             defaultErrorDescription: "Missing phone number"
                         )
                     }
-                    try await phoneVerificationProvider.startVerification(
-                        accountId: account.details?.accountId ?? "",
-                        data: StartVerificationRequest(phoneNumber: phoneNumber)
-                    )
+                    try await phoneVerificationProvider.startVerification(phoneNumber: phoneNumber)
                     resendTimeOut = 30
                 } catch {
                     viewState = .error(
@@ -126,6 +134,26 @@ struct OTCEntryView: View {
     
     private func updateCode() {
         phoneNumberViewModel.verificationCode = pins.joined()
+    }
+
+    private func createAccessibilityBinding() -> Binding<String> {
+        Binding(
+            get: { pins.joined() },
+            set: { newValue in
+                let digits = Array(newValue.prefix(codeLength))
+                for (index, digit) in digits.enumerated() {
+                    pins[index] = String(digit)
+                }
+                for index in digits.count..<codeLength {
+                    pins[index] = ""
+                }
+                if let nextEmptyIndex = pins.firstIndex(where: { $0.isEmpty }) {
+                    focusState = .pin(nextEmptyIndex)
+                } else {
+                    focusState = .pin(codeLength - 1)
+                }
+            }
+        )
     }
 }
 

@@ -16,6 +16,7 @@ struct PhoneNumberEntryField: View {
     private var phoneNumberViewModel
     @State private var presentSheet = false
     
+    
     var body: some View {
         HStack(spacing: 15) {
             countryPickerButton

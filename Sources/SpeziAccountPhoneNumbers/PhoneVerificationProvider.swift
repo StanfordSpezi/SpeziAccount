@@ -25,17 +25,17 @@ public class PhoneVerificationProvider: Module, EnvironmentAccessible {
     public init() { }
     
     @MainActor
-    public func startVerification(accountId: String, data: StartVerificationRequest) async throws {
-        try await phoneVerificationConstraint.startVerification(accountId, data)
+    public func startVerification(phoneNumber: PhoneNumber) async throws {
+        try await phoneVerificationConstraint.startVerification(phoneNumber)
     }
     
     @MainActor
-    public func completeVerification(accountId: String, data: CompleteVerificationRequest) async throws {
-        try await phoneVerificationConstraint.completeVerification(accountId, data)
+    public func completeVerification(phoneNumber: PhoneNumber, code: String) async throws {
+        try await phoneVerificationConstraint.completeVerification(phoneNumber, code)
     }
     
     @MainActor
-    public func deletePhoneNumber(accountId: String, number: PhoneNumber) async throws {
-        try await phoneVerificationConstraint.delete(accountId, number)
+    public func deletePhoneNumber(phoneNumber: PhoneNumber) async throws {
+        try await phoneVerificationConstraint.delete(phoneNumber)
     }
 }
