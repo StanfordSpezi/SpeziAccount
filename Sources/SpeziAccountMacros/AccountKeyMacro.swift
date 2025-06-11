@@ -285,18 +285,6 @@ extension AccountKeyMacro: PeerMacro {
                     }
                 }
                 """
-            } else if !accountKeyOptions.contains(.display) {
-                """
-                \(raw: rawModifier)struct DataDisplay: DataDisplayView {
-                    \(raw: rawModifier)var body: some View {
-                        fatalError("'\\(\(name.expression))' does not support display access.")
-                    }
-                
-                    \(raw: rawModifier)init(_ value: Value) {
-                        fatalError("'\\(\(name.expression))' does not support display access.")
-                    }
-                }
-                """
             }
 
             if let entryViewTypeName {

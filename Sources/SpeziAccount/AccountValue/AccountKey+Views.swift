@@ -11,7 +11,7 @@ import SwiftUI
 
 protocol AccountKeyWithSetupView {
     @MainActor
-    func emptySetupView(details: AccountDetails, key: any AccountKey.Type) -> AnyView
+    func emptySetupView() -> AnyView
 }
 
 private struct AccountKeyTypeWrapper<Key: AccountKey> {
@@ -48,11 +48,11 @@ extension AccountKey {
         return AnyView(DataDisplay(value))
     }
 
-    static func setupView(from details: AccountDetails) -> AnyView? {
+    static func setupView() -> AnyView? {
         let typeWrapper = AccountKeyTypeWrapper<Self>()
 
         if let setupTypeWrapper = typeWrapper as? any AccountKeyWithSetupView {
-            return setupTypeWrapper.emptySetupView(details: details, key: Self.self)
+            return setupTypeWrapper.emptySetupView()
         }
         return nil
     }
@@ -69,8 +69,7 @@ extension AccountKey {
 
 extension AccountKeyTypeWrapper: AccountKeyWithSetupView where Key.DataDisplay: SetupDisplayView {
     @MainActor
-    func emptySetupView(details: AccountDetails, key: any AccountKey.Type) -> AnyView {
-        let value = details[key]
-        return AnyView(Key.DataDisplay(value as? Key.Value))
+    func emptySetupView() -> AnyView {
+        AnyView(Key.DataDisplay(nil))
     }
 }
