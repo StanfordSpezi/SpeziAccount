@@ -37,7 +37,7 @@ struct PhoneNumberEntryField: View {
             presentSheet = true
         } label: {
             Text(
-                phoneNumberViewModel.countryFlag(for: phoneNumberViewModel.selectedRegion) +
+                verbatim: phoneNumberViewModel.countryFlag(for: phoneNumberViewModel.selectedRegion) +
                 " " +
                 "+\(phoneNumberViewModel.phoneNumberUtility.countryCode(for: phoneNumberViewModel.selectedRegion)?.description ?? "")"
             )
