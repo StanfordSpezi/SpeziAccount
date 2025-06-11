@@ -55,11 +55,8 @@ struct PhoneNumbersDetailView: View {
         .navigationTitle("Phone Numbers")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button {
+                Button("Add Phone Number", systemImage: "plus") {
                     phoneNumberViewModel.presentSheet = true
-                } label: {
-                    Image(systemName: "plus")
-                        .accessibilityLabel("Add Phone Number")
                 }
             }
         }
