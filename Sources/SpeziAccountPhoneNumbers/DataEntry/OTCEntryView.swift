@@ -103,7 +103,7 @@ struct OTCEntryView: View {
     }
     
     private func individualPin(index: Int) -> some View {
-        TextField("", text: $pins[index])
+        TextField(String(), text: $pins[index])
             .modifier(OTCModifier(pin: $pins[index]))
             .accessibilityIdentifier("One-Time Code Entry Pin \(index)")
             .onChange(of: $pins[index].wrappedValue) { _, newValue in
