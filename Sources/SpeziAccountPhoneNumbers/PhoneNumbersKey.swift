@@ -27,19 +27,15 @@ private struct DisplayView: SetupDisplayView {
             NavigationLink {
                 PhoneNumbersDetailView(phoneNumbers: account.details?.phoneNumbers ?? [], phoneNumberViewModel: $phoneNumberViewModel)
             } label: {
-                HStack {
-                    Text("Phone Numbers")
-                    Spacer()
-                    Group {
-                        if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {
-                            Text(phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
-                        } else if phoneNumbers.count > 1 {
-                            Text("\(phoneNumbers.count) numbers")
-                        } else {
-                            EmptyView()
-                        }
+                ListRow("Phone Numbers") {
+                    if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {
+                        Text(phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
+                    } else if phoneNumbers.count > 1 {
+                        Text("\(phoneNumbers.count) numbers")
+                    } else {
+                        EmptyView()
                     }
-                    .foregroundColor(.secondary)
+                }
                 }
             }
         }
