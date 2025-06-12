@@ -37,7 +37,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
-        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.0.0")
+        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.1.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
