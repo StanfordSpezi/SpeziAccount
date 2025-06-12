@@ -23,7 +23,8 @@ let package = Package(
     ],
     products: [
         .library(name: "SpeziAccount", targets: ["SpeziAccount"]),
-        .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"])
+        .library(name: "XCTSpeziAccount", targets: ["XCTSpeziAccount"]),
+        .library(name: "SpeziAccountPhoneNumbers", targets: ["SpeziAccountPhoneNumbers"])
     ],
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.1.7"),
@@ -35,7 +36,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
+        .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.1.0")
     ] + swiftLintPackage(),
     targets: [
         .macro(
@@ -77,10 +79,20 @@ let package = Package(
             swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
+        .target(
+            name: "SpeziAccountPhoneNumbers",
+            dependencies: [
+                .target(name: "SpeziAccount"),
+                .product(name: "PhoneNumberKit", package: "PhoneNumberKit")
+            ],
+            swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
+            plugins: [] + swiftLintPlugin()
+        ),
         .testTarget(
             name: "SpeziAccountTests",
             dependencies: [
                 .target(name: "SpeziAccount"),
+                .target(name: "SpeziAccountPhoneNumbers"),
                 .product(name: "XCTRuntimeAssertions", package: "XCTRuntimeAssertions"),
                 .product(name: "Spezi", package: "Spezi"),
                 .product(name: "SpeziTesting", package: "Spezi"),
