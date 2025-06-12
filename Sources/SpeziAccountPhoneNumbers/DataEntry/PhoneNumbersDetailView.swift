@@ -38,6 +38,7 @@ struct PhoneNumbersDetailView: View {
                             phoneNumberToDelete = phoneNumber
                         }
                         .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))
+                        .disabled(!processingPhoneNumbers.isEmpty)
                     }
                 }
             }

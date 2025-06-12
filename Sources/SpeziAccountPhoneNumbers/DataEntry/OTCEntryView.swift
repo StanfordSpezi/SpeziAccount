@@ -73,7 +73,6 @@ struct OTCEntryView: View {
                 .onAppear {
                     focusState = .pin(0)
                 }
-
             Spacer()
             resendSection
             Spacer()
