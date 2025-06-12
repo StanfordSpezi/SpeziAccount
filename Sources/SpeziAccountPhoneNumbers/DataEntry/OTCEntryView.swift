@@ -30,6 +30,26 @@ struct OTCEntryView: View {
     
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    private var text: Binding<String> {
+        Binding(
+            get: { pins.joined() },
+            set: { newValue in
+                let digits = Array(newValue.prefix(codeLength))
+                for (index, digit) in digits.enumerated() {
+                    pins[index] = String(digit)
+                }
+                for index in digits.count..<codeLength {
+                    pins[index] = ""
+                }
+                if let nextEmptyIndex = pins.firstIndex(where: { $0.isEmpty }) {
+                    focusState = .pin(nextEmptyIndex)
+                } else {
+                    focusState = .pin(codeLength - 1)
+                }
+            }
+        )
+    }
+    
     
     var body: some View {
         VStack {
@@ -133,26 +153,6 @@ struct OTCEntryView: View {
     
     private func updateCode() {
         phoneNumberViewModel.verificationCode = pins.joined()
-    }
-
-    private var text: Binding<String> {
-        Binding(
-            get: { pins.joined() },
-            set: { newValue in
-                let digits = Array(newValue.prefix(codeLength))
-                for (index, digit) in digits.enumerated() {
-                    pins[index] = String(digit)
-                }
-                for index in digits.count..<codeLength {
-                    pins[index] = ""
-                }
-                if let nextEmptyIndex = pins.firstIndex(where: { $0.isEmpty }) {
-                    focusState = .pin(nextEmptyIndex)
-                } else {
-                    focusState = .pin(codeLength - 1)
-                }
-            }
-        )
     }
 }
 
