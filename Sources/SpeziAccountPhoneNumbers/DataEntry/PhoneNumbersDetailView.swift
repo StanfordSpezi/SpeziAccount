@@ -34,7 +34,7 @@ struct PhoneNumbersDetailView: View {
                 ListRow("Phone") {
                     HStack {
                         Text(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
-                        Button("Remove", role: .destructive) {
+                        Button("Delete", role: .destructive) {
                             phoneNumberToDelete = phoneNumber
                         }
                         .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))

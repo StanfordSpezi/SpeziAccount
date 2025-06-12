@@ -38,24 +38,22 @@ struct OTCEntryView: View {
                     individualPin(index: index)
                 }
             }
+                .accessibilityRepresentation {
+                    TextField(String(), text: text)
+#if !os(macOS)
+                        .keyboardType(.numberPad)
+                        .textContentType(.oneTimeCode)
+#endif
+                        .accessibilityLabel("Verification code entry")
+                        .focused($focusState, equals: .pin(0))
+                }
                 .onChange(of: pins) { _, _ in
                     updateCode()
                 }
                 .onAppear {
                     focusState = .pin(0)
                 }
-                .accessibilityElement(children: .combine)
-                .accessibilityRepresentation {
-                    TextField(String(), text: createAccessibilityBinding())
-#if !os(macOS)
-                        .keyboardType(.numberPad)
-                        .textContentType(.oneTimeCode)
-#endif
-                        .multilineTextAlignment(.center)
-                        .accessibilityLabel("Verification code entry")
-                        .accessibilityHint("Enter your \(codeLength) digit verification code")
-                        .accessibilityValue(pins.joined())
-                }
+
             Spacer()
             resendSection
             Spacer()
@@ -114,7 +112,7 @@ struct OTCEntryView: View {
     private func individualPin(index: Int) -> some View {
         TextField(String(), text: $pins[index])
             .modifier(OTCModifier(pin: $pins[index]))
-            .accessibilityIdentifier("One-Time Code Entry Pin \(index)")
+            .accessibilityIdentifier("Verification code entry \(index)")
             .onChange(of: $pins[index].wrappedValue) { _, newValue in
                 if !newValue.isEmpty {
                     if index < codeLength - 1 {
@@ -137,7 +135,7 @@ struct OTCEntryView: View {
         phoneNumberViewModel.verificationCode = pins.joined()
     }
 
-    private func createAccessibilityBinding() -> Binding<String> {
+    private var text: Binding<String> {
         Binding(
             get: { pins.joined() },
             set: { newValue in

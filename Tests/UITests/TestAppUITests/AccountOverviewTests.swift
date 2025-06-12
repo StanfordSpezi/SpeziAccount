@@ -417,13 +417,16 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         try app.addPhoneNumber("6502345678", otc: "012345")
         
-        let phoneNumberCell = app.staticTexts["(650) 234-5678"].firstMatch
-        phoneNumberCell.swipeLeft()
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
+
         
         XCTAssertTrue(app.buttons["Delete"].exists)
         app.buttons["Delete"].tap()
         
-        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertTrue(app.buttons["Delete"].exists)
+        app.buttons["Delete"].tap()
+        
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
         XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
@@ -539,10 +542,13 @@ extension XCUIApplication {
         
         XCTAssertTrue(buttons["Send Verification Message"].exists)
         buttons["Send Verification Message"].tap()
-
-        XCTAssertTrue(textFields["One-Time Code Entry Pin 0"].exists)
-        for (index, pin) in otc.enumerated() {
-            textFields["One-Time Code Entry Pin \(index)"].typeText(String(pin))
+        
+        let codeField = textFields["Verification code entry"]
+        XCTAssertTrue(codeField.waitForExistence(timeout: 2.0))
+        
+        codeField.tap()
+        for key in otc.enumerated() {
+            keys["\(key.element)"].tap()
         }
         
         XCTAssertTrue(buttons["Verify Phone Number"].exists)
