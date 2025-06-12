@@ -68,7 +68,6 @@ struct PhoneNumberSteps: View {
                 }
         }
             .interactiveDismissDisabled(!(phoneNumberViewModel.phoneNumber == nil))
-            .presentationDetents([.medium])
     }
     
     init(codeLength: Int = 6) {

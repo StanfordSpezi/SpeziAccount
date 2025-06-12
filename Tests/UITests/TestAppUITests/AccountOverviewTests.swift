@@ -417,14 +417,14 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         try app.addPhoneNumber("6502345678", otc: "012345")
         
-        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 1.0))
 
         
         XCTAssertTrue(app.buttons["Delete"].exists)
         app.buttons["Delete"].tap()
         
-        XCTAssertTrue(app.buttons["Delete"].exists)
-        app.buttons["Delete"].tap()
+        XCTAssertTrue(app.alerts.buttons["Delete"].exists)
+        app.alerts.buttons["Delete"].tap()
         
         XCTAssertFalse(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
         

@@ -75,7 +75,6 @@ struct OTCEntryView: View {
                 }
             Spacer()
             resendSection
-            Spacer()
         }
             .onReceive(timer) { _ in
                 if resendTimeOut > 0 {
