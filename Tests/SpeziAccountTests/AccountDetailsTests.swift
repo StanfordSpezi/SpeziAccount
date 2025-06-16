@@ -95,9 +95,9 @@ struct AccountDetailsTests {
         var details = AccountDetails()
         let phoneNumber: PhoneNumber
         do {
-            phoneNumber = try PhoneNumberUtility().parse("+16501234567")
+            phoneNumber = try PhoneNumberUtility().parse("+16502341234")
         } catch {
-            XCTFail("Failed to parse phone number: \(error)")
+            Issue.record("Failed to parse phone number: \(error)")
             return
         }
         details.phoneNumbers = [phoneNumber]

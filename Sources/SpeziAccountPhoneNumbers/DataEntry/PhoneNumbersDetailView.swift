@@ -127,8 +127,8 @@ struct PhoneNumbersDetailView: View {
     NavigationStack {
         PhoneNumbersDetailView(
             phoneNumbers: [
-                "+15559876543",
-                "+15559876543"
+                "+16502341234",
+                "+16502349876"
             ].compactMap { try? PhoneNumberUtility().parse($0) },
             phoneNumberViewModel: .constant(PhoneNumberViewModel())
         )
