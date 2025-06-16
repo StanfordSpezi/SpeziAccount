@@ -49,15 +49,15 @@ override var configuration: Configuration {
 3. Make your `Standard` conform to `PhoneVerificationConstraint` to handle phone number verification:
 ```swift
 actor YourStandard: PhoneVerificationConstraint {
-    func startVerification(_ accountId: String, _ data: StartVerificationRequest) async throws {
+    func startVerification(_ number: PhoneNumber) async throws {
         // Implement phone number verification start
     }
     
-    func completeVerification(_ accountId: String, _ data: CompleteVerificationRequest) async throws {
+    func completeVerification(_ number: PhoneNumber, _ code: String) async throws {
         // Implement phone number verification completion
     }
     
-    func delete(_ accountId: String, _ number: PhoneNumber) async throws {
+    func delete(_ number: PhoneNumber) async throws {
         // Implement phone number deletion
     }
 }

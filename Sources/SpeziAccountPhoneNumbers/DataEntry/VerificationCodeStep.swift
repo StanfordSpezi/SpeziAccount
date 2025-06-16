@@ -24,6 +24,7 @@ struct VerificationCodeStep: View {
     let codeLength: Int
     let onVerify: () -> Void
     
+    
     var body: some View {
         VStack(spacing: 20) {
             Text("Enter your \(codeLength) digit verification code you received via text message.")
