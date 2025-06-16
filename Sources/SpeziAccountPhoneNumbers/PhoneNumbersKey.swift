@@ -7,11 +7,11 @@
 //
 
 import Foundation
+import PhoneNumberKit
 import SpeziAccount
 import SpeziFoundation
 import SpeziViews
 import SwiftUI
-import PhoneNumberKit
 
 
 private struct DisplayView: SetupDisplayView {

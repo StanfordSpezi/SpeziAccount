@@ -55,6 +55,6 @@ class PhoneNumberViewModel {
     }
     
     func formatPhoneNumberForDisplay(_ phoneNumber: PhoneNumber) -> String {
-        return phoneNumberUtility.format(phoneNumber, toType: .national)
+        phoneNumberUtility.format(phoneNumber, toType: .national)
     }
 }

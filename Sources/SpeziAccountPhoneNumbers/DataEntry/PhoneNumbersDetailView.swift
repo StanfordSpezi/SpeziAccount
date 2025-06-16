@@ -6,10 +6,10 @@
 // SPDX-License-Identifier: MIT
 //
 
+import PhoneNumberKit
 import SpeziAccount
 import SpeziViews
 import SwiftUI
-import PhoneNumberKit
 
 
 struct PhoneNumbersDetailView: View {
