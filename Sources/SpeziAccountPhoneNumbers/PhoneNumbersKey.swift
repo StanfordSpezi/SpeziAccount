@@ -11,10 +11,11 @@ import SpeziAccount
 import SpeziFoundation
 import SpeziViews
 import SwiftUI
+import PhoneNumberKit
 
 
 private struct DisplayView: SetupDisplayView {
-    typealias Value = [String]
+    typealias Value = [PhoneNumber]
     @Environment(Account.self)
     private var account
     @State var phoneNumberViewModel = PhoneNumberViewModel()
@@ -49,7 +50,7 @@ private struct DisplayView: SetupDisplayView {
 
 extension AccountDetails {
     /// The type of the phone numbers array.
-    public typealias PhoneNumbersArray = [String]
+    public typealias PhoneNumbersArray = [PhoneNumber]
 
     /// The phone numbers of a user.
     @AccountKey(

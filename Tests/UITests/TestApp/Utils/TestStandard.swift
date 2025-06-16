@@ -105,8 +105,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        let e164FormattedNumber = PhoneNumberUtility().format(number, toType: .e164)
-        currentPhoneNumbers.append(e164FormattedNumber)
+        currentPhoneNumbers.append(number)
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {
@@ -126,13 +125,13 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         guard let accountId = await account?.details?.accountId else {
             throw AccountDetailsError()
         }
+        try await Task.sleep(for: .seconds(1)) // simulate network delay
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.removeAll { $0 == number.numberString }
+        currentPhoneNumbers.removeAll { $0 == number }
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {
-            try await Task.sleep(for: .seconds(1)) // simulate network delay
             try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
         } catch {
             logger.error("Failed to delete phone number: \(error)")

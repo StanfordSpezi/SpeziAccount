@@ -392,7 +392,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         try app.addPhoneNumber("6502345678", otc: "012345")
         
-        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 1.0))
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
         XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)

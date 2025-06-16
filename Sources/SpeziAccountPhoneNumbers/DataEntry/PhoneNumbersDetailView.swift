@@ -9,22 +9,23 @@
 import SpeziAccount
 import SpeziViews
 import SwiftUI
+import PhoneNumberKit
 
 
 struct PhoneNumbersDetailView: View {
     private enum Event {
-        case deletePhoneNumber(String)
+        case deletePhoneNumber(PhoneNumber)
     }
     
     @State private var viewState = ViewState.idle
     @State private var events: (stream: AsyncStream<Event>, continuation: AsyncStream<Event>.Continuation) = AsyncStream.makeStream()
-    @State private var processingPhoneNumbers: Set<String> = []
-    @State private var phoneNumberToDelete: String?
+    @State private var processingPhoneNumbers: Set<PhoneNumber> = []
+    @State private var phoneNumberToDelete: PhoneNumber?
     @Environment(PhoneVerificationProvider.self)
     private var phoneVerificationProvider
     @Environment(Account.self)
     private var account
-    let phoneNumbers: [String]
+    let phoneNumbers: [PhoneNumber]
     @Binding var phoneNumberViewModel: PhoneNumberViewModel
 
     
@@ -37,29 +38,35 @@ struct PhoneNumbersDetailView: View {
                         Button("Delete", role: .destructive) {
                             phoneNumberToDelete = phoneNumber
                         }
-                        .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))
-                        .disabled(!processingPhoneNumbers.isEmpty)
+                            .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))
                     }
                 }
             }
         }
             .task {
-                for await event in events.stream {
-                    switch event {
-                    case let .deletePhoneNumber(phoneNumber):
-                        processingPhoneNumbers.insert(phoneNumber)
-                        do {
-                            let phoneNumber = try phoneNumberViewModel.phoneNumberUtility.parse(phoneNumber)
-                            try await phoneVerificationProvider.deletePhoneNumber(phoneNumber: phoneNumber)
-                        } catch {
-                            viewState = .error(
-                                AnyLocalizedError(
-                                    error: error,
-                                    defaultErrorDescription: "Failed to delete phone number."
-                                )
-                            )
+                await withDiscardingTaskGroup { group in
+                    for await event in events.stream {
+                        switch event {
+                        case let .deletePhoneNumber(phoneNumber):
+                            processingPhoneNumbers.insert(phoneNumber)
+                            group.addTask {
+                                do {
+                                    try await phoneVerificationProvider.deletePhoneNumber(phoneNumber: phoneNumber)
+                                } catch {
+                                    await MainActor.run {
+                                        viewState = .error(
+                                            AnyLocalizedError(
+                                                error: error,
+                                                defaultErrorDescription: "Failed to delete phone number."
+                                            )
+                                        )
+                                    }
+                                }
+                                _ = await MainActor.run {
+                                    processingPhoneNumbers.remove(phoneNumber)
+                                }
+                            }
                         }
-                        processingPhoneNumbers.remove(phoneNumber)
                     }
                 }
             }
@@ -119,7 +126,10 @@ struct PhoneNumbersDetailView: View {
 #Preview {
     NavigationStack {
         PhoneNumbersDetailView(
-            phoneNumbers: ["+1 (555) 123-4567", "+1 (555) 987-6543"],
+            phoneNumbers: [
+                "+15559876543",
+                "+15559876543"
+            ].compactMap { try? PhoneNumberUtility().parse($0) },
             phoneNumberViewModel: .constant(PhoneNumberViewModel())
         )
     }
