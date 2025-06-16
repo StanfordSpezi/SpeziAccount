@@ -25,13 +25,12 @@ struct PhoneNumbersDetailView: View {
     private var phoneVerificationProvider
     @Environment(Account.self)
     private var account
-    let phoneNumbers: [PhoneNumber]
     @Binding var phoneNumberViewModel: PhoneNumberViewModel
 
     
     var body: some View {
         List {
-            ForEach(phoneNumbers, id: \.self) { phoneNumber in
+            ForEach(account.details?.phoneNumbers ?? [], id: \.self) { phoneNumber in
                 ListRow("Phone") {
                     HStack {
                         Text(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
@@ -110,7 +109,7 @@ struct PhoneNumbersDetailView: View {
                 }
             }
             .overlay {
-                if phoneNumbers.isEmpty {
+                if account.details?.phoneNumbers?.isEmpty ?? true {
                     ContentUnavailableView {
                         Label("No Phone Numbers", systemImage: "phone.badge.plus")
                     } description: {
@@ -126,13 +125,7 @@ struct PhoneNumbersDetailView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        PhoneNumbersDetailView(
-            phoneNumbers: [
-                "+16502341234",
-                "+16502349876"
-            ].compactMap { try? PhoneNumberUtility().parse($0) },
-            phoneNumberViewModel: .constant(PhoneNumberViewModel())
-        )
+        PhoneNumbersDetailView(phoneNumberViewModel: .constant(PhoneNumberViewModel()))
     }
     .previewWith {
         AccountConfiguration(service: InMemoryAccountService(), configuration: .default)

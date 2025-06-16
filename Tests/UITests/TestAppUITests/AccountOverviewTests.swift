@@ -399,7 +399,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
     }
 
     @MainActor
-    func testRemovePhoneNumber() throws {
+    func testRemovePhoneNumber() async throws {
         let app = XCUIApplication()
         app.launch(credentials: .createAndSignIn)
         
@@ -417,16 +417,17 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         try app.addPhoneNumber("6502345678", otc: "012345")
         
-        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 1.0))
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
 
         
-        XCTAssertTrue(app.buttons["Delete"].exists)
-        app.buttons["Delete"].tap()
+        XCTAssertTrue(app.collectionViews.buttons["Delete"].exists)
+        app.collectionViews.buttons["Delete"].tap()
         
         XCTAssertTrue(app.alerts.buttons["Delete"].exists)
         app.alerts.buttons["Delete"].tap()
-        
-        XCTAssertFalse(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
+
+        try await Task.sleep(for: .seconds(2))
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
         XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
@@ -546,9 +547,12 @@ extension XCUIApplication {
         let codeField = textFields["Verification code entry"]
         XCTAssertTrue(codeField.waitForExistence(timeout: 2.0))
         
-        codeField.tap()
         for key in otc.enumerated() {
+#if os(visionOS)
+            visionOSKeyboard.keys["\(key.element)"].tap()
+#else
             keys["\(key.element)"].tap()
+#endif
         }
         
         XCTAssertTrue(buttons["Verify Phone Number"].exists)

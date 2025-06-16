@@ -118,6 +118,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     
     @MainActor
     func delete(_ number: PhoneNumber) async throws {
+        try await Task.sleep(for: .seconds(1)) // simulate network delay
         guard let storageProvider else {
             logger.error("The account storage provider was never injected!")
             return
@@ -125,7 +126,6 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         guard let accountId = await account?.details?.accountId else {
             throw AccountDetailsError()
         }
-        try await Task.sleep(for: .seconds(1)) // simulate network delay
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
         currentPhoneNumbers.removeAll { $0 == number }

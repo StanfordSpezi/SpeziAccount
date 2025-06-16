@@ -26,7 +26,7 @@ private struct DisplayView: SetupDisplayView {
     var body: some View {
         Section {
             NavigationLink {
-                PhoneNumbersDetailView(phoneNumbers: account.details?.phoneNumbers ?? [], phoneNumberViewModel: $phoneNumberViewModel)
+                PhoneNumbersDetailView(phoneNumberViewModel: $phoneNumberViewModel)
             } label: {
                 ListRow("Phone Numbers") {
                     if let phoneNumber = phoneNumbers.first, phoneNumbers.count == 1 {

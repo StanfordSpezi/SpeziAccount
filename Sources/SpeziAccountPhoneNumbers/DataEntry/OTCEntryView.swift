@@ -65,7 +65,6 @@ struct OTCEntryView: View {
                         .textContentType(.oneTimeCode)
 #endif
                         .accessibilityLabel("Verification code entry")
-                        .focused($focusState, equals: .pin(0))
                 }
                 .onChange(of: pins) { _, _ in
                     updateCode()
