@@ -6,13 +6,15 @@
 // SPDX-License-Identifier: MIT
 //
 
+@preconcurrency import PhoneNumberKit
 import Spezi
 import SpeziAccount
+import SpeziAccountPhoneNumbers
 import SwiftUI
 
 
 // mock implementation of the AccountStorageConstraint
-actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
+actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, EnvironmentAccessible {
     @MainActor
     @Observable
     final class Storage {
@@ -20,10 +22,16 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
         var suppliedInitialDetails = false
         nonisolated init() {}
     }
+    
+    struct VerificationCodeError: Error {}
+    struct AccountDetailsError: Error {}
 
     private let storage = Storage()
     private nonisolated let features: Features
 
+    @Dependency(Account.self)
+    private var account: Account?
+    
     @Application(\.logger)
     @MainActor private var logger
 
@@ -72,6 +80,61 @@ actor TestStandard: AccountNotifyConstraint, EnvironmentAccessible {
             storage.suppliedInitialDetails = false
         default:
             break
+        }
+    }
+    
+    @MainActor
+    func startVerification(_ number: PhoneNumber) async throws {
+        // noop
+    }
+    
+    @MainActor
+    func completeVerification(_ number: PhoneNumber, _ code: String) async throws {
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        
+        guard code == "012345" else {
+            throw VerificationCodeError()
+        }
+        
+        guard let accountId = await account?.details?.accountId else {
+            throw AccountDetailsError()
+        }
+        
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        currentPhoneNumbers.append(number)
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await Task.sleep(for: .seconds(1)) // simulate network delay
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+        } catch {
+            logger.error("Failed to update account details: \(error)")
+        }
+    }
+    
+    @MainActor
+    func delete(_ number: PhoneNumber) async throws {
+        try await Task.sleep(for: .seconds(1)) // simulate network delay
+        guard let storageProvider else {
+            logger.error("The account storage provider was never injected!")
+            return
+        }
+        guard let accountId = await account?.details?.accountId else {
+            throw AccountDetailsError()
+        }
+        let details = await storageProvider.load(accountId, [])
+        var currentPhoneNumbers = details?.phoneNumbers ?? []
+        currentPhoneNumbers.removeAll { $0 == number }
+        var modifications = AccountDetails()
+        modifications.phoneNumbers = currentPhoneNumbers
+        do {
+            try await storageProvider.simulateRemoteUpdate(for: accountId, AccountModifications(modifiedDetails: modifications))
+        } catch {
+            logger.error("Failed to delete phone number: \(error)")
         }
     }
 }

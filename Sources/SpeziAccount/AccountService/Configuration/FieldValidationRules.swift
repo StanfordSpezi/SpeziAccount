@@ -95,10 +95,10 @@ public struct FieldValidationRules<Key: AccountKey>: AccountServiceConfiguration
             return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalEmail)
         } else if Key.self == AccountKeys.password {
             return FieldValidationRules(for: Key.self, rules: .nonEmpty.intercepting, .minimalPassword)
-        } else {
-            // we cannot statically determine here if the user may have configured the Key to be required
-            return nil
         }
+        
+        // we cannot statically determine here if the user may have configured the Key to be required
+        return nil
     }
 }
 

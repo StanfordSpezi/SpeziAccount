@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import PhoneNumberKit
 @testable import SpeziAccount
+import SpeziAccountPhoneNumbers
 import Testing
+
 
 @Suite("AccountDetails General Tests")
 struct AccountDetailsTests {
@@ -85,5 +88,22 @@ struct AccountDetailsTests {
             UserIdConfiguration.username
         }
         #expect(usernameDetails.email == nil)
+    }
+
+    @Test
+    func testPhoneNumbersKey() throws {
+        var details = AccountDetails()
+        let phoneNumber: PhoneNumber
+        do {
+            phoneNumber = try PhoneNumberUtility().parse("+16502341234")
+        } catch {
+            Issue.record("Failed to parse phone number: \(error)")
+            return
+        }
+        details.phoneNumbers = [phoneNumber]
+        #expect(details.phoneNumbers == [phoneNumber])
+        
+        details.phoneNumbers = nil
+        #expect(details.phoneNumbers == nil)
     }
 }

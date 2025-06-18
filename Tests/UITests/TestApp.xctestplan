@@ -15,6 +15,16 @@
           "containerPath" : "container:..\/..",
           "identifier" : "SpeziAccount",
           "name" : "SpeziAccount"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "SpeziAccountPhoneNumbers",
+          "name" : "SpeziAccountPhoneNumbers"
+        },
+        {
+          "containerPath" : "container:..\/..",
+          "identifier" : "XCTSpeziAccount",
+          "name" : "XCTSpeziAccount"
         }
       ]
     },

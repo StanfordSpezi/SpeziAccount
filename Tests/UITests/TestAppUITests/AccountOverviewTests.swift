@@ -11,6 +11,7 @@ import XCTestExtensions
 import XCTSpeziAccount
 
 
+// swiftlint:disable file_length
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -70,7 +71,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.textFields["Biography"].exists)
         try app.textFields["Biography"].enter(value: "Hello Stanford")
-
+        
         XCTAssertTrue(app.navigationBars.buttons["Done"].exists)
         app.navigationBars.buttons["Done"].tap()
 
@@ -371,7 +372,89 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.navigationBars.staticTexts["Sign-In & Security"].waitForExistence(timeout: 4.0))
     }
+    
+    @MainActor
+    func testAddPhoneNumber() throws {
+        let app = XCUIApplication()
+        app.launch(credentials: .createAndSignIn)
+        
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
 
+        app.openAccountOverview()
+        
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
+        
+        XCTAssertTrue(app.buttons["Phone Numbers"].exists)
+        app.buttons["Phone Numbers"].tap()
+        
+        try app.addPhoneNumber("6502345678", otc: "012345")
+        
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
+        
+        app.navigationBars.buttons.firstMatch.tap() // navigate back
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
+    }
+
+    @MainActor
+    func testRemovePhoneNumber() async throws {
+        let app = XCUIApplication()
+        app.launch(credentials: .createAndSignIn)
+        
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+        
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
+        
+        XCTAssertTrue(app.buttons["Phone Numbers"].exists)
+        app.buttons["Phone Numbers"].tap()
+        
+        try app.addPhoneNumber("6502345678", otc: "012345")
+        
+        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
+
+        
+        XCTAssertTrue(app.collectionViews.buttons["Delete"].exists)
+        app.collectionViews.buttons["Delete"].tap()
+        
+        XCTAssertTrue(app.alerts.buttons["Delete"].exists)
+        app.alerts.buttons["Delete"].tap()
+
+        try await Task.sleep(for: .seconds(2))
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+        
+        app.navigationBars.buttons.firstMatch.tap() // navigate back
+        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+    }
+    
+    @MainActor
+    func testAddPhoneNumberWithWrongOTC() throws {
+        let app = XCUIApplication()
+        app.launch(credentials: .createAndSignIn)
+        
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+
+        app.openAccountOverview()
+        
+#if os(visionOS)
+        app.scrollUpInOverview()
+#endif
+        
+        XCTAssertTrue(app.buttons["Phone Numbers"].exists)
+        app.buttons["Phone Numbers"].tap()
+        
+        try app.addPhoneNumber("6502345678", otc: "123456")
+        
+        XCTAssertTrue(app.staticTexts["Failed to verify phone number. Please check your code and try again."].exists)
+    }
+    
     @MainActor
     func testLicenseOverview() throws {
         let app = XCUIApplication()
@@ -437,4 +520,42 @@ extension XCUIApplication {
         staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Leland Stanford"])
     }
 #endif
+    
+    fileprivate func addPhoneNumber(_ phoneNumber: String, otc: String) throws {
+        XCTAssertTrue(navigationBars.buttons["Add Phone Number"].exists)
+        navigationBars.buttons["Add Phone Number"].tap()
+        
+        XCTAssertTrue(buttons["Select Country Code"].exists)
+        buttons["Select Country Code"].tap()
+        XCTAssertTrue(searchFields["Your country"].exists)
+        
+        let countryField = searchFields["Your country"]
+        countryField.tap()
+        countryField.typeText("US")
+        
+        XCTAssertTrue(staticTexts["+1"].waitForExistence(timeout: 2.0))
+        staticTexts["+1"].tap()
+        
+        let phoneField = textFields["Phone Number"]
+        XCTAssertTrue(phoneField.exists)
+        phoneField.tap()
+        phoneField.typeText(phoneNumber)
+        
+        XCTAssertTrue(buttons["Send Verification Message"].exists)
+        buttons["Send Verification Message"].tap()
+        
+        let codeField = textFields["Verification code entry"]
+        XCTAssertTrue(codeField.waitForExistence(timeout: 2.0))
+        
+        for key in otc.enumerated() {
+#if os(visionOS)
+            visionOSKeyboard.keys["\(key.element)"].tap()
+#else
+            keys["\(key.element)"].tap()
+#endif
+        }
+        
+        XCTAssertTrue(buttons["Verify Phone Number"].exists)
+        buttons["Verify Phone Number"].tap()
+    }
 }
