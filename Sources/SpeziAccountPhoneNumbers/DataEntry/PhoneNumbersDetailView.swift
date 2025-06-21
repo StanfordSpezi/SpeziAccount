@@ -27,10 +27,14 @@ struct PhoneNumbersDetailView: View {
     private var account
     @Binding var phoneNumberViewModel: PhoneNumberViewModel
 
+    var phoneNumbers: [PhoneNumber] {
+        let numbers = account.details?.phoneNumbers ?? []
+        return numbers.compactMap { try? phoneNumberViewModel.phoneNumberUtility.parse($0) }
+    }
     
     var body: some View {
         List {
-            ForEach(account.details?.phoneNumbers ?? [], id: \.self) { phoneNumber in
+            ForEach(phoneNumbers, id: \.self) { phoneNumber in
                 ListRow("Phone") {
                     HStack {
                         Text(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))

@@ -54,6 +54,15 @@ class PhoneNumberViewModel {
             .joined()
     }
     
+    func formatPhoneNumberForDisplay(_ phoneNumber: String) -> String {
+        do {
+            let phoneNumberObject = try phoneNumberUtility.parse(phoneNumber)
+            return phoneNumberUtility.format(phoneNumberObject, toType: .national)
+        } catch {
+            return phoneNumber
+        }
+    }
+    
     func formatPhoneNumberForDisplay(_ phoneNumber: PhoneNumber) -> String {
         phoneNumberUtility.format(phoneNumber, toType: .national)
     }

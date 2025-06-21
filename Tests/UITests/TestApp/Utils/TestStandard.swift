@@ -105,7 +105,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.append(number)
+        currentPhoneNumbers.append(number.numberString)
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {
@@ -128,7 +128,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
         }
         let details = await storageProvider.load(accountId, [])
         var currentPhoneNumbers = details?.phoneNumbers ?? []
-        currentPhoneNumbers.removeAll { $0 == number }
+        currentPhoneNumbers.removeAll { $0 == number.numberString }
         var modifications = AccountDetails()
         modifications.phoneNumbers = currentPhoneNumbers
         do {

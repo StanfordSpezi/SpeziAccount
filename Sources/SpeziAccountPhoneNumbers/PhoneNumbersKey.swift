@@ -15,7 +15,7 @@ import SwiftUI
 
 
 private struct DisplayView: SetupDisplayView {
-    typealias Value = [PhoneNumber]
+    typealias Value = [String]
     @Environment(Account.self)
     private var account
     @State var phoneNumberViewModel = PhoneNumberViewModel()
@@ -50,7 +50,7 @@ private struct DisplayView: SetupDisplayView {
 
 extension AccountDetails {
     /// The type of the phone numbers array.
-    public typealias PhoneNumbersArray = [PhoneNumber]
+    public typealias PhoneNumbersArray = [String]
 
     /// The phone numbers of a user.
     @AccountKey(
