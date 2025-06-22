@@ -94,9 +94,16 @@ struct AccountDetailsTests {
     func testPhoneNumbersKey() throws {
         var details = AccountDetails()
 
-        details.phoneNumbers = ["+16502341234"]
-        #expect(details.phoneNumbers == ["+16502341234"])
-        
+        let phoneNumber: PhoneNumber
+        do {
+            phoneNumber = try PhoneNumberUtility().parse("+16502341234")
+        } catch {
+            Issue.record("Failed to parse phone number: \(error)")
+            return
+        }
+        details.phoneNumbers = [phoneNumber]
+        #expect(details.phoneNumbers == [phoneNumber])
+
         details.phoneNumbers = nil
         #expect(details.phoneNumbers == nil)
     }
