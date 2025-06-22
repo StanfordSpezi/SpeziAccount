@@ -100,6 +100,7 @@ struct OTCEntryView: View {
                     }
                 }
             )
+            .accessibilityLabel("Verification code entry")
 #if !os(macOS)
             .keyboardType(.numberPad)
             .textContentType(.oneTimeCode)
