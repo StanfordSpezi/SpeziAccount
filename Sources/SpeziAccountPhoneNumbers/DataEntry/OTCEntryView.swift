@@ -10,6 +10,7 @@ import SpeziAccount
 import SpeziViews
 import SwiftUI
 
+
 struct OTCEntryView: View {
     @State private var viewState = ViewState.idle
     @FocusState private var isTextFieldFocused: Bool
