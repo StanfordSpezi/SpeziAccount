@@ -41,13 +41,13 @@ By default, phone numbers are stored with all their properties as key-value pair
 If you use `FirestoreAccountStorage` as your storage provider, here's how you can configure custom encoder and decoder instances:
 
 ```swift
-private let customEncoder: FirebaseFirestore.Firestore.Encoder {
+private var customEncoder: FirebaseFirestore.Firestore.Encoder {
     let encoder = FirebaseFirestore.Firestore.Encoder()
     encoder.userInfo[.phoneNumberEncodingStrategy] = PhoneNumberDecodingStrategy.e164
     return encoder
 }
 
-private let customDecoder: FirebaseFirestore.Firestore.Decoder {
+private var customDecoder: FirebaseFirestore.Firestore.Decoder {
     let decoder = FirebaseFirestore.Firestore.Decoder()
     decoder.userInfo[.phoneNumberDecodingStrategy] = PhoneNumberDecodingStrategy.e164
     return decoder
