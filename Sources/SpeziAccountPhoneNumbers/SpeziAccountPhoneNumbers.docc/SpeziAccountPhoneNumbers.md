@@ -34,6 +34,43 @@ var configuredValues: AccountValueConfiguration {
 }
 ```
 
+1.1 (Optional) Configure custom encoding/decoding strategy for phone number storage:
+
+By default, phone numbers are stored with all their properties as key-value pairs. However, you might want to customize how phone numbers are encoded and decoded based on your storage requirements. For example, you might prefer to store only the E.164 string format (e.g., "+16502341234") to reduce storage size or simplify data queries.
+
+If you use `FirestoreAccountStorage` as your storage provider, here's how you can configure custom encoder and decoder instances:
+
+```swift
+private var customEncoder: FirebaseFirestore.Firestore.Encoder {
+    let encoder = FirebaseFirestore.Firestore.Encoder()
+    encoder.userInfo[.phoneNumberEncodingStrategy] = PhoneNumberDecodingStrategy.e164
+    return encoder
+}
+
+private var customDecoder: FirebaseFirestore.Firestore.Decoder {
+    let decoder = FirebaseFirestore.Firestore.Decoder()
+    decoder.userInfo[.phoneNumberDecodingStrategy] = PhoneNumberDecodingStrategy.e164
+    return decoder
+}
+
+override var configuration: Configuration {
+    Configuration(standard: YourStandard()) {
+        AccountConfiguration(
+            storageProvider: FirestoreAccountStorage(
+                storeIn: Firestore.userCollection,
+                mapping: [
+                    "phoneNumbers": AccountKeys.phoneNumbers,
+                    // ... other mappings ...
+                ],
+                encoder: customEncoder,
+                decoder: customDecoder
+            ),
+            // ... other configuration ...
+        )
+    }
+}
+```
+
 2. Add the `PhoneVerificationProvider` to your app's configuration:
 ```swift
 override var configuration: Configuration {

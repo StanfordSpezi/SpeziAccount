@@ -547,13 +547,7 @@ extension XCUIApplication {
         let codeField = textFields["Verification code entry"]
         XCTAssertTrue(codeField.waitForExistence(timeout: 2.0))
         
-        for key in otc.enumerated() {
-#if os(visionOS)
-            visionOSKeyboard.keys["\(key.element)"].tap()
-#else
-            keys["\(key.element)"].tap()
-#endif
-        }
+        codeField.typeText(otc)
         
         XCTAssertTrue(buttons["Verify Phone Number"].exists)
         buttons["Verify Phone Number"].tap()

@@ -93,6 +93,7 @@ struct AccountDetailsTests {
     @Test
     func testPhoneNumbersKey() throws {
         var details = AccountDetails()
+
         let phoneNumber: PhoneNumber
         do {
             phoneNumber = try PhoneNumberUtility().parse("+16502341234")
@@ -102,7 +103,7 @@ struct AccountDetailsTests {
         }
         details.phoneNumbers = [phoneNumber]
         #expect(details.phoneNumbers == [phoneNumber])
-        
+
         details.phoneNumbers = nil
         #expect(details.phoneNumbers == nil)
     }

@@ -11,13 +11,9 @@ import SpeziViews
 import SwiftUI
 
 
-enum FocusPin: Hashable {
-    case pin(Int)
-}
-
 struct OTCEntryView: View {
     @State private var viewState = ViewState.idle
-    @FocusState private var focusState: FocusPin?
+    @FocusState private var isTextFieldFocused: Bool
     @Environment(Account.self)
     private var account
     @Environment(PhoneVerificationProvider.self)
@@ -25,52 +21,16 @@ struct OTCEntryView: View {
     @Environment(PhoneNumberViewModel.self)
     private var phoneNumberViewModel
     private let codeLength: Int
-    @State private var pins: [String]
+    @State private var verificationCode = ""
     @State private var resendTimeOut = 30
     
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-    private var text: Binding<String> {
-        Binding(
-            get: { pins.joined() },
-            set: { newValue in
-                let digits = Array(newValue.prefix(codeLength))
-                for (index, digit) in digits.enumerated() {
-                    pins[index] = String(digit)
-                }
-                for index in digits.count..<codeLength {
-                    pins[index] = ""
-                }
-                if let nextEmptyIndex = pins.firstIndex(where: { $0.isEmpty }) {
-                    focusState = .pin(nextEmptyIndex)
-                } else {
-                    focusState = .pin(codeLength - 1)
-                }
-            }
-        )
-    }
-    
-    
     var body: some View {
         VStack {
-            HStack(spacing: 15) {
-                ForEach(0..<codeLength, id: \.self) { index in
-                    individualPin(index: index)
-                }
-            }
-                .accessibilityRepresentation {
-                    TextField(String(), text: text)
-#if !os(macOS)
-                        .keyboardType(.numberPad)
-                        .textContentType(.oneTimeCode)
-#endif
-                        .accessibilityLabel("Verification code entry")
-                }
-                .onChange(of: pins) { _, _ in
-                    updateCode()
-                }
+            formattedTextField
                 .onAppear {
-                    focusState = .pin(0)
+                    isTextFieldFocused = true
                 }
             Spacer()
             resendSection
@@ -120,36 +80,62 @@ struct OTCEntryView: View {
         }
     }
     
+    private var formattedTextField: some View {
+        TextField("", text: $verificationCode)
+            .focused($isTextFieldFocused)
+            .opacity(0)
+            .multilineTextAlignment(.center)
+            .frame(width: CGFloat(codeLength) * 60, height: 45)
+            .background(
+                HStack(spacing: 15) {
+                    ForEach(0..<codeLength, id: \.self) { index in
+                        pinBackground(index: index)
+                    }
+                }
+            )
+            .overlay(
+                HStack(spacing: 15) {
+                    ForEach(0..<codeLength, id: \.self) { index in
+                        pinDigit(index: index)
+                    }
+                }
+            )
+            .accessibilityLabel("Verification code entry")
+#if !os(macOS)
+            .keyboardType(.numberPad)
+            .textContentType(.oneTimeCode)
+#endif
+            .onChange(of: verificationCode) { _, newValue in
+                let filtered = newValue.filter { $0.isNumber }
+                verificationCode = String(filtered.prefix(codeLength))
+                updateCode()
+            }
+    }
+    
     init(codeLength: Int = 6) {
         precondition(codeLength > 0 && codeLength <= 6, "Code length must be between one and six")
         self.codeLength = codeLength
-        self._pins = State(initialValue: Array(repeating: "", count: codeLength))
     }
     
-    private func individualPin(index: Int) -> some View {
-        TextField(String(), text: $pins[index])
-            .modifier(OTCModifier(pin: $pins[index]))
-            .accessibilityIdentifier("Verification code entry \(index)")
-            .onChange(of: $pins[index].wrappedValue) { _, newValue in
-                if !newValue.isEmpty {
-                    if index < codeLength - 1 {
-                        focusState = .pin(index + 1)
-                    }
-                }
-            }
-            .onKeyPress(.delete) {
-                if pins[index].isEmpty && index > 0 {
-                    pins[index - 1] = ""
-                    focusState = .pin(index - 1)
-                    return .handled
-                }
-                return .ignored
-            }
-            .focused($focusState, equals: .pin(index))
+    private func pinBackground(index: Int) -> some View {
+        let isFocused = isTextFieldFocused && index == verificationCode.count
+        return RoundedRectangle(cornerRadius: 5)
+            .stroke(isFocused ? Color.accentColor : Color.secondary, lineWidth: isFocused ? 2 : 1)
+            .frame(width: 45, height: 45)
+    }
+    
+    private func pinDigit(index: Int) -> some View {
+        let digit = index < verificationCode.count
+            ? String(verificationCode[verificationCode.index(verificationCode.startIndex, offsetBy: index)])
+            : ""
+        return Text(digit)
+            .font(.body)
+            .multilineTextAlignment(.center)
+            .frame(width: 45, height: 45)
     }
     
     private func updateCode() {
-        phoneNumberViewModel.verificationCode = pins.joined()
+        phoneNumberViewModel.verificationCode = verificationCode
     }
 }
 
