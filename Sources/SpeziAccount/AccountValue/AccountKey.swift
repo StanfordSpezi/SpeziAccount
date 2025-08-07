@@ -11,6 +11,10 @@ import SpeziFoundation
 import SwiftUI
 
 
+#if compiler(<6.2)
+public typealias SendableMetatype = Any
+#endif
+
 /// A typed storage key to store values associated with an user account.
 ///
 /// The `AccountKey` protocol builds upon the [Shared Repository](https://swiftpackageindex.com/stanfordspezi/spezi/documentation/spezi/shared-repository)
