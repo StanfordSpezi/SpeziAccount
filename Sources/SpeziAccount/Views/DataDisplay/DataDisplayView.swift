@@ -15,7 +15,7 @@ import SwiftUI
 /// This view is typically placed as a row in the ``AccountOverview`` view.
 ///
 /// - Note: Refer to the <doc:Adding-new-Account-Values> article for an overview of default implemented display views.
-public protocol DataDisplayView<Value>: View {
+public protocol DataDisplayView<Value>: View, Sendable {
     /// The value type that is getting displayed
     associatedtype Value
 
