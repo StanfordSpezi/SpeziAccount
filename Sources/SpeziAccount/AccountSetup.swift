@@ -159,9 +159,9 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 .padding(.horizontal, ViewSizing.innerHorizontalPadding)
                 .frame(maxWidth: ViewSizing.maxFrameWidth) // landscape optimizations
                 .dynamicTypeSize(.medium ... .xxxLarge) // ui doesn't make sense on size larger than .xxxLarge
-                .receiveSignupProviderCompliance { compliance in
-                    Task {@MainActor in
-                        self.compliance = compliance
+                .receiveSignupProviderCompliance { [$compliance] compliance in
+                    Task { @MainActor in
+                        ($compliance).wrappedValue = compliance
                     }
                 }
         }
