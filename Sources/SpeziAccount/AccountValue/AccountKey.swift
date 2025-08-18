@@ -30,7 +30,7 @@ import SwiftUI
 /// ### Shared Repository
 /// - ``AccountAnchor``
 /// - ``AccountStorage``
-public protocol AccountKey: KnowledgeSource<AccountAnchor> where Value: Sendable, Value: Equatable, Value: Codable {
+public protocol AccountKey: KnowledgeSource<AccountAnchor>, SendableMetatype where Value: Sendable, Value: Equatable, Value: Codable {
     /// The view that is used to display a value for this account key.
     ///
     /// This view is used in views like the ``AccountOverview`` to display the current value for this `AccountKey`.

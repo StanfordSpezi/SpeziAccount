@@ -15,7 +15,7 @@ import SwiftUI
 /// This view is used in views like the ``SignupForm`` or ``AccountOverview`` to enter or modify a account value.
 ///
 /// - Note: Refer to the <doc:Adding-new-Account-Values> article for an overview of default implemented display views.
-public protocol DataEntryView<Value>: View {
+public protocol DataEntryView<Value>: View, Sendable {
     /// The type of value this view receives a value for.
     associatedtype Value
 

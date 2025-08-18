@@ -51,7 +51,7 @@ private struct SignupProviderComplianceKey: PreferenceKey {
 ///
 /// - Note: The compliance preference is automatically set when using the ``SignupForm`` or the ``SignInWithAppleButton``.
 public struct SignupProviderCompliance {
-    enum VisualizedAccountKeys {
+    enum VisualizedAccountKeys: Sendable {
         case all
         case only(_ keys: [any AccountKey.Type])
     }

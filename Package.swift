@@ -27,7 +27,7 @@ let package = Package(
         .library(name: "SpeziAccountPhoneNumbers", targets: ["SpeziAccountPhoneNumbers"])
     ],
     dependencies: [
-        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.1.7"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.2.1"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.2"),
         .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.1"),
