@@ -19,6 +19,7 @@ let package = Package(
     platforms: [
         .iOS(.v17),
         .macOS(.v14), // we need to specify that to run macro tests as they only run on the host platform
+        .macCatalyst(.v17),
         .visionOS(.v1)
     ],
     products: [
