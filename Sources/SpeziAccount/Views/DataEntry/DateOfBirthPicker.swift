@@ -14,24 +14,24 @@ import SwiftUI
 struct DateOfBirthPicker: View {
     private let title: LocalizedStringResource
     private let isRequired: Bool
-
+    
     @Binding private var date: Date
     @State private var dateAdded = false
-
+    
     @State private var layout: DynamicLayout?
-
+    
     private var dateRange: ClosedRange<Date> {
         let calendar = Calendar.current
         let startDateComponents = DateComponents(year: 1800, month: 1, day: 1)
         let endDate = Date.now
-
+        
         guard let startDate = calendar.date(from: startDateComponents) else {
             fatalError("Could not translate \(startDateComponents) to a valid date.")
         }
-
+        
         return startDate...endDate
     }
-
+    
     
     /// We want to show the picker if
     ///  - The date is configured to be required.
@@ -40,18 +40,11 @@ struct DateOfBirthPicker: View {
     @MainActor private var showPicker: Bool {
         isRequired || dateAdded
     }
-
-
+    
+    
     var body: some View {
         HStack { // swiftlint:disable:this closure_body_length
             DynamicHStack {
-                Text(title)
-                    .multilineTextAlignment(.leading)
-
-                if layout == .horizontal {
-                    Spacer()
-                }
-
                 if showPicker {
                     DatePicker(
                         selection: $date,
@@ -60,8 +53,14 @@ struct DateOfBirthPicker: View {
                     ) {
                         Text(title)
                     }
-                    .labelsHidden()
                 } else {
+                    Text(title)
+                        .multilineTextAlignment(.leading)
+                    
+                    if layout == .horizontal {
+                        Spacer()
+                    }
+                    
                     Button(action: addDateAction) {
                         Text("ADD_DATE", bundle: .module)
                             .multilineTextAlignment(.center)
@@ -70,7 +69,7 @@ struct DateOfBirthPicker: View {
                             .padding([.top, .bottom], 7)
                             .frame(maxWidth: 120)
                             .background(
-                                RoundedRectangle(cornerRadius: 8)
+                                osDependentBackgroundRectangle
                                 #if os(macOS)
                                     .fill(Color(nsColor: .tertiarySystemFill))
                                 #else
@@ -80,32 +79,27 @@ struct DateOfBirthPicker: View {
                     }
                 }
             }
-
+            
             if layout == .vertical {
                 Spacer()
             }
         }
-            .accessibilityRepresentation {
-                // makes sure the accessibility view spans the whole width, including the label.
-                if showPicker {
-                    DatePicker(selection: $date, in: dateRange, displayedComponents: .date) {
-                        Text(title)
-                    }
-                } else {
-                    Button(action: addDateAction) {
-                        Text("VALUE_ADD \(title)", bundle: .module)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
+        .onPreferenceChange(DynamicLayout.self) { value in
+            Task { @MainActor in
+                layout = value
             }
-            .onPreferenceChange(DynamicLayout.self) { value in
-                Task { @MainActor in
-                    layout = value
-                }
-            }
+        }
     }
-
-
+    
+    private var osDependentBackgroundRectangle: RoundedRectangle {
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 {
+            RoundedRectangle(cornerRadius: 32)
+        } else {
+            RoundedRectangle(cornerRadius: 8)
+        }
+    }
+    
+    
     /// Initialize a new `DateOfBirthPicker`.
     /// - Parameters:
     ///   - title: Optionally provide a custom label text.
@@ -120,8 +114,8 @@ struct DateOfBirthPicker: View {
         self._date = date
         self.isRequired = isRequired
     }
-
-
+    
+    
     private func addDateAction() {
         dateAdded = true
     }
@@ -133,7 +127,7 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
     struct Preview: View {
         @State private var date = Date.now
         private let required: Bool
-
+        
         var body: some View {
             Form {
                 DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
@@ -146,16 +140,16 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
             .background(Color(uiColor: .systemGroupedBackground))
 #endif
         }
-
+        
         init(required: Bool) {
             self.required = required
         }
     }
-
+    
     static var previews: some View {
         // preview entering new data.
         Preview(required: false)
-
+        
         Preview(required: true)
     }
 }
