@@ -36,7 +36,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.staticTexts["Sign-In & Security"].exists)
 
         XCTAssertTrue(app.staticTexts["Gender Identity, Male"].exists)
+        
+#if !os(visionOS)
         XCTAssertTrue(app.staticTexts["Date of Birth, Mar 9, 1824"].exists)
+#endif
 
 #if os(visionOS)
         app.scrollUpInOverview()

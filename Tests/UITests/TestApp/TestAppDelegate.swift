@@ -29,7 +29,7 @@ class TestAppDelegate: SpeziAppDelegate {
     var configuredValues: AccountValueConfiguration {
         switch features.configurationType {
         case .default:
-#if os(tvOS) || os(visionOS)
+#if os(tvOS)
             return [
                 .requires(\.userId),
                 .collects(\.name),
