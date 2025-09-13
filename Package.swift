@@ -86,6 +86,9 @@ let package = Package(
                 .target(name: "SpeziAccount"),
                 .product(name: "PhoneNumberKit", package: "PhoneNumberKit")
             ],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
