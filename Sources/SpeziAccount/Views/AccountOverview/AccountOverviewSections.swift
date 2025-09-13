@@ -15,6 +15,7 @@ import SwiftUI
 /// A internal subview of ``AccountOverview`` that expects to be embedded into a `Form`.
 @MainActor
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
     private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
@@ -186,7 +187,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 }
 
 
-#if DEBUG && !os(macOS)
+#if DEBUG && !os(macOS) && !os(watchOS)
 #Preview {
     NavigationStack {
         AccountOverview {

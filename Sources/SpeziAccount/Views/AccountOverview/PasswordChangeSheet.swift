@@ -46,7 +46,7 @@ struct PasswordChangeSheet: View {
             }
                 .viewStateAlert(state: $viewState)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
                 .navigationBarTitleDisplayMode(.inline)
 #endif
                 .toolbar {

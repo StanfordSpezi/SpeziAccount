@@ -152,6 +152,7 @@ class AccountOverviewFormViewModel {
     }
 
     @available(macOS, unavailable)
+    @available(watchOS, unavailable)
     func cancelEditAction(editMode: Binding<EditMode>?) {
         logger.debug("Pressed the cancel button!")
         if !hasUnsavedChanges {
@@ -165,6 +166,7 @@ class AccountOverviewFormViewModel {
     }
 
     @available(macOS, unavailable)
+    @available(watchOS, unavailable)
     func discardChangesAction(editMode: Binding<EditMode>?) {
         discardChangesAction()
 
@@ -178,6 +180,7 @@ class AccountOverviewFormViewModel {
     }
 
     @available(macOS, unavailable)
+    @available(watchOS, unavailable)
     func updateAccountDetails(details: AccountDetails, using account: Account, editMode: Binding<EditMode>?) async throws {
         try await updateAccountDetails(details: details, using: account)
         editMode?.wrappedValue = .inactive
@@ -199,6 +202,7 @@ class AccountOverviewFormViewModel {
     }
 
     @available(macOS, unavailable)
+    @available(watchOS, unavailable)
     func resetModelState(editMode: Binding<EditMode>?) {
         resetModelState()
 

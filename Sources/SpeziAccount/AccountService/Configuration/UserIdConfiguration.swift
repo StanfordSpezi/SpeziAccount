@@ -32,12 +32,12 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
     ///     the ``keyboardType`` to `emailAddress`. For more information refer to
     ///     [Enabling Password AutoFill on a text input view](https://developer.apple.com/documentation/security/password_autofill/enabling_password_autofill_on_a_text_input_view).
     public let textContentType: TextContentType?
-    #if !os(macOS)
+    #if !os(macOS) && !os(watchOS)
     /// The `UIKeyboardType` used for a field that is used to input the user id.
     public let keyboardType: UIKeyboardType
     #endif
 
-    #if !os(macOS)
+    #if !os(macOS) && !os(watchOS)
     /// Initialize a new `UserIdConfiguration`.
     /// - Parameters:
     ///   - type: The user id type.
@@ -62,7 +62,7 @@ public struct UserIdConfiguration: AccountServiceConfigurationKey, DefaultProvid
 
 
 extension UserIdConfiguration {
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
     /// E-Mail-Address-based user id.
     public static let emailAddress = UserIdConfiguration(type: .emailAddress, contentType: .username, keyboardType: .emailAddress)
 #else

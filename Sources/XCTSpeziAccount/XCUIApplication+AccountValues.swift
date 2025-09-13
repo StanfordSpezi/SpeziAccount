@@ -42,7 +42,13 @@ extension XCUIApplication {
         XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0), "Couldn't find 'Previous Month' button")
         datePickers.buttons["Previous Month"].tap()
 
+        // Tap the first button that contains "Friday" in its label
+        let fridayButton = buttons.containing(NSPredicate(format: "label CONTAINS[c] %@", "Friday")).firstMatch
+        XCTAssertTrue(fridayButton.waitForExistence(timeout: 1.0), "Couldn't find a button containing 'Friday'")
+        fridayButton.tap()
+        
         XCTAssert(buttons["PopoverDismissRegion"].waitForExistence(timeout: 0.5))
         buttons["PopoverDismissRegion"].tap()
     }
 }
+

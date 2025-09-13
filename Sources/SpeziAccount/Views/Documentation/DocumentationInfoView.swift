@@ -22,6 +22,7 @@ struct DocumentationInfoView<Label: View, Description: View>: View {
         } description: {
             description
         } actions: {
+#if !os(watchOS)
             Button {
 #if os(macOS)
                 NSWorkspace.shared.open(url)
@@ -31,6 +32,7 @@ struct DocumentationInfoView<Label: View, Description: View>: View {
             } label: {
                 Text("OPEN_DOCUMENTATION", bundle: .module)
             }
+#endif
         }
     }
 

@@ -29,7 +29,9 @@ extension AccountDetails {
         details.password = "StanfordRocks123!"
         details.name = PersonNameComponents(givenName: "Leland", familyName: "Stanford")
         details.genderIdentity = .male
+        #if !os(tvOS)
         details.dateOfBirth = date
+        #endif
         return details
     }
 }

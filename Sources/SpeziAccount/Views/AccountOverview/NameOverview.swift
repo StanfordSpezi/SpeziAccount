@@ -55,7 +55,7 @@ struct NameOverview: View {
             }
         }
             .navigationTitle(model.accountIdentifierLabel(configuration: account.configuration, accountDetails))
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .injectEnvironmentObjects(configuration: accountDetails.accountServiceConfiguration, model: model)

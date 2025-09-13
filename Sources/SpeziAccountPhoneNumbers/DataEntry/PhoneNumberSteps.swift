@@ -42,7 +42,7 @@ struct PhoneNumberSteps: View {
                 }
             }
                 .navigationTitle(phoneNumberViewModel.currentStep == .phoneNumber ? "Add Phone Number" : "Enter Verification Code")
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
                 .navigationBarTitleDisplayMode(.inline)
 #endif
                 .toolbar {

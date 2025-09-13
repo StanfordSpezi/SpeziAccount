@@ -24,9 +24,9 @@ struct AccountOverviewHeader: View {
                     Image(systemName: "person.crop.circle.fill")
                         .resizable()
                         .frame(width: 40, height: 40)
-                    #if os(macOS)
+                    #if os(macOS) || os(tvOS)
                         .foregroundColor(Color(.systemGray))
-                    #else
+                    #elseif !os(watchOS)
                         .foregroundColor(Color(.systemGray3))
                     #endif
                         .accessibilityHidden(true)

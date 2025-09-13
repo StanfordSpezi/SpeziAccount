@@ -11,6 +11,7 @@ import SwiftUI
 
 
 /// A `DatePicker` implementation tailored towards entry of a date of birth.
+@available(tvOS, unavailable)
 struct DateOfBirthPicker: View {
     private let title: LocalizedStringResource
     private let isRequired: Bool
@@ -73,7 +74,7 @@ struct DateOfBirthPicker: View {
                                 osDependentBackgroundRectangle
                                 #if os(macOS)
                                     .fill(Color(nsColor: .tertiarySystemFill))
-                                #else
+                                #elseif !os(watchOS)
                                     .fill(Color(uiColor: .tertiarySystemFill))
                                 #endif
                             )
@@ -124,6 +125,7 @@ struct DateOfBirthPicker: View {
 
 
 #if DEBUG
+@available(tvOS, unavailable)
 struct DateOfBirthPicker_Previews: PreviewProvider {
     struct Preview: View {
         @State private var date = Date.now
@@ -137,7 +139,7 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
                 DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
                     .padding(32)
             }
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
             .background(Color(uiColor: .systemGroupedBackground))
 #endif
         }
@@ -155,3 +157,4 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
     }
 }
 #endif
+

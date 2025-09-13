@@ -94,10 +94,12 @@ public struct PasswordResetView<SuccessView: View>: View {
             VerifiableTextField(userIdConfiguration.idType.localizedStringResource, text: $userId)
                 .validate(input: userId, rules: .nonEmpty)
                 .focused($isFocused)
+#if !os(tvOS) && !os(watchOS)
                 .textFieldStyle(.roundedBorder)
+#endif
                 .disableFieldAssistants()
                 .textContentType(userIdConfiguration.textContentType)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
                 .keyboardType(userIdConfiguration.keyboardType)
 #endif
                 .font(.title3)

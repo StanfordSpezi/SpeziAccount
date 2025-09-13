@@ -50,7 +50,9 @@ struct EntryViewTests: View {
             }
         }
             .navigationTitle("Entry Views")
+#if !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .toolbar {
                 Button("Dismiss") {
                     integerField = false

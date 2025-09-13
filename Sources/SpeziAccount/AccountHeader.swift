@@ -65,6 +65,10 @@ public struct AccountHeader: View {
                     .frame(width: 60, height: 60)
 #if os(macOS)
                     .foregroundColor(Color(nsColor: .systemGray))
+#elseif os(tvOS)
+                    .foregroundColor(Color(.systemGray))
+#elseif os(watchOS)
+                    .foregroundColor(Color(.gray))
 #else
                     .foregroundColor(Color(uiColor: .systemGray3))
 #endif
@@ -117,7 +121,7 @@ public struct AccountHeader: View {
         }
 }
 
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

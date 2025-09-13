@@ -343,35 +343,6 @@
     "Add Date of Birth" : {
 
     },
-    "ADD_DATE" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hinzufügen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Date"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agregar Fecha"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lägg till datum"
-          }
-        }
-      }
-    },
     "Already got an Account?" : {
       "localizations" : {
         "de" : {
@@ -419,35 +390,6 @@
     "Cancel" : {
 
     },
-    "CANCEL" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abbrechen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancelar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avbryt"
-          }
-        }
-      }
-    },
     "CHANGE_PASSWORD" : {
       "localizations" : {
         "de" : {
@@ -478,35 +420,6 @@
     },
     "Close" : {
 
-    },
-    "CLOSE" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schließen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Close"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerrar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stäng"
-          }
-        }
-      }
     },
     "CONFIRMATION_DISCARD_ADDITIONAL_INFO_TITLE" : {
       "localizations" : {
@@ -819,35 +732,6 @@
     "Done" : {
 
     },
-    "DONE" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fertig"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Done"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hecho"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klart"
-          }
-        }
-      }
-    },
     "Double Key" : {
       "localizations" : {
         "de" : {
@@ -872,35 +756,6 @@
     },
     "Edit" : {
 
-    },
-    "EDIT" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bearbeiten"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Editar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redigera"
-          }
-        }
-      }
     },
     "FOLLOW_UP_INFORMATION_COMPLETE" : {
       "localizations" : {

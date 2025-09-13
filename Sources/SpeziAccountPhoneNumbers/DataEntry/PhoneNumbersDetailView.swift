@@ -66,7 +66,7 @@ struct PhoneNumbersDetailView: View {
             }
             .navigationTitle("Phone Numbers")
             .navigationBarBackButtonHidden(!processingPhoneNumbers.isEmpty)
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .toolbar { toolbarContent }

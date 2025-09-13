@@ -56,6 +56,7 @@ import SwiftUI
 /// - ``AccountDeletionBehavior``
 /// - ``init(close:deletion:additionalSections:)``
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 public struct AccountOverview<AdditionalSections: View>: View {
     /// Defines the behavior for the close button.
     public enum CloseBehavior {
@@ -125,7 +126,7 @@ public struct AccountOverview<AdditionalSections: View>: View {
 }
 
 
-#if DEBUG && !os(macOS)
+#if DEBUG && !os(macOS) && !os(watchOS)
 #Preview {
     var details = AccountDetails()
     details.userId = "lelandstanford@stanford.edu"

@@ -13,6 +13,7 @@ import SwiftUI
 
 
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 struct AccountOverviewForm<AdditionalSections: View>: View {
     private let model: AccountOverviewFormViewModel
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
@@ -55,7 +56,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             }
         }
             .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-    #if !os(macOS)
+    #if !os(macOS) && !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
     #endif
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)

@@ -91,7 +91,7 @@ struct LoginSetupView<PasswordReset: View>: View {
                     .validate(input: userId, rules: .nonEmpty)
                     .focused($focusedField, equals: .userId)
                     .textContentType(userIdConfiguration.textContentType)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
                     .keyboardType(userIdConfiguration.keyboardType)
 #endif
                     .padding(.bottom, 0.5)
@@ -106,6 +106,8 @@ struct LoginSetupView<PasswordReset: View>: View {
                                 .bold()
 #if os(macOS)
                                 .foregroundColor(Color(nsColor: .systemGray))
+#elseif os(watchOS)
+                                .foregroundColor(Color(uiColor: .gray))
 #else
                                 .foregroundColor(Color(uiColor: .systemGray))
 #endif
@@ -123,7 +125,9 @@ struct LoginSetupView<PasswordReset: View>: View {
             }
                 .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
                 .disableFieldAssistants()
+#if !os(tvOS) && !os(watchOS)
                 .textFieldStyle(.roundedBorder)
+#endif
                 .font(.title3)
         }
     }
