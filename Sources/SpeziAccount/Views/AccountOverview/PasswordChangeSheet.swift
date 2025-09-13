@@ -46,22 +46,11 @@ struct PasswordChangeSheet: View {
             }
                 .viewStateAlert(state: $viewState)
                 .navigationTitle(Text("CHANGE_PASSWORD", bundle: .module))
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
                 .navigationBarTitleDisplayMode(.inline)
 #endif
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        AsyncButton(state: $viewState, action: submitPasswordChange) {
-                            Text("DONE", bundle: .module)
-                        }
-                    }
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Text("CANCEL", bundle: .module)
-                        }
-                    }
+                    toolbar
                 }
                 .onDisappear {
                     model.resetModelState() // clears modified details
@@ -99,6 +88,34 @@ struct PasswordChangeSheet: View {
         }
     }
 
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) {
+            AsyncButton(state: $viewState, action: submitPasswordChange) {
+                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                    Image(systemName: "checkmark")
+                        .accessibilityLabel("Done")
+                } else {
+                    Text("Done", bundle: .module)
+                }
+            }
+                .buttonStyleGlassProminent()
+        }
+        ToolbarItem(placement: .cancellationAction) {
+            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                Button(role: .cancel) {
+                    dismiss()
+                }
+            } else {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("Cancel", bundle: .module)
+                }
+            }
+        }
+    }
+    
 
     init(model: AccountOverviewFormViewModel, details accountDetails: AccountDetails) {
         self.model = model

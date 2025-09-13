@@ -15,22 +15,21 @@ import SwiftUI
 
 struct PhoneNumberEntryStep: View {
     @State private var viewState = ViewState.idle
-    @Environment(Account.self)
-    private var account
-    @Environment(PhoneNumberViewModel.self)
-    private var phoneNumberViewModel
-    @Environment(PhoneVerificationProvider.self)
-    private var phoneVerificationProvider
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(Account.self) private var account
+    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
     let onNext: () -> Void
 
    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack {
             Spacer()
+            PhoneNumberEntryField()
             Text("Enter your phone number and we'll send you a verification code to add the number to your account.")
                 .font(.caption)
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            PhoneNumberEntryField()
             Spacer()
             Spacer()
             AsyncButton(action: {
@@ -55,8 +54,10 @@ struct PhoneNumberEntryStep: View {
                 Text("Send Verification Message")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(phoneNumberViewModel.phoneNumber == nil)
+                .animation(.default, value: phoneNumberViewModel.phoneNumber == nil)
                 .viewStateAlert(state: $viewState)
         }
             .padding()

@@ -11,6 +11,7 @@ import SwiftUI
 
 
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 struct AccountKeyOverviewRow: View {
     private let accountDetails: AccountDetails
     private let accountKey: any AccountKey.Type
@@ -81,7 +82,7 @@ struct AccountKeyOverviewRow: View {
     }
 }
 
-#if DEBUG && !os(macOS)
+#if DEBUG && !os(macOS) && !os(watchOS)
 private let key = AccountKeys.genderIdentity
 #Preview {
     AccountDetailsReader { account, details in

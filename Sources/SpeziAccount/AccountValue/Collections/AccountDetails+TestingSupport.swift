@@ -23,7 +23,9 @@ extension AccountDetails {
         details.userId = userId
         details.name = name
         details.genderIdentity = genderIdentity
+        #if !os(tvOS)
         details.dateOfBirth = dateOfBirth
+        #endif
         return details
     }
 }

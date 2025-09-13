@@ -79,26 +79,34 @@ public struct FollowUpInfoSheet: View {
             .toolbar {
                 if cancelBehavior != .disabled {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(role: .destructive, action: onCancelPressed) {
-                            Text("CANCEL", bundle: .module)
+                        Group {
+                            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                                Button(role: .cancel) {
+                                    onCancelPressed()
+                                }
+                            } else {
+                                Button(role: cancelBehavior.actionRole, action: onCancelPressed) {
+                                    Text("Cancel", bundle: .module)
+                                }
+                            }
+                        }
+                        .confirmationDialog(
+                            cancelBehavior.confirmationMessage,
+                            isPresented: $presentingCancellationConfirmation,
+                            titleVisibility: .visible
+                        ) {
+                            AsyncButton(role: cancelBehavior.actionRole, state: $viewState) {
+                                try await account.accountService.logout()
+                                dismiss()
+                            } label: {
+                                cancelBehavior.actionLabel
+                            }
+
+                            Button(role: .cancel, action: {}) {
+                                Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
+                            }
                         }
                     }
-                }
-            }
-            .confirmationDialog(
-                cancelBehavior.confirmationMessage,
-                isPresented: $presentingCancellationConfirmation,
-                titleVisibility: .visible
-            ) {
-                AsyncButton(role: cancelBehavior.actionRole, state: $viewState) {
-                    try await account.accountService.logout()
-                    dismiss()
-                } label: {
-                    cancelBehavior.actionLabel
-                }
-
-                Button(role: .cancel, action: {}) {
-                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
                 }
             }
     }
@@ -121,7 +129,7 @@ public struct FollowUpInfoSheet: View {
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
@@ -205,12 +213,12 @@ extension FollowUpInfoSheet.CancelBehavior {
         }
     }
 
-    var actionRole: ButtonRole? {
+    var actionRole: ButtonRole {
         switch self {
         case .requireLogout:
             .destructive
         default:
-            nil
+            .cancel
         }
     }
 
@@ -219,7 +227,7 @@ extension FollowUpInfoSheet.CancelBehavior {
         case .requireLogout:
             Text("UP_LOGOUT", bundle: .module)
         default:
-            Text("CANCEL", bundle: .module)
+            Text("Cancel", bundle: .module)
         }
     }
 }

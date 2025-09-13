@@ -335,7 +335,7 @@ public struct AccountSetup<Header: View, Continue: View>: View {
                 Text(verbatim: "Continue")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyleGlassProminent(backup: .borderedProminent)
         })
             .previewWith {
                 AccountConfiguration(service: InMemoryAccountService(), activeDetails: details)

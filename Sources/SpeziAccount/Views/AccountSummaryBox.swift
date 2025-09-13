@@ -24,8 +24,10 @@ struct AccountSummaryBox: View {
                 Image(systemName: "person.crop.circle.fill")
                     .resizable()
                     .frame(maxWidth: 80, maxHeight: 80)
-#if os(macOS)
+#if os(macOS) || os(tvOS)
                     .foregroundColor(Color(.systemGray))
+#elseif os(watchOS)
+                    .foregroundColor(Color(.gray))
 #else
                     .foregroundColor(Color(uiColor: .systemGray3))
 #endif

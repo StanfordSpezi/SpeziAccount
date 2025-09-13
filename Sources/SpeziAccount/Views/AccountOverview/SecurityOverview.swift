@@ -12,6 +12,7 @@ import SwiftUI
 
 
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 struct SecurityOverview: View {
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
@@ -57,7 +58,7 @@ struct SecurityOverview: View {
         }
             .viewStateAlert(state: $viewState)
             .navigationTitle(Text("SIGN_IN_AND_SECURITY", bundle: .module))
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
             .onDisappear {
@@ -73,7 +74,7 @@ struct SecurityOverview: View {
 }
 
 
-#if DEBUG && !os(macOS)
+#if DEBUG && !os(macOS) && !os(watchOS)
 #Preview {
     NavigationStack {
         AccountDetailsReader { account, details in

@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+internal import os
 @preconcurrency import PhoneNumberKit
 import Spezi
 import SpeziAccount

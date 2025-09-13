@@ -39,7 +39,7 @@ private struct EntryView: DataEntryView {
     var body: some View {
         VerifiableTextField(configuration.userIdConfiguration.idType.localizedStringResource, text: $userId)
             .textContentType(configuration.userIdConfiguration.textContentType)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
             .keyboardType(configuration.userIdConfiguration.keyboardType)
 #endif
             .disableFieldAssistants()

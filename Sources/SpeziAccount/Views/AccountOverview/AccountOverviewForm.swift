@@ -13,6 +13,7 @@ import SwiftUI
 
 
 @available(macOS, unavailable)
+@available(watchOS, unavailable)
 struct AccountOverviewForm<AdditionalSections: View>: View {
     private let model: AccountOverviewFormViewModel
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
@@ -55,7 +56,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             }
         }
             .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
-    #if !os(macOS)
+    #if !os(macOS) && !os(tvOS)
             .navigationBarTitleDisplayMode(.inline)
     #endif
             .interactiveDismissDisabled(model.hasUnsavedChanges || isProcessing)
@@ -65,56 +66,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .toolbar {
-                if !isProcessing {
-                    ToolbarItem(placement: .cancellationAction) {
-                        if editMode?.wrappedValue.isEditing == true {
-                            Button {
-                                model.cancelEditAction(editMode: editMode)
-                            } label: {
-                                Text("CANCEL", bundle: .module)
-                            }
-                        } else {
-                            switch closeBehavior {
-                            case .disabled:
-                                EmptyView()
-                            case .showCloseButton:
-                                Button {
-                                    dismiss()
-                                } label: {
-                                    Text("CLOSE", bundle: .module)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if destructiveViewState == .idle {
-                    ToolbarItem(placement: .primaryAction) {
-                        AsyncButton(state: $viewState, action: editButtonAction) {
-                            if editMode?.wrappedValue.isEditing == true {
-                                Text("DONE", bundle: .module)
-                            } else {
-                                Text("EDIT", bundle: .module)
-                            }
-                        }
-                        .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
-                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
-                    }
-                }
-            }
-            .confirmationDialog(
-                Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
-                isPresented: $model.presentingCancellationDialog,
-                titleVisibility: .visible
-            ) {
-                Button(role: .destructive, action: {
-                    model.discardChangesAction(editMode: editMode)
-                }) {
-                    Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
-                }
-                Button(role: .cancel, action: {}) {
-                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
-                }
+                toolbar
             }
             .alert(Text("CONFIRMATION_LOGOUT", bundle: .module), isPresented: $model.presentingLogoutAlert) {
                 // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
@@ -136,7 +88,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
 
                 Button(role: .cancel, action: {}) {
-                    Text("CANCEL", bundle: .module)
+                    Text("Cancel", bundle: .module)
                 }
             }
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
@@ -157,12 +109,91 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
 
                 Button(role: .cancel, action: {}) {
-                    Text("CANCEL", bundle: .module)
+                    Text("Cancel", bundle: .module)
                 }
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
+    }
+    
+    @ViewBuilder
+    private var cancellationButton: some View {
+        if editMode?.wrappedValue.isEditing == true {
+            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                Button(role: .cancel) {
+                    model.cancelEditAction(editMode: editMode)
+                }
+            } else {
+                Button {
+                    model.cancelEditAction(editMode: editMode)
+                } label: {
+                    Text("Cancel", bundle: .module)
+                }
+            }
+        } else {
+            switch closeBehavior {
+            case .disabled:
+                EmptyView()
+            case .showCloseButton:
+                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                    Button(role: .close) {
+                        dismiss()
+                    }
+                } else {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Close", bundle: .module)
+                    }
+                }
+            }
+        }
+    }
+    
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        @Bindable var model = model
+        
+        if !isProcessing {
+            ToolbarItem(placement: .cancellationAction) {
+                cancellationButton
+                    .confirmationDialog(
+                        Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
+                        isPresented: $model.presentingCancellationDialog,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive, action: {
+                            model.discardChangesAction(editMode: editMode)
+                        }) {
+                            Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
+                        }
+                        Button(role: .cancel, action: {}) {
+                            Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
+                        }
+                    }
+            }
+        }
+
+        if destructiveViewState == .idle {
+            ToolbarItem(placement: .primaryAction) {
+                AsyncButton(state: $viewState, action: editButtonAction) {
+                    if editMode?.wrappedValue.isEditing == true {
+                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                            Image(systemName: "checkmark")
+                                .accessibilityLabel("Done")
+                        } else {
+                            Text("Done", bundle: .module)
+                        }
+                    } else {
+                        Text("Edit", bundle: .module)
+                    }
+                }
+                .if(editMode?.wrappedValue.isEditing == true) { $0.buttonStyleGlassProminent() }
+                .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
+                .environment(\.defaultErrorDescription, model.defaultErrorDescription)
+            }
+        }
     }
 
     init(

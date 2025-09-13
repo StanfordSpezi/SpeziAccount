@@ -32,7 +32,7 @@ public struct FixedWidthIntegerEntryView<Key: AccountKey>: DataEntryView where K
     public var body: some View {
         VerifiableTextField(Key.name, text: $text)
             .validate(input: text, rules: validationRules)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
             .keyboardType(.numberPad)
 #endif
             .disableFieldAssistants()

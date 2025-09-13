@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:6.2
 
 //
 // This source file is part of the Spezi open source project
@@ -19,6 +19,7 @@ let package = Package(
     platforms: [
         .iOS(.v17),
         .macOS(.v14), // we need to specify that to run macro tests as they only run on the host platform
+        .macCatalyst(.v17),
         .visionOS(.v1)
     ],
     products: [
@@ -85,6 +86,9 @@ let package = Package(
                 .target(name: "SpeziAccount"),
                 .product(name: "PhoneNumberKit", package: "PhoneNumberKit")
             ],
+            resources: [
+                .process("Resources")
+            ],
             swiftSettings: [.enableUpcomingFeature("ExistentialAny")],
             plugins: [] + swiftLintPlugin()
         ),
@@ -129,7 +133,7 @@ func swiftLintPlugin() -> [Target.PluginUsage] {
 
 func swiftLintPackage() -> [PackageDescription.Package.Dependency] {
     if ProcessInfo.processInfo.environment["SPEZI_DEVELOPMENT_SWIFTLINT"] != nil {
-        [.package(url: "https://github.com/realm/SwiftLint.git", from: "0.55.1")]
+        [.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins.git", from: "0.61.0")]
     } else {
         []
     }

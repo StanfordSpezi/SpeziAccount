@@ -56,7 +56,7 @@ struct LoginSetupView<PasswordReset: View>: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(!validation.allInputValid)
                 .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 .padding(.bottom, 12)
@@ -91,7 +91,7 @@ struct LoginSetupView<PasswordReset: View>: View {
                     .validate(input: userId, rules: .nonEmpty)
                     .focused($focusedField, equals: .userId)
                     .textContentType(userIdConfiguration.textContentType)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
                     .keyboardType(userIdConfiguration.keyboardType)
 #endif
                     .padding(.bottom, 0.5)
@@ -106,6 +106,8 @@ struct LoginSetupView<PasswordReset: View>: View {
                                 .bold()
 #if os(macOS)
                                 .foregroundColor(Color(nsColor: .systemGray))
+#elseif os(watchOS)
+                                .foregroundColor(Color(uiColor: .gray))
 #else
                                 .foregroundColor(Color(uiColor: .systemGray))
 #endif
@@ -123,7 +125,9 @@ struct LoginSetupView<PasswordReset: View>: View {
             }
                 .environment(\.validationConfiguration, .hideFailedValidationOnEmptySubmit)
                 .disableFieldAssistants()
+#if !os(tvOS) && !os(watchOS)
                 .textFieldStyle(.roundedBorder)
+#endif
                 .font(.title3)
         }
     }

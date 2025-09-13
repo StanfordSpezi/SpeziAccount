@@ -62,7 +62,7 @@ extension AccountKey where Value: PickerValue, Value.AllCases: RandomAccessColle
         CaseIterablePickerEntryView(\.genderIdentity, $genderIdentity)
     }
         .padding(32)
-#if !os(macOS)
+#if !os(macOS) && !os(tvOS) && !os(watchOS)
         .background(Color(.systemGroupedBackground))
 #endif
 }

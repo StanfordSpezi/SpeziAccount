@@ -127,7 +127,9 @@ public final class InMemoryAccountService: AccountService {
         \.password
         \.name
         \.genderIdentity
+#if !os(tvOS)
         \.dateOfBirth
+#endif
     }
 
     @Application(\.logger)
@@ -228,6 +230,7 @@ public final class InMemoryAccountService: AccountService {
         try await loadUser(user)
     }
 
+    // swiftlint:disable:next function_body_length
     public func signUp(with signupDetails: AccountDetails) async throws {
         logger.debug("Signing up user account \(signupDetails.userId)")
         try await Task.sleep(for: .milliseconds(500))
@@ -257,10 +260,13 @@ public final class InMemoryAccountService: AccountService {
             if let genderIdentity = signupDetails.genderIdentity {
                 storage.genderIdentity = genderIdentity
             }
+#if !os(tvOS)
             if let dateOfBirth = signupDetails.dateOfBirth {
                 storage.dateOfBirth = dateOfBirth
             }
+            #endif
         } else {
+#if !os(tvOS)
             storage = UserStorage(
                 userId: signupDetails.userId,
                 password: password,
@@ -268,6 +274,14 @@ public final class InMemoryAccountService: AccountService {
                 genderIdentity: signupDetails.genderIdentity,
                 dateOfBirth: signupDetails.dateOfBirth
             )
+#else
+            storage = UserStorage(
+                userId: signupDetails.userId,
+                password: password,
+                name: signupDetails.name,
+                genderIdentity: signupDetails.genderIdentity
+            )
+#endif
         }
 
         userIdToAccountId[signupDetails.userId] = storage.accountId
@@ -377,7 +391,9 @@ public final class InMemoryAccountService: AccountService {
         details.accountId = storage.accountId.uuidString
         details.name = storage.name
         details.genderIdentity = storage.genderIdentity
+        #if !os(tvOS)
         details.dateOfBirth = storage.dateOfBirth
+        #endif
         details.isNewUser = isNew
 
         if let userId = storage.userId {
@@ -492,8 +508,9 @@ extension InMemoryAccountService.UserStorage {
         self.password = modifiedDetails.password ?? password
         self.name = modifiedDetails.name ?? name
         self.genderIdentity = modifiedDetails.genderIdentity ?? genderIdentity
+#if !os(tvOS)
         self.dateOfBirth = modifiedDetails.dateOfBirth ?? dateOfBirth
-
+#endif
         // user Id cannot be removed!
 
         if removedKeys.name != nil {
@@ -502,9 +519,11 @@ extension InMemoryAccountService.UserStorage {
         if removedKeys.genderIdentity != nil {
             self.genderIdentity = nil
         }
+#if !os(tvOS)
         if removedKeys.dateOfBirth != nil {
             self.dateOfBirth = nil
         }
+#endif
     }
 }
 

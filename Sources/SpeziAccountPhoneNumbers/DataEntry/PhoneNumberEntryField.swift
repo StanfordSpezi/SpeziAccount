@@ -24,9 +24,8 @@ struct PhoneNumberEntryField: View {
         }
             .padding(6)
 #if !os(macOS)
-            .background(Color(uiColor: .secondarySystemBackground))
+            .background(RoundedRectangle(cornerRadius: 8).stroke(lineWidth: 0.5).foregroundStyle(.secondary.opacity(0.5)))
 #endif
-            .mask(RoundedRectangle(cornerRadius: 8))
             .sheet(isPresented: $presentSheet) {
                 CountryListSheet()
             }
@@ -47,7 +46,7 @@ struct PhoneNumberEntryField: View {
                 .padding([.top, .bottom], 7)
                 .frame(minWidth: 50)
                 .accessibilityLabel("Select Country Code")
-#if !os(macOS)
+#if !os(macOS) && !os(visionOS) && !os(tvOS)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color(uiColor: .tertiarySystemFill))
@@ -76,6 +75,7 @@ struct PhoneNumberEntryField: View {
                     message: "The entered phone number is invalid."
                 )
             ])
+            .environment(\.validationDebounce, .seconds(2))
             .textContentType(.telephoneNumber)
 #if !os(macOS)
             .keyboardType(.phonePad)

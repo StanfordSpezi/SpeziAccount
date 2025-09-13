@@ -24,7 +24,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -55,7 +55,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -83,7 +83,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -109,7 +109,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .both, config: .allRequired)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -195,7 +195,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .withIdentityProvider)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -210,7 +210,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -230,8 +230,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 3.0))
 
-        XCTAssertTrue(app.buttons["Done"].exists)
-        app.buttons["Done"].tap()
+        XCTAssertTrue(app.buttons["Cancel"].exists)
+        app.buttons["Cancel"].tap()
 
         XCTAssertTrue(app.buttons["Close"].waitForExistence(timeout: 2.0))
         app.buttons["Close"].tap()
@@ -245,7 +245,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -306,7 +306,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(config: .allRequired)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
         app.openSignup()
@@ -335,7 +335,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
         app.openSignup()
@@ -359,7 +359,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(serviceType: .mail)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
         app.openSignup()
@@ -413,7 +413,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(config: .allRequiredWithBio)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
         app.openSignup()
@@ -462,7 +462,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch()
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
         app.openSignup()
@@ -502,7 +502,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(config: .allRequiredWithBio, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -534,7 +534,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
 
@@ -553,7 +553,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.launch(credentials: .createAndSignIn, accountRequired: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         XCTAssertTrue(app.buttons["Account Logout"].exists)
         app.buttons["Account Logout"].tap()
@@ -578,7 +578,11 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         let confirmation = "This account information is required. If you abort, you will automatically be signed out!"
         XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.scrollViews.buttons["Logout"].exists)
-        XCTAssertTrue(app.buttons["Keep Editing"].exists)
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 {
+            // No cancel button displayed in iOS 26
+        } else {
+            XCTAssertTrue(app.buttons["Keep Editing"].exists)
+        }
 
         app.scrollViews.buttons["Logout"].tap()
 

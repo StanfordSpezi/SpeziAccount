@@ -138,6 +138,15 @@ public struct AccountValueConfiguration {
 
 
 extension Array where Element == ConfiguredAccountKey {
+    #if os(tvOS)
+    /// The default array of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
+    public static let `default`: [ConfiguredAccountKey] = [
+        .requires(\.userId),
+        .requires(\.password),
+        .requires(\.name),
+        .collects(\.genderIdentity)
+    ]
+    #else
     /// The default array of ``ConfiguredAccountKey``s that `SpeziAccount` provides.
     public static let `default`: [ConfiguredAccountKey] = [
         .requires(\.userId),
@@ -146,6 +155,7 @@ extension Array where Element == ConfiguredAccountKey {
         .collects(\.dateOfBirth),
         .collects(\.genderIdentity)
     ]
+    #endif
 }
 
 

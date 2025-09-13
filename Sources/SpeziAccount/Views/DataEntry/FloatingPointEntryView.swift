@@ -46,7 +46,7 @@ public struct FloatingPointEntryView<Key: AccountKey>: DataEntryView where Key.V
     public var body: some View {
         VerifiableTextField(Key.name, text: $text)
             .validate(input: text, rules: validationRules)
-#if !os(macOS)
+#if !os(macOS) && !os(watchOS)
             .keyboardType(.decimalPad)
 #endif
             .disableFieldAssistants()

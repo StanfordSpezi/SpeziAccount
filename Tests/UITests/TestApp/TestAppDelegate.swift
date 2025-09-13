@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import ArgumentParser
 import Foundation
 import Spezi
 import SpeziAccount
@@ -28,6 +29,16 @@ class TestAppDelegate: SpeziAppDelegate {
     var configuredValues: AccountValueConfiguration {
         switch features.configurationType {
         case .default:
+#if os(tvOS)
+            return [
+                .requires(\.userId),
+                .collects(\.name),
+                .collects(\.genderIdentity),
+                .supports(\.biography),
+                .supports(\.phoneNumbers),
+                .manual(\.invitationCode)
+            ]
+#else
             return [
                 .requires(\.userId),
                 .collects(\.name),
@@ -37,13 +48,13 @@ class TestAppDelegate: SpeziAppDelegate {
                 .supports(\.phoneNumbers),
                 .manual(\.invitationCode)
             ]
+#endif
         case .allRequired:
-#if os(visionOS)
+#if os(tvOS) || os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .collects(\.dateOfBirth),
                 .supports(\.biography),
                 .supports(\.phoneNumbers) // that's special case for checking follow up info on e.g. login
             ]
@@ -59,12 +70,11 @@ class TestAppDelegate: SpeziAppDelegate {
             ]
 #endif
         case .allRequiredWithBio:
-#if os(visionOS)
+#if os(tvOS) || os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),
                 .requires(\.genderIdentity),
-                .collects(\.dateOfBirth),
                 .requires(\.biography)
             ]
 #else

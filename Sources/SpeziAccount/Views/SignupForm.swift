@@ -87,14 +87,16 @@ public struct SignupForm<Header: View>: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        if signupDetailsBuilder.isEmpty {
-                            dismiss()
-                        } else {
-                            presentingCloseConfirmation = true
+                    if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                        Button(role: .close) {
+                            closeButtonAction()
                         }
-                    }) {
-                        Text("CLOSE", bundle: .module)
+                    } else {
+                        Button(action: {
+                            closeButtonAction()
+                        }) {
+                            Text("Close", bundle: .module)
+                        }
                     }
                 }
             }
@@ -117,7 +119,7 @@ public struct SignupForm<Header: View>: View {
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)
@@ -132,6 +134,14 @@ public struct SignupForm<Header: View>: View {
         self.signupClosure = signup
     }
 
+    
+    private func closeButtonAction() {
+        if signupDetailsBuilder.isEmpty {
+            dismiss()
+        } else {
+            presentingCloseConfirmation = true
+        }
+    }
 
     @MainActor
     private func signupButtonAction() async throws {

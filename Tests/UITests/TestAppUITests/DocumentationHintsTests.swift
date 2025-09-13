@@ -21,7 +21,7 @@ final class DocumentationHintsTests: XCTestCase {
         app.launch(serviceType: type)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.buttons[button].tap()
 

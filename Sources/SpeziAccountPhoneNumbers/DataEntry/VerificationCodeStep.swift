@@ -15,26 +15,21 @@ import SwiftUI
 
 struct VerificationCodeStep: View {
     @State private var viewState = ViewState.idle
-    @Environment(PhoneNumberViewModel.self)
-    private var phoneNumberViewModel
-    @Environment(Account.self)
-    private var account
-    @Environment(PhoneVerificationProvider.self)
-    private var phoneVerificationProvider
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(Account.self) private var account
+    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
+    
     let codeLength: Int
     let onVerify: () -> Void
     
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("Enter your \(codeLength) digit verification code you received via text message.")
-                .font(.caption)
-                .multilineTextAlignment(.center)
             OTCEntryView(codeLength: codeLength)
 #if !os(macOS)
                 .keyboardType(.numberPad)
 #endif
-            Spacer()
             AsyncButton(action: {
                 do {
                     guard let phoneNumber = phoneNumberViewModel.phoneNumber else {
@@ -57,8 +52,10 @@ struct VerificationCodeStep: View {
                 Text("Verify Phone Number")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(phoneNumberViewModel.verificationCode.count < codeLength)
+                .animation(.default, value: phoneNumberViewModel.phoneNumber == nil)
                 .viewStateAlert(state: $viewState)
         }
             .padding()

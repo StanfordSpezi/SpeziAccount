@@ -27,7 +27,7 @@ class PhoneNumberViewModel {
     
     init() {
         displayedPhoneNumber = ""
-        selectedRegion = "US"
+        selectedRegion = Locale.current.region?.identifier ?? "US"
         verificationCode = ""
         currentStep = .phoneNumber
         presentSheet = false
@@ -38,7 +38,7 @@ class PhoneNumberViewModel {
     func resetState() {
         self.phoneNumber = nil
         self.displayedPhoneNumber = ""
-        self.selectedRegion = "US"
+        self.selectedRegion = Locale.current.region?.identifier ?? "US"
         self.verificationCode = ""
         self.currentStep = .phoneNumber
         self.presentSheet = false
@@ -47,14 +47,27 @@ class PhoneNumberViewModel {
     
     func countryFlag(for country: String) -> String {
         let flagBase = UnicodeScalar("🇦").value - UnicodeScalar("A").value
-        return country
+        let countryFlag = country
             .uppercased()
             .unicodeScalars
             .compactMap { UnicodeScalar(flagBase + $0.value)?.description }
             .joined()
+        guard countryFlag != "🇕🇕🇖" else {
+            return "🏳️"
+        }
+        
+        return countryFlag
+    }
+    
+    func localizedName(for country: String) -> String {
+        if let countryName = Locale.current.localizedString(forRegionCode: country), countryName != "world" {
+            countryName
+        } else {
+            country
+        }
     }
     
     func formatPhoneNumberForDisplay(_ phoneNumber: PhoneNumber) -> String {
-        phoneNumberUtility.format(phoneNumber, toType: .national)
+        "+\(phoneNumber.countryCode) " + phoneNumberUtility.format(phoneNumber, toType: .national)
     }
 }

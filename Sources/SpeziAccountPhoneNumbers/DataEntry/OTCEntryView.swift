@@ -14,12 +14,10 @@ import SwiftUI
 struct OTCEntryView: View {
     @State private var viewState = ViewState.idle
     @FocusState private var isTextFieldFocused: Bool
-    @Environment(Account.self)
-    private var account
-    @Environment(PhoneVerificationProvider.self)
-    private var phoneVerificationProvider
-    @Environment(PhoneNumberViewModel.self)
-    private var phoneNumberViewModel
+    @Environment(Account.self) private var account
+    @Environment(PhoneVerificationProvider.self) private var phoneVerificationProvider
+    @Environment(PhoneNumberViewModel.self) private var phoneNumberViewModel
+    @Environment(\.sizeCategory) var sizeCategory
     private let codeLength: Int
     @State private var verificationCode = ""
     @State private var resendTimeOut = 30
@@ -32,6 +30,16 @@ struct OTCEntryView: View {
                 .onAppear {
                     isTextFieldFocused = true
                 }
+                .onTapGesture {
+                    isTextFieldFocused = true
+                }
+            if (sizeCategory < .accessibilityExtraExtraExtraLarge && resendTimeOut <= 0) || sizeCategory < .accessibilityExtraLarge {
+                Text("Enter your \(codeLength) digit verification code you received via text message.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical)
+            }
             Spacer()
             resendSection
         }
@@ -45,12 +53,9 @@ struct OTCEntryView: View {
 
     private var resendSection: some View {
         VStack {
-            Text("Didn't receive a verification code?")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            if resendTimeOut > 0 {
-                Text("Please wait for \(resendTimeOut) seconds to resend again.")
-                    .font(.caption2)
+            if sizeCategory < .accessibilityExtraLarge {
+                Text("Didn't receive a verification code?")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             AsyncButton(action: {
@@ -77,6 +82,11 @@ struct OTCEntryView: View {
             }
             .disabled((phoneNumberViewModel.phoneNumber == nil) || resendTimeOut > 0)
             .viewStateAlert(state: $viewState)
+            if resendTimeOut > 0 {
+                Text("Please wait for \(resendTimeOut) seconds to resend again.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
     

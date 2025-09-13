@@ -17,14 +17,18 @@ extension XCUIApplication {
     ///   - file: The file where this is executed.
     ///   - line: The line where this is executed.
     public func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
+        #if os(visionOS)
+        buttons["Gender Identity, \(from)"].tap()
+        #else
         staticTexts[from].tap()
+        #endif
         XCTAssertTrue(buttons[to].waitForExistence(timeout: 0.5), "Couldn't locate gender identity dropdown", file: file, line: line)
         buttons[to].tap()
     }
     
     /// Change the date of birth.
     ///
-    /// Typically it will select the first day of the previous month. This method will make sure to add a date of birth is none is added yet.
+    /// Typically it will select the first day of the previous month. This method will make sure to add a date of birth if none is added yet.
     public func changeDateOfBirth() {
         // add date button is presented if date is not required or doesn't exists yet
         if buttons["Add Date of Birth"].exists { // uses the accessibility label
@@ -38,10 +42,13 @@ extension XCUIApplication {
         XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0), "Couldn't find 'Previous Month' button")
         datePickers.buttons["Previous Month"].tap()
 
-        usleep(500_000)
-        datePickers.collectionViews.buttons.element(boundBy: 0).tap()
-
-        // close the date picker again
-        staticTexts["Date of Birth"].tap()
+        // Tap the first button that contains "Friday" in its label
+        let fridayButton = buttons.containing(NSPredicate(format: "label CONTAINS[c] %@", "Friday")).firstMatch
+        XCTAssertTrue(fridayButton.waitForExistence(timeout: 1.0), "Couldn't find a button containing 'Friday'")
+        fridayButton.tap()
+        
+        if buttons["PopoverDismissRegion"].waitForExistence(timeout: 0.5) {
+            buttons["PopoverDismissRegion"].tap()
+        }
     }
 }
