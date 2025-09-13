@@ -65,45 +65,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             .receiveValidation(in: $validation)
             .focused($isFocused)
             .toolbar {
-                if !isProcessing {
-                    ToolbarItem(placement: .cancellationAction) {
-                        cancellationButton
-                            .confirmationDialog(
-                                Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
-                                isPresented: $model.presentingCancellationDialog,
-                                titleVisibility: .visible
-                            ) {
-                                Button(role: .destructive, action: {
-                                    model.discardChangesAction(editMode: editMode)
-                                }) {
-                                    Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
-                                }
-                                Button(role: .cancel, action: {}) {
-                                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
-                                }
-                            }
-                    }
-                }
-
-                if destructiveViewState == .idle {
-                    ToolbarItem(placement: .primaryAction) {
-                        AsyncButton(state: $viewState, action: editButtonAction) {
-                            if editMode?.wrappedValue.isEditing == true {
-                                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
-                                    Image(systemName: "checkmark")
-                                        .accessibilityLabel("Done")
-                                } else {
-                                    Text("Done", bundle: .module)
-                                }
-                            } else {
-                                Text("Edit", bundle: .module)
-                            }
-                        }
-                        .if(editMode?.wrappedValue.isEditing == true) { $0.buttonStyleGlassProminent() }
-                        .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
-                        .environment(\.defaultErrorDescription, model.defaultErrorDescription)
-                    }
-                }
+                toolbar
             }
             .alert(Text("CONFIRMATION_LOGOUT", bundle: .module), isPresented: $model.presentingLogoutAlert) {
                 // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
@@ -184,6 +146,51 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                         Text("Close", bundle: .module)
                     }
                 }
+            }
+        }
+    }
+    
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        @Bindable var model = model
+        
+        if !isProcessing {
+            ToolbarItem(placement: .cancellationAction) {
+                cancellationButton
+                    .confirmationDialog(
+                        Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
+                        isPresented: $model.presentingCancellationDialog,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive, action: {
+                            model.discardChangesAction(editMode: editMode)
+                        }) {
+                            Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
+                        }
+                        Button(role: .cancel, action: {}) {
+                            Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
+                        }
+                    }
+            }
+        }
+
+        if destructiveViewState == .idle {
+            ToolbarItem(placement: .primaryAction) {
+                AsyncButton(state: $viewState, action: editButtonAction) {
+                    if editMode?.wrappedValue.isEditing == true {
+                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                            Image(systemName: "checkmark")
+                                .accessibilityLabel("Done")
+                        } else {
+                            Text("Done", bundle: .module)
+                        }
+                    } else {
+                        Text("Edit", bundle: .module)
+                    }
+                }
+                .if(editMode?.wrappedValue.isEditing == true) { $0.buttonStyleGlassProminent() }
+                .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
+                .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }
         }
     }

@@ -38,6 +38,7 @@ struct PhoneNumbersDetailView: View {
                         },
                         label: {
                             Image(systemName: "trash.circle.fill")
+                                .accessibilityLabel("Delete Phone Number")
                                 .resizable()
                                 .foregroundStyle(.red)
                                 .frame(width: 32, height: 32)

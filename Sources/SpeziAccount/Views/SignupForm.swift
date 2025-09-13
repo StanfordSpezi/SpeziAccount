@@ -188,4 +188,3 @@ public struct SignupForm<Header: View>: View {
         }
 }
 #endif
-
