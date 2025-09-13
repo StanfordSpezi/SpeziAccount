@@ -21,7 +21,7 @@ final class EntryViewsTests: XCTestCase {
         app.launch()
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         XCTAssertTrue(app.buttons["Entry Views"].exists)
         app.buttons["Entry Views"].tap()

@@ -25,7 +25,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -54,11 +54,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
 
         XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
@@ -91,7 +91,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -116,11 +116,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
 
         #if os(visionOS)
@@ -149,11 +149,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
 
         // no changes, should just leave edit mode
@@ -210,11 +210,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
 
         // remove image on the list
@@ -250,11 +250,11 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
-        XCTAssertTrue(app.buttons["Edit"].exists)
+        XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
 
         // remove image on the list
@@ -286,7 +286,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -349,7 +349,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn, noName: true)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -380,7 +380,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -417,12 +417,12 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
     }
     
     @MainActor
-    func testAddPhoneNumber() throws {
+    func testAddPhoneNumber() async throws {
         let app = XCUIApplication()
         app.launch(credentials: .createAndSignIn)
         
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
         
@@ -433,7 +433,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        try app.addPhoneNumber("6502345678", otc: "012345")
+        try await app.addPhoneNumber("6502345678", otc: "012345")
         
         XCTAssertTrue(app.staticTexts["+1 (650) 234-5678"].waitForExistence(timeout: 2.0))
         
@@ -447,7 +447,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
         
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
         
@@ -458,7 +458,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        try app.addPhoneNumber("6502345678", otc: "012345")
+        try await app.addPhoneNumber("6502345678", otc: "012345")
         
         XCTAssertTrue(app.staticTexts["+1 (650) 234-5678"].waitForExistence(timeout: 2.0))
         
@@ -476,12 +476,12 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
     }
     
     @MainActor
-    func testAddPhoneNumberWithWrongOTC() throws {
+    func testAddPhoneNumberWithWrongOTC() async throws {
         let app = XCUIApplication()
         app.launch(credentials: .createAndSignIn)
         
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
         
@@ -492,7 +492,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.buttons["Phone Numbers"].exists)
         app.buttons["Phone Numbers"].tap()
         
-        try app.addPhoneNumber("6502345678", otc: "123456")
+        try await app.addPhoneNumber("6502345678", otc: "123456")
         
         XCTAssertTrue(app.staticTexts["Failed to verify phone number. Please check your code and try again."].exists)
     }
@@ -503,7 +503,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -522,7 +522,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(config: .keysWithOptions, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         XCTAssertTrue(
             app.staticTexts["Set initial details!"].waitForExistence(timeout: 2.0),
@@ -540,7 +540,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.launch(config: .withSetupView, credentials: .createAndSignIn)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
-        XCTAssertTrue(app.staticTexts["Spezi Account"].exists)
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountOverview()
 
@@ -563,7 +563,7 @@ extension XCUIApplication {
     }
 #endif
     
-    fileprivate func addPhoneNumber(_ phoneNumber: String, otc: String) throws {
+    fileprivate func addPhoneNumber(_ phoneNumber: String, otc: String) async throws {
         XCTAssertTrue(navigationBars.buttons["Add Phone Number"].exists)
         navigationBars.buttons["Add Phone Number"].tap()
         
@@ -593,7 +593,9 @@ extension XCUIApplication {
         
         codeField.typeText(otc)
         
-        XCTAssertTrue(buttons["Verify Phone Number"].exists)
+        try await Task.sleep(for: .seconds(1.0))
+        
+        XCTAssertTrue(buttons["Verify Phone Number"].waitForExistence(timeout: 2.0))
         buttons["Verify Phone Number"].tap()
     }
 }
