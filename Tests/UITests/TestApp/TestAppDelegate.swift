@@ -29,7 +29,7 @@ class TestAppDelegate: SpeziAppDelegate {
     var configuredValues: AccountValueConfiguration {
         switch features.configurationType {
         case .default:
-#if os(tvOS)
+#if os(tvOS) || os(visionOS)
             return [
                 .requires(\.userId),
                 .collects(\.name),
@@ -50,7 +50,7 @@ class TestAppDelegate: SpeziAppDelegate {
             ]
 #endif
         case .allRequired:
-#if os(tvOS)
+#if os(tvOS) || os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),
@@ -70,7 +70,7 @@ class TestAppDelegate: SpeziAppDelegate {
             ]
 #endif
         case .allRequiredWithBio:
-#if os(tvOS)
+#if os(tvOS) || os(visionOS)
             return [
                 .requires(\.userId),
                 .requires(\.name),

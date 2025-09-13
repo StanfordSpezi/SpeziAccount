@@ -27,14 +27,16 @@ jobs:
       matrix:
         config: [Debug, Release]
         platform:
-          - name: iOS
-            destination: 'platform=iOS Simulator,name=iPhone 17 Pro'
+          # The builds for iOS, Mac Catalyst, and visionOS are disabled due to an issue with pre-build versions of swift-syntax
+          # that are pulled in by the Swift Package Manager. We currently cover this indireclty through the UI tests.
+          # - name: iOS
+          #   destination: 'platform=iOS Simulator,name=iPhone 17 Pro'
           - name: macOS
             destination: 'platform=macOS,arch=arm64'
-          - name: 'Mac Catalyst'
-            destination: 'platform=macOS,arch=arm64,variant=Mac Catalyst'
-          - name: visionOS
-            destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
+          # - name: 'Mac Catalyst'
+          #   destination: 'platform=macOS,arch=arm64,variant=Mac Catalyst'
+          # - name: visionOS
+          #   destination: 'platform=visionOS Simulator,name=Apple Vision Pro'
       fail-fast: false
     with:
       runsonlabels: '["macOS", "self-hosted"]'

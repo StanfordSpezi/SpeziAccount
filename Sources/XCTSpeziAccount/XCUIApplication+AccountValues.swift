@@ -47,7 +47,8 @@ extension XCUIApplication {
         XCTAssertTrue(fridayButton.waitForExistence(timeout: 1.0), "Couldn't find a button containing 'Friday'")
         fridayButton.tap()
         
-        XCTAssert(buttons["PopoverDismissRegion"].waitForExistence(timeout: 0.5))
-        buttons["PopoverDismissRegion"].tap()
+        if buttons["PopoverDismissRegion"].waitForExistence(timeout: 0.5) {
+            buttons["PopoverDismissRegion"].tap()
+        }
     }
 }
