@@ -20,8 +20,8 @@ extension View {
     
     @ViewBuilder
     private func buttonStyleGlass<B: PrimitiveButtonStyle>(backup: B? = nil, buttonStyle: B.Type = B.self) -> some View {
-        #if swift(>=6.2)
-        if #available(iOS 26, macOS 26, macCatalyst 26, tvOS 26, watchOS 26, visionOS 26, *) {
+        #if swift(>=6.2) && !os(visionOS)
+        if #available(iOS 26, macOS 26, macCatalyst 26, tvOS 26, watchOS 26, *) {
             self.buttonStyle(.glass)
         } else if let backup {
             self.buttonStyle(backup)
@@ -47,8 +47,8 @@ extension View {
     
     @ViewBuilder
     private func buttonStyleGlassProminent<B: PrimitiveButtonStyle>(backup: B? = nil, buttonStyle: B.Type = B.self) -> some View {
-        #if swift(>=6.2)
-        if #available(iOS 26, macOS 26, macCatalyst 26, tvOS 26, watchOS 26, visionOS 26, *) {
+        #if swift(>=6.2) && !os(visionOS)
+        if #available(iOS 26, macOS 26, macCatalyst 26, tvOS 26, watchOS 26, *) {
             self.buttonStyle(.glassProminent)
         } else if let backup {
             self.buttonStyle(backup)

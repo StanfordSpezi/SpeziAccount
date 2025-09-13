@@ -60,12 +60,13 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.buttons["Cancel"].waitForExistence(timeout: 2.0))
 
-        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
 #if !os(visionOS)
-        // on visionOS we are currently unable to tap on date pickers :)
+        // On visionOS we are currently unable select the picker with the "Male" value.
+        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+        // On visionOS we are currently unable interact with date pickers.
         app.changeDateOfBirth()
 #endif
-
+        
         XCTAssertTrue(app.buttons["Add Biography"].exists)
         app.buttons["Add Biography"].tap()
 
@@ -75,8 +76,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         XCTAssertTrue(app.navigationBars.buttons["Done"].exists)
         app.navigationBars.buttons["Done"].tap()
 
+#if !os(visionOS)
         XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].waitForExistence(timeout: 4.0))
-        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
+#endif
+        XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].waitForExistence(timeout: 4.0))
     }
 
     @MainActor
@@ -138,7 +141,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
     }
 
     @MainActor
-    func testEditDiscard() {
+    func testEditDiscard() throws {
         let app = XCUIApplication()
         app.launch(credentials: .createAndSignIn)
 
@@ -157,14 +160,30 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         XCTAssertTrue(app.buttons["Edit"].waitForExistence(timeout: 2.0))
         app.buttons["Edit"].tap()
-        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+        
+#if os(visionOS)
+        // On visionOS, we can't select a selector here, other values work, see other tests.
+        XCTAssertTrue(app.buttons["Add Biography"].exists)
+        app.buttons["Add Biography"].tap()
 
+        XCTAssertTrue(app.textFields["Biography"].exists)
+        try app.textFields["Biography"].enter(value: "Hello Stanford")
+#else
+        app.updateGenderIdentity(from: "Male", to: "Choose not to answer")
+#endif
+        
         XCTAssertTrue(app.buttons["Cancel"].exists)
         app.buttons["Cancel"].tap()
 
 
         let confirmation = "Are you sure you want to discard your changes?"
         XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
+        
+#if os(visionOS)
+        // "We are ending the test here on visionOS. We can not dismiss a popover on visionOS using UI tests ...
+        return
+#endif
+        
         if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 {
             // Dismiss popover.
             app.windows.element(boundBy: 1).tap()
@@ -198,6 +217,13 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         // remove image on the list
         let removeButton = app.images.matching(identifier: "remove").firstMatch
         XCTAssertTrue(removeButton.waitForExistence(timeout: 2.0))
+        
+#if os(visionOS)
+        // "We are ending the test here on visionOS, it is not possible to tap the image and the "-" button.
+        // At this time, it also has no accessibility label on visionOS.
+        return
+#endif
+        
         removeButton.tap()
         XCTAssertTrue(app.buttons["Delete"].waitForExistence(timeout: 0.5))
         app.buttons["Delete"].tap()
@@ -231,6 +257,13 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         // remove image on the list
         let removeButton = app.images.matching(identifier: "remove").firstMatch
         XCTAssertTrue(removeButton.waitForExistence(timeout: 2.0))
+        
+#if os(visionOS)
+        // "We are ending the test here on visionOS, it is not possible to tap the image and the "-" button.
+        // At this time, it also has no accessibility label on visionOS.
+        return
+#endif
+        
         removeButton.tap()
         XCTAssertTrue(app.buttons["Delete"].waitForExistence(timeout: 0.5))
         app.buttons["Delete"].tap()

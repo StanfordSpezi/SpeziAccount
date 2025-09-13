@@ -17,14 +17,18 @@ extension XCUIApplication {
     ///   - file: The file where this is executed.
     ///   - line: The line where this is executed.
     public func updateGenderIdentity(from: String, to: String, file: StaticString = #filePath, line: UInt = #line) {
+        #if os(visionOS)
+        buttons["Gender Identity, \(from)"].tap()
+        #else
         staticTexts[from].tap()
+        #endif
         XCTAssertTrue(buttons[to].waitForExistence(timeout: 0.5), "Couldn't locate gender identity dropdown", file: file, line: line)
         buttons[to].tap()
     }
     
     /// Change the date of birth.
     ///
-    /// Typically it will select the first day of the previous month. This method will make sure to add a date of birth is none is added yet.
+    /// Typically it will select the first day of the previous month. This method will make sure to add a date of birth if none is added yet.
     public func changeDateOfBirth() {
         // add date button is presented if date is not required or doesn't exists yet
         if buttons["Add Date of Birth"].exists { // uses the accessibility label

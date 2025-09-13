@@ -46,7 +46,7 @@ struct PhoneNumberEntryField: View {
                 .padding([.top, .bottom], 7)
                 .frame(minWidth: 50)
                 .accessibilityLabel("Select Country Code")
-#if !os(macOS)
+#if !os(macOS) && !os(visionOS)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color(uiColor: .tertiarySystemFill))
