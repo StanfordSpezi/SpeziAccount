@@ -157,4 +157,3 @@ struct DateOfBirthPicker_Previews: PreviewProvider {
     }
 }
 #endif
-

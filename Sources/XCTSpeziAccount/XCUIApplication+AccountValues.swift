@@ -51,4 +51,3 @@ extension XCUIApplication {
         buttons["PopoverDismissRegion"].tap()
     }
 }
-

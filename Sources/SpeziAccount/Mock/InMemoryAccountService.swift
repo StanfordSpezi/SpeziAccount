@@ -230,6 +230,7 @@ public final class InMemoryAccountService: AccountService {
         try await loadUser(user)
     }
 
+    // swiftlint:disable:next function_body_length
     public func signUp(with signupDetails: AccountDetails) async throws {
         logger.debug("Signing up user account \(signupDetails.userId)")
         try await Task.sleep(for: .milliseconds(500))
