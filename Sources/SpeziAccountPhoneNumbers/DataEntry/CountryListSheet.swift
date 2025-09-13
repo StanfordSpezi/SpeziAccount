@@ -57,19 +57,7 @@ struct CountryListSheet: View {
 #endif
                 .navigationTitle("Select Country Code")
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
-                            Button(role: .cancel) {
-                                dismiss()
-                            }
-                        } else {
-                            Button {
-                                dismiss()
-                            } label: {
-                                Text("Cancel")
-                            }
-                        }
-                    }
+                    toolbar
                 }
         }
         .task {
@@ -91,6 +79,23 @@ struct CountryListSheet: View {
         .searchable(text: $searchCountry, placement: .navigationBarDrawer, prompt: "Your country")
 #endif
 #endif
+    }
+    
+    @ToolbarContentBuilder
+    private var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                Button(role: .cancel) {
+                    dismiss()
+                }
+            } else {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                }
+            }
+        }
     }
 }
 
