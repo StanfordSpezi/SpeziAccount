@@ -2,7 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "shouldTranslate" : false
     },
     "%lld numbers" : {
       "comment" : "A label displaying the number of phone numbers a user has linked to their account.",

@@ -51,7 +51,9 @@ struct CountryListSheet: View {
 #if !os(tvOS)
                 .listStyle(.inset)
                 .presentationDetents([.medium, .large])
+#if !os(macOS)
                 .navigationBarTitleDisplayMode(.inline)
+#endif
 #endif
                 .navigationTitle("Select Country Code")
                 .toolbar {
@@ -81,9 +83,13 @@ struct CountryListSheet: View {
             searchCountry = ""
         }
 #if !os(tvOS)
+#if os(macOS)
+        .searchable(text: $searchCountry, prompt: "Your country")
+#else
         // Placement would be great to be on the toolbar level; unfortunately crashes in the current hierachy of sheets in the main usage.
         // Interestingly doesn't crash in the preview. Needs to be checked with new iOS releases.
         .searchable(text: $searchCountry, placement: .navigationBarDrawer, prompt: "Your country")
+#endif
 #endif
     }
 }
