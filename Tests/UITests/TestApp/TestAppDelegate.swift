@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: MIT
 //
 
+import ArgumentParser
 import Foundation
 import Spezi
 import SpeziAccount

@@ -31,15 +31,21 @@ struct PhoneNumbersDetailView: View {
     var body: some View {
         List {
             ForEach(account.details?.phoneNumbers ?? [], id: \.self) { phoneNumber in
-                ListRow("Phone") {
-                    HStack {
-                        Text(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber))
-                        Button("Delete", role: .destructive) {
+                ListRow(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber)) {
+                    Button(
+                        action: {
                             phoneNumberToDelete = phoneNumber
+                        },
+                        label: {
+                            Image(systemName: "trash.circle.fill")
+                                .resizable()
+                                .foregroundStyle(.red)
+                                .frame(width: 32, height: 32)
+                                .padding(-8)
                         }
-                            .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))
-                            .disabled(processingPhoneNumbers.contains(phoneNumber))
-                    }
+                    )
+                        .processingOverlay(isProcessing: processingPhoneNumbers.contains(phoneNumber))
+                        .disabled(processingPhoneNumbers.contains(phoneNumber))
                 }
             }
         }
@@ -94,8 +100,14 @@ struct PhoneNumbersDetailView: View {
                 get: { phoneNumberToDelete != nil },
                 set: { if !$0 { phoneNumberToDelete = nil } }
             )) {
-                Button("Cancel", role: .cancel) {
-                    phoneNumberToDelete = nil
+                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                    Button(role: .cancel) {
+                        phoneNumberToDelete = nil
+                    }
+                } else {
+                    Button("Cancel", role: .cancel) {
+                        phoneNumberToDelete = nil
+                    }
                 }
                 Button("Delete", role: .destructive) {
                     if let phoneNumber = phoneNumberToDelete {

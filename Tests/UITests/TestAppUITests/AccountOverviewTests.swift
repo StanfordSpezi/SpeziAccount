@@ -13,9 +13,9 @@ import XCTSpeziAccount
 
 // swiftlint:disable file_length
 final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_body_length
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-
+    override func setUp() async throws {
+        try await super.setUp()
+        
         continueAfterFailure = false
     }
 
@@ -119,6 +119,8 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         #if os(visionOS)
         app.scrollUpInOverview()
+        #else
+        app.swipeUp()
         #endif
 
         XCTAssertTrue(app.buttons["Delete Account"].waitForExistence(timeout: 0.5))
@@ -163,8 +165,13 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         let confirmation = "Are you sure you want to discard your changes?"
         XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
-        XCTAssertTrue(app.buttons["Keep Editing"].exists)
-        app.buttons["Keep Editing"].tap()
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 {
+            // Dismiss popover.
+            app.windows.element(boundBy: 1).tap()
+        } else {
+            XCTAssertTrue(app.buttons["Keep Editing"].exists)
+            app.buttons["Keep Editing"].tap()
+        }
 
         XCTAssertTrue(app.buttons["Cancel"].exists)
         app.buttons["Cancel"].tap()
@@ -392,10 +399,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         
         try app.addPhoneNumber("6502345678", otc: "012345")
         
-        XCTAssertTrue(app.staticTexts["(650) 234-5678"].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts["+1 (650) 234-5678"].waitForExistence(timeout: 2.0))
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
-        XCTAssertTrue(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertTrue(app.staticTexts["+1 (650) 234-5678"].exists)
     }
 
     @MainActor
@@ -427,10 +434,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         app.alerts.buttons["Delete"].tap()
 
         try await Task.sleep(for: .seconds(2))
-        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertFalse(app.staticTexts["+1 (650) 234-5678"].exists)
         
         app.navigationBars.buttons.firstMatch.tap() // navigate back
-        XCTAssertFalse(app.staticTexts["(650) 234-5678"].exists)
+        XCTAssertFalse(app.staticTexts["+1 (650) 234-5678"].exists)
     }
     
     @MainActor
@@ -529,7 +536,9 @@ extension XCUIApplication {
         buttons["Select Country Code"].tap()
         XCTAssertTrue(searchFields["Your country"].exists)
         
-        let countryField = searchFields["Your country"]
+        let countryField = searchFields["Your country"].firstMatch
+        XCTAssertTrue(countryField.waitForExistence(timeout: 2.0))
+        countryField.tap()
         countryField.tap()
         countryField.typeText("US")
         

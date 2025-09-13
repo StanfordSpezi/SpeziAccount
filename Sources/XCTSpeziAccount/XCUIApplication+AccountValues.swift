@@ -42,6 +42,6 @@ extension XCUIApplication {
         datePickers.collectionViews.buttons.element(boundBy: 0).tap()
 
         // close the date picker again
-        staticTexts["Date of Birth"].tap()
+        buttons["PopoverDismissRegion"].tap()
     }
 }

@@ -47,8 +47,14 @@ struct SingleEditView<Key: AccountKey>: View {
             .receiveValidation(in: $validation)
             .toolbar {
                 AsyncButton(state: $viewState, action: submitChange) {
-                    Text("DONE", bundle: .module)
+                    if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                        Image(systemName: "checkmark")
+                            .accessibilityLabel("Done")
+                    } else {
+                        Text("Done", bundle: .module)
+                    }
                 }
+                    .buttonStyleGlassProminent()
                     .disabled(disabledDone)
                     .environment(\.defaultErrorDescription, model.defaultErrorDescription)
             }

@@ -67,24 +67,21 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             .toolbar {
                 if !isProcessing {
                     ToolbarItem(placement: .cancellationAction) {
-                        if editMode?.wrappedValue.isEditing == true {
-                            Button {
-                                model.cancelEditAction(editMode: editMode)
-                            } label: {
-                                Text("CANCEL", bundle: .module)
-                            }
-                        } else {
-                            switch closeBehavior {
-                            case .disabled:
-                                EmptyView()
-                            case .showCloseButton:
-                                Button {
-                                    dismiss()
-                                } label: {
-                                    Text("CLOSE", bundle: .module)
+                        cancellationButton
+                            .confirmationDialog(
+                                Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
+                                isPresented: $model.presentingCancellationDialog,
+                                titleVisibility: .visible
+                            ) {
+                                Button(role: .destructive, action: {
+                                    model.discardChangesAction(editMode: editMode)
+                                }) {
+                                    Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
+                                }
+                                Button(role: .cancel, action: {}) {
+                                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
                                 }
                             }
-                        }
                     }
                 }
 
@@ -92,28 +89,20 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: editButtonAction) {
                             if editMode?.wrappedValue.isEditing == true {
-                                Text("DONE", bundle: .module)
+                                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                                    Image(systemName: "checkmark")
+                                        .accessibilityLabel("Done")
+                                } else {
+                                    Text("Done", bundle: .module)
+                                }
                             } else {
-                                Text("EDIT", bundle: .module)
+                                Text("Edit", bundle: .module)
                             }
                         }
+                        .if(editMode?.wrappedValue.isEditing == true) { $0.buttonStyleGlassProminent() }
                         .disabled(editMode?.wrappedValue.isEditing == true && validation.isDisplayingValidationErrors)
                         .environment(\.defaultErrorDescription, model.defaultErrorDescription)
                     }
-                }
-            }
-            .confirmationDialog(
-                Text("CONFIRMATION_DISCARD_CHANGES_TITLE", bundle: .module),
-                isPresented: $model.presentingCancellationDialog,
-                titleVisibility: .visible
-            ) {
-                Button(role: .destructive, action: {
-                    model.discardChangesAction(editMode: editMode)
-                }) {
-                    Text("CONFIRMATION_DISCARD_CHANGES", bundle: .module)
-                }
-                Button(role: .cancel, action: {}) {
-                    Text("CONFIRMATION_KEEP_EDITING", bundle: .module)
                 }
             }
             .alert(Text("CONFIRMATION_LOGOUT", bundle: .module), isPresented: $model.presentingLogoutAlert) {
@@ -136,7 +125,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
 
                 Button(role: .cancel, action: {}) {
-                    Text("CANCEL", bundle: .module)
+                    Text("Cancel", bundle: .module)
                 }
             }
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
@@ -157,12 +146,46 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
 
                 Button(role: .cancel, action: {}) {
-                    Text("CANCEL", bundle: .module)
+                    Text("Cancel", bundle: .module)
                 }
             } message: {
                 Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
             }
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
+    }
+    
+    @ViewBuilder
+    private var cancellationButton: some View {
+        if editMode?.wrappedValue.isEditing == true {
+            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                Button(role: .cancel) {
+                    model.cancelEditAction(editMode: editMode)
+                }
+            } else {
+                Button {
+                    model.cancelEditAction(editMode: editMode)
+                } label: {
+                    Text("Cancel", bundle: .module)
+                }
+            }
+        } else {
+            switch closeBehavior {
+            case .disabled:
+                EmptyView()
+            case .showCloseButton:
+                if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                    Button(role: .close) {
+                        dismiss()
+                    }
+                } else {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Close", bundle: .module)
+                    }
+                }
+            }
+        }
     }
 
     init(

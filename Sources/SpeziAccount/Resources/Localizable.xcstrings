@@ -337,7 +337,14 @@
         }
       }
     },
+    "Add Date" : {
+
+    },
+    "Add Date of Birth" : {
+
+    },
     "ADD_DATE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -409,7 +416,11 @@
         }
       }
     },
+    "Cancel" : {
+
+    },
     "CANCEL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -465,7 +476,11 @@
         }
       }
     },
+    "Close" : {
+
+    },
     "CLOSE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -801,7 +816,11 @@
         }
       }
     },
+    "Done" : {
+
+    },
     "DONE" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -851,7 +870,11 @@
         }
       }
     },
+    "Edit" : {
+
+    },
     "EDIT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

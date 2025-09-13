@@ -69,10 +69,16 @@ public struct PasswordResetView<SuccessView: View>: View {
                     .receiveValidation(in: $validation)
                     .viewStateAlert(state: $state)
                     .toolbar {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Text("DONE", bundle: .module)
+                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                            Button(role: .cancel) {
+                                dismiss()
+                            }
+                        } else {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Text("Cancel", bundle: .module)
+                            }
                         }
                     }
             }

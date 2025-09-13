@@ -62,7 +62,8 @@ struct DateOfBirthPicker: View {
                     }
                     
                     Button(action: addDateAction) {
-                        Text("ADD_DATE", bundle: .module)
+                        Text("Add Date", bundle: .module)
+                            .accessibilityLabel("Add Date of Birth")
                             .multilineTextAlignment(.center)
                             .foregroundColor(.primary)
                             .padding([.leading, .trailing], 20)

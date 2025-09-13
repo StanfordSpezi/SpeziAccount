@@ -578,7 +578,11 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         let confirmation = "This account information is required. If you abort, you will automatically be signed out!"
         XCTAssertTrue(app.staticTexts[confirmation].waitForExistence(timeout: 2.0))
         XCTAssertTrue(app.scrollViews.buttons["Logout"].exists)
-        XCTAssertTrue(app.buttons["Keep Editing"].exists)
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 26 {
+            // No cancel button displayed in iOS 26
+        } else {
+            XCTAssertTrue(app.buttons["Keep Editing"].exists)
+        }
 
         app.scrollViews.buttons["Logout"].tap()
 

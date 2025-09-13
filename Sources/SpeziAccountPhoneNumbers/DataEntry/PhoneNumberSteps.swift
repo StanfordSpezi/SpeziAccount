@@ -30,6 +30,7 @@ struct PhoneNumberSteps: View {
                             phoneNumberViewModel.currentStep = .verificationCode
                         }
                     )
+                    .presentationDetents([.height(250)])
                 case .verificationCode:
                     VerificationCodeStep(
                         codeLength: codeLength,
@@ -37,6 +38,7 @@ struct PhoneNumberSteps: View {
                             phoneNumberViewModel.presentSheet = false
                         }
                     )
+                    .presentationDetents([.height(350)])
                 }
             }
                 .navigationTitle(phoneNumberViewModel.currentStep == .phoneNumber ? "Add Phone Number" : "Enter Verification Code")
@@ -45,33 +47,47 @@ struct PhoneNumberSteps: View {
 #endif
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
-                            if !(phoneNumberViewModel.phoneNumber == nil) {
-                                phoneNumberViewModel.showDiscardAlert = true
+                        Group {
+                            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                                Button(role: .cancel) {
+                                    cancelAction()
+                                }
                             } else {
-                                phoneNumberViewModel.presentSheet = false
+                                Button("Cancel") {
+                                    cancelAction()
+                                }
                             }
                         }
+                        .confirmationDialog(
+                            "Discard Changes?",
+                            isPresented: $phoneNumberViewModel.showDiscardAlert,
+                            titleVisibility: .visible
+                        ) {
+                            Button("Discard", role: .destructive) {
+                                phoneNumberViewModel.presentSheet = false
+                            }
+                            Button("Cancel", role: .cancel) { }
+                        } message: {
+                            Text("You have unsaved changes. Are you sure you want to discard them?")
+                        }
                     }
-                }
-                .confirmationDialog(
-                    "Discard Changes?",
-                    isPresented: $phoneNumberViewModel.showDiscardAlert,
-                    titleVisibility: .visible
-                ) {
-                    Button("Discard", role: .destructive) {
-                        phoneNumberViewModel.presentSheet = false
-                    }
-                    Button("Cancel", role: .cancel) { }
-                } message: {
-                    Text("You have unsaved changes. Are you sure you want to discard them?")
                 }
         }
             .interactiveDismissDisabled(!(phoneNumberViewModel.phoneNumber == nil))
     }
     
+    
     init(codeLength: Int = 6) {
         self.codeLength = codeLength
+    }
+    
+    
+    private func cancelAction() {
+        if !(phoneNumberViewModel.phoneNumber == nil) {
+            phoneNumberViewModel.showDiscardAlert = true
+        } else {
+            phoneNumberViewModel.presentSheet = false
+        }
     }
 }
 

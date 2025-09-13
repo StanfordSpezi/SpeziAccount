@@ -52,14 +52,26 @@ struct PasswordChangeSheet: View {
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         AsyncButton(state: $viewState, action: submitPasswordChange) {
-                            Text("DONE", bundle: .module)
+                            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                                Image(systemName: "checkmark")
+                                    .accessibilityLabel("Done")
+                            } else {
+                                Text("Done", bundle: .module)
+                            }
                         }
+                            .buttonStyleGlassProminent()
                     }
                     ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Text("CANCEL", bundle: .module)
+                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                            Button(role: .cancel) {
+                                dismiss()
+                            }
+                        } else {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Text("Cancel", bundle: .module)
+                            }
                         }
                     }
                 }
