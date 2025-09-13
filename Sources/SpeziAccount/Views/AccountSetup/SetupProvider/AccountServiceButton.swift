@@ -25,7 +25,7 @@ public struct AccountServiceButton<Label: View>: View {
                 .padding(.vertical, 10)
                 .frame(maxWidth: .infinity)
         }
-            .buttonStyle(.borderedProminent)
+            .buttonStyleGlassProminent(backup: .borderedProminent)
     }
 
     public init(

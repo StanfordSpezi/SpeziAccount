@@ -52,25 +52,13 @@ struct VerificationCodeStep: View {
                 Text("Verify Phone Number")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .tint(tintColor)
+                .tint(.accentColor)
                 .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(phoneNumberViewModel.verificationCode.count < codeLength)
                 .animation(.default, value: phoneNumberViewModel.phoneNumber == nil)
                 .viewStateAlert(state: $viewState)
         }
             .padding()
-    }
-    
-    private var tintColor: Color {
-        guard phoneNumberViewModel.verificationCode.count < codeLength else {
-            return Color.accentColor
-        }
-
-        if colorScheme == .light {
-            return Color(.tertiarySystemFill)
-        } else {
-            return Color(.secondarySystemBackground)
-        }
     }
 }
 

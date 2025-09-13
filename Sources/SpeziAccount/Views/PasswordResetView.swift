@@ -33,10 +33,8 @@ public struct PasswordResetView<SuccessView: View>: View {
     private let successView: SuccessView
     private let resetPasswordClosure: (String) async throws -> Void
 
-    @Environment(Account.self)
-    private var account
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(Account.self) private var account
+    @Environment(\.dismiss) private var dismiss
 
     @ValidationState private var validation
 
@@ -69,15 +67,17 @@ public struct PasswordResetView<SuccessView: View>: View {
                     .receiveValidation(in: $validation)
                     .viewStateAlert(state: $state)
                     .toolbar {
-                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
-                            Button(role: .cancel) {
-                                dismiss()
-                            }
-                        } else {
-                            Button(action: {
-                                dismiss()
-                            }) {
-                                Text("Cancel", bundle: .module)
+                        ToolbarItem(placement: .cancellationAction) {
+                            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                                Button(role: .cancel) {
+                                    dismiss()
+                                }
+                            } else {
+                                Button(action: {
+                                    dismiss()
+                                }) {
+                                    Text("Cancel", bundle: .module)
+                                }
                             }
                         }
                     }
@@ -108,7 +108,7 @@ public struct PasswordResetView<SuccessView: View>: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .padding()
         }
             .padding()

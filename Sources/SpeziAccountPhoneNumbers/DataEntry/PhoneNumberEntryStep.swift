@@ -54,25 +54,13 @@ struct PhoneNumberEntryStep: View {
                 Text("Send Verification Message")
                     .frame(maxWidth: .infinity, minHeight: 38)
             }
-                .tint(tintColor)
+                .tint(.accentColor)
                 .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(phoneNumberViewModel.phoneNumber == nil)
                 .animation(.default, value: phoneNumberViewModel.phoneNumber == nil)
                 .viewStateAlert(state: $viewState)
         }
             .padding()
-    }
-    
-    private var tintColor: Color {
-        guard phoneNumberViewModel.phoneNumber == nil else {
-            return Color.accentColor
-        }
-        
-        if colorScheme == .light {
-            return Color(.tertiarySystemFill)
-        } else {
-            return Color(.secondarySystemBackground)
-        }
     }
 }
 

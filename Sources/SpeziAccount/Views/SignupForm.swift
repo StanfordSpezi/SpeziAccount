@@ -119,7 +119,7 @@ public struct SignupForm<Header: View>: View {
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .padding()
                 .padding(-36)
                 .listRowBackground(Color.clear)

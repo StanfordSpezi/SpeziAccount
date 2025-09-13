@@ -66,7 +66,7 @@ struct ExistingAccountView<Continue: View>: View {
             Text(verbatim: "Continue")
                 .frame(maxWidth: .infinity, minHeight: 38)
         }
-            .buttonStyle(.borderedProminent)
+            .buttonStyleGlassProminent(backup: .borderedProminent)
     }
         .padding(.horizontal, ViewSizing.outerHorizontalPadding)
         .previewWith {

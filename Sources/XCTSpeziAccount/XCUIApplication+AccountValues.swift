@@ -38,10 +38,7 @@ extension XCUIApplication {
         XCTAssertTrue(datePickers.buttons["Previous Month"].waitForExistence(timeout: 2.0), "Couldn't find 'Previous Month' button")
         datePickers.buttons["Previous Month"].tap()
 
-        usleep(500_000)
-        datePickers.collectionViews.buttons.element(boundBy: 0).tap()
-
-        // close the date picker again
+        XCTAssert(buttons["PopoverDismissRegion"].waitForExistence(timeout: 0.5))
         buttons["PopoverDismissRegion"].tap()
     }
 }

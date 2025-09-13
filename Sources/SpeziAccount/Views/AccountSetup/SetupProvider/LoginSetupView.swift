@@ -56,7 +56,7 @@ struct LoginSetupView<PasswordReset: View>: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyle(.borderedProminent)
+                .buttonStyleGlassProminent(backup: .borderedProminent)
                 .disabled(!validation.allInputValid)
                 .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
                 .padding(.bottom, 12)
