@@ -119,14 +119,14 @@ public struct SignupForm<Header: View>: View {
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyleGlassProminent(backup: .borderedProminent)
-                .padding()
-                .padding(-36)
-                .listRowBackground(Color.clear)
-                .disabled(!validation.allInputValid)
+            .buttonStyleGlassProminent()
+            .padding()
+            .padding(-36)
+            .listRowBackground(Color.clear)
+            .disabled(!validation.allInputValid)
         }
-            .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-            .receiveValidation(in: $validation)
+        .environment(\.defaultErrorDescription, .init("UP_SIGNUP_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+        .receiveValidation(in: $validation)
     }
 
     public init(signup: @escaping (AccountDetails) async throws -> Void, @ViewBuilder header: () -> Header = { SignupFormHeader() }) {

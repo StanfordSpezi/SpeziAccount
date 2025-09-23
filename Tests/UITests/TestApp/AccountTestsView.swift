@@ -165,7 +165,7 @@ struct AccountTestsView: View {
             Text("Finish")
                 .frame(maxWidth: .infinity, minHeight: 38)
         })
-            .buttonStyle(.borderedProminent)
+        .buttonStyleGlassProminent()
     }
 
 
