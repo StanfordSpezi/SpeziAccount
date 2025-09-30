@@ -104,6 +104,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         let alert = "Are you sure you want to logout?"
         XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 4.0))
+        sleep(1)
         app.alerts[alert].scrollViews.otherElements.buttons["Logout"].tap()
         XCTAssertTrue(app.alerts[alert].waitForNonExistence(timeout: 6))
 
@@ -135,6 +136,7 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
 
         let alert = "Are you sure you want to delete your account?"
         XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 6.0))
+        sleep(1)
         app.alerts[alert].scrollViews.otherElements.buttons["Delete"].tap()
         XCTAssertTrue(app.alerts[alert].waitForNonExistence(timeout: 6))
 
