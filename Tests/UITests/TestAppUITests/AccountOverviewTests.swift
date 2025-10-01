@@ -105,7 +105,10 @@ final class AccountOverviewTests: XCTestCase { // swiftlint:disable:this type_bo
         let alert = "Are you sure you want to logout?"
         XCTAssertTrue(app.alerts[alert].waitForExistence(timeout: 4.0))
         sleep(1)
-        app.alerts[alert].scrollViews.otherElements.buttons["Logout"].tap()
+        XCTAssert(app.alerts[alert].buttons["Logout"].waitForExistence(timeout: 1))
+        XCTAssert(app.alerts[alert].buttons["Logout"].isHittable)
+        XCTAssert(app.alerts[alert].buttons["Logout"].isEnabled)
+        app.alerts[alert].buttons["Logout"].tap()
         XCTAssertTrue(app.alerts[alert].waitForNonExistence(timeout: 6))
 
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))

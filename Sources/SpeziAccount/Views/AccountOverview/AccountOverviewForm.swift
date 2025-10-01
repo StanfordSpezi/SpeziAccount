@@ -49,7 +49,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                     details: details,
                     close: closeBehavior,
                     deletion: deletionBehavior,
-                    destructiveViewState: $destructiveViewState
+                    destructiveViewState: destructiveViewState
                 ) {
                     additionalSections
                 }
