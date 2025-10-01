@@ -56,11 +56,11 @@ struct LoginSetupView<PasswordReset: View>: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyleGlassProminent(backup: .borderedProminent)
-                .disabled(!validation.allInputValid)
-                .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-                .padding(.bottom, 12)
-                .padding(.top)
+            .buttonStyleGlassProminent()
+            .disabled(!validation.allInputValid)
+            .environment(\.defaultErrorDescription, .init("UP_LOGIN_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+            .padding(.bottom, 12)
+            .padding(.top)
 
 
             if supportsSignup {
@@ -72,15 +72,15 @@ struct LoginSetupView<PasswordReset: View>: View {
                         Text("UP_SIGNUP", bundle: .module)
                     }
                 }
-                    .font(.footnote)
+                .font(.footnote)
             }
         }
-            .disableDismissiveActions(isProcessing: state)
-            .viewStateAlert(state: $state)
-            .receiveValidation(in: $validation)
-            .sheet(isPresented: $presentingPasswordForgetSheet) {
-                passwordReset
-            }
+        .disableDismissiveActions(isProcessing: state)
+        .viewStateAlert(state: $state)
+        .receiveValidation(in: $validation)
+        .sheet(isPresented: $presentingPasswordForgetSheet) {
+            passwordReset
+        }
     }
 
 

@@ -110,12 +110,12 @@ public struct PasswordResetView<SuccessView: View>: View {
                     .padding(8)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyleGlassProminent(backup: .borderedProminent)
-                .padding()
-        }
+            .buttonStyleGlassProminent()
             .padding()
-            .frame(maxWidth: ViewSizing.maxFrameWidth * 1.5) // landscape optimizations
-            .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+        }
+        .padding()
+        .frame(maxWidth: ViewSizing.maxFrameWidth * 1.5) // landscape optimizations
+        .environment(\.defaultErrorDescription, .init("UAP_RESET_PASSWORD_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
     fileprivate init(

@@ -129,13 +129,13 @@ public struct FollowUpInfoSheet: View {
                     .padding(16)
                     .frame(maxWidth: .infinity)
             }
-                .buttonStyleGlassProminent(backup: .borderedProminent)
-                .padding()
-                .padding(-36)
-                .listRowBackground(Color.clear)
-                .disabled(!validation.allInputValid)
+            .buttonStyleGlassProminent()
+            .padding()
+            .padding(-36)
+            .listRowBackground(Color.clear)
+            .disabled(!validation.allInputValid)
         }
-            .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
+        .environment(\.defaultErrorDescription, .init("ACCOUNT_OVERVIEW_EDIT_DEFAULT_ERROR", bundle: .atURL(from: .module)))
     }
 
 

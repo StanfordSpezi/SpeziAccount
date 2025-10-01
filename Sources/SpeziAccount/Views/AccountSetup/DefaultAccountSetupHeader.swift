@@ -20,11 +20,11 @@ public struct DefaultAccountSetupHeader: View {
     private var setupState
 
     public var body: some View {
-        VStack {
+        VStack(alignment: ProcessInfo.isIOSAtLeast26 ? .leading : .center) {
             Text("ACCOUNT_WELCOME", bundle: .module)
                 .font(.largeTitle)
                 .bold()
-                .multilineTextAlignment(.center)
+                .multilineTextAlignment(ProcessInfo.isIOSAtLeast26 ? .leading : .center)
                 .padding(.bottom)
                 .padding(.top, 30)
 
@@ -35,7 +35,7 @@ public struct DefaultAccountSetupHeader: View {
                     Text("ACCOUNT_WELCOME_SUBTITLE", bundle: .module)
                 }
             }
-                .multilineTextAlignment(.center)
+            .multilineTextAlignment(ProcessInfo.isIOSAtLeast26 ? .leading : .center)
         }
     }
 

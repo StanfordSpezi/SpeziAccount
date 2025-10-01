@@ -30,13 +30,13 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.2.1"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.2"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.10.0"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.12.4"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.1.2"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.2.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "601.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
         .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
         .package(url: "https://github.com/marmelroy/PhoneNumberKit", from: "4.1.0")
     ] + swiftLintPackage(),

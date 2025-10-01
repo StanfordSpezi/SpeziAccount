@@ -21,11 +21,11 @@ public struct AccountServiceButton<Label: View>: View {
             HStack {
                 label
             }
-                .font(.title3)
-                .padding(.vertical, 10)
-                .frame(maxWidth: .infinity)
+            .font(.title3)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
         }
-            .buttonStyleGlassProminent(backup: .borderedProminent)
+        .buttonStyleGlassProminent()
     }
 
     public init(

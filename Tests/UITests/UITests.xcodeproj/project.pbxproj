@@ -7,30 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7B29D6C29B00234098 /* AccountTestsView.swift */; };
-		2F027C8929D6C2AD00234098 /* AccountDetails+Default.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C7F29D6C29B00234098 /* AccountDetails+Default.swift */; };
-		2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9429D6C63100234098 /* TestAppDelegate.swift */; };
 		2F027C9B29D6C91E00234098 /* XCTestExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2F027C9A29D6C91E00234098 /* XCTestExtensions */; };
-		2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */; };
-		2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2F6D139928F5F386007C25D6 /* Assets.xcassets */; };
-		2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FA7382B290ADFAA007ACEB9 /* TestApp.swift */; };
 		2FAD38C02A455FC200E79ED1 /* SpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = 2FAD38BF2A455FC200E79ED1 /* SpeziAccount */; };
 		565EBE0D2DEF286000FF9260 /* SpeziAccountPhoneNumbers in Frameworks */ = {isa = PBXBuildFile; productRef = 565EBE0C2DEF286000FF9260 /* SpeziAccountPhoneNumbers */; };
-		9B345FB82C94BF470067C977 /* InvitationCodeKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */; };
-		A9684D6C2DE1DBDF00432CD3 /* OptionsKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */; };
 		A969240F2A9A198800E2128B /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = A969240E2A9A198800E2128B /* ArgumentParser */; };
-		A98739032C64EE6000E17A42 /* EntryViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739022C64EE5F00E17A42 /* EntryViewTests.swift */; };
-		A98739052C64F1BB00E17A42 /* EntryViewsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98739042C64F1B300E17A42 /* EntryViewsTests.swift */; };
 		A994264B2CD25C50002F8BD5 /* XCTSpeziAccount in Frameworks */ = {isa = PBXBuildFile; productRef = A994264A2CD25C50002F8BD5 /* XCTSpeziAccount */; };
-		A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */; };
-		A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */; };
-		A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FA2A9B70360008B232 /* Defaults.swift */; };
-		A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */; };
-		A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */; };
-		A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */; };
-		A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */; };
-		A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */; };
-		A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9EE7D292A3359E800C2B9A9 /* Features.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,32 +25,37 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F027C7B29D6C29B00234098 /* AccountTestsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTestsView.swift; sourceTree = "<group>"; };
-		2F027C7F29D6C29B00234098 /* AccountDetails+Default.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AccountDetails+Default.swift"; sourceTree = "<group>"; };
-		2F027C9429D6C63100234098 /* TestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAppDelegate.swift; sourceTree = "<group>"; };
-		2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestPrimaryButton.swift"; sourceTree = "<group>"; };
 		2F6D139228F5F384007C25D6 /* TestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F6D139928F5F386007C25D6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2F6D13AC28F5F386007C25D6 /* TestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		2FA43E8F2AE022F1009B1B2C /* TestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestApp.entitlements; sourceTree = "<group>"; };
-		2FA7382B290ADFAA007ACEB9 /* TestApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestApp.swift; sourceTree = "<group>"; };
 		2FAD38BE2A455F7D00E79ED1 /* SpeziAccount */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SpeziAccount; path = ../..; sourceTree = "<group>"; };
 		2FE750C92A8720CE00723EAE /* TestApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestApp.xctestplan; sourceTree = "<group>"; };
-		636D985F2AF188E00020B8BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvitationCodeKey.swift; sourceTree = "<group>"; };
-		A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsKey.swift; sourceTree = "<group>"; };
-		A98739022C64EE5F00E17A42 /* EntryViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewTests.swift; sourceTree = "<group>"; };
-		A98739042C64F1B300E17A42 /* EntryViewsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewsTests.swift; sourceTree = "<group>"; };
-		A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetupTests.swift; sourceTree = "<group>"; };
-		A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountOverviewTests.swift; sourceTree = "<group>"; };
-		A9B6E3FA2A9B70360008B232 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
-		A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiographyKey.swift; sourceTree = "<group>"; };
-		A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStandard.swift; sourceTree = "<group>"; };
-		A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+AccountSetup.swift"; sourceTree = "<group>"; };
-		A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+TestApp.swift"; sourceTree = "<group>"; };
-		A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationHintsTests.swift; sourceTree = "<group>"; };
-		A9EE7D292A3359E800C2B9A9 /* Features.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		80D1A0832E82BCB5004D7378 /* Exceptions for "TestApp" folder in "TestApp" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2F6D139128F5F384007C25D6 /* TestApp */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		80D1A0742E82BCB5004D7378 /* TestApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				80D1A0832E82BCB5004D7378 /* Exceptions for "TestApp" folder in "TestApp" target */,
+			);
+			path = TestApp;
+			sourceTree = "<group>";
+		};
+		80D1A08D2E82BCBC004D7378 /* TestAppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TestAppUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		2F6D138F28F5F384007C25D6 /* Frameworks */ = {
@@ -94,25 +80,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2F027C9629D6C63300234098 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				A9684D6B2DE1DBDC00432CD3 /* OptionsKey.swift */,
-				A9B6E3FC2A9B74830008B232 /* BiographyKey.swift */,
-				9B345FB72C94BF470067C977 /* InvitationCodeKey.swift */,
-				A9B6E3FE2A9B795C0008B232 /* TestStandard.swift */,
-				2F027C7F29D6C29B00234098 /* AccountDetails+Default.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		2F6D138928F5F384007C25D6 = {
 			isa = PBXGroup;
 			children = (
 				2FE750C92A8720CE00723EAE /* TestApp.xctestplan */,
 				2FAD38BE2A455F7D00E79ED1 /* SpeziAccount */,
-				2F6D139428F5F384007C25D6 /* TestApp */,
-				2F6D13AF28F5F386007C25D6 /* TestAppUITests */,
+				80D1A0742E82BCB5004D7378 /* TestApp */,
+				80D1A08D2E82BCBC004D7378 /* TestAppUITests */,
 				2F6D139328F5F384007C25D6 /* Products */,
 				2F6D13C228F5F3BE007C25D6 /* Frameworks */,
 			);
@@ -127,50 +101,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2F6D139428F5F384007C25D6 /* TestApp */ = {
-			isa = PBXGroup;
-			children = (
-				2FA43E8F2AE022F1009B1B2C /* TestApp.entitlements */,
-				636D985F2AF188E00020B8BC /* Info.plist */,
-				2F027C7B29D6C29B00234098 /* AccountTestsView.swift */,
-				A98739022C64EE5F00E17A42 /* EntryViewTests.swift */,
-				A9EE7D292A3359E800C2B9A9 /* Features.swift */,
-				2FA7382B290ADFAA007ACEB9 /* TestApp.swift */,
-				2F027C9429D6C63100234098 /* TestAppDelegate.swift */,
-				2F6D139928F5F386007C25D6 /* Assets.xcassets */,
-				2F027C9629D6C63300234098 /* Utils */,
-			);
-			path = TestApp;
-			sourceTree = "<group>";
-		};
-		2F6D13AF28F5F386007C25D6 /* TestAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				A9B6E3F82A9B6F660008B232 /* AccountOverviewTests.swift */,
-				A9B6E3F62A9B6F5B0008B232 /* AccountSetupTests.swift */,
-				A9EE7D272A3357D900C2B9A9 /* DocumentationHintsTests.swift */,
-				A98739042C64F1B300E17A42 /* EntryViewsTests.swift */,
-				2F027C9C29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift */,
-				A96924122A9A6BA400E2128B /* Utils */,
-			);
-			path = TestAppUITests;
-			sourceTree = "<group>";
-		};
 		2F6D13C228F5F3BE007C25D6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		A96924122A9A6BA400E2128B /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				A9B6E3FA2A9B70360008B232 /* Defaults.swift */,
-				A9B6E4042A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift */,
-				A9B6E40A2A9BB2980008B232 /* XCUIApplication+TestApp.swift */,
-			);
-			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,6 +122,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				80D1A0742E82BCB5004D7378 /* TestApp */,
 			);
 			name = TestApp;
 			packageProductDependencies = (
@@ -210,6 +148,9 @@
 			);
 			dependencies = (
 				2F6D13AE28F5F386007C25D6 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				80D1A08D2E82BCBC004D7378 /* TestAppUITests */,
 			);
 			name = TestAppUITests;
 			packageProductDependencies = (
@@ -268,7 +209,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F6D139A28F5F386007C25D6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,16 +226,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F027C8629D6C2AD00234098 /* AccountTestsView.swift in Sources */,
-				2FA7382C290ADFAA007ACEB9 /* TestApp.swift in Sources */,
-				A98739032C64EE6000E17A42 /* EntryViewTests.swift in Sources */,
-				A9EE7D2A2A3359E800C2B9A9 /* Features.swift in Sources */,
-				A9684D6C2DE1DBDF00432CD3 /* OptionsKey.swift in Sources */,
-				9B345FB82C94BF470067C977 /* InvitationCodeKey.swift in Sources */,
-				2F027C9529D6C63100234098 /* TestAppDelegate.swift in Sources */,
-				2F027C8929D6C2AD00234098 /* AccountDetails+Default.swift in Sources */,
-				A9B6E3FF2A9B795C0008B232 /* TestStandard.swift in Sources */,
-				A9B6E3FD2A9B74830008B232 /* BiographyKey.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,14 +233,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9B6E3F72A9B6F5B0008B232 /* AccountSetupTests.swift in Sources */,
-				A98739052C64F1BB00E17A42 /* EntryViewsTests.swift in Sources */,
-				A9B6E3FB2A9B70360008B232 /* Defaults.swift in Sources */,
-				A9EE7D282A3357D900C2B9A9 /* DocumentationHintsTests.swift in Sources */,
-				2F027C9D29D6CA1100234098 /* XCUIApplication+TestPrimaryButton.swift in Sources */,
-				A9B6E40B2A9BB2980008B232 /* XCUIApplication+TestApp.swift in Sources */,
-				A9B6E4052A9BB27A0008B232 /* XCUIApplication+AccountSetup.swift in Sources */,
-				A9B6E3F92A9B6F660008B232 /* AccountOverviewTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

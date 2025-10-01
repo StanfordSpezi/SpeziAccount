@@ -23,6 +23,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
     private let accountDetails: AccountDetails
     private let model: AccountOverviewFormViewModel
+    private let destructiveViewState: ViewState
 
     @Environment(Account.self)
     private var account
@@ -31,8 +32,6 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     private var editMode
     @Environment(\.dismiss)
     private var dismiss
-
-    @Binding private var destructiveViewState: ViewState
 
     private var showDeleteButton: Bool {
         switch deletionBehavior {
@@ -76,24 +75,24 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
 
         if showLogoutButton {
             Section {
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                Button(role: .destructive) {
                     model.presentingLogoutAlert = true
-                }) {
+                } label: {
                     Text("UP_LOGOUT", bundle: .module)
                 }
+                .disabled(destructiveViewState != .idle)
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }
         if showDeleteButton {
             Section {
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
-                    // While the action closure itself is not async, we rely on ability to render loading indicator
-                    // of the AsyncButton which based on the externally supplied viewState.
+                Button(role: .destructive) {
                     model.presentingRemovalAlert = true
-                }) {
+                } label: {
                     Text("DELETE_ACCOUNT", bundle: .module)
                 }
-                    .frame(maxWidth: .infinity, alignment: .center)
+                .disabled(destructiveViewState != .idle)
+                .frame(maxWidth: .infinity, alignment: .center)
             }
         }
     }
@@ -160,14 +159,14 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         details accountDetails: AccountDetails,
         close closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
         deletion deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior,
-        destructiveViewState: Binding<ViewState>,
+        destructiveViewState: ViewState,
         @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
     ) {
         self.model = model
         self.accountDetails = accountDetails
         self.closeBehavior = closeBehavior
         self.deletionBehavior = deletionBehavior
-        self._destructiveViewState = destructiveViewState
+        self.destructiveViewState = destructiveViewState
         self.additionalSections = additionalSections()
     }
     

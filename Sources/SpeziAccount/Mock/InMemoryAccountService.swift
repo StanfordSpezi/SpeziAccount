@@ -50,7 +50,7 @@ private struct AnonymousSignupButton: View {
                 Image(systemName: "graduationcap.fill") // swiftlint:disable:this accessibility_label_for_image
             }
         }
-            .tint(colorScheme == .light ? cardinalRed : cardinalRedDark)
+        .tint(colorScheme == .light ? cardinalRed : cardinalRedDark)
     }
 }
 
