@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable function_body_length file_length type_body_length
+
 #if os(macOS) // macro tests can only be run on the host machine
 import SpeziAccountMacros
 import SwiftSyntaxMacroExpansion
@@ -19,7 +21,7 @@ let testMacrosSpecs: [String: MacroSpec] = [
 ]
 
 @Suite("AccountKeyMacro Tests")
-struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
+struct AccountKeyMacroTests {
     @Test
     func testAccountKeyGeneration() {
         assertMacroExpansion(
@@ -210,7 +212,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testCustomUI() { // swiftlint:disable:this function_body_length
+    func testCustomUI() {
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -292,7 +294,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testCustomUINameCollision() { // swiftlint:disable:this function_body_length
+    func testCustomUINameCollision() {
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -378,7 +380,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testAccountKeyOptions() { // swiftlint:disable:this function_body_length
+    func testAccountKeyOptions() {
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -552,7 +554,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testAccountKeyOptionsDiagnostics() { // swiftlint:disable:this function_body_length
+    func testAccountKeyOptionsDiagnostics() {
         assertMacroExpansion(
             """
             extension AccountDetails {
@@ -716,7 +718,7 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
     }
 
     @Test
-    func testGeneralDiagnostics() { // swiftlint:disable:this function_body_length
+    func testGeneralDiagnostics() {
         assertMacroExpansion(
             """
             @AccountKey(
@@ -807,8 +809,45 @@ struct AccountKeyMacroTests { // swiftlint:disable:this type_body_length
             failureHandler: { Issue.record("\($0.message)") }
         )
     }
+    
+    @Test
+    func accountKeyNestedType() {
+        assertMacroExpansion(
+            """
+            extension AccountDetails {
+                @AccountKey(name: "Preferred Workout Type", category: .personalDetails, as: WorkoutType.ID.self, initial: .default(""))
+                var preferredWorkoutType: WorkoutType.ID?
+            }
+            """,
+            expandedSource:
+            """
+            extension AccountDetails {
+                var preferredWorkoutType: WorkoutType.ID? {
+                    get {
+                        self[__Key_preferredWorkoutType.self]
+                    }
+                    set {
+                        self[__Key_preferredWorkoutType.self] = newValue
+                    }
+                }
+            
+                struct __Key_preferredWorkoutType: AccountKey {
+                    typealias Value = WorkoutType.ID
+            
+                    static let name: LocalizedStringResource = "Preferred Workout Type"
+                    static let identifier: String = "preferredWorkoutType"
+                    static let category: AccountKeyCategory = .personalDetails
+                    static var initialValue: InitialValue<Value> {
+                        .default("")
+                    }
+                    static let options: AccountKeyOptions = .default
+                }
+            }
+            """,
+            macroSpecs: testMacrosSpecs,
+            failureHandler: { Issue.record("\($0.message)") }
+        )
+    }
 }
 
 #endif
-
-// swiftlint:disable:this file_length
