@@ -204,7 +204,7 @@ struct AccountKeyMacroTests {
             }
             """,
             diagnostics: [
-                DiagnosticSpec(message: "Value type 'Int is expected to match the property binding type annotation 'String'", line: 2, column: 65)
+                DiagnosticSpec(message: "Value type 'Int' is expected to match the property binding type annotation 'String'", line: 2, column: 65)
             ],
             macroSpecs: testMacrosSpecs,
             failureHandler: { Issue.record("\($0.message)") }
