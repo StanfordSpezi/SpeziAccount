@@ -145,10 +145,10 @@ extension AccountKeyMacro: PeerMacro {
             accountKeyProtocol = "RequiredAccountKey"
         }
 
-        guard valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text == valueTypeName.forceToText else {
+        guard valueTypeInitializer.forceToText == valueTypeName.forceToText else {
             throw DiagnosticsError(
                 syntax: valueTypeName,
-                message: "Value type '\(valueTypeName) is expected to match the property binding type annotation '\(valueTypeInitializer.as(IdentifierTypeSyntax.self)?.name.text ?? "<<unknown>>")'",
+                message: "Value type '\(valueTypeName)' is expected to match the property binding type annotation '\(valueTypeInitializer.forceToText)'",
                 id: .invalidApplication
             )
         }
@@ -369,7 +369,7 @@ extension LabeledExprSyntax {
 }
 
 
-extension ExprSyntaxProtocol {
+extension SyntaxProtocol {
     var forceToText: String {
         String(decoding: syntaxTextBytes, as: UTF8.self)
     }

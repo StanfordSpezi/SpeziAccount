@@ -230,8 +230,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.staticTexts["Sent out a link to reset the password."].waitForExistence(timeout: 3.0))
 
-        XCTAssertTrue(app.buttons["Cancel"].exists)
-        app.buttons["Cancel"].tap()
+        XCTAssertTrue(app.buttons["Done"].exists)
+        app.buttons["Done"].tap()
 
         XCTAssertTrue(app.buttons["Close"].waitForExistence(timeout: 2.0))
         app.buttons["Close"].tap()

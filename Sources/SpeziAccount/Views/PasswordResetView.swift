@@ -39,12 +39,12 @@ public struct PasswordResetView<SuccessView: View>: View {
     @ValidationState private var validation
 
     @State private var userId = ""
-    @State private var requestSubmitted: Bool
+    @State private var didReset: Bool
 
     @State private var state: ViewState = .idle
     @FocusState private var isFocused: Bool
 
-    @MainActor private var userIdConfiguration: UserIdConfiguration {
+    private var userIdConfiguration: UserIdConfiguration {
         account.accountService.configuration.userIdConfiguration
     }
 
@@ -53,34 +53,36 @@ public struct PasswordResetView<SuccessView: View>: View {
         GeometryReader { proxy in
             ScrollView(.vertical) {
                 VStack {
-                    if requestSubmitted {
+                    if didReset {
                         successView
                     } else {
                         resetPasswordForm
                         Spacer()
                     }
                 }
-                    .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
-                    .toolbarTitleDisplayMode(.inline)
-                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
-                    .disableDismissiveActions(isProcessing: state)
-                    .receiveValidation(in: $validation)
-                    .viewStateAlert(state: $state)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
-                                Button(role: .cancel) {
-                                    dismiss()
-                                }
-                            } else {
-                                Button(action: {
-                                    dismiss()
-                                }) {
-                                    Text("Cancel", bundle: .module)
-                                }
+                .navigationTitle(Text("UP_RESET_PASSWORD", bundle: .module))
+                .toolbarTitleDisplayMode(.inline)
+                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                .disableDismissiveActions(isProcessing: state)
+                .receiveValidation(in: $validation)
+                .viewStateAlert(state: $state)
+                .toolbar {
+                    ToolbarItem(placement: didReset ? .confirmationAction : .cancellationAction) {
+                        if #available(iOS 26.0, macCatalyst 26.0, visionOS 26.0, macOS 26.0, watchOS 26.0, tvOS 26.0, *) {
+                            Button(role: didReset ? .confirm : .cancel) {
+                                dismiss()
                             }
+                            .disabled(state == .processing)
+                        } else {
+                            Button {
+                                dismiss()
+                            } label: {
+                                Text(didReset ? "Done" : "Cancel", bundle: .module)
+                            }
+                            .disabled(state == .processing)
                         }
                     }
+                }
             }
         }
     }
@@ -119,13 +121,13 @@ public struct PasswordResetView<SuccessView: View>: View {
     }
 
     fileprivate init(
-        requestSubmitted: Bool,
+        didReset: Bool,
         resetPassword: @escaping (String) async throws -> Void,
         @ViewBuilder success successViewBuilder: () -> SuccessView = { SuccessfulPasswordResetView() }
     ) {
         self.resetPasswordClosure = resetPassword
         self.successView = successViewBuilder()
-        self._requestSubmitted = State(wrappedValue: requestSubmitted)
+        self._didReset = State(wrappedValue: didReset)
     }
 
 
@@ -137,7 +139,7 @@ public struct PasswordResetView<SuccessView: View>: View {
         resetPassword: @escaping (String) async throws -> Void,
         @ViewBuilder success: @escaping () -> SuccessView = { SuccessfulPasswordResetView() }
     ) {
-        self.init(requestSubmitted: false, resetPassword: resetPassword, success: success)
+        self.init(didReset: false, resetPassword: resetPassword, success: success)
     }
 
 
@@ -153,7 +155,7 @@ public struct PasswordResetView<SuccessView: View>: View {
         try await resetPasswordClosure(userId)
 
         withAnimation(.easeOut(duration: 0.5)) {
-            requestSubmitted = true
+            didReset = true
         }
 
         Task {
@@ -172,20 +174,20 @@ public struct PasswordResetView<SuccessView: View>: View {
         PasswordResetView { userId in
             print("Reset password for \(userId)")
         }
-            .previewWith {
-                AccountConfiguration(service: InMemoryAccountService())
-            }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        PasswordResetView(requestSubmitted: true) { userId in
+        PasswordResetView(didReset: true) { userId in
             print("Reset password for \(userId)")
         }
-            .previewWith {
-                AccountConfiguration(service: InMemoryAccountService())
-            }
+        .previewWith {
+            AccountConfiguration(service: InMemoryAccountService())
+        }
     }
 }
 #endif
