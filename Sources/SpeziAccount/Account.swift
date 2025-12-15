@@ -182,7 +182,7 @@ public final class Account {
                 if let previousDetails {
                     try await notifications.reportEvent(.detailsChanged(previousDetails, details))
                 } else {
-                    try await notifications.reportEvent(.associatedAccount(details))
+                    try await notifications.reportEvent(.didAssociate(details))
                 }
             } catch {
                 logger.error("Account Association event failed unexpectedly: \(error)")
@@ -199,14 +199,12 @@ public final class Account {
         if let details {
             Task { @MainActor [notifications, details] in
                 do {
-                    try await notifications.reportEvent(.disassociatingAccount(details))
+                    try await notifications.reportEvent(.didDisassociate(details))
                 } catch {
                     logger.error("Account Disassociation event failed unexpectedly: \(error)")
                 }
             }
         }
-
-
         if signedIn {
             signedIn = false
         }

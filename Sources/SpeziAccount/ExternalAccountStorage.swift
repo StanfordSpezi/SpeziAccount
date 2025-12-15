@@ -180,7 +180,7 @@ public final class ExternalAccountStorage: Module, Sendable {
         try await storageProvider?.delete(accountId)
     }
 
-    func userWillDisassociate(for accountId: String) async {
+    func userDidDisassociate(for accountId: String) async {
         await storageProvider?.disassociate(accountId)
     }
 }

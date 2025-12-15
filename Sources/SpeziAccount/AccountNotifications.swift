@@ -26,19 +26,36 @@ import Spezi
 public final class AccountNotifications {
     /// Describes an Account event.
     public enum Event {
+        /// A new account was associated due to a login or signup operation.
+        case didAssociate(_ details: AccountDetails)
+        /// The details of the currently associated Account changed.
+        case detailsChanged(_ previous: AccountDetails, _ new: AccountDetails)
+        /// The current account is about to be logged out.
+        case willLogOut(_ details: AccountDetails)
+        /// The account with the given details is being disassociated (e.g., because it was logged out or deleted).
+        case didDisassociate(_ details: AccountDetails)
         /// The currently associated user account is about to be deleted.
         ///
         /// This event signals that the user requested to have their account deleted and the user's data is about to be deleted.
         ///
         /// - Note: Make sure to report this event before the account is deleted. Deletion might be forwarded to an external ``AccountStorageProvider`` which
         ///     might report an error if it fails to fully delete the associated user data.
-        case deletingAccount(_ accountId: String)
-        /// A new account was associated due to a login or signup operation.
-        case associatedAccount(_ details: AccountDetails)
-        /// The details of the currently associated Account changed.
-        case detailsChanged(_ previous: AccountDetails, _ new: AccountDetails)
-        /// The account with the given details is being disassociated (e.g., logout or deletion).
-        case disassociatingAccount(_ details: AccountDetails)
+        case willDelete(_ accountId: String)
+        
+        @available(*, unavailable, renamed: "willDelete")
+        public static func deletingAccount(_ accountId: String) -> Self {
+            .willDelete(accountId)
+        }
+        
+        @available(*, unavailable, renamed: "didAssociate")
+        public static func associatedAccount(_ details: AccountDetails) -> Self {
+            .didAssociate(details)
+        }
+        
+        @available(*, unavailable, renamed: "didDisassociate")
+        public static func disassociatingAccount(_ details: AccountDetails) -> Self {
+            .didDisassociate(details)
+        }
     }
 
     @StandardActor private var standard: any Standard
@@ -77,10 +94,10 @@ public final class AccountNotifications {
         await notifyStandard?.respondToEvent(event)
 
         switch event {
-        case let .deletingAccount(accountId):
+        case let .willDelete(accountId):
             try await storage.willDeleteAccount(for: accountId)
-        case let .disassociatingAccount(details):
-            await storage.userWillDisassociate(for: details.accountId)
+        case let .didDisassociate(details):
+            await storage.userDidDisassociate(for: details.accountId)
         default:
             break
         }

@@ -322,7 +322,7 @@ public final class InMemoryAccountService: AccountService {
         }
 
         let notifications = notifications
-        try await notifications.reportEvent(.deletingAccount(details.accountId))
+        try await notifications.reportEvent(.willDelete(details.accountId))
 
         registeredUsers.removeValue(forKey: details.accountId.assumeUUID)
         userIdToAccountId.removeValue(forKey: details.userId)
