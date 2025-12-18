@@ -30,7 +30,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/StanfordSpezi/SpeziFoundation.git", from: "2.2.1"),
         .package(url: "https://github.com/StanfordSpezi/Spezi.git", from: "1.8.2"),
-        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.12.4"),
+        .package(url: "https://github.com/StanfordSpezi/SpeziViews.git", from: "1.12.9"),
         .package(url: "https://github.com/StanfordSpezi/SpeziStorage.git", from: "2.1.1"),
         .package(url: "https://github.com/StanfordBDHG/XCTRuntimeAssertions.git", from: "2.0.0"),
         .package(url: "https://github.com/StanfordBDHG/XCTestExtensions.git", from: "1.1.0"),
