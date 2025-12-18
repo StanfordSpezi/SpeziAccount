@@ -38,9 +38,9 @@ public final class ExternalAccountStorage: Module, Sendable {
         public let details: AccountDetails
     }
 
-    private nonisolated(unsafe) weak var storageProvider: (any AccountStorageProvider)?
+    nonisolated(unsafe) private weak var storageProvider: (any AccountStorageProvider)?
 
-    private nonisolated(unsafe) var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
+    nonisolated(unsafe) private var subscriptions: [UUID: AsyncStream<ExternallyStoredDetails>.Continuation] = [:]
     private let lock = NSLock()
 
 

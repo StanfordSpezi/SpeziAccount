@@ -42,5 +42,6 @@ public protocol AccountNotifyConstraint: Standard {
 
 
 extension AccountNotifyConstraint {
+    // swiftlint:disable:next missing_docs
     public func willLogOut(_ details: AccountDetails) async {}
 }

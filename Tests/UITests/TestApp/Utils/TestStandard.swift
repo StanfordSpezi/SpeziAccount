@@ -28,7 +28,7 @@ actor TestStandard: AccountNotifyConstraint, PhoneVerificationConstraint, Enviro
     struct AccountDetailsError: Error {}
 
     private let storage = Storage()
-    private nonisolated let features: Features
+    nonisolated private let features: Features
 
     @Dependency(Account.self)
     private var account: Account?
