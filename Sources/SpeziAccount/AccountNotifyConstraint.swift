@@ -20,7 +20,7 @@ import Spezi
 /// actor MyStandard: Standard, AccountNotifyConstraint {
 ///     init() {}
 ///
-///     func handleAccountEvent(_ event: AccountNotifications.Event) {
+///     func respondToEvent(_ event: AccountNotifications.Event) async {
 ///         switch event {
 ///         case .deletingAccount(let accountId):
 ///             // handle deletion of associated user data
