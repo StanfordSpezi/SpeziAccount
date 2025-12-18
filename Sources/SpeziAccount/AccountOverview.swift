@@ -71,9 +71,30 @@ public struct AccountOverview<AdditionalSections: View>: View {
         /// Account deletion is not available.
         case disabled
         /// When entering the edit mode, the logout button turns into a delete account button.
-        case inEditMode
+        case inEditMode(Handler)
         /// Show the delete button below the logout button.
-        case belowLogout
+        case belowLogout(Handler)
+        
+        /// How account deletion via the ``AccountOverview`` should be handled.
+        public enum Handler {
+            /// Account deletion should be handled normally via SpeziAccount.
+            case `default`
+            /// Account deletion should be handled via a custom closure.
+            ///
+            /// In this case, if the user attempts to delete the account through the ``AccountOverview``,
+            /// this custom closure will be invoked, instead of the account service' ``AccountService/delete()`` function.
+            case custom(_ handler: @Sendable () async throws -> Void)
+        }
+        
+        /// When entering the edit mode, the logout button turns into a delete account button.
+        public static var inEditMode: Self {
+            .inEditMode(.default)
+        }
+        
+        /// Show the delete button below the logout button.
+        public static var belowLogout: Self {
+            .belowLogout(.default)
+        }
     }
 
     private let closeBehavior: CloseBehavior

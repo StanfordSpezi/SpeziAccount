@@ -205,8 +205,6 @@ public final class Account {
                 }
             }
         }
-
-
         if signedIn {
             signedIn = false
         }

@@ -291,6 +291,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.collectionViews.buttons["Signup"].tap()
 
         XCTAssertTrue(app.staticTexts[email].waitForExistence(timeout: 4.0))
+        
+        app.dismissSavePasswordAlert(timeout: 2)
 
         // Now verify what we entered
         app.openAccountOverview()

@@ -72,7 +72,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
                 // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
                 // to manage our async task and setting the ViewState.
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                AsyncButton(role: .destructive, state: $destructiveViewState) {
                     do {
                         try await account.accountService.logout()
                     } catch {
@@ -82,7 +82,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                         throw error
                     }
                     dismiss()
-                }) {
+                } label: {
                     Text("UP_LOGOUT", bundle: .module)
                 }
                 .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
@@ -93,9 +93,20 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             }
             .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
-                AsyncButton(role: .destructive, state: $destructiveViewState, action: {
+                AsyncButton(role: .destructive, state: $destructiveViewState) {
                     do {
-                        try await account.accountService.delete()
+                        switch deletionBehavior {
+                        case .disabled:
+                            // unreachable, bc in this case there would be no button
+                            return
+                        case .inEditMode(let handler), .belowLogout(let handler):
+                            switch handler {
+                            case .default:
+                                try await account.accountService.delete()
+                            case .custom(let handler):
+                                try await handler()
+                            }
+                        }
                     } catch {
                         if error is CancellationError {
                             return
@@ -103,7 +114,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                         throw error
                     }
                     dismiss()
-                }) {
+                } label: {
                     Text("DELETE", bundle: .module)
                 }
                 .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))

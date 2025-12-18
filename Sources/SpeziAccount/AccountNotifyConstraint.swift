@@ -20,8 +20,9 @@ import Spezi
 /// actor MyStandard: Standard, AccountNotifyConstraint {
 ///     init() {}
 ///
-///     func respondToEvent(_ event: AccountNotifications.Event) {
-///         if case let .deletingAccount(accountId) {
+///     func respondToEvent(_ event: AccountNotifications.Event) async {
+///         switch event {
+///         case .deletingAccount(let accountId):
 ///             // handle deletion of associated user data
 ///         }
 ///     }
@@ -32,4 +33,15 @@ public protocol AccountNotifyConstraint: Standard {
     ///
     /// For more information refer to ``AccountNotifications/Event``.
     func respondToEvent(_ event: AccountNotifications.Event) async
+    
+    /// Notifies the standard that the currently logged-in account is about to be logged out.
+    ///
+    /// - Note: This function will be folded into the ``AccountNotifications/Event`` enum in a future release.
+    func willLogOut(_ details: AccountDetails) async
+}
+
+
+extension AccountNotifyConstraint {
+    // swiftlint:disable:next missing_docs
+    public func willLogOut(_ details: AccountDetails) async {}
 }
