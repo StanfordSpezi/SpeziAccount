@@ -17,6 +17,7 @@ extension XCUIApplication {
     ///   - password: The password credential.
     public func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
         try login(userId: email, password: password, field: "E-Mail Address")
+        dismissSavePasswordAlert(timeout: 4)
     }
     
     /// Perform password-credential based login.
