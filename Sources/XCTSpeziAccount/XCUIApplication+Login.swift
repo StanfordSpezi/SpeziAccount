@@ -17,7 +17,6 @@ extension XCUIApplication {
     ///   - password: The password credential.
     public func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
         try login(userId: email, password: password, field: "E-Mail Address")
-        dismissSavePasswordAlert(timeout: 4)
     }
     
     /// Perform password-credential based login.
@@ -39,5 +38,7 @@ extension XCUIApplication {
         XCTAssertTrue(buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
         XCTAssertTrue(buttons["Login"].isEnabled)
         buttons["Login"].tap()
+        
+        dismissSavePasswordAlert(timeout: 4)
     }
 }
