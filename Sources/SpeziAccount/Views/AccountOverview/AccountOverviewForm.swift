@@ -219,6 +219,8 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
 
 
 extension View {
+    @available(macOS, unavailable)
+    @available(watchOS, unavailable)
     @ViewBuilder
     fileprivate func accountOperationAlert( // swiftlint:disable:this function_parameter_count
         isPresented: Binding<Bool>,
