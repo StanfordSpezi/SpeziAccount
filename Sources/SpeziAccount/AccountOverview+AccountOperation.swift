@@ -10,6 +10,8 @@ import Foundation
 import SwiftUI
 
 
+@available(macOS, unavailable)
+@available(watchOS, unavailable)
 protocol AccountOverviewDestructiveAccountOperation<ExtraSections> { // swiftlint:disable:this type_name
     associatedtype ExtraSections: View // cringe that we need to carry this around, but it's in a non-public type so ok for now
     
