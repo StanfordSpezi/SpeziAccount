@@ -83,7 +83,49 @@ public struct AccountOverview<AdditionalSections: View>: View {
             ///
             /// In this case, if the user attempts to delete the account through the ``AccountOverview``,
             /// this custom closure will be invoked, instead of the account service' ``AccountService/delete()`` function.
-            case custom(_ handler: @Sendable () async throws -> Void)
+            ///
+            /// - parameter labels: The labels that should be used for deletion-related UI.
+            /// - parameter handler: A closure used for handling the actual deletionn operation.
+            case custom(
+                labels: Labels = Labels(),
+                _ handler: @Sendable () async throws -> Void
+            )
+        }
+        
+        /// The labels that should be used for account-deletion-related UI elements.
+        public struct Labels {
+            let formButton: LocalizedStringResource
+            let confirmationAlertTitle: LocalizedStringResource
+            let confirmationAlertMessage: LocalizedStringResource
+            let confirmationAlertSubmitButton: LocalizedStringResource
+            
+            /// Creates an instance that uses custom labels
+            ///
+            /// - parameter formButton: The title of the delete operation's form button in the ``AccountOverview``
+            /// - parameter confirmationAlertTitle: The title of the "confirm deletion" alert.
+            /// - parameter confirmationAlertMessage: The message of the "confirm deletion" alert.
+            /// - parameter confirmationAlertSubmitButton: The title of the confirmation alert's "delete" button.
+            public init(
+                formButton: LocalizedStringResource,
+                confirmationAlertTitle: LocalizedStringResource,
+                confirmationAlertMessage: LocalizedStringResource,
+                confirmationAlertSubmitButton: LocalizedStringResource
+            ) {
+                self.formButton = formButton
+                self.confirmationAlertTitle = confirmationAlertTitle
+                self.confirmationAlertMessage = confirmationAlertMessage
+                self.confirmationAlertSubmitButton = confirmationAlertSubmitButton
+            }
+            
+            /// Creates an instance that uses SpeziAccount's default labels.
+            public init() {
+                self.init(
+                    formButton: LocalizedStringResource("DELETE_ACCOUNT", bundle: .module),
+                    confirmationAlertTitle: LocalizedStringResource("CONFIRMATION_REMOVAL", bundle: .module),
+                    confirmationAlertMessage: LocalizedStringResource("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module),
+                    confirmationAlertSubmitButton: LocalizedStringResource("DELETE", bundle: .module)
+                )
+            }
         }
         
         /// When entering the edit mode, the logout button turns into a delete account button.
@@ -94,6 +136,17 @@ public struct AccountOverview<AdditionalSections: View>: View {
         /// Show the delete button below the logout button.
         public static var belowLogout: Self {
             .belowLogout(.default)
+        }
+        
+        /// The labels that should be used for account-deletion-related UI elements.
+        /// Exists to allow user customization.
+        var labels: Labels {
+            switch self {
+            case .belowLogout(.custom(let labels, _)), .inEditMode(.custom(let labels, _)):
+                labels
+            case .disabled, .belowLogout(.default), .inEditMode(.default):
+                Labels()
+            }
         }
     }
 
@@ -117,15 +170,15 @@ public struct AccountOverview<AdditionalSections: View>: View {
                 MissingAccountDetailsWarning()
             }
         }
-            .onChange(of: account.signedIn, initial: true) {
-                if let details = account.details {
-                    if model == nil {
-                        model = AccountOverviewFormViewModel(account: account, details: details)
-                    }
-                } else {
-                    model = nil
+        .onChange(of: account.signedIn, initial: true) {
+            if let details = account.details {
+                if model == nil {
+                    model = AccountOverviewFormViewModel(account: account, details: details)
                 }
+            } else {
+                model = nil
             }
+        }
     }
     
     

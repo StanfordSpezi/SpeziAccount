@@ -89,7 +89,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 Button(role: .destructive) {
                     model.presentingRemovalAlert = true
                 } label: {
-                    Text("DELETE_ACCOUNT", bundle: .module)
+                    Text(deletionBehavior.labels.formButton)
                 }
                 .disabled(destructiveViewState != .idle)
                 .frame(maxWidth: .infinity, alignment: .center)

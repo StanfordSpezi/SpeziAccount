@@ -41,6 +41,8 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
 
     var body: some View {
         @Bindable var model = model
+        
+        let deletionLabels = deletionBehavior.labels
 
         Form {
             if let details = account.details {
@@ -91,7 +93,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                     Text("Cancel", bundle: .module)
                 }
             }
-            .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
+            .alert(Text(deletionLabels.confirmationAlertTitle), isPresented: $model.presentingRemovalAlert) {
                 // see the discussion of the AsyncButton in the above alert closure
                 AsyncButton(role: .destructive, state: $destructiveViewState) {
                     do {
@@ -103,7 +105,7 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                             switch handler {
                             case .default:
                                 try await account.accountService.delete()
-                            case .custom(let handler):
+                            case .custom(labels: _, let handler):
                                 try await handler()
                             }
                         }
@@ -115,15 +117,14 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                     }
                     dismiss()
                 } label: {
-                    Text("DELETE", bundle: .module)
+                    Text(deletionLabels.confirmationAlertSubmitButton)
                 }
                 .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
                 Button(role: .cancel, action: {}) {
                     Text("Cancel", bundle: .module)
                 }
             } message: {
-                Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
+                Text(deletionLabels.confirmationAlertMessage)
             }
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
     }
