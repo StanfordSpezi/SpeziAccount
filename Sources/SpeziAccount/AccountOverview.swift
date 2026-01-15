@@ -65,68 +65,68 @@ public struct AccountOverview<AdditionalSections: View>: View {
         /// A close button is shown that calls the `dismiss` action.
         case showCloseButton
     }
-
-    /// Defines the behavior of delete functionality.
-    public enum AccountDeletionBehavior {
+    
+    
+    /// How an account operation (i.e., logout or deletion) via the ``AccountOverview`` should be handled.
+    public enum AccountOperationHandler {
+        /// The operation should be handled normally via SpeziAccount.
+        case `default`
+        
+        /// The operation should be handled via a custom closure.
+        ///
+        /// - parameter labels: The labels that should be used for UI related to the operation.
+        /// - parameter handler: A closure used for handling the actual operation.
+        case custom(
+            labels: AccountOverviewOperationLabels,
+            _ handler: @Sendable () async throws -> Void
+        )
+    }
+    
+    
+    /// Defines the behavior of logging out of the account.
+    public enum AccountLogoutBehavior: AccountOverviewDestructiveAccountOperation {
+        /// Account logout is not available.
+        case disabled
+        /// Account logout is available.
+        case enabled(AccountOperationHandler)
+        
+        typealias ExtraSections = AdditionalSections
+        
+        /// The default behavior, where logout is available and uses the SpeziAccount-defined labels and handler.
+        public static var enabled: Self {
+            .enabled(.default)
+        }
+        
+        var labels: AccountOverviewOperationLabels {
+            switch self {
+            case .disabled, .enabled(.default):
+                .logout
+            case .enabled(.custom(let labels, _)):
+                labels
+            }
+        }
+        
+        var handler: AccountOperationHandler? {
+            switch self {
+            case .disabled:
+                nil
+            case .enabled(let handler):
+                handler
+            }
+        }
+    }
+    
+    
+    /// Defines the behavior of deleting the account.
+    public enum AccountDeletionBehavior: AccountOverviewDestructiveAccountOperation {
         /// Account deletion is not available.
         case disabled
         /// When entering the edit mode, the logout button turns into a delete account button.
-        case inEditMode(Handler)
+        case inEditMode(AccountOperationHandler)
         /// Show the delete button below the logout button.
-        case belowLogout(Handler)
+        case belowLogout(AccountOperationHandler)
         
-        /// How account deletion via the ``AccountOverview`` should be handled.
-        public enum Handler {
-            /// Account deletion should be handled normally via SpeziAccount.
-            case `default`
-            /// Account deletion should be handled via a custom closure.
-            ///
-            /// In this case, if the user attempts to delete the account through the ``AccountOverview``,
-            /// this custom closure will be invoked, instead of the account service' ``AccountService/delete()`` function.
-            ///
-            /// - parameter labels: The labels that should be used for deletion-related UI.
-            /// - parameter handler: A closure used for handling the actual deletionn operation.
-            case custom(
-                labels: Labels = Labels(),
-                _ handler: @Sendable () async throws -> Void
-            )
-        }
-        
-        /// The labels that should be used for account-deletion-related UI elements.
-        public struct Labels {
-            let formButton: LocalizedStringResource
-            let confirmationAlertTitle: LocalizedStringResource
-            let confirmationAlertMessage: LocalizedStringResource
-            let confirmationAlertSubmitButton: LocalizedStringResource
-            
-            /// Creates an instance that uses custom labels
-            ///
-            /// - parameter formButton: The title of the delete operation's form button in the ``AccountOverview``
-            /// - parameter confirmationAlertTitle: The title of the "confirm deletion" alert.
-            /// - parameter confirmationAlertMessage: The message of the "confirm deletion" alert.
-            /// - parameter confirmationAlertSubmitButton: The title of the confirmation alert's "delete" button.
-            public init(
-                formButton: LocalizedStringResource,
-                confirmationAlertTitle: LocalizedStringResource,
-                confirmationAlertMessage: LocalizedStringResource,
-                confirmationAlertSubmitButton: LocalizedStringResource
-            ) {
-                self.formButton = formButton
-                self.confirmationAlertTitle = confirmationAlertTitle
-                self.confirmationAlertMessage = confirmationAlertMessage
-                self.confirmationAlertSubmitButton = confirmationAlertSubmitButton
-            }
-            
-            /// Creates an instance that uses SpeziAccount's default labels.
-            public init() {
-                self.init(
-                    formButton: LocalizedStringResource("DELETE_ACCOUNT", bundle: .module),
-                    confirmationAlertTitle: LocalizedStringResource("CONFIRMATION_REMOVAL", bundle: .module),
-                    confirmationAlertMessage: LocalizedStringResource("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module),
-                    confirmationAlertSubmitButton: LocalizedStringResource("DELETE", bundle: .module)
-                )
-            }
-        }
+        typealias ExtraSections = AdditionalSections
         
         /// When entering the edit mode, the logout button turns into a delete account button.
         public static var inEditMode: Self {
@@ -140,17 +140,28 @@ public struct AccountOverview<AdditionalSections: View>: View {
         
         /// The labels that should be used for account-deletion-related UI elements.
         /// Exists to allow user customization.
-        var labels: Labels {
+        var labels: AccountOverviewOperationLabels {
             switch self {
+            case .disabled, .belowLogout(.default), .inEditMode(.default):
+                .deletion
             case .belowLogout(.custom(let labels, _)), .inEditMode(.custom(let labels, _)):
                 labels
-            case .disabled, .belowLogout(.default), .inEditMode(.default):
-                Labels()
+            }
+        }
+        
+        var handler: AccountOperationHandler? {
+            switch self {
+            case .disabled:
+                nil
+            case .inEditMode(let handler), .belowLogout(let handler):
+                handler
             }
         }
     }
-
+    
+    
     private let closeBehavior: CloseBehavior
+    private let logoutBehavior: AccountLogoutBehavior
     private let deletionBehavior: AccountDeletionBehavior
     private let additionalSections: AdditionalSections
 
@@ -162,9 +173,13 @@ public struct AccountOverview<AdditionalSections: View>: View {
     public var body: some View {
         ZStack {
             if let model {
-                AccountOverviewForm(model: model, closeBehavior: closeBehavior, deletionBehavior: deletionBehavior) {
-                    additionalSections
-                }
+                AccountOverviewForm(
+                    model: model,
+                    closeBehavior: closeBehavior,
+                    logoutBehavior: logoutBehavior,
+                    deletionBehavior: deletionBehavior,
+                    additionalSections: additionalSections
+                )
             }
             if account.details == nil {
                 MissingAccountDetailsWarning()
@@ -190,10 +205,12 @@ public struct AccountOverview<AdditionalSections: View>: View {
     ///   - additionalSections: Optional additional sections displayed between the other AccountOverview information and the log out button.
     public init(
         close closeBehavior: CloseBehavior = .disabled,
+        logout logoutBehavior: AccountLogoutBehavior = .enabled,
         deletion deletionBehavior: AccountDeletionBehavior = .inEditMode,
         @ViewBuilder additionalSections: () -> AdditionalSections = { EmptyView() }
     ) {
         self.closeBehavior = closeBehavior
+        self.logoutBehavior = logoutBehavior
         self.deletionBehavior = deletionBehavior
         self.additionalSections = additionalSections()
     }
