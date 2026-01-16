@@ -96,7 +96,8 @@ extension XCUIApplication {
         let title = "Save Password?"
         // fun fact it's actually a sheet even though it looks like an alert.
         if sheets[title].waitForExistence(timeout: timeout) {
-            sheets[title].buttons["Not Now"].tap()
+            sleep(1)
+            sheets[title].buttons["Not Now"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
     }
 }
