@@ -1,4 +1,10 @@
 {
+  "languages" : [
+    "de",
+    "en",
+    "es",
+    "sv"
+  ],
   "sourceLanguage" : "en",
   "strings" : {
     "ACCOUNT_ERROR_ACCOUNT_ID_CHANGED_DESCRIPTION" : {
