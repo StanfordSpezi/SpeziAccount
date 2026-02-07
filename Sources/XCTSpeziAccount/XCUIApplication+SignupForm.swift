@@ -99,7 +99,7 @@ extension XCUIApplication {
         #else
         let alert = sheets[title] // fun fact it's actually a sheet even though it looks like an alert.
         #endif
-        if alert.waitForExistence(timeout: timeout) {
+        func imp(alert: XCUIElement) {
             let button = alert.buttons["Not Now"]
             XCTAssert(button.waitForExistence(timeout: 2))
             if button.isHittable {
@@ -107,6 +107,21 @@ extension XCUIApplication {
             } else {
                 button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             }
+        }
+        if alert.waitForExistence(timeout: timeout) {
+            imp(alert: alert)
+            #if os(visionOS)
+            sleep(1)
+            if alert.waitForExistence(timeout: timeout) {
+                let realityChrome = XCUIApplication(bundleIdentifier: "com.apple.RealityChrome")
+                realityChrome.buttons["CloseButton"].tap()
+                sleep(1)
+                self.activate()
+                sleep(1)
+                imp(alert: alert)
+                sleep(1)
+            }
+            #endif
         }
     }
 }

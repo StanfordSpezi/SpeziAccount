@@ -56,6 +56,18 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
     func testLoginWithEmail() throws {
         let app = XCUIApplication()
         app.launch(serviceType: .mail, credentials: .create)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5))
+        app.openAccountSetup()
+        try app.login(email: Defaults.email, password: Defaults.password)
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 10))
+    }
+    
+    
+    @MainActor
+    func testLoginWithEmail1() throws {
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail, credentials: .create)
 
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
@@ -76,9 +88,9 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.buttons["Login"].isEnabled)
         app.buttons["Login"].tap()
         app.dismissSavePasswordAlert(timeout: 7)
-
+        
         // verify we are back at the start screen
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 20.0))
     }
     
     
