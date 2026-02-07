@@ -101,7 +101,10 @@ extension XCUIApplication {
         #endif
         if alert.waitForExistence(timeout: timeout) {
             sleep(1)
-            alert.buttons["Not Now"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            let button = alert.buttons["Not Now"]
+            XCTAssert(button.waitForExistence(timeout: 2))
+            button.tap()
+//            button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
     }
 }
