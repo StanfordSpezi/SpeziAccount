@@ -94,10 +94,14 @@ extension XCUIApplication {
     /// Dismisses an iOS "Save Password?" alert, if one appears within `timeout` seconds.
     public func dismissSavePasswordAlert(timeout: TimeInterval) {
         let title = "Save Password?"
-        // fun fact it's actually a sheet even though it looks like an alert.
-        if sheets[title].waitForExistence(timeout: timeout) {
+        #if os(visionOS)
+        let alert = alerts[title]
+        #else
+        let alert = sheets[title] // fun fact it's actually a sheet even though it looks like an alert.
+        #endif
+        if alert.waitForExistence(timeout: timeout) {
             sleep(1)
-            sheets[title].buttons["Not Now"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            alert.buttons["Not Now"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         }
     }
 }
