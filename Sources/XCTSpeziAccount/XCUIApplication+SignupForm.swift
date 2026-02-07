@@ -100,11 +100,13 @@ extension XCUIApplication {
         let alert = sheets[title] // fun fact it's actually a sheet even though it looks like an alert.
         #endif
         if alert.waitForExistence(timeout: timeout) {
-            sleep(1)
             let button = alert.buttons["Not Now"]
             XCTAssert(button.waitForExistence(timeout: 2))
-            button.tap()
-//            button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            if button.isHittable {
+                button.tap()
+            } else {
+                button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            }
         }
     }
 }
