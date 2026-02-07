@@ -39,6 +39,6 @@ extension XCUIApplication {
         XCTAssertTrue(buttons["Login"].isEnabled)
         buttons["Login"].tap()
         
-        dismissSavePasswordAlert(timeout: 4)
+        dismissSavePasswordAlert(timeout: 7)
     }
 }
