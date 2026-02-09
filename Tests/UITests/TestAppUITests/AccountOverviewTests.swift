@@ -563,10 +563,10 @@ extension XCUIApplication {
 #if os(visionOS)
     fileprivate func scrollUpInOverview() {
         // swipeUp doesn't work on visionOS, so we improvise
-
         XCTAssertTrue(staticTexts["Personal Details"].waitForExistence(timeout: 2.0))
         XCTAssertTrue(staticTexts["Leland Stanford"].exists)
         staticTexts["Personal Details"].press(forDuration: 0, thenDragTo: staticTexts["Leland Stanford"])
+        staticTexts["Contact Details"].press(forDuration: 0, thenDragTo: staticTexts["Personal Details"])
     }
 #endif
     

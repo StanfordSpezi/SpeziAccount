@@ -15,7 +15,7 @@ extension XCUIApplication {
     /// - Parameters:
     ///   - email: The email credential.
     ///   - password: The password credential.
-    public func login<Email: StringProtocol, Password: StringProtocol>(email: Email, password: Password) throws {
+    public func login(email: some StringProtocol, password: some StringProtocol) throws {
         try login(userId: email, password: password, field: "E-Mail Address")
     }
     
@@ -23,12 +23,12 @@ extension XCUIApplication {
     /// - Parameters:
     ///   - username: The username credential.
     ///   - password: The password credential.
-    public func login<Username: StringProtocol, Password: StringProtocol>(username: Username, password: Password) throws {
+    public func login(username: some StringProtocol, password: some StringProtocol) throws {
         try login(userId: username, password: password, field: "Username")
     }
 
 
-    private func login<UserId: StringProtocol, Password: StringProtocol>(userId: UserId, password: Password, field: String) throws {
+    private func login(userId: some StringProtocol, password: some StringProtocol, field: String) throws {
         XCTAssertTrue(textFields[field].exists)
         XCTAssertTrue(secureTextFields["Password"].exists)
 
@@ -38,5 +38,7 @@ extension XCUIApplication {
         XCTAssertTrue(buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
         XCTAssertTrue(buttons["Login"].isEnabled)
         buttons["Login"].tap()
+        
+        dismissSavePasswordAlert(timeout: 7)
     }
 }

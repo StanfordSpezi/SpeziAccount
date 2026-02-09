@@ -18,6 +18,7 @@ import SwiftUI
 @available(watchOS, unavailable)
 struct AccountOverviewSections<AdditionalSections: View>: View {
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
+    private let logoutBehavior: AccountOverview<AdditionalSections>.AccountLogoutBehavior
     private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
     private let additionalSections: AdditionalSections
 
@@ -32,23 +33,40 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
     private var editMode
     @Environment(\.dismiss)
     private var dismiss
+    
+    private var showLogoutButton: Bool {
+        switch logoutBehavior {
+        case .disabled:
+            false
+        case .enabled:
+            switch deletionBehavior {
+            case .inEditMode:
+                // if the delete button is displayed while the view is in edit mode ...
+                if editMode?.wrappedValue.isEditing == true {
+                    // ... and the view is currently in edit mode, we do not display the logout button
+                    false
+                } else {
+                    // ... and the view is currently not in edit view, we do display the logout button
+                    true
+                }
+            case .disabled, .belowLogout:
+                // for other account deletion modes (which are not defined relative to the edit mode),
+                // we simply always show the logout button
+                true
+            }
+        }
+    }
 
     private var showDeleteButton: Bool {
         switch deletionBehavior {
         case .disabled:
+            // account deletion is disabled
             false
         case .inEditMode:
+            // account deletion is only enabled if the view is in edit mode
             editMode?.wrappedValue.isEditing == true
         case .belowLogout:
-            true
-        }
-    }
-
-    private var showLogoutButton: Bool {
-        switch deletionBehavior {
-        case .inEditMode:
-            editMode?.wrappedValue.isEditing != true
-        default:
+            // account deletion is always available
             true
         }
     }
@@ -89,7 +107,7 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
                 Button(role: .destructive) {
                     model.presentingRemovalAlert = true
                 } label: {
-                    Text("DELETE_ACCOUNT", bundle: .module)
+                    Text(deletionBehavior.labels.formButton)
                 }
                 .disabled(destructiveViewState != .idle)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -158,16 +176,18 @@ struct AccountOverviewSections<AdditionalSections: View>: View {
         model: AccountOverviewFormViewModel,
         details accountDetails: AccountDetails,
         close closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
+        logout logoutBehavior: AccountOverview<AdditionalSections>.AccountLogoutBehavior,
         deletion deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior,
         destructiveViewState: ViewState,
-        @ViewBuilder additionalSections: (() -> AdditionalSections) = { EmptyView() }
+        additionalSections: AdditionalSections
     ) {
         self.model = model
         self.accountDetails = accountDetails
         self.closeBehavior = closeBehavior
+        self.logoutBehavior = logoutBehavior
         self.deletionBehavior = deletionBehavior
         self.destructiveViewState = destructiveViewState
-        self.additionalSections = additionalSections()
+        self.additionalSections = additionalSections
     }
     
     /// Computes if a given `Section` is empty. This is the case if we are **not** currently editing

@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: MIT
 //
 
+// swiftlint:disable file_length
+
 import XCTest
 import XCTestExtensions
 import XCTSpeziAccount
@@ -14,10 +16,10 @@ import XCTSpeziAccount
 final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_length
     override func setUpWithError() throws {
         try super.setUpWithError()
-
         continueAfterFailure = false
     }
-
+    
+    
     @MainActor
     func testEmbeddedViewValidation() throws {
         let app = XCUIApplication()
@@ -48,9 +50,22 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 2.0))
         XCTAssertFalse(app.buttons["Login"].isEnabled)
     }
-
+    
+    
     @MainActor
     func testLoginWithEmail() throws {
+        let app = XCUIApplication()
+        app.launch(serviceType: .mail, credentials: .create)
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2))
+        XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5))
+        app.openAccountSetup()
+        try app.login(email: Defaults.email, password: Defaults.password)
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 10))
+    }
+    
+    
+    @MainActor
+    func testLoginWithEmail1() throws {
         let app = XCUIApplication()
         app.launch(serviceType: .mail, credentials: .create)
 
@@ -72,11 +87,13 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 0.5)) // might need time to to get enabled
         XCTAssertTrue(app.buttons["Login"].isEnabled)
         app.buttons["Login"].tap()
-
+        app.dismissSavePasswordAlert(timeout: 7)
+        
         // verify we are back at the start screen
-        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
+        XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 20.0))
     }
-
+    
+    
     @MainActor
     func testAccountSummary() throws {
         let app = XCUIApplication()
@@ -102,7 +119,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.buttons["Login"].waitForExistence(timeout: 2.0))
     }
-
+    
+    
     @MainActor
     func testSignupWithAnonymousAccount() throws { // swiftlint:disable:this function_body_length
         let app = XCUIApplication()
@@ -180,6 +198,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
+        app.dismissSavePasswordAlert(timeout: 7)
 
         // important: if the sheet isn't dismissed it may indicate that the completion closure of the AccountSetup view
         // is no longer getting called. This is implicitly tested here.
@@ -188,7 +207,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Account Id, Stable"].exists)
         XCTAssertFalse(app.staticTexts["User Id, Anonymous"].exists)
     }
-
+    
+    
     @MainActor
     func testBasicIdentityProviderLayout() throws {
         let app = XCUIApplication()
@@ -203,7 +223,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["or"].exists) // divider
         XCTAssertTrue(app.buttons["Sign in with Apple"].exists)
     }
-
+    
+    
     @MainActor
     func testResetPassword() throws {
         let app = XCUIApplication()
@@ -238,7 +259,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 2.0))
     }
-
+    
+    
     @MainActor
     func testSignupCredentialsValidation() throws {
         let app = XCUIApplication()
@@ -289,10 +311,11 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         // we access the signup button through the collectionView as there is another signup button behind the signup sheet.
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 2.0))
         app.collectionViews.buttons["Signup"].tap()
+        app.dismissSavePasswordAlert(timeout: 7)
 
         XCTAssertTrue(app.staticTexts[email].waitForExistence(timeout: 4.0))
         
-        app.dismissSavePasswordAlert(timeout: 2)
+        app.dismissSavePasswordAlert(timeout: 7)
 
         // Now verify what we entered
         app.openAccountOverview()
@@ -301,7 +324,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts[email].exists)
         XCTAssertTrue(app.staticTexts["Gender Identity, Choose not to answer"].exists)
     }
-
+    
+    
     @MainActor
     func testNameValidation() throws {
         let app = XCUIApplication()
@@ -330,7 +354,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertEqual(app.staticTexts.matching(identifier: "This field cannot be empty.").count, 2)
     }
-
+    
+    
     @MainActor
     func testInvalidCredentials() throws {
         let app = XCUIApplication()
@@ -354,7 +379,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.alerts["User Identifier is already taken"].waitForExistence(timeout: 10.0))
         app.alerts["User Identifier is already taken"].scrollViews.otherElements.buttons["OK"].tap()
     }
-
+    
+    
     @MainActor
     func testFullSignup() throws {
         let app = XCUIApplication()
@@ -391,6 +417,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         app.collectionViews.buttons["Signup"].tap()
+        
+        app.dismissSavePasswordAlert(timeout: 7)
 
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
 
@@ -408,7 +436,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.staticTexts["Date of Birth"].exists)
 #endif
     }
-
+    
+    
     @MainActor
     func testFullSignupWithAdditionalStorage() throws {
         let app = XCUIApplication()
@@ -439,6 +468,7 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertTrue(app.collectionViews.buttons["Signup"].waitForExistence(timeout: 1.0))
         XCTAssertTrue(app.collectionViews.buttons["Signup"].isEnabled)
         app.collectionViews.buttons["Signup"].tap()
+        app.dismissSavePasswordAlert(timeout: 7)
 
         XCTAssertTrue(app.staticTexts["lelandstanford2@stanford.edu"].waitForExistence(timeout: 3.0))
 
@@ -455,7 +485,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 #endif
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford"].exists)
     }
-
+    
+    
     @MainActor
     func testNameEmptinessCheck() throws {
         // if we type in the name in the signup view but then remove all text input then (empty strings in the text fields)
@@ -497,7 +528,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertFalse(app.staticTexts["Leland"].exists)
         XCTAssertTrue(app.staticTexts["Add Name"].exists)
     }
-
+    
+    
     @MainActor
     func testAdditionalInfoAfterLogin() throws {
         let app = XCUIApplication()
@@ -525,30 +557,32 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         app.openAccountOverview()
         XCTAssertTrue(app.staticTexts["Biography, Hello Stanford2"].waitForExistence(timeout: 2.0))
     }
-
+    
+    
+    // Ensure AccountSetup properly handles the `incomplete` flag
+    // https://github.com/StanfordSpezi/SpeziAccount/pull/79
     @MainActor
     func testLoginWithAdditionalStorage() throws {
-        // Ensure AccountSetup properly handles the `incomplete` flag
-        // https://github.com/StanfordSpezi/SpeziAccount/pull/79
-
         let app = XCUIApplication()
         app.launch(config: .default, credentials: .create, includeInvitationCode: true)
-
-
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 2.0))
         XCTAssertTrue(app.staticTexts["Spezi Account"].waitForExistence(timeout: 5.0))
 
         app.openAccountSetup()
-
         try app.login(email: Defaults.email, password: Defaults.password)
-
+        
+        sleep(10)
+        
+        app.dismissSavePasswordAlert(timeout: 10)
+        
         // make sure our incomplete error never pops up
         XCTAssert(app.alerts["Error"].waitForNonExistence(timeout: 5.0))
-
+        
         // verify we are back at the start screen
         XCTAssertTrue(app.staticTexts[Defaults.email].waitForExistence(timeout: 2.0))
     }
-
+    
+    
     @MainActor
     func testAccountRequiredModifier() throws {
         let app = XCUIApplication()
@@ -562,7 +596,8 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
 
         XCTAssertTrue(app.staticTexts["Your Account"].waitForExistence(timeout: 2.0))
     }
-
+    
+    
     @MainActor
     func testVerifyRequiredAccountDetailsModifier() throws {
         let app = XCUIApplication()
@@ -592,6 +627,3 @@ final class AccountSetupTests: XCTestCase { // swiftlint:disable:this type_body_
         XCTAssertFalse(app.staticTexts["User Id"].exists)
     }
 }
-
-
-// swiftlint:disable:this file_length

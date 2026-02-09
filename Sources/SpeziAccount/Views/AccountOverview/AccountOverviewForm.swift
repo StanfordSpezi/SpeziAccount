@@ -17,6 +17,7 @@ import SwiftUI
 struct AccountOverviewForm<AdditionalSections: View>: View {
     private let model: AccountOverviewFormViewModel
     private let closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior
+    private let logoutBehavior: AccountOverview<AdditionalSections>.AccountLogoutBehavior
     private let deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior
     private let additionalSections: AdditionalSections
 
@@ -48,11 +49,11 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                     model: model,
                     details: details,
                     close: closeBehavior,
+                    logout: logoutBehavior,
                     deletion: deletionBehavior,
-                    destructiveViewState: destructiveViewState
-                ) {
-                    additionalSections
-                }
+                    destructiveViewState: destructiveViewState,
+                    additionalSections: additionalSections
+                )
             }
         }
             .navigationTitle(Text("ACCOUNT_OVERVIEW", bundle: .module))
@@ -68,63 +69,22 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
             .toolbar {
                 toolbar
             }
-            .alert(Text("CONFIRMATION_LOGOUT", bundle: .module), isPresented: $model.presentingLogoutAlert) {
-                // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
-                // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
-                // to manage our async task and setting the ViewState.
-                AsyncButton(role: .destructive, state: $destructiveViewState) {
-                    do {
-                        try await account.accountService.logout()
-                    } catch {
-                        if error is CancellationError {
-                            return
-                        }
-                        throw error
-                    }
-                    dismiss()
-                } label: {
-                    Text("UP_LOGOUT", bundle: .module)
-                }
-                .environment(\.defaultErrorDescription, .init("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
-                Button(role: .cancel, action: {}) {
-                    Text("Cancel", bundle: .module)
-                }
-            }
-            .alert(Text("CONFIRMATION_REMOVAL", bundle: .module), isPresented: $model.presentingRemovalAlert) {
-                // see the discussion of the AsyncButton in the above alert closure
-                AsyncButton(role: .destructive, state: $destructiveViewState) {
-                    do {
-                        switch deletionBehavior {
-                        case .disabled:
-                            // unreachable, bc in this case there would be no button
-                            return
-                        case .inEditMode(let handler), .belowLogout(let handler):
-                            switch handler {
-                            case .default:
-                                try await account.accountService.delete()
-                            case .custom(let handler):
-                                try await handler()
-                            }
-                        }
-                    } catch {
-                        if error is CancellationError {
-                            return
-                        }
-                        throw error
-                    }
-                    dismiss()
-                } label: {
-                    Text("DELETE", bundle: .module)
-                }
-                .environment(\.defaultErrorDescription, .init("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)))
-
-                Button(role: .cancel, action: {}) {
-                    Text("Cancel", bundle: .module)
-                }
-            } message: {
-                Text("CONFIRMATION_REMOVAL_SUGGESTION", bundle: .module)
-            }
+            .accountOperationAlert(
+                isPresented: $model.presentingLogoutAlert,
+                operation: logoutBehavior,
+                viewState: $destructiveViewState,
+                defaultErrorDescription: LocalizedStringResource("UP_LOGOUT_FAILED_DEFAULT_ERROR", bundle: .atURL(from: .module)),
+                dismiss: dismiss,
+                defaultOperation: { try await account.accountService.logout() }
+            )
+            .accountOperationAlert(
+                isPresented: $model.presentingRemovalAlert,
+                operation: deletionBehavior,
+                viewState: $destructiveViewState,
+                defaultErrorDescription: LocalizedStringResource("REMOVE_DEFAULT_ERROR", bundle: .atURL(from: .module)),
+                dismiss: dismiss,
+                defaultOperation: { try await account.accountService.delete() }
+            )
             .anyModifiers(account.securityRelatedModifiers.map { $0.anyViewModifier }) // for delete action
     }
     
@@ -210,13 +170,15 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
     init(
         model: AccountOverviewFormViewModel,
         closeBehavior: AccountOverview<AdditionalSections>.CloseBehavior,
+        logoutBehavior: AccountOverview<AdditionalSections>.AccountLogoutBehavior,
         deletionBehavior: AccountOverview<AdditionalSections>.AccountDeletionBehavior,
-        @ViewBuilder additionalSections: () -> AdditionalSections
+        additionalSections: AdditionalSections
     ) {
         self.model = model
         self.closeBehavior = closeBehavior
+        self.logoutBehavior = logoutBehavior
         self.deletionBehavior = deletionBehavior
-        self.additionalSections = additionalSections()
+        self.additionalSections = additionalSections
     }
 
     private func editButtonAction() async throws {
@@ -251,6 +213,59 @@ struct AccountOverviewForm<AdditionalSections: View>: View {
                 return
             }
             throw error
+        }
+    }
+}
+
+
+extension View {
+    @available(macOS, unavailable)
+    @available(watchOS, unavailable)
+    @ViewBuilder
+    fileprivate func accountOperationAlert( // swiftlint:disable:this function_parameter_count
+        isPresented: Binding<Bool>,
+        operation: some AccountOverviewDestructiveAccountOperation,
+        viewState: Binding<ViewState>,
+        defaultErrorDescription: LocalizedStringResource?,
+        dismiss: DismissAction,
+        defaultOperation: @MainActor @escaping () async throws -> Void
+    ) -> some View {
+        let labels = operation.labels
+        if let handler = operation.handler {
+            self.alert(Text(labels.confirmationAlertTitle), isPresented: isPresented) {
+                // Note how the below AsyncButton (in the HStack) uses the same `destructiveViewState`.
+                // Due to SwiftUI behavior, the alert will be dismissed immediately. We use the AsyncButton here still
+                // to manage our async task and setting the ViewState.
+                AsyncButton(role: .destructive, state: viewState) {
+                    do {
+                        switch handler {
+                        case .default:
+                            try await defaultOperation()
+                        case .custom(labels: _, let handler):
+                            try await handler()
+                        }
+                    } catch {
+                        if error is CancellationError {
+                            return
+                        }
+                        throw error
+                    }
+                    dismiss()
+                } label: {
+                    Text(labels.confirmationAlertSubmitButton)
+                }
+                .environment(\.defaultErrorDescription, defaultErrorDescription)
+                
+                Button(role: .cancel, action: {}) {
+                    Text(labels.confirmationAlertCancelButton)
+                }
+            } message: {
+                if let message = labels.confirmationAlertMessage {
+                    Text(message)
+                }
+            }
+        } else {
+            self
         }
     }
 }
