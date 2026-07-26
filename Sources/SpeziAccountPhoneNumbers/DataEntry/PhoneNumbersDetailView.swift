@@ -107,20 +107,20 @@ struct PhoneNumbersDetailView: View {
     private func row(for phoneNumber: PhoneNumber) -> some View {
         let isProcessing = processingPhoneNumbers.contains(phoneNumber)
         ListRow(verbatim: phoneNumberViewModel.formatPhoneNumberForDisplay(phoneNumber)) {
-            Button(
-                action: { phoneNumberToDelete = phoneNumber },
-                label: {
-                    Image(systemName: "trash.circle.fill")
-                        .resizable()
-                        .accessibilityLabel("Delete Phone Number")
-                        .foregroundStyle(.red)
-                        .frame(width: 32, height: 32)
-                        .padding(-8)
-                }
-            )
-            .processingOverlay(isProcessing: isProcessing)
+            if isProcessing {
+                ProgressView()
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                phoneNumberToDelete = phoneNumber
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
             .disabled(isProcessing)
         }
+        .opacity(isProcessing ? 0.5 : 1.0)
+        .animation(.default, value: isProcessing)
     }
 
     @ViewBuilder
