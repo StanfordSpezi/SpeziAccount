@@ -75,7 +75,7 @@ public struct SecurityRelatedModifier<V: ViewModifier> {
 
     /// Create a new security related modifier declaration.
     /// - Parameter wrappedValue: An auto-closure creating a new security related modifier each time it is used.
-    public init(wrappedValue: @autoclosure @escaping @Sendable () -> V) {
+    public init(wrappedValue: @autoclosure @escaping @MainActor @Sendable () -> V) {
         self.modifierClosure = { @MainActor in
             wrappedValue()
         }
