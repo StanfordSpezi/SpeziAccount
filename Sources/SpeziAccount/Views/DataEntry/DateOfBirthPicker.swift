@@ -124,36 +124,36 @@ struct DateOfBirthPicker: View {
 }
 
 
-#if DEBUG
-@available(tvOS, unavailable)
-struct DateOfBirthPicker_Previews: PreviewProvider {
-    struct Preview: View {
-        @State private var date = Date.now
-        private let required: Bool
-        
-        var body: some View {
-            Form {
-                DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
-            }
-            VStack {
-                DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
-                    .padding(32)
-            }
+#if DEBUG && !os(tvOS)
+private struct DateOfBirthPickerPreview: View {
+    @State private var date = Date.now
+    private let required: Bool
+    
+    var body: some View {
+        Form {
+            DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
+        }
+        VStack {
+            DateOfBirthPicker("Date of Birth", date: $date, isRequired: required)
+                .padding(32)
+        }
 #if !os(macOS) && !os(watchOS)
-            .background(Color(uiColor: .systemGroupedBackground))
+        .background(Color(uiColor: .systemGroupedBackground))
 #endif
-        }
-        
-        init(required: Bool) {
-            self.required = required
-        }
     }
     
-    static var previews: some View {
-        // preview entering new data.
-        Preview(required: false)
-        
-        Preview(required: true)
+    init(required: Bool) {
+        self.required = required
     }
+}
+
+
+#Preview("Optional") {
+    // preview entering new data.
+    DateOfBirthPickerPreview(required: false)
+}
+
+#Preview("Required") {
+    DateOfBirthPickerPreview(required: true)
 }
 #endif
